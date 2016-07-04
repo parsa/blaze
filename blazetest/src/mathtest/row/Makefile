@@ -1,9 +1,8 @@
-#!/bin/bash
 #==================================================================================================
 #
-#  Run script for the denserow module of the Blaze test suite
+#  Makefile for the row module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,9 +32,53 @@
 #==================================================================================================
 
 
-PATH_DENSEROW=$( dirname "${BASH_SOURCE[0]}" )
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
 
-echo " Running DenseRow tests..."
 
-EXE=$PATH_DENSEROW/GeneralTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DENSEROW/SymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
+# General rules
+default: all
+all: $(BIN)
+essential: $(BIN)
+single: $(BIN)
+noop: $(BIN)
+
+
+# Build rules
+DenseGeneralTest: DenseGeneralTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseSymmetricTest: DenseSymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseGeneralTest: SparseGeneralTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseSymmetricTest: SparseSymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+
+# Cleanup
+clean:
+	@$(RM) $(DEP) $(OBJ) $(BIN)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
+
+
+# Setting the independent commands
+.PHONY: default all essential single noop clean

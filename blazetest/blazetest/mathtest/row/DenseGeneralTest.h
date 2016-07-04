@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/denserow/GeneralTest.h
-//  \brief Header file for the general DenseRow class test
+//  \file blazetest/mathtest/row/DenseGeneralTest.h
+//  \brief Header file for the Row dense general test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSEROW_GENERALTEST_H_
-#define _BLAZETEST_MATHTEST_DENSEROW_GENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ROW_DENSEGENERALTEST_H_
+#define _BLAZETEST_MATHTEST_ROW_DENSEGENERALTEST_H_
 
 
 //*************************************************************************************************
@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DenseRow.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -55,7 +55,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace denserow {
+namespace row {
 
 //=================================================================================================
 //
@@ -64,18 +64,18 @@ namespace denserow {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseRow class template.
+/*!\brief Auxiliary class for all tests of the dense general Row specialization.
 //
-// This class represents a test suite for the blaze::DenseRow class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Row class template specialization for
+// dense general matrices. It performs a series of both compile time as well as runtime tests.
 */
-class GeneralTest
+class DenseGeneralTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit GeneralTest();
+   explicit DenseGeneralTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -134,8 +134,8 @@ class GeneralTest
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;   //!< Row-major dynamic matrix type
    typedef MT::OppositeType                           OMT;  //!< Column-major dynamic matrix type
-   typedef blaze::DenseRow<MT>                        RT;   //!< Dense row type for row-major matrices.
-   typedef blaze::DenseRow<OMT>                       ORT;  //!< Dense row type for column-major matrices.
+   typedef blaze::Row<MT>                             RT;   //!< Dense row type for row-major matrices.
+   typedef blaze::Row<OMT>                            ORT;  //!< Dense row type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -198,7 +198,7 @@ class GeneralTest
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense row
-void GeneralTest::checkSize( const Type& row, size_t expectedSize ) const
+void DenseGeneralTest::checkSize( const Type& row, size_t expectedSize ) const
 {
    if( size( row ) != expectedSize ) {
       std::ostringstream oss;
@@ -226,7 +226,7 @@ void GeneralTest::checkSize( const Type& row, size_t expectedSize ) const
 // exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void DenseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -254,7 +254,7 @@ void GeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void DenseGeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -282,7 +282,7 @@ void GeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) con
 // is thrown.
 */
 template< typename Type >  // Type of the dense row or dynamic matrix
-void GeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
+void DenseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
@@ -310,7 +310,7 @@ void GeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense row or dynamic matrix
-void GeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+void DenseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -349,7 +349,7 @@ void GeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) c
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void DenseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -385,13 +385,13 @@ void GeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expect
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseRow class template.
+/*!\brief Testing the functionality of the Row class template.
 //
 // \return void
 */
 void runTest()
 {
-   GeneralTest();
+   DenseGeneralTest();
 }
 //*************************************************************************************************
 
@@ -406,14 +406,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the general DenseRow class test.
+/*!\brief Macro for the execution of the dense general Row class test.
 */
-#define RUN_DENSEROW_CLASS_TEST \
-   blazetest::mathtest::denserow::runTest()
+#define RUN_ROW_DENSEGENERAL_TEST \
+   blazetest::mathtest::row::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace denserow
+} // namespace row
 
 } // namespace mathtest
 

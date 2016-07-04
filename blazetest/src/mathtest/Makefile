@@ -43,8 +43,7 @@ all: functions simd blas lapack typetraits \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
      diagonalmatrix \
-     subvector submatrix \
-     denserow densecolumn sparserow sparsecolumn \
+     subvector submatrix row densecolumn sparsecolumn \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -72,8 +71,7 @@ noop: functions simd blas lapack typetraits \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
-      subvector submatrix \
-      denserow densecolumn sparserow sparsecolumn \
+      subvector submatrix row densecolumn sparsecolumn \
       determinant decomposition inversion \
       vectorserializer matrixserializer
 
@@ -229,20 +227,15 @@ submatrix:
 	@echo "Building the Submatrix tests..."
 	@$(MAKE) --no-print-directory -C ./submatrix $(MAKECMDGOALS)
 
-denserow:
+row:
 	@echo
-	@echo "Building the DenseRow tests..."
-	@$(MAKE) --no-print-directory -C ./denserow $(MAKECMDGOALS)
+	@echo "Building the Row tests..."
+	@$(MAKE) --no-print-directory -C ./row $(MAKECMDGOALS)
 
 densecolumn:
 	@echo
 	@echo "Building the DenseColumn tests..."
 	@$(MAKE) --no-print-directory -C ./densecolumn $(MAKECMDGOALS)
-
-sparserow:
-	@echo
-	@echo "Building the SparseRow tests..."
-	@$(MAKE) --no-print-directory -C ./sparserow $(MAKECMDGOALS)
 
 sparsecolumn:
 	@echo
@@ -537,9 +530,8 @@ clean:
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./subvector clean
 	@$(MAKE) --no-print-directory -C ./submatrix clean
-	@$(MAKE) --no-print-directory -C ./denserow clean
+	@$(MAKE) --no-print-directory -C ./row clean
 	@$(MAKE) --no-print-directory -C ./densecolumn clean
-	@$(MAKE) --no-print-directory -C ./sparserow clean
 	@$(MAKE) --no-print-directory -C ./sparsecolumn clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
@@ -605,8 +597,7 @@ clean:
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
         diagonalmatrix \
-        subvector submatrix \
-        denserow densecolumn sparserow sparsecolumn \
+        subvector submatrix row densecolumn sparsecolumn \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \

@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the sparserow module of the Blaze test suite
+#  Run script for the row module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,9 +33,11 @@
 #==================================================================================================
 
 
-PATH_SPARSEROW=$( dirname "${BASH_SOURCE[0]}" )
+PATH_ROW=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running SparseRow tests..."
+echo " Running Row tests..."
 
-EXE=$PATH_SPARSEROW/GeneralTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SPARSEROW/SymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ROW/DenseGeneralTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ROW/DenseSymmetricTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ROW/SparseGeneralTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ROW/SparseSymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

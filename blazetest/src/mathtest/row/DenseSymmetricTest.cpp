@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/denserow/GeneralTest.cpp
-//  \brief Source file for the general DenseRow class test
+//  \file src/mathtest/row/DenseDenseSymmetricTest.cpp
+//  \brief Source file for the Row dense symmetric test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -44,14 +44,14 @@
 #include <blaze/math/CustomVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/policies/Deallocate.h>
-#include <blazetest/mathtest/denserow/GeneralTest.h>
+#include <blazetest/mathtest/row/DenseSymmetricTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace denserow {
+namespace row {
 
 //=================================================================================================
 //
@@ -60,13 +60,13 @@ namespace denserow {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general DenseRow class test.
+/*!\brief Constructor for the symmetric Row class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-GeneralTest::GeneralTest()
-   : mat_ ( 5UL, 4UL )
-   , tmat_( 5UL, 4UL )
+DenseSymmetricTest::DenseSymmetricTest()
+   : mat_ ( 4UL )
+   , tmat_( 4UL )
 {
    testConstructors();
    testAssignment();
@@ -96,28 +96,28 @@ GeneralTest::GeneralTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow constructors.
+/*!\brief Test of the Row constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the DenseRow class template.
+// This function performs a test of all constructors of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testConstructors()
+void DenseSymmetricTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow constructor";
+      test_ = "Row-major Row constructor";
 
       initialize();
 
       // 0th matrix row
       {
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkCapacity( row0, 4UL );
@@ -136,76 +136,57 @@ void GeneralTest::testConstructors()
 
       // 1st matrix row
       {
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkCapacity( row1, 4UL );
-         checkNonZeros( row1, 1UL );
+         checkNonZeros( row1, 2UL );
 
-         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // 2nd matrix row
       {
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkCapacity( row2, 4UL );
          checkNonZeros( row2, 2UL );
 
-         if( row2[0] != -2 || row2[1] != 0 || row2[2] != -3 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 3 || row2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // 3rd matrix row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkCapacity( row3, 4UL );
          checkNonZeros( row3, 3UL );
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix row
-      {
-         RT row4 = row( mat_, 4UL );
-
-         checkSize    ( row4, 4UL );
-         checkCapacity( row4, 4UL );
-         checkNonZeros( row4, 4UL );
-
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th dense row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -217,13 +198,13 @@ void GeneralTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow constructor";
+      test_ = "Column-major Row constructor";
 
       initialize();
 
       // 0th matrix row
       {
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkCapacity( row0, 4UL );
@@ -242,76 +223,57 @@ void GeneralTest::testConstructors()
 
       // 1st matrix row
       {
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkCapacity( row1, 4UL );
-         checkNonZeros( row1, 1UL );
+         checkNonZeros( row1, 2UL );
 
-         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // 2nd matrix row
       {
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkCapacity( row2, 4UL );
          checkNonZeros( row2, 2UL );
 
-         if( row2[0] != -2 || row2[1] != 0 || row2[2] != -3 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 3 || row2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // 3rd matrix row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkCapacity( row3, 4UL );
          checkNonZeros( row3, 3UL );
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd dense row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix row
-      {
-         ORT row4 = row( tmat_, 4UL );
-
-         checkSize    ( row4, 4UL );
-         checkCapacity( row4, 4UL );
-         checkNonZeros( row4, 4UL );
-
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th dense row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -321,34 +283,34 @@ void GeneralTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow assignment operators.
+/*!\brief Test of the Row assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the DenseRow class template.
+// This function performs a test of all assignment operators of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testAssignment()
+void DenseSymmetricTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow homogeneous assignment";
+      test_ = "Row-major Row homogeneous assignment";
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
       row1 = 8;
 
       checkSize    ( row1,  4UL );
       checkCapacity( row1,  4UL );
       checkNonZeros( row1,  4UL );
-      checkRows    ( mat_,  5UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 13UL );
+      checkNonZeros( mat_, 11UL );
 
       if( row1[0] != 8 || row1[1] != 8 || row1[2] != 8 || row1[3] != 8 ) {
          std::ostringstream oss;
@@ -360,21 +322,19 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  8 || mat_(1,1) !=  8 || mat_(1,2) !=  8 || mat_(1,3) !=  8 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 8 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 8 || mat_(1,1) != 8 || mat_(1,2) != 8 || mat_(1,3) != 8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 8 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 8 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
+             << "   Expected result:\n(  0  8  0  0 )\n"
                                      "(  8  8  8  8 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  8  3  4 )\n"
+                                     "(  0  8  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -393,15 +353,15 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row3 = row( mat_, 3UL );
+      RT row3 = blaze::row( mat_, 3UL );
       row3 = { 1, 2, 3, 4 };
 
-      checkSize    ( row3,  4UL );
-      checkCapacity( row3,  4UL );
-      checkNonZeros( row3,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row3, 4UL );
+      checkCapacity( row3, 4UL );
+      checkNonZeros( row3, 4UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
       if( row3[0] != 1 || row3[1] != 2 || row3[2] != 3 || row3[3] != 4 ) {
          std::ostringstream oss;
@@ -413,21 +373,19 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  1 || mat_(3,1) !=  2 || mat_(3,2) !=  3 || mat_(3,3) !=  4 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 1 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 2 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 3 ||
+          mat_(3,0) != 1 || mat_(3,1) != 2 || mat_(3,2) != 3 || mat_(3,3) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  1  2  3  4 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  3 )\n"
+                                     "(  1  2  3  4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -441,15 +399,15 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row3 = row( mat_, 3UL );
+      RT row3 = blaze::row( mat_, 3UL );
       row3 = { 1, 2 };
 
       checkSize    ( row3, 4UL );
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 2UL );
-      checkRows    ( mat_, 5UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 6UL );
 
       if( row3[0] != 1 || row3[1] != 2 || row3[2] != 0 || row3[3] != 0 ) {
          std::ostringstream oss;
@@ -461,21 +419,19 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  1 || mat_(3,1) !=  2 || mat_(3,2) !=  0 || mat_(3,3) !=  0 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 1 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 2 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 0 ||
+          mat_(3,0) != 1 || mat_(3,1) != 2 || mat_(3,2) != 0 || mat_(3,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  1  2  0  0 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  1  2  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -486,45 +442,43 @@ void GeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow copy assignment";
+      test_ = "Row-major Row copy assignment";
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
-      row1 = row( mat_, 2UL );
+      RT row1 = blaze::row( mat_, 1UL );
+      row1 = blaze::row( mat_, 2UL );
 
-      checkSize    ( row1,  4UL );
-      checkCapacity( row1,  4UL );
-      checkNonZeros( row1,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row1, 4UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( row1[0] != -2 || row1[1] != 0 || row1[2] != -3 || row1[3] != 0 ) {
+      if( row1[0] != 0 || row1[1] != 0 || row1[2] != 3 || row1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != -2 || mat_(1,1) !=  0 || mat_(1,2) != -3 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 0 || mat_(1,2) != 3 || mat_(1,3) != 4 ||
+          mat_(2,0) != 0 || mat_(2,1) != 3 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 4 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -543,7 +497,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -554,12 +508,12 @@ void GeneralTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1,  4UL );
-      checkCapacity( row1,  4UL );
-      checkNonZeros( row1,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row1, 4UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -571,11 +525,10 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  8 || mat_(1,2) !=  0 || mat_(1,3) !=  9 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -583,9 +536,8 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -599,7 +551,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -611,12 +563,12 @@ void GeneralTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1,  4UL );
-      checkCapacity( row1,  4UL );
-      checkNonZeros( row1,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row1, 4UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -628,11 +580,10 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  8 || mat_(1,2) !=  0 || mat_(1,3) !=  9 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -640,9 +591,8 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -657,35 +607,34 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row3 = blaze::row( mat_, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
 
-      row4 = vec1;
+      row3 = vec1;
 
-      checkSize    ( row4, 4UL );
-      checkCapacity( row4, 4UL );
-      checkNonZeros( row4, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkSize    ( row3, 4UL );
+      checkCapacity( row3, 4UL );
+      checkNonZeros( row3, 1UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
+      checkNonZeros( mat_, 3UL );
 
-      if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 9 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
+             << "   Result:\n" << row3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) != 4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  0 || mat_(4,1) != 0 || mat_(4,2) !=  0 || mat_(4,3) !=  9 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != 0 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) != 0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  0 || mat_(3,2) != 0 || mat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -693,8 +642,7 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
+                                     "(  0  0  3  0 )\n"
                                      "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -706,19 +654,19 @@ void GeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow homogeneous assignment";
+      test_ = "Column-major Row homogeneous assignment";
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
       row1 = 8;
 
       checkSize    ( row1 ,  4UL );
       checkCapacity( row1 ,  4UL );
       checkNonZeros( row1 ,  4UL );
-      checkRows    ( tmat_,  5UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 13UL );
+      checkNonZeros( tmat_, 11UL );
 
       if( row1[0] != 8 || row1[1] != 8 || row1[2] != 8 || row1[3] != 8 ) {
          std::ostringstream oss;
@@ -730,21 +678,19 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  8 || tmat_(1,1) !=  8 || tmat_(1,2) !=  8 || tmat_(1,3) !=  8 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 8 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 8 || tmat_(1,1) != 8 || tmat_(1,2) != 8 || tmat_(1,3) != 8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 8 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 8 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
+             << "   Expected result:\n(  0  8  0  0 )\n"
                                      "(  8  8  8  8 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  8  3  4 )\n"
+                                     "(  0  8  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -763,15 +709,15 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row3 = row( tmat_, 3UL );
+      ORT row3 = blaze::row( tmat_, 3UL );
       row3 = { 1, 2, 3, 4 };
 
-      checkSize    ( row3 ,  4UL );
-      checkCapacity( row3 ,  4UL );
-      checkNonZeros( row3 ,  4UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row3 , 4UL );
+      checkCapacity( row3 , 4UL );
+      checkNonZeros( row3 , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
       if( row3[0] != 1 || row3[1] != 2 || row3[2] != 3 || row3[3] != 4 ) {
          std::ostringstream oss;
@@ -783,27 +729,25 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  1 || tmat_(3,1) !=  2 || tmat_(3,2) !=  3 || tmat_(3,3) !=  4 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 1 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 3 ||
+          tmat_(3,0) != 1 || tmat_(3,1) != 2 || tmat_(3,2) != 3 || tmat_(3,3) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  1  2  3  4 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  3 )\n"
+                                     "(  1  2  3  4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
    {
-      test_ = "Column-major initializer list assignment (incomplete list)";
+      test_ = "Row-major initializer list assignment (incomplete list)";
 
       using blaze::aligned;
       using blaze::padded;
@@ -811,15 +755,15 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row3 = row( tmat_, 3UL );
+      ORT row3 = blaze::row( tmat_, 3UL );
       row3 = { 1, 2 };
 
       checkSize    ( row3 , 4UL );
       checkCapacity( row3 , 4UL );
       checkNonZeros( row3 , 2UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 6UL );
 
       if( row3[0] != 1 || row3[1] != 2 || row3[2] != 0 || row3[3] != 0 ) {
          std::ostringstream oss;
@@ -831,21 +775,19 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  1 || tmat_(3,1) !=  2 || tmat_(3,2) !=  0 || tmat_(3,3) !=  0 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 1 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 0 ||
+          tmat_(3,0) != 1 || tmat_(3,1) != 2 || tmat_(3,2) != 0 || tmat_(3,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  1  2  0  0 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  1 )\n"
+                                     "(  0  1  0  2 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  1  2  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -856,45 +798,43 @@ void GeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow copy assignment";
+      test_ = "Column-major Row copy assignment";
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
-      row1 = row( tmat_, 2UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
+      row1 = blaze::row( tmat_, 2UL );
 
-      checkSize    ( row1 ,  4UL );
-      checkCapacity( row1 ,  4UL );
-      checkNonZeros( row1 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row1 , 4UL );
+      checkCapacity( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( row1[0] != -2 || row1[1] != 0 || row1[2] != -3 || row1[3] != 0 ) {
+      if( row1[0] != 0 || row1[1] != 0 || row1[2] != 3 || row1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != -2 || tmat_(1,1) !=  0 || tmat_(1,2) != -3 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) != 3 || tmat_(1,3) != 4 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 3 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 4 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -913,7 +853,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -924,12 +864,12 @@ void GeneralTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1 ,  4UL );
-      checkCapacity( row1 ,  4UL );
-      checkNonZeros( row1 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row1 , 4UL );
+      checkCapacity( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -941,11 +881,10 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  9 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -953,9 +892,8 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -969,7 +907,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -981,12 +919,12 @@ void GeneralTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1 ,  4UL );
-      checkCapacity( row1 ,  4UL );
-      checkNonZeros( row1 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row1 , 4UL );
+      checkCapacity( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -998,11 +936,10 @@ void GeneralTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  9 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -1010,9 +947,8 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1027,35 +963,34 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row4 = row( tmat_, 4UL );
+      ORT row3 = blaze::row( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
 
-      row4 = vec1;
+      row3 = vec1;
 
-      checkSize    ( row4 , 4UL );
-      checkCapacity( row4 , 4UL );
-      checkNonZeros( row4 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkSize    ( row3 , 4UL );
+      checkCapacity( row3 , 4UL );
+      checkNonZeros( row3 , 1UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 7UL );
+      checkNonZeros( tmat_, 3UL );
 
-      if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 9 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
+             << "   Result:\n" << row3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) != 4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  0 || tmat_(4,1) != 0 || tmat_(4,2) !=  0 || tmat_(4,3) !=  9 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 0 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -1063,8 +998,7 @@ void GeneralTest::testAssignment()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
+                                     "(  0  0  3  0 )\n"
                                      "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1074,60 +1008,58 @@ void GeneralTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow addition assignment operators.
+/*!\brief Test of the Row addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testAddAssign()
+void DenseSymmetricTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major DenseRow addition assignment
+   // Row-major Row addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow addition assignment";
+      test_ = "Row-major Row addition assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 += row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 += blaze::row( mat_, 3UL );
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 2 || row2[3] != -6 ) {
+      if( row2[0] != 0 || row2[1] != -2 || row2[2] != 7 || row2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) != 2 || mat_(2,3) != -6 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) != -2 || mat_(2,2) !=  7 || mat_(2,3) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  9 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  4  2 -6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1146,7 +1078,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1159,36 +1091,34 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) != -4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1202,7 +1132,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1216,36 +1146,34 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) != -4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1260,7 +1188,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1270,85 +1198,81 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) != -4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Column-major DenseRow addition assignment
+   // Column-major Row addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow addition assignment";
+      test_ = "Column-major Row addition assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 += row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 += blaze::row( tmat_, 3UL );
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  4UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 2 || row2[3] != -6 ) {
+      if( row2[0] != 0 || row2[1] != -2 || row2[2] != 7 || row2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) != 2 || tmat_(2,3) != -6 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != -2 || tmat_(2,2) !=  7 || tmat_(2,3) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  9 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  4  2 -6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1367,7 +1291,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1380,36 +1304,34 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1423,7 +1345,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1437,36 +1359,34 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1481,7 +1401,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1491,36 +1411,34 @@ void GeneralTest::testAddAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1529,60 +1447,58 @@ void GeneralTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow subtraction assignment operators.
+/*!\brief Test of the Row subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testSubAssign()
+void DenseSymmetricTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major DenseRow subtraction assignment
+   // Row-major Row subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow subtraction assignment";
+      test_ = "Row-major Row subtraction assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 -= row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 -= blaze::row( mat_, 3UL );
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != -4 || row2[2] != -8 || row2[3] != 6 ) {
+      if( row2[0] != 0 || row2[1] != 2 || row2[2] != -1 || row2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) != -4 || mat_(2,2) != -8 || mat_(2,3) !=  6 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  2 || mat_(2,2) != -1 || mat_(2,3) != -1 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -1 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2 -4 -8  6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1601,7 +1517,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1614,36 +1530,34 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1657,7 +1571,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1671,36 +1585,34 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1715,7 +1627,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1725,85 +1637,81 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2,  4UL );
       checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Column-major DenseRow subtraction assignment
+   // Column-major Row subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow subtraction assignment";
+      test_ = "Column-major Row subtraction assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 -= row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 -= blaze::row( tmat_, 3UL );
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  4UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != -4 || row2[2] != -8 || row2[3] != 6 ) {
+      if( row2[0] != 0 || row2[1] != 2 || row2[2] != -1 || row2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) != -4 || tmat_(2,2) != -8 || tmat_(2,3) !=  6 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  2 || tmat_(2,2) != -1 || tmat_(2,3) != -1 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -1 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2 -4 -8  6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1822,7 +1730,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1835,36 +1743,34 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  3UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1878,7 +1784,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1892,36 +1798,34 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  3UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1936,7 +1840,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1946,36 +1850,34 @@ void GeneralTest::testSubAssign()
 
       checkSize    ( row2 ,  4UL );
       checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  3UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1984,60 +1886,58 @@ void GeneralTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow multiplication assignment operators.
+/*!\brief Test of the Row multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testMultAssign()
+void DenseSymmetricTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major DenseRow multiplication assignment
+   // Row-major Row multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow multiplication assignment";
+      test_ = "Row-major Row multiplication assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 *= row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 *= blaze::row( mat_, 3UL );
 
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
-      checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -15 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 12 || row2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -15 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 12 || mat_(2,3) != 20 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 20 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0   0  0 )\n"
-                                     "(  0  1   0  0 )\n"
-                                     "(  0  0 -15  0 )\n"
-                                     "(  0  4   5 -6 )\n"
-                                     "(  7 -8   9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2056,13 +1956,13 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
-      vec[1] = -4;
-      vec[2] =  0;
+      vec[1] =  0;
+      vec[2] = -4;
       vec[3] =  0;
 
       row2 *= vec;
@@ -2070,35 +1970,33 @@ void GeneralTest::testMultAssign()
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2112,14 +2010,14 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
       UnalignedUnpadded vec( array.get()+1UL, 4UL );
       vec[0] =  2;
-      vec[1] = -4;
-      vec[2] =  0;
+      vec[1] =  0;
+      vec[2] = -4;
       vec[3] =  0;
 
       row2 *= vec;
@@ -2127,35 +2025,33 @@ void GeneralTest::testMultAssign()
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2170,95 +2066,91 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Column-major DenseRow multiplication assignment
+   // Column-major Row multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow multiplication assignment";
+      test_ = "Column-major Row multiplication assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 *= row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 *= blaze::row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
       checkCapacity( row2 , 4UL );
-      checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -15 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 12 || row2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -15 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=   5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=   9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 12 || tmat_(2,3) != 20 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 20 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0   0  0 )\n"
-                                     "(  0  1   0  0 )\n"
-                                     "(  0  0 -15  0 )\n"
-                                     "(  0  4   5 -6 )\n"
-                                     "(  7 -8   9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2277,13 +2169,13 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
-      vec[1] = -4;
-      vec[2] =  0;
+      vec[1] =  0;
+      vec[2] = -4;
       vec[3] =  0;
 
       row2 *= vec;
@@ -2291,35 +2183,33 @@ void GeneralTest::testMultAssign()
       checkSize    ( row2 , 4UL );
       checkCapacity( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2333,14 +2223,14 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
       UnalignedUnpadded vec( array.get()+1UL, 4UL );
       vec[0] =  2;
-      vec[1] = -4;
-      vec[2] =  0;
+      vec[1] =  0;
+      vec[2] = -4;
       vec[3] =  0;
 
       row2 *= vec;
@@ -2348,35 +2238,33 @@ void GeneralTest::testMultAssign()
       checkSize    ( row2 , 4UL );
       checkCapacity( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2391,46 +2279,44 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
       checkSize    ( row2 , 4UL );
       checkCapacity( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2439,65 +2325,16 @@ void GeneralTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow division assignment operators.
+/*!\brief Test of the Row division assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the division assignment operators of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testDivAssign()
+void DenseSymmetricTest::testDivAssign()
 {
-   //=====================================================================================
-   // Row-major DenseRow division assignment
-   //=====================================================================================
-
-   {
-      test_ = "Row-major DenseRow division assignment";
-
-      initialize();
-
-      RT row2 = row( mat_, 2UL );
-      row2 /= row( mat_, 4UL );
-
-      checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
-      checkNonZeros( row2, 0UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 8UL );
-
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "(  0  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
    //=====================================================================================
    // Row-major dense vector division assignment
    //=====================================================================================
@@ -2511,49 +2348,47 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
-      vec[0] = -1;
+      vec[0] =  1;
       vec[1] =  2;
       vec[2] =  3;
-      vec[3] =  4;
+      vec[3] = -2;
 
       row2 /= vec;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 2 0 -1 0 )\n";
+             << "   Expected result:\n( 0 0 1 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 2 || mat_(2,1) !=  0 || mat_(2,2) != -1 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  1 || mat_(2,3) != -2 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -2 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 2  0 -1  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2567,99 +2402,48 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
       UnalignedUnpadded vec( array.get()+1UL, 4UL );
-      vec[0] = -1;
+      vec[0] =  1;
       vec[1] =  2;
       vec[2] =  3;
-      vec[3] =  4;
+      vec[3] = -2;
 
       row2 /= vec;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 2 0 -1 0 )\n";
+             << "   Expected result:\n( 0 0 1 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 2 || mat_(2,1) !=  0 || mat_(2,2) != -1 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  1 || mat_(2,3) != -2 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -2 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 2  0 -1  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major DenseRow division assignment
-   //=====================================================================================
-
-   {
-      test_ = "Column-major DenseRow division assignment";
-
-      initialize();
-
-      ORT row2 = row( tmat_, 2UL );
-      row2 /= row( tmat_, 4UL );
-
-      checkSize    ( row2 , 4UL );
-      checkCapacity( row2 , 4UL );
-      checkNonZeros( row2 , 0UL );
-      checkRows    ( tmat_, 5UL );
-      checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 8UL );
-
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Division assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "(  0  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2678,49 +2462,47 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
-      vec[0] = -1;
+      vec[0] =  1;
       vec[1] =  2;
       vec[2] =  3;
-      vec[3] =  4;
+      vec[3] = -2;
 
       row2 /= vec;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 2 0 -1 0 )\n";
+             << "   Expected result:\n( 0 0 1 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 2 || tmat_(2,1) !=  0 || tmat_(2,2) != -1 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  1 || tmat_(2,3) != -2 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -2 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 2  0 -1  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2734,50 +2516,48 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
       UnalignedUnpadded vec( array.get()+1UL, 4UL );
-      vec[0] = -1;
+      vec[0] =  1;
       vec[1] =  2;
       vec[2] =  3;
-      vec[3] =  4;
+      vec[3] = -2;
 
       row2 /= vec;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 2 0 -1 0 )\n";
+             << "   Expected result:\n( 0 0 1 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 2 || tmat_(2,1) !=  0 || tmat_(2,2) != -1 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  1 || tmat_(2,3) != -2 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -2 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 2  0 -1  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2786,15 +2566,15 @@ void GeneralTest::testDivAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all DenseRow (self-)scaling operations.
+/*!\brief Test of all Row (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the DenseRow
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testScaling()
+void DenseSymmetricTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (v*=2)
@@ -2805,42 +2585,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 *= 3;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2855,42 +2633,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = row2 * 3;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2905,42 +2681,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = 3 * row2;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2955,42 +2729,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 /= 0.5;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3005,134 +2777,128 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = row2 / 0.5;
 
-      checkSize    ( row2,  4UL );
-      checkCapacity( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Row-major DenseRow::scale()
+   // Row-major Row::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow::scale()";
+      test_ = "Row-major Row::scale()";
 
       initialize();
 
       // Integral scaling the 3rd row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          row3.scale( 3 );
 
-         checkSize    ( row3,  4UL );
-         checkCapacity( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( row3, 4UL );
+         checkCapacity( row3, 4UL );
+         checkNonZeros( row3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+         if( row3[0] != 0 || row3[1] != -6 || row3[2] != 12 || row3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=   0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=   0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=   0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -18 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) !=  10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -6 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) != 12 ||
+             mat_(3,0) != 0 || mat_(3,1) != -6 || mat_(3,2) != 12 || mat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -6 )\n"
+                                        "( 0  0  3 12 )\n"
+                                        "( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Floating point scaling the 3rd row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          row3.scale( 0.5 );
 
-         checkSize    ( row3,  4UL );
-         checkCapacity( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( row3, 4UL );
+         checkCapacity( row3, 4UL );
+         checkNonZeros( row3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+         if( row3[0] != 0 || row3[1] != -3 || row3[2] != 6 || row3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  6 || mat_(3,2) !=  7 || mat_(3,3) != -9 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -3 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  6 ||
+             mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 6 || mat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0  3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3148,42 +2914,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 *= 3;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3198,42 +2962,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = row2 * 3;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3248,42 +3010,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = 3 * row2;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3298,42 +3058,40 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 /= 0.5;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != -6 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3348,134 +3106,128 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = row2 / 0.5;
 
-      checkSize    ( row2 ,  4UL );
-      checkCapacity( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != -6 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Column-major DenseRow::scale()
+   // Column-major Row::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow::scale()";
+      test_ = "Column-major Row::scale()";
 
       initialize();
 
       // Integral scaling the 3rd row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          row3.scale( 3 );
 
-         checkSize    ( row3 ,  4UL );
-         checkCapacity( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( row3 , 4UL );
+         checkCapacity( row3 , 4UL );
+         checkNonZeros( row3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+         if( row3[0] != 0 || row3[1] != -6 || row3[2] != 12 || row3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=   0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=   0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=   0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) != 12 || tmat_(3,2) != 15 || tmat_(3,3) != -18 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) !=  10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) != 12 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -6 || tmat_(3,2) != 12 || tmat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n(  0  0  0  0 )\n"
+                                        "(  0  1  0 -6 )\n"
+                                        "( -2  0 -3 12 )\n"
+                                        "(  7 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Floating point scaling the 3rd row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          row3.scale( 0.5 );
 
-         checkSize    ( row3 ,  4UL );
-         checkCapacity( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( row3 , 4UL );
+         checkCapacity( row3 , 4UL );
+         checkNonZeros( row3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+         if( row3[0] != 0 || row3[1] != -3 || row3[2] != 6 || row3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  6 || tmat_(3,2) !=  7 || tmat_(3,3) != -9 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -3 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  6 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -3 || tmat_(3,2) != 6 || tmat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0 -3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3485,27 +3237,27 @@ void GeneralTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow subscript operator.
+/*!\brief Test of the Row subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the DenseRow class template. In case an error is detected, a \a std::runtime_error
+// of the Row specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void GeneralTest::testSubscript()
+void DenseSymmetricTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow::operator[]";
+      test_ = "Row-major Row::operator[]";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -3514,31 +3266,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3549,31 +3299,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3582,33 +3330,31 @@ void GeneralTest::testSubscript()
 
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
-      checkNonZeros( row2, 3UL );
+      checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3619,31 +3365,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3654,31 +3398,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) !=  3 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  3 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  3 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  3  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3689,31 +3431,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3724,31 +3464,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -4 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -4 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3759,11 +3497,11 @@ void GeneralTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow::operator[]";
+      test_ = "Row-major Row::operator[]";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -3772,31 +3510,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3807,31 +3543,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3840,33 +3574,31 @@ void GeneralTest::testSubscript()
 
       checkSize    ( row2, 4UL );
       checkCapacity( row2, 4UL );
-      checkNonZeros( row2, 3UL );
+      checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3877,31 +3609,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3912,31 +3642,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) !=  3 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  3 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  3 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  3  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3947,31 +3675,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3982,31 +3708,29 @@ void GeneralTest::testSubscript()
       checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -4 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -4 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4015,15 +3739,15 @@ void GeneralTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseRow iterator implementation.
+/*!\brief Test of the Row iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the DenseRow class template.
+// This function performs a test of the iterator implementation of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIterator()
+void DenseSymmetricTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4064,10 +3788,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
          RT::ConstIterator it( begin( row2 ) );
 
-         if( it == end( row2 ) || *it != -2 ) {
+         if( it == end( row2 ) || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -4079,7 +3803,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction";
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 4UL ) {
@@ -4097,7 +3821,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction";
 
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 4UL ) {
@@ -4115,7 +3839,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          RT::ConstIterator it ( cbegin( row3 ) );
          RT::ConstIterator end( cend( row3 ) );
 
@@ -4128,7 +3852,7 @@ void GeneralTest::testIterator()
 
          ++it;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -4146,7 +3870,7 @@ void GeneralTest::testIterator()
 
          it++;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator post-increment failed\n";
@@ -4164,7 +3888,7 @@ void GeneralTest::testIterator()
 
          it += 2UL;
 
-         if( it == end || *it != 5 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator addition assignment failed\n";
@@ -4182,7 +3906,7 @@ void GeneralTest::testIterator()
 
          it = it + 3UL;
 
-         if( it == end || *it != -6 ) {
+         if( it == end || *it != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator/scalar addition failed\n";
@@ -4212,7 +3936,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
          int value = 6;
 
          for( RT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4229,21 +3953,19 @@ void GeneralTest::testIterator()
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  6 || mat_(0,1) !=  7 || mat_(0,2) !=  8 || mat_(0,3) !=  9 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) !=  7 || mat_(0,2) != 8 || mat_(0,3) !=  9 ||
+             mat_(1,0) != 7 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 8 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 9 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  6  7  8  9 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4252,7 +3974,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
          int value = 2;
 
          for( RT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4262,7 +3984,7 @@ void GeneralTest::testIterator()
          if( row0[0] != 8 || row0[1] != 10 || row0[2] != 12 || row0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
@@ -4270,20 +3992,18 @@ void GeneralTest::testIterator()
          }
 
          if( mat_(0,0) !=  8 || mat_(0,1) != 10 || mat_(0,2) != 12 || mat_(0,3) != 14 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+             mat_(1,0) != 10 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 12 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 14 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  8 10 12 14 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "( 10  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 14 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4292,7 +4012,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
          int value = 2;
 
          for( RT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4302,28 +4022,26 @@ void GeneralTest::testIterator()
          if( row0[0] != 6 || row0[1] != 7 || row0[2] != 8 || row0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  6 || mat_(0,1) !=  7 || mat_(0,2) !=  8 || mat_(0,3) !=  9 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) !=  7 || mat_(0,2) != 8 || mat_(0,3) !=  9 ||
+             mat_(1,0) != 7 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 8 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 9 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  6  7  8  9 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4332,7 +4050,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
          int value = 1;
 
          for( RT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4342,7 +4060,7 @@ void GeneralTest::testIterator()
          if( row0[0] != 6 || row0[1] != 14 || row0[2] != 24 || row0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
@@ -4350,20 +4068,18 @@ void GeneralTest::testIterator()
          }
 
          if( mat_(0,0) !=  6 || mat_(0,1) != 14 || mat_(0,2) != 24 || mat_(0,3) != 36 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+             mat_(1,0) != 14 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 24 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 36 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  6 14 24 36 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "( 14  1  0 -2 )\n"
+                                        "( 24  0  3  4 )\n"
+                                        "( 36 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4372,7 +4088,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
 
          for( RT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it /= 2;
@@ -4381,28 +4097,26 @@ void GeneralTest::testIterator()
          if( row0[0] != 3 || row0[1] != 7 || row0[2] != 12 || row0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          if( mat_(0,0) !=  3 || mat_(0,1) !=  7 || mat_(0,2) != 12 || mat_(0,3) != 18 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+             mat_(1,0) !=  7 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 12 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 18 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n(  3  7 12 18 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "(  7  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 18 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4448,10 +4162,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
          ORT::ConstIterator it( begin( row2 ) );
 
-         if( it == end( row2 ) || *it != -2 ) {
+         if( it == end( row2 ) || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -4463,7 +4177,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 4UL ) {
@@ -4481,7 +4195,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 4UL ) {
@@ -4499,7 +4213,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          ORT::ConstIterator it ( cbegin( row3 ) );
          ORT::ConstIterator end( cend( row3 ) );
 
@@ -4512,7 +4226,7 @@ void GeneralTest::testIterator()
 
          ++it;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -4530,7 +4244,7 @@ void GeneralTest::testIterator()
 
          it++;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator post-increment failed\n";
@@ -4548,7 +4262,7 @@ void GeneralTest::testIterator()
 
          it += 2UL;
 
-         if( it == end || *it != 5 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator addition assignment failed\n";
@@ -4566,7 +4280,7 @@ void GeneralTest::testIterator()
 
          it = it + 3UL;
 
-         if( it == end || *it != -6 ) {
+         if( it == end || *it != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator/scalar addition failed\n";
@@ -4596,7 +4310,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
          int value = 6;
 
          for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4613,21 +4327,19 @@ void GeneralTest::testIterator()
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  6 || tmat_(0,1) !=  7 || tmat_(0,2) !=  8 || tmat_(0,3) !=  9 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) !=  7 || tmat_(0,2) != 8 || tmat_(0,3) !=  9 ||
+             tmat_(1,0) != 7 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 8 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  6  7  8  9 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4636,7 +4348,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
          int value = 2;
 
          for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4646,7 +4358,7 @@ void GeneralTest::testIterator()
          if( row0[0] != 8 || row0[1] != 10 || row0[2] != 12 || row0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
@@ -4654,20 +4366,18 @@ void GeneralTest::testIterator()
          }
 
          if( tmat_(0,0) !=  8 || tmat_(0,1) != 10 || tmat_(0,2) != 12 || tmat_(0,3) != 14 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+             tmat_(1,0) != 10 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 12 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 14 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n(  8 10 12 14 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "( 10  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 14 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4676,7 +4386,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
          int value = 2;
 
          for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4686,28 +4396,26 @@ void GeneralTest::testIterator()
          if( row0[0] != 6 || row0[1] != 7 || row0[2] != 8 || row0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  6 || tmat_(0,1) !=  7 || tmat_(0,2) !=  8 || tmat_(0,3) !=  9 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) !=  7 || tmat_(0,2) != 8 || tmat_(0,3) !=  9 ||
+             tmat_(1,0) != 7 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 8 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  6  7  8  9 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4716,7 +4424,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
          int value = 1;
 
          for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
@@ -4726,7 +4434,7 @@ void GeneralTest::testIterator()
          if( row0[0] != 6 || row0[1] != 14 || row0[2] != 24 || row0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
@@ -4734,20 +4442,18 @@ void GeneralTest::testIterator()
          }
 
          if( tmat_(0,0) !=  6 || tmat_(0,1) != 14 || tmat_(0,2) != 24 || tmat_(0,3) != 36 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+             tmat_(1,0) != 14 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 24 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 36 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n(  6 14 24 36 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "( 14  1  0 -2 )\n"
+                                        "( 24  0  3  4 )\n"
+                                        "( 36 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4756,7 +4462,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
 
          for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it /= 2;
@@ -4765,28 +4471,26 @@ void GeneralTest::testIterator()
          if( row0[0] != 3 || row0[1] != 7 || row0[2] != 12 || row0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row0 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
          if( tmat_(0,0) !=  3 || tmat_(0,1) !=  7 || tmat_(0,2) != 12 || tmat_(0,3) != 18 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+             tmat_(1,0) !=  7 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 12 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 18 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n(  3  7 12 18 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  7 -8  9 10 )\n";
+                                        "(  7  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 18 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4796,39 +4500,39 @@ void GeneralTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the DenseRow class template.
+/*!\brief Test of the \c nonZeros() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testNonZeros()
+void DenseSymmetricTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow::nonZeros()";
+      test_ = "Row-major Row::nonZeros()";
 
       initialize();
 
       // Initialization check
-      RT row3 = row( mat_, 3UL );
+      RT row3 = blaze::row( mat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4839,13 +4543,13 @@ void GeneralTest::testNonZeros()
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 2UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4856,13 +4560,13 @@ void GeneralTest::testNonZeros()
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 5 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 5 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4873,24 +4577,24 @@ void GeneralTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow::nonZeros()";
+      test_ = "Column-major Row::nonZeros()";
 
       initialize();
 
       // Initialization check
-      ORT row3 = row( tmat_, 3UL );
+      ORT row3 = blaze::row( tmat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4901,13 +4605,13 @@ void GeneralTest::testNonZeros()
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 2UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4918,13 +4622,13 @@ void GeneralTest::testNonZeros()
       checkCapacity( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 5 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 5 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4933,15 +4637,15 @@ void GeneralTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the DenseRow class template.
+/*!\brief Test of the \c reset() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testReset()
+void DenseSymmetricTest::testReset()
 {
    using blaze::reset;
 
@@ -4951,51 +4655,51 @@ void GeneralTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseRow::reset()";
+      test_ = "Row-major Row::reset()";
 
       initialize();
 
       // Resetting a single element in row 3
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3, 4UL );
          checkCapacity( row3, 4UL );
          checkNonZeros( row3, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th row
+      // Resetting the 3rd row
       {
-         RT row4 = row( mat_, 4UL );
-         reset( row4 );
+         RT row3 = blaze::row( mat_, 3UL );
+         reset( row3 );
 
-         checkSize    ( row4, 4UL );
-         checkCapacity( row4, 4UL );
-         checkNonZeros( row4, 0UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkCapacity( row3, 4UL );
+         checkNonZeros( row3, 0UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 5UL );
+         checkNonZeros( mat_, 2UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th row failed\n"
+                << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5008,51 +4712,51 @@ void GeneralTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseRow::reset()";
+      test_ = "Column-major Row::reset()";
 
       initialize();
 
       // Resetting a single element in row 3
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3 , 4UL );
          checkCapacity( row3 , 4UL );
          checkNonZeros( row3 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 9UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th row
+      // Resetting the 3rd row
       {
-         ORT row4 = row( tmat_, 4UL );
-         reset( row4 );
+         ORT row3 = blaze::row( tmat_, 3UL );
+         reset( row3 );
 
-         checkSize    ( row4 , 4UL );
-         checkCapacity( row4 , 4UL );
-         checkNonZeros( row4 , 0UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkCapacity( row3 , 4UL );
+         checkNonZeros( row3 , 0UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 5UL );
+         checkNonZeros( tmat_, 2UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th row failed\n"
+                << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5063,15 +4767,15 @@ void GeneralTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the DenseRow class template.
+/*!\brief Test of the \c clear() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the DenseRow class template.
+// This function performs a test of the \c clear() function with the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testClear()
+void DenseSymmetricTest::testClear()
 {
    using blaze::clear;
 
@@ -5087,23 +4791,23 @@ void GeneralTest::testClear()
 
       // Clearing a single element in row 3
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3, 4UL );
          checkCapacity( row3, 4UL );
          checkNonZeros( row3, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5121,23 +4825,23 @@ void GeneralTest::testClear()
 
       // Clearing a single element in row 3
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3 , 4UL );
          checkCapacity( row3 , 4UL );
          checkNonZeros( row3 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 9UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5147,15 +4851,15 @@ void GeneralTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the DenseRow class template.
+/*!\brief Test of the \c isDefault() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the DenseRow class template.
+// This function performs a test of the \c isDefault() function with the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIsDefault()
+void DenseSymmetricTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -5171,7 +4875,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default row
       {
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -5194,7 +4898,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -5228,7 +4932,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default row
       {
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -5251,7 +4955,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -5277,15 +4981,15 @@ void GeneralTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the DenseRow class template.
+/*!\brief Test of the \c isSame() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the DenseRow class template.
+// This function performs a test of the \c isSame() function with the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIsSame()
+void DenseSymmetricTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5296,8 +5000,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows
       {
-         RT row1 = row( mat_, 1UL );
-         RT row2 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
+         RT row2 = blaze::row( mat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -5312,8 +5016,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         RT row1 = row( mat_, 1UL );
-         RT row2 = row( mat_, 2UL );
+         RT row1 = blaze::row( mat_, 1UL );
+         RT row2 = blaze::row( mat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -5330,7 +5034,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -5358,7 +5062,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -5386,7 +5090,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -5412,12 +5116,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::Submatrix<MT>            SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -5432,12 +5136,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::Submatrix<MT>            SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 0UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 0UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -5452,12 +5156,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::Submatrix<MT>            SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 2UL );
 
@@ -5474,12 +5178,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<MT>            SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 3UL );
 
@@ -5496,12 +5200,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<MT>            SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 1UL, 2UL );
 
@@ -5527,8 +5231,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows
       {
-         ORT row1 = row( tmat_, 1UL );
-         ORT row2 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
+         ORT row2 = blaze::row( tmat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -5543,8 +5247,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         ORT row1 = row( tmat_, 1UL );
-         ORT row2 = row( tmat_, 2UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -5561,7 +5265,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -5589,7 +5293,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -5617,7 +5321,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -5643,12 +5347,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::Submatrix<OMT>           SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -5663,12 +5367,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::Submatrix<OMT>           SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 0UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 0UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -5683,12 +5387,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::Submatrix<OMT>           SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 2UL );
 
@@ -5705,12 +5409,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<OMT>           SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 3UL );
 
@@ -5727,12 +5431,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<OMT>           SubmatrixType;
-         typedef blaze::DenseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 1UL, 2UL );
 
@@ -5752,15 +5456,15 @@ void GeneralTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the DenseRow class template.
+/*!\brief Test of the \c subvector() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the DenseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testSubvector()
+void DenseSymmetricTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5773,7 +5477,7 @@ void GeneralTest::testSubvector()
 
       typedef blaze::Subvector<RT>  SubvectorType;
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -5809,7 +5513,7 @@ void GeneralTest::testSubvector()
 
       typedef blaze::Subvector<ORT>  SubvectorType;
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -5852,37 +5556,27 @@ void GeneralTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void GeneralTest::initialize()
+void DenseSymmetricTest::initialize()
 {
-   // Initializing the row-major dynamic matrix
+   // Initializing the symmetric row-major matrix
    mat_.reset();
    mat_(1,1) =  1;
-   mat_(2,0) = -2;
-   mat_(2,2) = -3;
-   mat_(3,1) =  4;
-   mat_(3,2) =  5;
-   mat_(3,3) = -6;
-   mat_(4,0) =  7;
-   mat_(4,1) = -8;
-   mat_(4,2) =  9;
-   mat_(4,3) = 10;
+   mat_(1,3) = -2;
+   mat_(2,2) =  3;
+   mat_(2,3) =  4;
+   mat_(3,3) =  5;
 
-   // Initializing the column-major dynamic matrix
+   // Initializing the symmetric column-major matrix
    tmat_.reset();
    tmat_(1,1) =  1;
-   tmat_(2,0) = -2;
-   tmat_(2,2) = -3;
-   tmat_(3,1) =  4;
-   tmat_(3,2) =  5;
-   tmat_(3,3) = -6;
-   tmat_(4,0) =  7;
-   tmat_(4,1) = -8;
-   tmat_(4,2) =  9;
-   tmat_(4,3) = 10;
+   tmat_(1,3) = -2;
+   tmat_(2,2) =  3;
+   tmat_(2,3) =  4;
+   tmat_(3,3) =  5;
 }
 //*************************************************************************************************
 
-} // namespace denserow
+} // namespace row
 
 } // namespace mathtest
 
@@ -5900,14 +5594,14 @@ void GeneralTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running general DenseRow class test..." << std::endl;
+   std::cout << "   Running Row dense symmetric test..." << std::endl;
 
    try
    {
-      RUN_DENSEROW_CLASS_TEST;
+      RUN_ROW_DENSESYMMETRIC_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during general DenseRow class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Row dense symmetric test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

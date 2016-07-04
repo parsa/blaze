@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/denserow/SymmetricTest.h
-//  \brief Header file for the symmetric DenseRow class test
+//  \file blazetest/mathtest/row/SparseGeneralTest.h
+//  \brief Header file for the Row sparse general test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSEROW_SYMMETRICTEST_H_
-#define _BLAZETEST_MATHTEST_DENSEROW_SYMMETRICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ROW_SPARSEGENERALTEST_H_
+#define _BLAZETEST_MATHTEST_ROW_SPARSEGENERALTEST_H_
 
 
 //*************************************************************************************************
@@ -43,11 +43,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DenseRow.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -56,7 +55,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace denserow {
+namespace row {
 
 //=================================================================================================
 //
@@ -65,18 +64,18 @@ namespace denserow {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseRow class template with symmetric matrices.
+/*!\brief Auxiliary class for all tests of the sparse general Row specialization.
 //
-// This class represents a test suite for the blaze::DenseRow class template. It performs
-// a series of both compile time as well as runtime tests with symmetric matrices.
+// This class represents a test suite for the blaze::Row class template specialization for
+// sparse general matrices. It performs a series of both compile time as well as runtime tests.
 */
-class SymmetricTest
+class SparseGeneralTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit SymmetricTest();
+   explicit SparseGeneralTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -90,20 +89,28 @@ class SymmetricTest
    /*!\name Test functions */
    //@{
    void testConstructors();
-   void testAssignment();
-   void testAddAssign();
-   void testSubAssign();
-   void testMultAssign();
-   void testDivAssign();
-   void testScaling();
-   void testSubscript();
-   void testIterator();
-   void testNonZeros();
-   void testReset();
-   void testClear();
-   void testIsDefault();
-   void testIsSame();
-   void testSubvector();
+   void testAssignment  ();
+   void testAddAssign   ();
+   void testSubAssign   ();
+   void testMultAssign  ();
+   void testDivAssign   ();
+   void testScaling     ();
+   void testSubscript   ();
+   void testIterator    ();
+   void testNonZeros    ();
+   void testReset       ();
+   void testClear       ();
+   void testSet         ();
+   void testInsert      ();
+   void testAppend      ();
+   void testErase       ();
+   void testReserve     ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
+   void testIsDefault   ();
+   void testIsSame      ();
+   void testSubvector   ();
 
    template< typename Type >
    void checkSize( const Type& row, size_t expectedSize ) const;
@@ -133,31 +140,32 @@ class SymmetricTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  DMT;  //!< Row-major dynamic matrix type.
-   typedef blaze::SymmetricMatrix<DMT>                MT;   //!< Symmetric row-major matrix type.
-   typedef MT::OppositeType                           OMT;  //!< Symmetric column-major matrix type.
-   typedef blaze::DenseRow<MT>                        RT;   //!< Dense row type for row-major matrices.
-   typedef blaze::DenseRow<OMT>                       ORT;  //!< Dense row type for column-major matrices.
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
+   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type
+   typedef blaze::Row<MT>                                RT;   //!< Sparse row type for row-major matrices.
+   typedef blaze::Row<OMT>                               ORT;  //!< Sparse row type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT mat_;    //!< Row-major symmetric matrix.
-               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
+   MT  mat_;   //!< Row-major compressed matrix.
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
-                    0 &  0 &  0 &  0 \\
-                    0 &  1 &  0 & -2 \\
-                    0 &  0 &  3 &  4 \\
-                    0 & -2 &  4 &  5 \\
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
-   OMT tmat_;  //!< Column-major symmetric matrix.
-               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
+   OMT tmat_;  //!< Column-major compressed matrix.
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
-                    0 &  0 &  0 &  0 \\
-                    0 &  1 &  0 & -2 \\
-                    0 &  0 &  3 &  4 \\
-                    0 & -2 &  4 &  5 \\
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
@@ -166,12 +174,12 @@ class SymmetricTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ORT );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ORT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OMT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ORT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( ORT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -187,18 +195,18 @@ class SymmetricTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given dense row.
+/*!\brief Checking the size of the given sparse row.
 //
-// \param row The dense row to be checked.
-// \param expectedSize The expected size of the dense row.
+// \param row The sparse row to be checked.
+// \param expectedSize The expected size of the sparse row.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given dense row. In case the actual size does not
+// This function checks the size of the given sparse row. In case the actual size does not
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense row
-void SymmetricTest::checkSize( const Type& row, size_t expectedSize ) const
+template< typename Type >  // Type of the sparse row
+void SparseGeneralTest::checkSize( const Type& row, size_t expectedSize ) const
 {
    if( size( row ) != expectedSize ) {
       std::ostringstream oss;
@@ -214,19 +222,19 @@ void SymmetricTest::checkSize( const Type& row, size_t expectedSize ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of rows of the given dynamic matrix.
+/*!\brief Checking the number of rows of the given compressed matrix.
 //
-// \param matrix The dynamic matrix to be checked.
-// \param expectedRows The expected number of rows of the dynamic matrix.
+// \param matrix The compressed matrix to be checked.
+// \param expectedRows The expected number of rows of the compressed matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of rows of the given dynamic matrix. In case the actual number
-// of rows does not correspond to the given expected number of rows, a \a std::runtime_error
-// exception is thrown.
+// This function checks the number of rows of the given compressed matrix. In case the
+// actual number of rows does not correspond to the given expected number of rows, a
+// \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void SymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) const
+template< typename Type >  // Type of the compressed matrix
+void SparseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -242,19 +250,19 @@ void SymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dynamic matrix.
+/*!\brief Checking the number of columns of the given compressed matrix.
 //
-// \param matrix The dynamic matrix to be checked.
-// \param expectedRows The expected number of columns of the dynamic matrix.
+// \param matrix The compressed matrix to be checked.
+// \param expectedRows The expected number of columns of the compressed matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dynamic matrix. In case the
+// This function checks the number of columns of the given compressed matrix. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void SymmetricTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+template< typename Type >  // Type of the compressed matrix
+void SparseGeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -270,19 +278,19 @@ void SymmetricTest::checkColumns( const Type& matrix, size_t expectedColumns ) c
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given dense row or dynamic matrix.
+/*!\brief Checking the capacity of the given sparse row or compressed matrix.
 //
-// \param object The dense row or dynamic matrix to be checked.
+// \param object The sparse row or compressed matrix to be checked.
 // \param minCapacity The expected minimum capacity.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given dense row or dynamic matrix. In case the actual
-// capacity is smaller than the given expected minimum capacity, a \a std::runtime_error exception
-// is thrown.
+// This function checks the capacity of the given sparse row or compressed matrix. In case the
+// actual capacity is smaller than the given expected minimum capacity, a \a std::runtime_error
+// exception is thrown.
 */
-template< typename Type >  // Type of the dense row or dynamic matrix
-void SymmetricTest::checkCapacity( const Type& object, size_t minCapacity ) const
+template< typename Type >  // Type of the sparse row or compressed matrix
+void SparseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
@@ -298,19 +306,19 @@ void SymmetricTest::checkCapacity( const Type& object, size_t minCapacity ) cons
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given dense row or dynamic matrix.
+/*!\brief Checking the number of non-zero elements of the given sparse row or compressed matrix.
 //
-// \param object The dense row or dynamic matrix to be checked.
+// \param object The sparse row or compressed matrix to be checked.
 // \param expectedNonZeros The expected number of non-zero elements.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given dense row. In case the
-// actual number of non-zero elements does not correspond to the given expected number, a
-// \a std::runtime_error exception is thrown.
+// This function checks the number of non-zero elements of the given sparse row or compressed
+// matrix. In case the actual number of non-zero elements does not correspond to the given
+// expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense row or dynamic matrix
-void SymmetricTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the sparse row or compressed matrix
+void SparseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -336,20 +344,20 @@ void SymmetricTest::checkNonZeros( const Type& object, size_t expectedNonZeros )
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements in a specific row/column of the given dynamic matrix.
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given compressed matrix.
 //
-// \param matrix The dynamic matrix to be checked.
+// \param matrix The compressed matrix to be checked.
 // \param index The row/column to be checked.
 // \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function checks the number of non-zero elements in the specified row/column of the
-// given dynamic matrix. In case the actual number of non-zero elements does not correspond
+// given compressed matrix. In case the actual number of non-zero elements does not correspond
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void SymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the compressed matrix
+void SparseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -385,13 +393,13 @@ void SymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t expe
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseRow class template.
+/*!\brief Testing the functionality of the Row class template.
 //
 // \return void
 */
 void runTest()
 {
-   SymmetricTest();
+   SparseGeneralTest();
 }
 //*************************************************************************************************
 
@@ -406,14 +414,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the symmetric DenseRow class test.
+/*!\brief Macro for the execution of the Row sparse general test.
 */
-#define RUN_DENSEROW_SYMMETRIC_TEST \
-   blazetest::mathtest::denserow::runTest()
+#define RUN_ROW_SPARSEGENERAL_TEST \
+   blazetest::mathtest::row::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace denserow
+} // namespace row
 
 } // namespace mathtest
 

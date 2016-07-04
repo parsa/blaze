@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/sparserow/GeneralTest.cpp
-//  \brief Source file for the general SparseRow class test
+//  \file src/mathtest/row/SparseGeneralTest.cpp
+//  \brief Source file for the Row sparse general test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,14 +42,14 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/sparserow/GeneralTest.h>
+#include <blazetest/mathtest/row/SparseGeneralTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace sparserow {
+namespace row {
 
 //=================================================================================================
 //
@@ -58,11 +58,11 @@ namespace sparserow {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general SparseRow class test.
+/*!\brief Constructor for the general Row class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-GeneralTest::GeneralTest()
+SparseGeneralTest::SparseGeneralTest()
    : mat_ ( 5UL, 4UL )
    , tmat_( 5UL, 4UL )
 {
@@ -102,28 +102,28 @@ GeneralTest::GeneralTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow constructors.
+/*!\brief Test of the Row constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the SparseRow class template.
+// This function performs a test of all constructors of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testConstructors()
+void SparseGeneralTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow constructor";
+      test_ = "Row-major Row constructor";
 
       initialize();
 
       // 0th matrix row
       {
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkNonZeros( row0, 0UL );
@@ -141,7 +141,7 @@ void GeneralTest::testConstructors()
 
       // 1st matrix row
       {
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkNonZeros( row1, 1UL );
@@ -159,7 +159,7 @@ void GeneralTest::testConstructors()
 
       // 2nd matrix row
       {
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
@@ -177,7 +177,7 @@ void GeneralTest::testConstructors()
 
       // 3rd matrix row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 3UL );
@@ -195,7 +195,7 @@ void GeneralTest::testConstructors()
 
       // 4th matrix row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
 
          checkSize    ( row4, 4UL );
          checkNonZeros( row4, 4UL );
@@ -218,13 +218,13 @@ void GeneralTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow constructor";
+      test_ = "Column-major Row constructor";
 
       initialize();
 
       // 0th matrix row
       {
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkNonZeros( row0, 0UL );
@@ -242,7 +242,7 @@ void GeneralTest::testConstructors()
 
       // 1st matrix row
       {
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkNonZeros( row1, 1UL );
@@ -260,7 +260,7 @@ void GeneralTest::testConstructors()
 
       // 2nd matrix row
       {
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
@@ -278,7 +278,7 @@ void GeneralTest::testConstructors()
 
       // 3rd matrix row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 3UL );
@@ -296,7 +296,7 @@ void GeneralTest::testConstructors()
 
       // 4th matrix row
       {
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
 
          checkSize    ( row4, 4UL );
          checkNonZeros( row4, 4UL );
@@ -317,27 +317,27 @@ void GeneralTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow assignment operators.
+/*!\brief Test of the Row assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the SparseRow class template.
+// This function performs a test of all assignment operators of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testAssignment()
+void SparseGeneralTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow copy assignment";
+      test_ = "Row-major Row copy assignment";
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
-      row1 = row( mat_, 2UL );
+      RT row1 = blaze::row( mat_, 1UL );
+      row1 = blaze::row( mat_, 2UL );
 
       checkSize    ( row1,  4UL );
       checkNonZeros( row1,  2UL );
@@ -384,7 +384,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 0, 8, 0, 9 };
 
@@ -435,7 +435,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row4 = blaze::row( mat_, 4UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
@@ -483,12 +483,12 @@ void GeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow copy assignment";
+      test_ = "Column-major Row copy assignment";
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
-      row1 = row( tmat_, 2UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
+      row1 = blaze::row( tmat_, 2UL );
 
       checkSize    ( row1 ,  4UL );
       checkNonZeros( row1 ,  2UL );
@@ -535,7 +535,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 0, 8, 0, 9 };
 
@@ -586,7 +586,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      ORT row4 = row( tmat_, 4UL );
+      ORT row4 = blaze::row( tmat_, 4UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
@@ -632,27 +632,27 @@ void GeneralTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow addition assignment operators.
+/*!\brief Test of the Row addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testAddAssign()
+void SparseGeneralTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major SparseRow addition assignment
+   // Row-major Row addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow addition assignment";
+      test_ = "Row-major Row addition assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 += row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 += blaze::row( mat_, 3UL );
 
       checkSize    ( row2,  4UL );
       checkNonZeros( row2,  4UL );
@@ -699,7 +699,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -750,7 +750,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -795,16 +795,16 @@ void GeneralTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major SparseRow addition assignment
+   // Column-major Row addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow addition assignment";
+      test_ = "Column-major Row addition assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 += row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 += blaze::row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
       checkNonZeros( row2 ,  4UL );
@@ -851,7 +851,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -902,7 +902,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -949,27 +949,27 @@ void GeneralTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow subtraction assignment operators.
+/*!\brief Test of the Row subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testSubAssign()
+void SparseGeneralTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major SparseRow subtraction assignment
+   // Row-major Row subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow subtraction assignment";
+      test_ = "Row-major Row subtraction assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 -= row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 -= blaze::row( mat_, 3UL );
 
       checkSize    ( row2,  4UL );
       checkNonZeros( row2,  4UL );
@@ -1016,7 +1016,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -1067,7 +1067,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1112,16 +1112,16 @@ void GeneralTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major SparseRow subtraction assignment
+   // Column-major Row subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow subtraction assignment";
+      test_ = "Column-major Row subtraction assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 -= row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 -= blaze::row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
       checkNonZeros( row2 ,  4UL );
@@ -1168,7 +1168,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -1219,7 +1219,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1266,27 +1266,27 @@ void GeneralTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow multiplication assignment operators.
+/*!\brief Test of the Row multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testMultAssign()
+void SparseGeneralTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major SparseRow multiplication assignment
+   // Row-major Row multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow multiplication assignment";
+      test_ = "Row-major Row multiplication assignment";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
-      row2 *= row( mat_, 3UL );
+      RT row2 = blaze::row( mat_, 2UL );
+      row2 *= blaze::row( mat_, 3UL );
 
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 1UL );
@@ -1333,7 +1333,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -1384,7 +1384,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1429,16 +1429,16 @@ void GeneralTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major SparseRow multiplication assignment
+   // Column-major Row multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow multiplication assignment";
+      test_ = "Column-major Row multiplication assignment";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
-      row2 *= row( tmat_, 3UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
+      row2 *= blaze::row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
@@ -1485,7 +1485,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -4, 0, 0 };
 
@@ -1536,7 +1536,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1583,15 +1583,15 @@ void GeneralTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow division assignment operators.
+/*!\brief Test of the Row division assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the division assignment operators of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testDivAssign()
+void SparseGeneralTest::testDivAssign()
 {
    //=====================================================================================
    // Row-major dense vector division assignment
@@ -1602,7 +1602,7 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ -1, 2, 3, 4 };
 
@@ -1653,7 +1653,7 @@ void GeneralTest::testDivAssign()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec{ -1, 2, 3, 4 };
 
@@ -1698,15 +1698,15 @@ void GeneralTest::testDivAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all SparseRow (self-)scaling operations.
+/*!\brief Test of all Row (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the SparseRow
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testScaling()
+void SparseGeneralTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (v*=s)
@@ -1717,7 +1717,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 *= 3;
 
@@ -1766,7 +1766,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = row2 * 3;
 
@@ -1815,7 +1815,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = 3 * row2;
 
@@ -1864,7 +1864,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 /= 0.5;
 
@@ -1913,7 +1913,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       row2 = row2 / 0.5;
 
@@ -1954,17 +1954,17 @@ void GeneralTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major SparseRow::scale()
+   // Row-major Row::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::scale()";
+      test_ = "Row-major Row::scale()";
 
       initialize();
 
       // Integral scaling the 3rd row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          row3.scale( 3 );
 
          checkSize    ( row3,  4UL );
@@ -2004,7 +2004,7 @@ void GeneralTest::testScaling()
 
       // Floating point scaling the 3rd row
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          row3.scale( 0.5 );
 
          checkSize    ( row3,  4UL );
@@ -2053,7 +2053,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 *= 3;
 
@@ -2102,7 +2102,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = row2 * 3;
 
@@ -2151,7 +2151,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = 3 * row2;
 
@@ -2200,7 +2200,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 /= 0.5;
 
@@ -2249,7 +2249,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       row2 = row2 / 0.5;
 
@@ -2290,17 +2290,17 @@ void GeneralTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major SparseRow::scale()
+   // Column-major Row::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::scale()";
+      test_ = "Column-major Row::scale()";
 
       initialize();
 
       // Integral scaling the 3rd row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          row3.scale( 3 );
 
          checkSize    ( row3 ,  4UL );
@@ -2340,7 +2340,7 @@ void GeneralTest::testScaling()
 
       // Floating point scaling the 3rd row
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          row3.scale( 0.5 );
 
          checkSize    ( row3 ,  4UL );
@@ -2383,27 +2383,27 @@ void GeneralTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow subscript operator.
+/*!\brief Test of the Row subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the SparseRow class template. In case an error is detected, a \a std::runtime_error
-// exception is thrown.
+// of the Row specialization. In case an error is detected, a \a std::runtime_error exception
+// is thrown.
 */
-void GeneralTest::testSubscript()
+void SparseGeneralTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::operator[]";
+      test_ = "Row-major Row::operator[]";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -2654,11 +2654,11 @@ void GeneralTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::operator[]";
+      test_ = "Column-major Row::operator[]";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -2907,15 +2907,15 @@ void GeneralTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseRow iterator implementation.
+/*!\brief Test of the Row iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the SparseRow class template.
+// This function performs a test of the iterator implementation of the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIterator()
+void SparseGeneralTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2956,7 +2956,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
          RT::ConstIterator it( begin( row2 ) );
 
          if( it == end( row2 ) || it->value() != -2 ) {
@@ -2971,7 +2971,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction";
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 1UL ) {
@@ -2989,7 +2989,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction";
 
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 2UL ) {
@@ -3007,7 +3007,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
          RT::ConstIterator it ( row2.cbegin() );
          RT::ConstIterator end( row2.cend() );
 
@@ -3041,7 +3041,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
          int value = 6;
 
          for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3081,7 +3081,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
          int value = 2;
 
          for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3121,7 +3121,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
          int value = 2;
 
          for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3161,7 +3161,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
          int value = 1;
 
          for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3201,7 +3201,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
 
          for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
             *it /= 2;
@@ -3277,7 +3277,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
          ORT::ConstIterator it( begin( row2 ) );
 
          if( it == end( row2 ) || it->value() != -2 ) {
@@ -3292,7 +3292,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 1UL ) {
@@ -3310,7 +3310,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 2UL ) {
@@ -3328,7 +3328,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
          ORT::ConstIterator it ( row2.cbegin() );
          ORT::ConstIterator end( row2.cend() );
 
@@ -3362,7 +3362,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
          int value = 6;
 
          for( ORT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3402,7 +3402,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
          int value = 2;
 
          for( ORT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3442,7 +3442,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
          int value = 2;
 
          for( ORT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3482,7 +3482,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
          int value = 1;
 
          for( ORT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
@@ -3522,7 +3522,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
 
          for( ORT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
             *it /= 2;
@@ -3562,27 +3562,27 @@ void GeneralTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the SparseRow class template.
+/*!\brief Test of the \c nonZeros() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testNonZeros()
+void SparseGeneralTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::nonZeros()";
+      test_ = "Row-major Row::nonZeros()";
 
       initialize();
 
       // Initialization check
-      RT row3 = row( mat_, 3UL );
+      RT row3 = blaze::row( mat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
@@ -3636,12 +3636,12 @@ void GeneralTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::nonZeros()";
+      test_ = "Column-major Row::nonZeros()";
 
       initialize();
 
       // Initialization check
-      ORT row3 = row( tmat_, 3UL );
+      ORT row3 = blaze::row( tmat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
@@ -3693,15 +3693,15 @@ void GeneralTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the SparseRow class template.
+/*!\brief Test of the \c reset() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testReset()
+void SparseGeneralTest::testReset()
 {
    using blaze::reset;
 
@@ -3711,13 +3711,13 @@ void GeneralTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::reset()";
+      test_ = "Row-major Row::reset()";
 
       initialize();
 
       // Resetting a single element in row 3
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3, 4UL );
@@ -3739,7 +3739,7 @@ void GeneralTest::testReset()
 
       // Resetting the 4th row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
          reset( row4 );
 
          checkSize    ( row4, 4UL );
@@ -3766,13 +3766,13 @@ void GeneralTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::reset()";
+      test_ = "Column-major Row::reset()";
 
       initialize();
 
       // Resetting a single element in row 3
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -3794,7 +3794,7 @@ void GeneralTest::testReset()
 
       // Resetting the 4th row
       {
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
          reset( row4 );
 
          checkSize    ( row4 , 4UL );
@@ -3819,15 +3819,15 @@ void GeneralTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the SparseRow class template.
+/*!\brief Test of the \c clear() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the SparseRow class template.
+// This function performs a test of the \c clear() function with the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testClear()
+void SparseGeneralTest::testClear()
 {
    using blaze::clear;
 
@@ -3843,7 +3843,7 @@ void GeneralTest::testClear()
 
       // Clearing a single element in row 3
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3, 4UL );
@@ -3876,7 +3876,7 @@ void GeneralTest::testClear()
 
       // Clearing a single element in row 3
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -3901,26 +3901,26 @@ void GeneralTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c set() member function of the SparseRow class template.
+/*!\brief Test of the \c set() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c set() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c set() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testSet()
+void SparseGeneralTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::set()";
+      test_ = "Row-major Row::set()";
 
       initialize();
 
-      RT row0 = row( mat_, 0UL );
+      RT row0 = blaze::row( mat_, 0UL );
 
       // Setting a non-zero element at the end of the row
       {
@@ -4061,11 +4061,11 @@ void GeneralTest::testSet()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::set()";
+      test_ = "Column-major Row::set()";
 
       initialize();
 
-      ORT row0 = row( tmat_, 0UL );
+      ORT row0 = blaze::row( tmat_, 0UL );
 
       // Setting a non-zero element at the end of the row
       {
@@ -4204,26 +4204,26 @@ void GeneralTest::testSet()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SparseRow class template.
+/*!\brief Test of the \c insert() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c insert() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c insert() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testInsert()
+void SparseGeneralTest::testInsert()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::insert()";
+      test_ = "Row-major Row::insert()";
 
       initialize();
 
-      RT row0 = row( mat_, 0UL );
+      RT row0 = blaze::row( mat_, 0UL );
 
       // Inserting a non-zero element at the end of the row
       {
@@ -4345,11 +4345,11 @@ void GeneralTest::testInsert()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::insert()";
+      test_ = "Column-major Row::insert()";
 
       initialize();
 
-      ORT row0 = row( tmat_, 0UL );
+      ORT row0 = blaze::row( tmat_, 0UL );
 
       // Inserting a non-zero element at the end of the row
       {
@@ -4469,26 +4469,26 @@ void GeneralTest::testInsert()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the SparseRow class template.
+/*!\brief Test of the \c append() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c append() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testAppend()
+void SparseGeneralTest::testAppend()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::append()";
+      test_ = "Row-major Row::append()";
 
       MT mat( 3UL, 9UL );
 
-      RT row1 = row( mat, 1UL );
+      RT row1 = blaze::row( mat, 1UL );
       row1.reserve( 4UL );
 
       // Appending one non-zero element
@@ -4534,11 +4534,11 @@ void GeneralTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::append()";
+      test_ = "Column-major Row::append()";
 
       OMT mat( 3UL, 9UL );
 
-      ORT row1 = row( mat, 1UL );
+      ORT row1 = blaze::row( mat, 1UL );
       row1.reserve( 4UL );
 
       // Appending one non-zero element
@@ -4582,26 +4582,26 @@ void GeneralTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the SparseRow class template.
+/*!\brief Test of the \c erase() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c erase() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c erase() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testErase()
+void SparseGeneralTest::testErase()
 {
    //=====================================================================================
    // Row-major index-based erase function
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::erase( size_t )";
+      test_ = "Row-major Row::erase( size_t )";
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row4 = blaze::row( mat_, 4UL );
 
       // Erasing the non-zero element at the end of the row
       row4.erase( 3UL );
@@ -4686,11 +4686,11 @@ void GeneralTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::erase( Iterator )";
+      test_ = "Row-major Row::erase( Iterator )";
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row4 = blaze::row( mat_, 4UL );
 
       // Erasing the non-zero element at the end of the row
       {
@@ -4822,13 +4822,13 @@ void GeneralTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::erase( Iterator, Iterator )";
+      test_ = "Row-major Row::erase( Iterator, Iterator )";
 
       initialize();
 
       // Erasing the 2nd row
       {
-         RT row2 = row( mat_, 2UL );
+         RT row2 = blaze::row( mat_, 2UL );
 
          RT::Iterator pos = row2.erase( row2.begin(), row2.end() );
 
@@ -4860,7 +4860,7 @@ void GeneralTest::testErase()
 
       // Erasing the first half of the 4th row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
 
          RT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
 
@@ -4895,7 +4895,7 @@ void GeneralTest::testErase()
 
       // Erasing the second half of the 4th row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row4 = blaze::row( mat_, 4UL );
 
          RT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
 
@@ -4927,7 +4927,7 @@ void GeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         RT row3 = row( mat_, 3UL );
+         RT row3 = blaze::row( mat_, 3UL );
 
          RT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
 
@@ -4964,11 +4964,11 @@ void GeneralTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::erase( size_t )";
+      test_ = "Column-major Row::erase( size_t )";
 
       initialize();
 
-      ORT row4 = row( tmat_, 4UL );
+      ORT row4 = blaze::row( tmat_, 4UL );
 
       // Erasing the non-zero element at the end of the row
       row4.erase( 3UL );
@@ -5053,11 +5053,11 @@ void GeneralTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::erase( Iterator )";
+      test_ = "Column-major Row::erase( Iterator )";
 
       initialize();
 
-      ORT row4 = row( tmat_, 4UL );
+      ORT row4 = blaze::row( tmat_, 4UL );
 
       // Erasing the non-zero element at the end of the row
       {
@@ -5189,13 +5189,13 @@ void GeneralTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::erase( Iterator, Iterator )";
+      test_ = "Column-major Row::erase( Iterator, Iterator )";
 
       initialize();
 
       // Erasing the 2nd row
       {
-         ORT row2 = row( tmat_, 2UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
 
          ORT::Iterator pos = row2.erase( row2.begin(), row2.end() );
 
@@ -5227,7 +5227,7 @@ void GeneralTest::testErase()
 
       // Erasing the first half of the 4th row
       {
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
 
          ORT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
 
@@ -5262,7 +5262,7 @@ void GeneralTest::testErase()
 
       // Erasing the second half of the 4th row
       {
-         ORT row4 = row( tmat_, 4UL );
+         ORT row4 = blaze::row( tmat_, 4UL );
 
          ORT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
 
@@ -5294,7 +5294,7 @@ void GeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         ORT row3 = row( tmat_, 3UL );
+         ORT row3 = blaze::row( tmat_, 3UL );
 
          ORT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
 
@@ -5329,26 +5329,26 @@ void GeneralTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the SparseRow class template.
+/*!\brief Test of the \c reserve() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reserve() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reserve() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testReserve()
+void SparseGeneralTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::reserve()";
+      test_ = "Row-major Row::reserve()";
 
       MT mat( 3UL, 20UL );
 
-      RT row0 = row( mat, 0UL );
+      RT row0 = blaze::row( mat, 0UL );
 
       // Increasing the capacity of the row
       row0.reserve( 10UL );
@@ -5371,11 +5371,11 @@ void GeneralTest::testReserve()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::reserve()";
+      test_ = "Column-major Row::reserve()";
 
       OMT mat( 3UL, 20UL );
 
-      ORT row0 = row( mat, 0UL );
+      ORT row0 = blaze::row( mat, 0UL );
 
       // Increasing the capacity of the row
       row0.reserve( 10UL );
@@ -5396,26 +5396,26 @@ void GeneralTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c find() member function of the SparseRow class template.
+/*!\brief Test of the \c find() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c find() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c find() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testFind()
+void SparseGeneralTest::testFind()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::find()";
+      test_ = "Row-major Row::find()";
 
       initialize();
 
-      RT row2 = row( mat_, 2UL );
+      RT row2 = blaze::row( mat_, 2UL );
 
       // Searching for the first element
       {
@@ -5496,11 +5496,11 @@ void GeneralTest::testFind()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::find()";
+      test_ = "Column-major Row::find()";
 
       initialize();
 
-      ORT row2 = row( tmat_, 2UL );
+      ORT row2 = blaze::row( tmat_, 2UL );
 
       // Searching for the first element
       {
@@ -5579,26 +5579,26 @@ void GeneralTest::testFind()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c lowerBound() member function of the SparseRow class template.
+/*!\brief Test of the \c lowerBound() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c lowerBound() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lowerBound() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testLowerBound()
+void SparseGeneralTest::testLowerBound()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::lowerBound()";
+      test_ = "Row-major Row::lowerBound()";
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
 
       // Determining the lower bound for index 0
       {
@@ -5676,11 +5676,11 @@ void GeneralTest::testLowerBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::lowerBound()";
+      test_ = "Column-major Row::lowerBound()";
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
 
       // Determining the lower bound for index 0
       {
@@ -5756,26 +5756,26 @@ void GeneralTest::testLowerBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c upperBound() member function of the SparseRow class template.
+/*!\brief Test of the \c upperBound() member function of the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c upperBound() member function of the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c upperBound() member function of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testUpperBound()
+void SparseGeneralTest::testUpperBound()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::upperBound()";
+      test_ = "Row-major Row::upperBound()";
 
       initialize();
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
 
       // Determining the upper bound for index 0
       {
@@ -5841,11 +5841,11 @@ void GeneralTest::testUpperBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::upperBound()";
+      test_ = "Column-major Row::upperBound()";
 
       initialize();
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
 
       // Determining the upper bound for index 0
       {
@@ -5909,15 +5909,15 @@ void GeneralTest::testUpperBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the SparseRow class template.
+/*!\brief Test of the \c isDefault() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIsDefault()
+void SparseGeneralTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -5933,7 +5933,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default row
       {
-         RT row0 = row( mat_, 0UL );
+         RT row0 = blaze::row( mat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -5956,7 +5956,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -5990,7 +5990,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default row
       {
-         ORT row0 = row( tmat_, 0UL );
+         ORT row0 = blaze::row( tmat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -6013,7 +6013,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -6039,15 +6039,15 @@ void GeneralTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the SparseRow class template.
+/*!\brief Test of the \c isSame() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the SparseRow class template.
+// This function performs a test of the \c isSame() function with the Row specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testIsSame()
+void SparseGeneralTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6058,8 +6058,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows
       {
-         RT row1 = row( mat_, 1UL );
-         RT row2 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
+         RT row2 = blaze::row( mat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -6074,8 +6074,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         RT row1 = row( mat_, 1UL );
-         RT row2 = row( mat_, 2UL );
+         RT row1 = blaze::row( mat_, 1UL );
+         RT row2 = blaze::row( mat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -6092,7 +6092,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -6120,7 +6120,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6148,7 +6148,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<RT>  SubvectorType;
 
-         RT row1 = row( mat_, 1UL );
+         RT row1 = blaze::row( mat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6174,12 +6174,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::Submatrix<MT>             SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -6194,12 +6194,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::Submatrix<MT>             SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 0UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 0UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -6214,12 +6214,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::Submatrix<MT>             SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 2UL );
 
@@ -6236,12 +6236,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<MT>             SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 3UL );
 
@@ -6258,12 +6258,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<MT>             SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<MT>       SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 1UL, 2UL );
 
@@ -6289,8 +6289,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows
       {
-         ORT row1 = row( tmat_, 1UL );
-         ORT row2 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
+         ORT row2 = blaze::row( tmat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -6305,8 +6305,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         ORT row1 = row( tmat_, 1UL );
-         ORT row2 = row( tmat_, 2UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -6323,7 +6323,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -6351,7 +6351,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6379,7 +6379,7 @@ void GeneralTest::testIsSame()
       {
          typedef blaze::Subvector<ORT>  SubvectorType;
 
-         ORT row1 = row( tmat_, 1UL );
+         ORT row1 = blaze::row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6405,12 +6405,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::Submatrix<OMT>            SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -6425,12 +6425,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::Submatrix<OMT>            SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 0UL );
-         RowType row2 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 0UL );
+         RowType row2 = blaze::row( sm, 1UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -6445,12 +6445,12 @@ void GeneralTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::Submatrix<OMT>            SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 2UL );
 
@@ -6467,12 +6467,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<OMT>            SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 0UL, 3UL );
 
@@ -6489,12 +6489,12 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<OMT>            SubmatrixType;
-         typedef blaze::SparseRow<SubmatrixType>  RowType;
-         typedef blaze::Subvector<RowType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>      SubmatrixType;
+         typedef blaze::Row<SubmatrixType>  RowType;
+         typedef blaze::Subvector<RowType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         RowType row1 = row( sm, 1UL );
+         RowType row1 = blaze::row( sm, 1UL );
          SubvectorType sv1 = subvector( row1, 0UL, 2UL );
          SubvectorType sv2 = subvector( row1, 1UL, 2UL );
 
@@ -6514,15 +6514,15 @@ void GeneralTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the SparseRow class template.
+/*!\brief Test of the \c subvector() function with the Row specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the SparseRow class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void GeneralTest::testSubvector()
+void SparseGeneralTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6535,7 +6535,7 @@ void GeneralTest::testSubvector()
 
       typedef blaze::Subvector<RT>  SubvectorType;
 
-      RT row1 = row( mat_, 1UL );
+      RT row1 = blaze::row( mat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -6571,7 +6571,7 @@ void GeneralTest::testSubvector()
 
       typedef blaze::Subvector<ORT>  SubvectorType;
 
-      ORT row1 = row( tmat_, 1UL );
+      ORT row1 = blaze::row( tmat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -6614,7 +6614,7 @@ void GeneralTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void GeneralTest::initialize()
+void SparseGeneralTest::initialize()
 {
    // Initializing the row-major compressed matrix
    mat_.reset();
@@ -6644,7 +6644,7 @@ void GeneralTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace sparserow
+} // namespace row
 
 } // namespace mathtest
 
@@ -6662,14 +6662,14 @@ void GeneralTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running general SparseRow class test..." << std::endl;
+   std::cout << "   Running Row sparse general test..." << std::endl;
 
    try
    {
-      RUN_SPARSEROW_CLASS_TEST;
+      RUN_ROW_SPARSEGENERAL_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during general SparseRow class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Row sparse general test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
