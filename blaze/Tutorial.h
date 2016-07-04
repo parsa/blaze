@@ -2943,7 +2943,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>         RowType;
+   typedef blaze::Row<MatrixType>              RowType;
 
    MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
    RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
@@ -4467,7 +4467,7 @@
    typedef SymmetricMatrix< DynamicMatrix<double,columnMajor> >  DynamicSymmetric;
 
    DynamicSymmetric A( 10UL );
-   DenseRow<DynamicSymmetric> row5 = row( A, 5UL );
+   Row<DynamicSymmetric> row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in
@@ -5037,7 +5037,7 @@
    typedef HermitianMatrix< DynamicMatrix<double,columnMajor> >  DynamicHermitian;
 
    DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
-   DenseRow<DynamicHermitian> row5 = row( A, 5UL );
+   Row<DynamicHermitian> row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in
@@ -6972,50 +6972,28 @@
 // row vector can be used as long as the matrix containing the row is not resized or entirely
 // destroyed. The row also acts as an alias to the row elements: Changes made to the elements
 // (e.g. modifying values, inserting or erasing elements) are immediately visible in the matrix
-// and changes made via the matrix are immediately visible in the row. \b Blaze provides two
-// row types: \ref views_dense_row and \ref views_sparse_row.
+// and changes made via the matrix are immediately visible in the row.
 //
 //
-// \n \section views_dense_row DenseRow
+// \n \section views_row_class The Row Class Template
 // <hr>
 //
-// The blaze::DenseRow class template represents a reference to a specific row of a dense matrix
-// primitive. It can be included via the header file
+// The blaze::Row class template represents a reference to a specific row of a dense or sparse
+// matrix primitive. It can be included via the header file
 
    \code
-   #include <blaze/math/DenseRow.h>
+   #include <blaze/math/Row.h>
    \endcode
 
-// The type of the dense matrix is specified via template parameter:
+// The type of the matrix is specified via template parameter:
 
    \code
    template< typename MT >
-   class DenseRow;
+   class Row;
    \endcode
 
-// \c MT specifies the type of the dense matrix primitive. DenseRow can be used with every dense
-// matrix primitive, but does not work with any matrix expression type.
-//
-//
-// \n \section views_sparse_row SparseRow
-// <hr>
-//
-// The blaze::SparseRow class template represents a reference to a specific row of a sparse matrix
-// primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/SparseRow.h>
-   \endcode
-
-// The type of the sparse matrix is specified via template parameter:
-
-   \code
-   template< typename MT >
-   class SparseRow;
-   \endcode
-
-// \c MT specifies the type of the sparse matrix primitive. SparseRow can be used with every
-// sparse matrix primitive, but does not work with any matrix expression type.
+// \c MT specifies the type of the dense matrix primitive. Row can be used with every dense matrix
+// primitive, but does not work with any matrix expression type.
 //
 //
 // \n \section views_rows_setup Setup of Rows
@@ -7042,7 +7020,7 @@
    // ... Resizing and initialization
 
    // Setting the 2nd row of matrix A to x
-   blaze::DenseRow<DenseMatrixType> row2 = row( A, 2UL );
+   blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
    row2 = x;
 
    // Setting the 3rd row of matrix B to y
@@ -7056,9 +7034,9 @@
    \endcode
 
 // The \c row() function can be used on any dense or sparse matrix, including expressions, as
-// illustrated by the source code example. However, both \ref views_dense_row and
-// \ref views_sparse_row cannot be instantiated for expression types, but only for dense and
-// sparse matrix primitives, respectively, i.e. for matrix types that offer write access.
+// illustrated by the source code example. However, rows cannot be instantiated for expression
+// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
+// access.
 //
 //
 // \n \section views_rows_common_operations Common Operations
@@ -7072,7 +7050,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>         RowType;
+   typedef blaze::Row<MatrixType>              RowType;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -7107,7 +7085,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>         RowType;
+   typedef blaze::Row<MatrixType>              RowType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7128,7 +7106,7 @@
 
    \code
    typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::SparseRow<MatrixType>           RowType;
+   typedef blaze::Row<MatrixType>                 RowType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7161,7 +7139,7 @@
    typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
    MatrixType A( 10UL, 100UL );  // Non-initialized 10x100 matrix
 
-   typedef blaze::SparseRow<MatrixType>  RowType;
+   typedef blaze::Row<MatrixType>  RowType;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    // The subscript operator provides access to all possible elements of the sparse row,
@@ -7203,7 +7181,7 @@
    typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrix;
    DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
 
-   typedef blaze::DenseRow<DenseMatrix>  RowType;
+   typedef blaze::Row<DenseMatrix>  RowType;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    row0[0] = 0.0;        // Manual initialization of the 0th row of A
@@ -7240,7 +7218,7 @@
 
    \code
    typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::SparseRow<MatrixType>              RowType;
+   typedef blaze::Row<MatrixType>                    RowType;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
