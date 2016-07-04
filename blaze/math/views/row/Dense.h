@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/views/DenseRow.h
-//  \brief Header file for the DenseRow class template
+//  \file blaze/math/views/row/Dense.h
+//  \brief Row specialization for dense matrices
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_DENSEROW_H_
-#define _BLAZE_MATH_VIEWS_DENSEROW_H_
+#ifndef _BLAZE_MATH_VIEWS_ROW_DENSE_H_
+#define _BLAZE_MATH_VIEWS_ROW_DENSE_H_
 
 
 //*************************************************************************************************
@@ -55,38 +55,25 @@
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/Row.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
-#include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
-#include <blaze/math/typetraits/HasConstDataAccess.h>
-#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
-#include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -100,17 +87,12 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -120,235 +102,23 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  CLASS TEMPLATE SPECIALIZATION FOR ROW-MAJOR DENSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup dense_row DenseRow
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of Row for rows on row-major dense matrices.
 // \ingroup views
+//
+// This specialization of Row adapts the class template to the requirements of row-major dense
+// matrices.
 */
-/*!\brief Reference to a specific row of a dense matrix.
-// \ingroup dense_row
-//
-// The DenseRow template represents a reference to a specific row of a dense matrix primitive.
-// The type of the dense matrix is specified via the first template parameter:
-
-   \code
-   template< typename MT, bool SO, bool SF >
-   class DenseRow;
-   \endcode
-
-//  - MT: specifies the type of the dense matrix primitive. DenseRow can be used with every dense
-//        matrix primitive, but does not work with any matrix expression type.
-//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
-//        This template parameter doesn't have to be explicitly defined, but is automatically
-//        derived from the first template parameter.
-//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
-//        doesn't have to be explicitly defined, but is automatically derived from the first
-//        template parameter.
-//
-//
-// \n \section dense_row_setup Setup of Dense Rows
-//
-// A reference to a dense row can be created very conveniently via the \c row() function. This
-// reference can be treated as any other row vector, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. The reference can also be used on
-// both sides of an assignment: The row can either be used as an alias to grant write access to a
-// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
-// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
-// The following example demonstrates this in detail:
-
-   \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>      DenseMatrixType;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A, B;
-   // ... Resizing and initialization
-
-   // Setting the 2nd row of matrix A to x
-   blaze::DenseRow<DenseMatrixType> row2 = row( A, 2UL );
-   row2 = x;
-
-   // Setting the 3rd row of matrix B to y
-   row( B, 3UL ) = y;
-
-   // Setting x to the 1st row of matrix B
-   x = row( B, 1UL );
-
-   // Setting y to the 4th row of the result of the matrix multiplication
-   y = row( A * B, 4UL );
-   \endcode
-
-// \n \section dense_row_element_access Element access
-//
-// A dense row can be used like any other row vector. For instance, the elements of the dense
-// row can be directly accessed with the subscript operator.
-
-   \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a view on the 4th row of matrix A
-   blaze::DenseRow<MatrixType> row4 = row( A, 4UL );
-
-   // Setting the 1st element of the dense row, which corresponds
-   // to the 1st element in the 4th row of matrix A
-   row4[1] = 2.0;
-   \endcode
-
-// The numbering of the row elements is
-
-                             \f[\left(\begin{array}{*{5}{c}}
-                             0 & 1 & 2 & \cdots & N-1 \\
-                             \end{array}\right),\f]
-
-// where N is the number of columns of the referenced matrix. Alternatively, the elements of
-// a row can be traversed via iterators. Just as with vectors, in case of non-const rows,
-// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// values, in case of constant rows a ConstIterator is returned:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>                RowType;
-
-   MatrixType A( 128UL, 256UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 31st row of matrix A
-   RowType row31 = row( A, 31UL );
-
-   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
-      *it = ...;  // OK; Write access to the dense row value
-      ... = *it;  // OK: Read access to the dense row value.
-   }
-
-   for( RowType::ConstIterator it=row31.begin(); it!=row31.end(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
-      ... = *it;  // OK: Read access to the dense row value.
-   }
-   \endcode
-
-// \n \section dense_row_common_operations Common Operations
-//
-// The current number of row elements can be obtained via the \c size() function, the current
-// capacity via the \c capacity() function, and the number of non-zero elements via the
-// \c nonZeros() function. However, since rows are references to specific rows of a matrix,
-// several operations are not possible on views, such as resizing and swapping:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>                RowType;
-
-   MatrixType A( 42UL, 42UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 2nd row of matrix A
-   RowType row2 = row( A, 2UL );
-
-   row2.size();          // Returns the number of elements in the row
-   row2.capacity();      // Returns the capacity of the row
-   row2.nonZeros();      // Returns the number of non-zero elements contained in the row
-
-   row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
-
-   RowType row3 = row( A, 3UL );
-   swap( row2, row3 );   // Compilation error: Swap operation not allowed
-   \endcode
-
-// \n \section dense_row_arithmetic_operations Arithmetic Operations
-//
-// The following example gives an impression of the use of DenseRow within arithmetic operations.
-// All operations (addition, subtraction, multiplication, scaling, ...) can be performed on all
-// possible combinations of dense and sparse vectors with fitting element types:
-
-   \code
-   blaze::DynamicVector<double,blaze::rowVector> a( 2UL, 2.0 ), b;
-   blaze::CompressedVector<double,blaze::rowVector> c( 2UL );
-   c[1] = 3.0;
-
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrix;
-   DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
-
-   typedef blaze::DenseRow<DenseMatrix>  RowType;
-   RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
-
-   row0[0] = 0.0;        // Manual initialization of the 0th row of A
-   row0[1] = 0.0;
-   row( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st row of A
-   row( A, 2UL ) = a;    // Dense vector initialization of the 2nd row of A
-   row( A, 3UL ) = c;    // Sparse vector initialization of the 3rd row of A
-
-   b = row0 + a;              // Dense vector/dense vector addition
-   b = c + row( A, 1UL );     // Sparse vector/dense vector addition
-   b = row0 * row( A, 2UL );  // Component-wise vector multiplication
-
-   row( A, 1UL ) *= 2.0;     // In-place scaling of the 1st row
-   b = row( A, 1UL ) * 2.0;  // Scaling of the 1st row
-   b = 2.0 * row( A, 1UL );  // Scaling of the 1st row
-
-   row( A, 2UL ) += a;              // Addition assignment
-   row( A, 2UL ) -= c;              // Subtraction assignment
-   row( A, 2UL ) *= row( A, 0UL );  // Multiplication assignment
-
-   double scalar = row( A, 1UL ) * trans( c );  // Scalar/dot/inner product between two vectors
-
-   A = trans( c ) * row( A, 1UL );  // Outer product between two vectors
-   \endcode
-
-// \n \section dense_row_on_column_major_matrix Dense Row on a Column-Major Matrix
-//
-// It is especially noteworthy that row views can be created for both row-major and column-major
-// matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
-// and the interface of a column-major matrix only allows to traverse a column, via views it is
-// also possible to traverse a row of a column-major matrix. For instance:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  MatrixType;
-   typedef blaze::DenseRow<MatrixType>                   RowType;
-
-   MatrixType A( 64UL, 32UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 1st row of a column-major matrix A
-   RowType row1 = row( A, 1UL );
-
-   for( RowType::Iterator it=row1.begin(); it!=row1.end(); ++it ) {
-      // ...
-   }
-   \endcode
-
-// However, please note that creating a row view on a matrix stored in a column-major fashion
-// can result in a considerable performance decrease in comparison to a row view on a matrix
-// with row-major storage format. This is due to the non-contiguous storage of the matrix elements.
-// Therefore care has to be taken in the choice of the most suitable storage order:
-
-   \code
-   // Setup of two column-major matrices
-   blaze::DynamicMatrix<double,blaze::columnMajor> A( 128UL, 128UL );
-   blaze::DynamicMatrix<double,blaze::columnMajor> B( 128UL, 128UL );
-   // ... Resizing and initialization
-
-   // The computation of the 15th row of the multiplication between A and B ...
-   blaze::DynamicVector<double,blaze::rowVector> x = row( A * B, 15UL );
-
-   // ... is essentially the same as the following computation, which multiplies
-   // the 15th row of the column-major matrix A with B.
-   blaze::DynamicVector<double,blaze::rowVector> x = row( A, 15UL ) * B;
-   \endcode
-
-// Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible
-// using a row-major storage order for matrix A would result in a more efficient evaluation.
-*/
-template< typename MT                            // Type of the dense matrix
-        , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
-        , bool SF = IsSymmetric<MT>::value >     // Symmetry flag
-class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
-               , private Row
+template< typename MT  // Type of the dense matrix
+        , bool SF >    // Symmetry flag
+class Row<MT,true,true,SF>
+   : public DenseVector< Row<MT,true,true,SF>, true >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -358,14 +128,14 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseRow<MT,SO,SF>          This;           //!< Type of this DenseRow instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
+   typedef Row<MT,true,true,SF>        This;           //!< Type of this Row instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
    typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the row elements.
    typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseRow&             CompositeType;  //!< Data type for composite expression templates.
+   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
    typedef ConstReference_<MT>  ConstReference;
@@ -397,7 +167,7 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseRow( MT& matrix, size_t index );
+   explicit inline Row( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -427,39 +197,38 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( initializer_list<ElementType> list );
-   inline DenseRow& operator=( const DenseRow& rhs );
+   inline Row& operator=( const ElementType& rhs );
+   inline Row& operator=( initializer_list<ElementType> list );
+   inline Row& operator=( const Row& rhs );
 
-   template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator+=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
-   template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
+   template< typename VT > inline Row& operator= ( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator+=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator-=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator*=( const DenseVector<VT,true>&  rhs );
+   template< typename VT > inline Row& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline Row& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Row >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Row >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t    size() const noexcept;
-                              inline size_t    capacity() const noexcept;
-                              inline size_t    nonZeros() const;
-                              inline void      reset();
-   template< typename Other > inline DenseRow& scale( const Other& scalar );
+                              inline size_t size() const noexcept;
+                              inline size_t capacity() const noexcept;
+                              inline size_t nonZeros() const;
+                              inline void   reset();
+   template< typename Other > inline Row&   scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
@@ -467,11 +236,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
                             simdEnabled && VT::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
@@ -480,11 +247,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
@@ -493,11 +258,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
@@ -506,11 +269,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedDivAssign {
@@ -519,7 +280,6 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -535,13 +295,13 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -605,46 +365,43 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Row;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Row<MT2,SO2,DF2,SF2>& row ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Row<MT2,SO2,DF2,SF2>& a, const Row<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2,bool SF2, typename VT >
+   friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
-   /*! \endcond */
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -657,16 +414,16 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The constructor for DenseRow.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for Row.
 //
 // \param matrix The matrix containing the row.
 // \param index The index of the row.
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseRow<MT,SO,SF>::DenseRow( MT& matrix, size_t index )
+inline Row<MT,true,true,SF>::Row( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -674,6 +431,7 @@ inline DenseRow<MT,SO,SF>::DenseRow( MT& matrix, size_t index )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -686,6 +444,7 @@ inline DenseRow<MT,SO,SF>::DenseRow( MT& matrix, size_t index )
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subscript operator for the direct access to the row elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -695,17 +454,18 @@ inline DenseRow<MT,SO,SF>::DenseRow( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::Reference DenseRow<MT,SO,SF>::operator[]( size_t index )
+inline typename Row<MT,true,true,SF>::Reference Row<MT,true,true,SF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row_,index);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subscript operator for the direct access to the row elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -715,18 +475,19 @@ inline typename DenseRow<MT,SO,SF>::Reference DenseRow<MT,SO,SF>::operator[]( si
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstReference
-   DenseRow<MT,SO,SF>::operator[]( size_t index ) const
+inline typename Row<MT,true,true,SF>::ConstReference
+   Row<MT,true,true,SF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row_,index);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the row elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -737,19 +498,20 @@ inline typename DenseRow<MT,SO,SF>::ConstReference
 // access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::Reference DenseRow<MT,SO,SF>::at( size_t index )
+inline typename Row<MT,true,true,SF>::Reference Row<MT,true,true,SF>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
    }
    return (*this)[index];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the row elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -760,19 +522,20 @@ inline typename DenseRow<MT,SO,SF>::Reference DenseRow<MT,SO,SF>::at( size_t ind
 // access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstReference DenseRow<MT,SO,SF>::at( size_t index ) const
+inline typename Row<MT,true,true,SF>::ConstReference Row<MT,true,true,SF>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
    }
    return (*this)[index];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the row elements.
 //
 // \return Pointer to the internal element storage.
@@ -781,16 +544,17 @@ inline typename DenseRow<MT,SO,SF>::ConstReference DenseRow<MT,SO,SF>::at( size_
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::Pointer DenseRow<MT,SO,SF>::data() noexcept
+inline typename Row<MT,true,true,SF>::Pointer Row<MT,true,true,SF>::data() noexcept
 {
    return matrix_.data( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the row elements.
 //
 // \return Pointer to the internal element storage.
@@ -799,16 +563,17 @@ inline typename DenseRow<MT,SO,SF>::Pointer DenseRow<MT,SO,SF>::data() noexcept
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstPointer DenseRow<MT,SO,SF>::data() const noexcept
+inline typename Row<MT,true,true,SF>::ConstPointer Row<MT,true,true,SF>::data() const noexcept
 {
    return matrix_.data( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the row.
 //
 // \return Iterator to the first element of the row.
@@ -816,16 +581,17 @@ inline typename DenseRow<MT,SO,SF>::ConstPointer DenseRow<MT,SO,SF>::data() cons
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::Iterator DenseRow<MT,SO,SF>::begin()
+inline typename Row<MT,true,true,SF>::Iterator Row<MT,true,true,SF>::begin()
 {
    return matrix_.begin( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the row.
 //
 // \return Iterator to the first element of the row.
@@ -833,16 +599,17 @@ inline typename DenseRow<MT,SO,SF>::Iterator DenseRow<MT,SO,SF>::begin()
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::begin() const
+inline typename Row<MT,true,true,SF>::ConstIterator Row<MT,true,true,SF>::begin() const
 {
    return matrix_.cbegin( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the row.
 //
 // \return Iterator to the first element of the row.
@@ -850,16 +617,17 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::begin() co
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cbegin() const
+inline typename Row<MT,true,true,SF>::ConstIterator Row<MT,true,true,SF>::cbegin() const
 {
    return matrix_.cbegin( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the row.
 //
 // \return Iterator just past the last element of the row.
@@ -867,16 +635,17 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cbegin() c
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::Iterator DenseRow<MT,SO,SF>::end()
+inline typename Row<MT,true,true,SF>::Iterator Row<MT,true,true,SF>::end()
 {
    return matrix_.end( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the row.
 //
 // \return Iterator just past the last element of the row.
@@ -884,16 +653,17 @@ inline typename DenseRow<MT,SO,SF>::Iterator DenseRow<MT,SO,SF>::end()
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::end() const
+inline typename Row<MT,true,true,SF>::ConstIterator Row<MT,true,true,SF>::end() const
 {
    return matrix_.cend( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the row.
 //
 // \return Iterator just past the last element of the row.
@@ -901,12 +671,12 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::end() cons
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cend() const
+inline typename Row<MT,true,true,SF>::ConstIterator Row<MT,true,true,SF>::cend() const
 {
    return matrix_.cend( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -919,6 +689,7 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cend() con
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Homogenous assignment to all row elements.
 //
 // \param rhs Scalar value to be assigned to all row elements.
@@ -929,9 +700,8 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cend() con
 // of the underlying matrix are modified.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const ElementType& rhs )
 {
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
@@ -949,10 +719,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief List assignment to all row elements.
 //
 // \param list The initializer list.
@@ -965,9 +737,8 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs
 // thrown.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( initializer_list<ElementType> list )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -979,11 +750,13 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( initializer_list<Eleme
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for DenseRow.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for Row.
 //
 // \param rhs Dense row to be copied.
 // \return Reference to the assigned row.
@@ -996,9 +769,8 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( initializer_list<Eleme
 // exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const DenseRow& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Row& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -1018,10 +790,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const DenseRow& rhs )
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for different vectors.
 //
 // \param rhs Vector to be assigned.
@@ -1035,10 +809,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const DenseRow& rhs )
 // exception is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const Vector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1070,10 +843,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const Vector<VT,true>&
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a vector (\f$ \vec{a}+=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be added to the dense row.
@@ -1087,10 +862,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const Vector<VT,true>&
 // exception is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator+=( const Vector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1120,10 +894,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator+=( const Vector<VT,true>
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subtraction assignment operator for the subtraction of a vector (\f$ \vec{a}-=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be subtracted from the dense row.
@@ -1137,10 +913,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator+=( const Vector<VT,true>
 // exception is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator-=( const Vector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1170,10 +945,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator-=( const Vector<VT,true>
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
@@ -1186,10 +963,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator-=( const Vector<VT,true>
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const DenseVector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1219,10 +995,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const DenseVector<VT,
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a sparse vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
@@ -1235,10 +1013,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const DenseVector<VT,
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const SparseVector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -1262,10 +1039,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const SparseVector<VT
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -1277,10 +1056,9 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const SparseVector<VT
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator/=( const DenseVector<VT,true>& rhs )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1310,10 +1088,12 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator/=( const DenseVector<VT,
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a dense row and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
@@ -1324,20 +1104,21 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator/=( const DenseVector<VT,
 // to scale such a row results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
-   DenseRow<MT,SO,SF>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,true,true,SF> >&
+   Row<MT,true,true,SF>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    return operator=( (*this) * rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense row by a scalar value
 //        (\f$ \vec{a}/=s \f$).
 //
@@ -1350,11 +1131,10 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
-   DenseRow<MT,SO,SF>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,true,true,SF> >&
+   Row<MT,true,true,SF>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1362,6 +1142,7 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
 
    return operator=( (*this) / rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1374,36 +1155,39 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,SO,SF> >&
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the row.
 //
 // \return The size of the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseRow<MT,SO,SF>::size() const noexcept
+inline size_t Row<MT,true,true,SF>::size() const noexcept
 {
    return matrix_.columns();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense row.
 //
 // \return The capacity of the dense row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseRow<MT,SO,SF>::capacity() const noexcept
+inline size_t Row<MT,true,true,SF>::capacity() const noexcept
 {
    return matrix_.capacity( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the row.
 //
 // \return The number of non-zero elements in the row.
@@ -1412,31 +1196,33 @@ inline size_t DenseRow<MT,SO,SF>::capacity() const noexcept
 // of columns of the matrix containing the row.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseRow<MT,SO,SF>::nonZeros() const
+inline size_t Row<MT,true,true,SF>::nonZeros() const
 {
    return matrix_.nonZeros( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset to the default initial values.
 //
 // \return void
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline void DenseRow<MT,SO,SF>::reset()
+inline void Row<MT,true,true,SF>::reset()
 {
    matrix_.reset( row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the row by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
 // \param scalar The scalar value for the row scaling.
@@ -1447,10 +1233,9 @@ inline void DenseRow<MT,SO,SF>::reset()
 // attempt to scale such a row results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the scalar value
-inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::scale( const Other& scalar )
+inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1471,6 +1256,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::scale( const Other& scalar )
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1483,6 +1269,7 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::scale( const Other& scalar )
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row can alias with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -1493,17 +1280,18 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::scale( const Other& scalar )
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
+inline bool Row<MT,true,true,SF>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row can alias with the given dense row \a alias.
 //
 // \param alias The alias to be checked.
@@ -1514,19 +1302,20 @@ inline bool DenseRow<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
 // optimize the evaluation.
 */
 template< typename MT   // Type of the dense matrix
-        , bool SO       // Storage order
         , bool SF >     // Symmetry flag
 template< typename MT2  // Data type of the foreign dense row
         , bool SO2      // Storage order of the foreign dense row
         , bool SF2 >    // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,SO,SF>::canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,true,true,SF>::canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -1537,17 +1326,18 @@ inline bool DenseRow<MT,SO,SF>::canAlias( const DenseRow<MT2,SO2,SF2>* alias ) c
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
+inline bool Row<MT,true,true,SF>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row is aliased with the given dense row \a alias.
 //
 // \param alias The alias to be checked.
@@ -1558,19 +1348,20 @@ inline bool DenseRow<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
 // optimize the evaluation.
 */
 template< typename MT   // Type of the dense matrix
-        , bool SO       // Storage order
         , bool SF >     // Symmetry flag
 template< typename MT2  // Data type of the foreign dense row
         , bool SO2      // Storage order of the foreign dense row
         , bool SF2 >    // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,SO,SF>::isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,true,true,SF>::isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row is properly aligned in memory.
 //
 // \return \a true in case the dense row is aligned, \a false if not.
@@ -1580,16 +1371,17 @@ inline bool DenseRow<MT,SO,SF>::isAliased( const DenseRow<MT2,SO2,SF2>* alias ) 
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseRow<MT,SO,SF>::isAligned() const noexcept
+inline bool Row<MT,true,true,SF>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense row can be used in SMP assignments.
 //
 // \return \a true in case the dense row can be used in SMP assignments, \a false if not.
@@ -1600,16 +1392,17 @@ inline bool DenseRow<MT,SO,SF>::isAligned() const noexcept
 // of the dense row).
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseRow<MT,SO,SF>::canSMPAssign() const noexcept
+inline bool Row<MT,true,true,SF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Load of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1622,17 +1415,18 @@ inline bool DenseRow<MT,SO,SF>::canSMPAssign() const noexcept
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
-   DenseRow<MT,SO,SF>::load( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,true,true,SF>::SIMDType
+   Row<MT,true,true,SF>::load( size_t index ) const noexcept
 {
    return matrix_.load( row_, index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1645,17 +1439,18 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
-   DenseRow<MT,SO,SF>::loada( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,true,true,SF>::SIMDType
+   Row<MT,true,true,SF>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( row_, index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unaligned load of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1668,17 +1463,18 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
-   DenseRow<MT,SO,SF>::loadu( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,true,true,SF>::SIMDType
+   Row<MT,true,true,SF>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( row_, index );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Store of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1692,17 +1488,18 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::SIMDType
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,SO,SF>::store( size_t index, const SIMDType& value ) noexcept
+   Row<MT,true,true,SF>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( row_, index, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1716,17 +1513,18 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,SO,SF>::storea( size_t index, const SIMDType& value ) noexcept
+   Row<MT,true,true,SF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( row_, index, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unligned store of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1740,17 +1538,18 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,SO,SF>::storeu( size_t index, const SIMDType& value ) noexcept
+   Row<MT,true,true,SF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( row_, index, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned, non-temporal store of a SIMD element of the dense row.
 //
 // \param index Access index. The index must be smaller than the number of matrix columns.
@@ -1764,17 +1563,18 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,SO,SF>::stream( size_t index, const SIMDType& value ) noexcept
+   Row<MT,true,true,SF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( row_, index, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
@@ -1786,11 +1586,10 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Row<MT,true,true,SF>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1802,10 +1601,12 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<
    if( jpos < (~rhs).size() )
       matrix_(row_,jpos) = (~rhs)[jpos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
@@ -1817,11 +1618,10 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Row<MT,true,true,SF>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1862,10 +1662,12 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<V
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be assigned.
@@ -1877,20 +1679,21 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<V
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,SO,SF>::assign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,true,true,SF>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row_,element->index()) = element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
@@ -1902,11 +1705,10 @@ inline void DenseRow<MT,SO,SF>::assign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Row<MT,true,true,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1918,10 +1720,12 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssi
    if( jpos < (~rhs).size() )
       matrix_(row_,jpos) += (~rhs)[jpos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
@@ -1933,11 +1737,10 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssi
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Row<MT,true,true,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1966,10 +1769,12 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssig
       *left += *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be added.
@@ -1981,20 +1786,21 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssig
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,SO,SF>::addAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,true,true,SF>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row_,element->index()) += element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
@@ -2006,11 +1812,10 @@ inline void DenseRow<MT,SO,SF>::addAssign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Row<MT,true,true,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2022,10 +1827,12 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssi
    if( jpos < (~rhs).size() )
       matrix_(row_,jpos) -= (~rhs)[jpos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
@@ -2037,11 +1844,10 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssi
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Row<MT,true,true,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2070,10 +1876,12 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssig
       *left -= *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be subtracted.
@@ -2085,20 +1893,21 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssig
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,SO,SF>::subAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,true,true,SF>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row_,element->index()) -= element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
@@ -2110,11 +1919,10 @@ inline void DenseRow<MT,SO,SF>::subAssign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseRow<MT,SO,SF>::multAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Row<MT,true,true,SF>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2126,10 +1934,12 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAss
    if( jpos < (~rhs).size() )
       matrix_(row_,jpos) *= (~rhs)[jpos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
@@ -2141,11 +1951,10 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAss
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseRow<MT,SO,SF>::multAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Row<MT,true,true,SF>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2174,10 +1983,12 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssi
       *left *= *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the multiplication assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be multiplied.
@@ -2189,10 +2000,9 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssi
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,SO,SF>::multAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,true,true,SF>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2203,10 +2013,12 @@ inline void DenseRow<MT,SO,SF>::multAssign( const SparseVector<VT,true>& rhs )
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row_,element->index()) = tmp[element->index()] * element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the division assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -2218,11 +2030,10 @@ inline void DenseRow<MT,SO,SF>::multAssign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseRow<MT,SO,SF>::divAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Row<MT,true,true,SF>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2234,10 +2045,12 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssi
    if( jpos < (~rhs).size() )
       matrix_(row_,jpos) /= (~rhs)[jpos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the division assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -2249,11 +2062,10 @@ inline DisableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssi
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseRow<MT,SO,SF>::divAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Row<MT,true,true,SF>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2281,6 +2093,7 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssig
       *left /= *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2298,15 +2111,16 @@ inline EnableIf_< typename DenseRow<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssig
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of DenseRow for general column-major matrices.
+/*!\brief Specialization of Row for general column-major dense matrices.
 // \ingroup dense_row
 //
-// This specialization of DenseRow adapts the class template to the requirements of general
-// column-major matrices.
+// This specialization of Row adapts the class template to the requirements of general
+// column-major dense matrices.
 */
 template< typename MT >  // Type of the dense matrix
-class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, true >
-                               , private Row
+class Row<MT,false,true,false>
+   : public DenseVector< Row<MT,false,true,false>, true >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2316,13 +2130,13 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseRow<MT,false,false>    This;           //!< Type of this DenseRow instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
+   typedef Row<MT,false,true,false>    This;           //!< Type of this Row instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
    typedef ElementType_<MT>            ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseRow&             CompositeType;  //!< Data type for composite expression templates.
+   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
    typedef ConstReference_<MT>  ConstReference;
@@ -2651,7 +2465,7 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseRow( MT& matrix, size_t index );
+   explicit inline Row( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2681,33 +2495,33 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( initializer_list<ElementType> list );
-   inline DenseRow& operator=( const DenseRow& rhs );
+   inline Row& operator=( const ElementType& rhs );
+   inline Row& operator=( initializer_list<ElementType> list );
+   inline Row& operator=( const Row& rhs );
 
-   template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator+=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
-   template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
+   template< typename VT > inline Row& operator= ( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator+=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator-=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator*=( const DenseVector<VT,true>&  rhs );
+   template< typename VT > inline Row& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline Row& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Row >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Row >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t    size() const noexcept;
-                              inline size_t    capacity() const noexcept;
-                              inline size_t    nonZeros() const;
-                              inline void      reset();
-   template< typename Other > inline DenseRow& scale( const Other& scalar );
+                              inline size_t size() const noexcept;
+                              inline size_t capacity() const noexcept;
+                              inline size_t nonZeros() const;
+                              inline void   reset();
+   template< typename Other > inline Row&   scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2719,13 +2533,13 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -2752,31 +2566,31 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Row;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Row<MT2,SO2,DF2,SF2>& row ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Row<MT2,SO2,DF2,SF2>& a, const Row<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2803,14 +2617,14 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for DenseRow.
+/*!\brief The constructor for Row.
 //
 // \param matrix The matrix containing the row.
 // \param index The index of the row.
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,false>::DenseRow( MT& matrix, size_t index )
+inline Row<MT,false,true,false>::Row( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -2841,8 +2655,8 @@ inline DenseRow<MT,false,false>::DenseRow( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::Reference
-   DenseRow<MT,false,false>::operator[]( size_t index )
+inline typename Row<MT,false,true,false>::Reference
+   Row<MT,false,true,false>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row_,index);
@@ -2862,8 +2676,8 @@ inline typename DenseRow<MT,false,false>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstReference
-   DenseRow<MT,false,false>::operator[]( size_t index ) const
+inline typename Row<MT,false,true,false>::ConstReference
+   Row<MT,false,true,false>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row_,index);
@@ -2884,8 +2698,8 @@ inline typename DenseRow<MT,false,false>::ConstReference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::Reference
-   DenseRow<MT,false,false>::at( size_t index )
+inline typename Row<MT,false,true,false>::Reference
+   Row<MT,false,true,false>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -2908,8 +2722,8 @@ inline typename DenseRow<MT,false,false>::Reference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstReference
-   DenseRow<MT,false,false>::at( size_t index ) const
+inline typename Row<MT,false,true,false>::ConstReference
+   Row<MT,false,true,false>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -2930,7 +2744,7 @@ inline typename DenseRow<MT,false,false>::ConstReference
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::Pointer DenseRow<MT,false,false>::data() noexcept
+inline typename Row<MT,false,true,false>::Pointer Row<MT,false,true,false>::data() noexcept
 {
    return matrix_.data() + row_;
 }
@@ -2948,7 +2762,7 @@ inline typename DenseRow<MT,false,false>::Pointer DenseRow<MT,false,false>::data
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstPointer DenseRow<MT,false,false>::data() const noexcept
+inline typename Row<MT,false,true,false>::ConstPointer Row<MT,false,true,false>::data() const noexcept
 {
    return matrix_.data() + row_;
 }
@@ -2965,7 +2779,7 @@ inline typename DenseRow<MT,false,false>::ConstPointer DenseRow<MT,false,false>:
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::Iterator DenseRow<MT,false,false>::begin()
+inline typename Row<MT,false,true,false>::Iterator Row<MT,false,true,false>::begin()
 {
    return Iterator( matrix_, row_, 0UL );
 }
@@ -2982,7 +2796,7 @@ inline typename DenseRow<MT,false,false>::Iterator DenseRow<MT,false,false>::beg
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>::begin() const
+inline typename Row<MT,false,true,false>::ConstIterator Row<MT,false,true,false>::begin() const
 {
    return ConstIterator( matrix_, row_, 0UL );
 }
@@ -2999,7 +2813,7 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>::cbegin() const
+inline typename Row<MT,false,true,false>::ConstIterator Row<MT,false,true,false>::cbegin() const
 {
    return ConstIterator( matrix_, row_, 0UL );
 }
@@ -3016,7 +2830,7 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::Iterator DenseRow<MT,false,false>::end()
+inline typename Row<MT,false,true,false>::Iterator Row<MT,false,true,false>::end()
 {
    return Iterator( matrix_, row_, size() );
 }
@@ -3033,7 +2847,7 @@ inline typename DenseRow<MT,false,false>::Iterator DenseRow<MT,false,false>::end
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>::end() const
+inline typename Row<MT,false,true,false>::ConstIterator Row<MT,false,true,false>::end() const
 {
    return ConstIterator( matrix_, row_, size() );
 }
@@ -3050,7 +2864,7 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>::cend() const
+inline typename Row<MT,false,true,false>::ConstIterator Row<MT,false,true,false>::cend() const
 {
    return ConstIterator( matrix_, row_, size() );
 }
@@ -3078,7 +2892,7 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 // of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const ElementType& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const ElementType& rhs )
 {
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
@@ -3114,8 +2928,8 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Elem
 // thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,false>&
-   DenseRow<MT,false,false>::operator=( initializer_list<ElementType> list )
+inline Row<MT,false,true,false>&
+   Row<MT,false,true,false>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -3133,7 +2947,7 @@ inline DenseRow<MT,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for DenseRow.
+/*!\brief Copy assignment operator for Row.
 //
 // \param rhs Dense row to be copied.
 // \return Reference to the assigned row.
@@ -3146,7 +2960,7 @@ inline DenseRow<MT,false,false>&
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const DenseRow& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Row& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -3186,7 +3000,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Dens
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -3239,7 +3053,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Vect
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator+=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3289,7 +3103,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator+=( const Vec
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator-=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3338,7 +3152,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator-=( const Vec
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const DenseVector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3387,7 +3201,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Den
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const SparseVector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -3429,7 +3243,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Spa
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator/=( const DenseVector<VT,true>& rhs )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3476,8 +3290,8 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator/=( const Den
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
-   DenseRow<MT,false,false>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,false> >&
+   Row<MT,false,true,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3502,8 +3316,8 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
-   DenseRow<MT,false,false>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,false> >&
+   Row<MT,false,true,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3530,7 +3344,7 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,false> >&
 // \return The size of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,false>::size() const noexcept
+inline size_t Row<MT,false,true,false>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -3545,7 +3359,7 @@ inline size_t DenseRow<MT,false,false>::size() const noexcept
 // \return The capacity of the dense row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,false>::capacity() const noexcept
+inline size_t Row<MT,false,true,false>::capacity() const noexcept
 {
    return matrix_.columns();
 }
@@ -3563,7 +3377,7 @@ inline size_t DenseRow<MT,false,false>::capacity() const noexcept
 // of columns of the matrix containing the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,false>::nonZeros() const
+inline size_t Row<MT,false,true,false>::nonZeros() const
 {
    const size_t columns( size() );
    size_t nonzeros( 0UL );
@@ -3585,7 +3399,7 @@ inline size_t DenseRow<MT,false,false>::nonZeros() const
 // \return void
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseRow<MT,false,false>::reset()
+inline void Row<MT,false,true,false>::reset()
 {
    using blaze::clear;
 
@@ -3620,7 +3434,7 @@ inline void DenseRow<MT,false,false>::reset()
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::scale( const Other& scalar )
+inline Row<MT,false,true,false>& Row<MT,false,true,false>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3666,7 +3480,7 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::scale( const Other& s
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,false,false>::canAlias( const Other* alias ) const noexcept
+inline bool Row<MT,false,true,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3689,7 +3503,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense row
         , bool SO2       // Storage order of the foreign dense row
         , bool SF2 >     // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,false,false>::canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,false,true,false>::canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
@@ -3710,7 +3524,7 @@ inline bool DenseRow<MT,false,false>::canAlias( const DenseRow<MT2,SO2,SF2>* ali
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,false,false>::isAliased( const Other* alias ) const noexcept
+inline bool Row<MT,false,true,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3733,7 +3547,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense row
         , bool SO2       // Storage order of the foreign dense row
         , bool SF2 >     // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,false,false>::isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,false,true,false>::isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
@@ -3752,7 +3566,7 @@ inline bool DenseRow<MT,false,false>::isAliased( const DenseRow<MT2,SO2,SF2>* al
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseRow<MT,false,false>::isAligned() const noexcept
+inline bool Row<MT,false,true,false>::isAligned() const noexcept
 {
    return false;
 }
@@ -3772,7 +3586,7 @@ inline bool DenseRow<MT,false,false>::isAligned() const noexcept
 // of the dense row).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseRow<MT,false,false>::canSMPAssign() const noexcept
+inline bool Row<MT,false,true,false>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3794,7 +3608,7 @@ inline bool DenseRow<MT,false,false>::canSMPAssign() const noexcept
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseRow<MT,false,false>::assign( const DenseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3824,7 +3638,7 @@ inline void DenseRow<MT,false,false>::assign( const DenseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,false>::assign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3849,7 +3663,7 @@ inline void DenseRow<MT,false,false>::assign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseRow<MT,false,false>::addAssign( const DenseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3879,7 +3693,7 @@ inline void DenseRow<MT,false,false>::addAssign( const DenseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,false>::addAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3904,7 +3718,7 @@ inline void DenseRow<MT,false,false>::addAssign( const SparseVector<VT,true>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseRow<MT,false,false>::subAssign( const DenseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3934,7 +3748,7 @@ inline void DenseRow<MT,false,false>::subAssign( const DenseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,false>::subAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3959,7 +3773,7 @@ inline void DenseRow<MT,false,false>::subAssign( const SparseVector<VT,true>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseRow<MT,false,false>::multAssign( const DenseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3989,7 +3803,7 @@ inline void DenseRow<MT,false,false>::multAssign( const DenseVector<VT,true>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,false>::multAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4018,7 +3832,7 @@ inline void DenseRow<MT,false,false>::multAssign( const SparseVector<VT,true>& r
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseRow<MT,false,false>::divAssign( const DenseVector<VT,true>& rhs )
+inline void Row<MT,false,true,false>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4042,21 +3856,22 @@ inline void DenseRow<MT,false,false>::divAssign( const DenseVector<VT,true>& rhs
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR SYMMETRIC COLUMN-MAJOR MATRICES
+//  CLASS TEMPLATE SPECIALIZATION FOR SYMMETRIC COLUMN-MAJOR DENSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of DenseRow for symmetric column-major matrices.
+/*!\brief Specialization of Row for symmetric column-major dense matrices.
 // \ingroup dense_row
 //
-// This specialization of DenseRow adapts the class template to the requirements of symmetric
-// column-major matrices.
+// This specialization of Row adapts the class template to the requirements of symmetric
+// column-major dense matrices.
 */
 template< typename MT >  // Type of the dense matrix
-class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, true >
-                              , private Row
+class Row<MT,false,true,true>
+   : public DenseVector< Row<MT,false,true,true>, true >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -4066,14 +3881,14 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseRow<MT,false,true>     This;           //!< Type of this DenseRow instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this DenseRow instance.
+   typedef Row<MT,false,true,true>     This;           //!< Type of this Row instance.
+   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
    typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
    typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the row elements.
    typedef ElementType_<MT>            ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseRow&             CompositeType;  //!< Data type for composite expression templates.
+   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
    typedef ConstReference_<MT>  ConstReference;
@@ -4105,7 +3920,7 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseRow( MT& matrix, size_t index );
+   explicit inline Row( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4135,33 +3950,33 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseRow& operator=( const ElementType& rhs );
-   inline DenseRow& operator=( initializer_list<ElementType> list );
-   inline DenseRow& operator=( const DenseRow& rhs );
+   inline Row& operator=( const ElementType& rhs );
+   inline Row& operator=( initializer_list<ElementType> list );
+   inline Row& operator=( const Row& rhs );
 
-   template< typename VT > inline DenseRow& operator= ( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator+=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator-=( const Vector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator*=( const DenseVector<VT,true>&  rhs );
-   template< typename VT > inline DenseRow& operator*=( const SparseVector<VT,true>& rhs );
-   template< typename VT > inline DenseRow& operator/=( const DenseVector<VT,true>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator*=( Other rhs );
+   template< typename VT > inline Row& operator= ( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator+=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator-=( const Vector<VT,true>& rhs );
+   template< typename VT > inline Row& operator*=( const DenseVector<VT,true>&  rhs );
+   template< typename VT > inline Row& operator*=( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline Row& operator/=( const DenseVector<VT,true>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseRow >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Row >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Row >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t    size() const noexcept;
-                              inline size_t    capacity() const noexcept;
-                              inline size_t    nonZeros() const;
-                              inline void      reset();
-   template< typename Other > inline DenseRow& scale( const Other& scalar );
+                              inline size_t size() const noexcept;
+                              inline size_t capacity() const noexcept;
+                              inline size_t nonZeros() const;
+                              inline void   reset();
+   template< typename Other > inline Row&   scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4233,13 +4048,13 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -4303,31 +4118,31 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Row;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Row<MT2,SO2,DF2,SF2>& row ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Row<MT2,SO2,DF2,SF2>& a, const Row<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseRow<MT2,SO2,SF2> > derestrict( DenseRow<MT2,SO2,SF2>& dm );
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4354,14 +4169,14 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for DenseRow.
+/*!\brief The constructor for Row.
 //
 // \param matrix The matrix containing the row.
 // \param index The index of the row.
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,true>::DenseRow( MT& matrix, size_t index )
+inline Row<MT,false,true,true>::Row( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -4392,8 +4207,8 @@ inline DenseRow<MT,false,true>::DenseRow( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::Reference
-   DenseRow<MT,false,true>::operator[]( size_t index )
+inline typename Row<MT,false,true,true>::Reference
+   Row<MT,false,true,true>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(index,row_);
@@ -4413,8 +4228,8 @@ inline typename DenseRow<MT,false,true>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstReference
-   DenseRow<MT,false,true>::operator[]( size_t index ) const
+inline typename Row<MT,false,true,true>::ConstReference
+   Row<MT,false,true,true>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row_,index);
@@ -4435,8 +4250,8 @@ inline typename DenseRow<MT,false,true>::ConstReference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::Reference
-   DenseRow<MT,false,true>::at( size_t index )
+inline typename Row<MT,false,true,true>::Reference
+   Row<MT,false,true,true>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4459,8 +4274,8 @@ inline typename DenseRow<MT,false,true>::Reference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstReference
-   DenseRow<MT,false,true>::at( size_t index ) const
+inline typename Row<MT,false,true,true>::ConstReference
+   Row<MT,false,true,true>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4481,7 +4296,7 @@ inline typename DenseRow<MT,false,true>::ConstReference
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::Pointer DenseRow<MT,false,true>::data() noexcept
+inline typename Row<MT,false,true,true>::Pointer Row<MT,false,true,true>::data() noexcept
 {
    return matrix_.data( row_ );
 }
@@ -4499,7 +4314,7 @@ inline typename DenseRow<MT,false,true>::Pointer DenseRow<MT,false,true>::data()
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstPointer DenseRow<MT,false,true>::data() const noexcept
+inline typename Row<MT,false,true,true>::ConstPointer Row<MT,false,true,true>::data() const noexcept
 {
    return matrix_.data( row_ );
 }
@@ -4516,7 +4331,7 @@ inline typename DenseRow<MT,false,true>::ConstPointer DenseRow<MT,false,true>::d
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::Iterator DenseRow<MT,false,true>::begin()
+inline typename Row<MT,false,true,true>::Iterator Row<MT,false,true,true>::begin()
 {
    return matrix_.begin( row_ );
 }
@@ -4533,7 +4348,7 @@ inline typename DenseRow<MT,false,true>::Iterator DenseRow<MT,false,true>::begin
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::begin() const
+inline typename Row<MT,false,true,true>::ConstIterator Row<MT,false,true,true>::begin() const
 {
    return matrix_.cbegin( row_ );
 }
@@ -4550,7 +4365,7 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::cbegin() const
+inline typename Row<MT,false,true,true>::ConstIterator Row<MT,false,true,true>::cbegin() const
 {
    return matrix_.cbegin( row_ );
 }
@@ -4567,7 +4382,7 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::Iterator DenseRow<MT,false,true>::end()
+inline typename Row<MT,false,true,true>::Iterator Row<MT,false,true,true>::end()
 {
    return matrix_.end( row_ );
 }
@@ -4584,7 +4399,7 @@ inline typename DenseRow<MT,false,true>::Iterator DenseRow<MT,false,true>::end()
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::end() const
+inline typename Row<MT,false,true,true>::ConstIterator Row<MT,false,true,true>::end() const
 {
    return matrix_.cend( row_ );
 }
@@ -4601,7 +4416,7 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::cend() const
+inline typename Row<MT,false,true,true>::ConstIterator Row<MT,false,true,true>::cend() const
 {
    return matrix_.cend( row_ );
 }
@@ -4625,7 +4440,7 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 // \return Reference to the assigned row.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const ElementType& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const ElementType& rhs )
 {
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
@@ -4661,8 +4476,8 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Elemen
 // thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,true>&
-   DenseRow<MT,false,true>::operator=( initializer_list<ElementType> list )
+inline Row<MT,false,true,true>&
+   Row<MT,false,true,true>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -4680,7 +4495,7 @@ inline DenseRow<MT,false,true>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for DenseRow.
+/*!\brief Copy assignment operator for Row.
 //
 // \param rhs Dense row to be copied.
 // \return Reference to the assigned row.
@@ -4693,7 +4508,7 @@ inline DenseRow<MT,false,true>&
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const DenseRow& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Row& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -4733,7 +4548,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const DenseR
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4785,7 +4600,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Vector
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator+=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4835,7 +4650,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator+=( const Vecto
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator-=( const Vector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4884,7 +4699,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator-=( const Vecto
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const DenseVector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4933,7 +4748,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Dense
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const SparseVector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -4975,7 +4790,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Spars
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator/=( const DenseVector<VT,true>& rhs )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5022,8 +4837,8 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator/=( const Dense
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
-   DenseRow<MT,false,true>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,true> >&
+   Row<MT,false,true,true>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5048,8 +4863,8 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
-   DenseRow<MT,false,true>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,true> >&
+   Row<MT,false,true,true>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5076,7 +4891,7 @@ inline EnableIf_< IsNumeric<Other>, DenseRow<MT,false,true> >&
 // \return The size of the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,true>::size() const noexcept
+inline size_t Row<MT,false,true,true>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -5091,7 +4906,7 @@ inline size_t DenseRow<MT,false,true>::size() const noexcept
 // \return The capacity of the dense row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,true>::capacity() const noexcept
+inline size_t Row<MT,false,true,true>::capacity() const noexcept
 {
    return matrix_.capacity( row_ );
 }
@@ -5109,7 +4924,7 @@ inline size_t DenseRow<MT,false,true>::capacity() const noexcept
 // of columns of the matrix containing the row.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseRow<MT,false,true>::nonZeros() const
+inline size_t Row<MT,false,true,true>::nonZeros() const
 {
    return matrix_.nonZeros( row_ );
 }
@@ -5124,7 +4939,7 @@ inline size_t DenseRow<MT,false,true>::nonZeros() const
 // \return void
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseRow<MT,false,true>::reset()
+inline void Row<MT,false,true,true>::reset()
 {
    matrix_.reset( row_ );
 }
@@ -5145,7 +4960,7 @@ inline void DenseRow<MT,false,true>::reset()
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::scale( const Other& scalar )
+inline Row<MT,false,true,true>& Row<MT,false,true,true>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5191,7 +5006,7 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::scale( const Other& sca
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,false,true>::canAlias( const Other* alias ) const noexcept
+inline bool Row<MT,false,true,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5214,7 +5029,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense row
         , bool SO2       // Storage order of the foreign dense row
         , bool SF2 >     // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,false,true>::canAlias( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,false,true,true>::canAlias( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
@@ -5235,7 +5050,7 @@ inline bool DenseRow<MT,false,true>::canAlias( const DenseRow<MT2,SO2,SF2>* alia
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseRow<MT,false,true>::isAliased( const Other* alias ) const noexcept
+inline bool Row<MT,false,true,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5258,7 +5073,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense row
         , bool SO2       // Storage order of the foreign dense row
         , bool SF2 >     // Symmetry flag of the foreign dense row
-inline bool DenseRow<MT,false,true>::isAliased( const DenseRow<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Row<MT,false,true,true>::isAliased( const Row<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row_ == alias->row_ );
 }
@@ -5277,7 +5092,7 @@ inline bool DenseRow<MT,false,true>::isAliased( const DenseRow<MT2,SO2,SF2>* ali
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseRow<MT,false,true>::isAligned() const noexcept
+inline bool Row<MT,false,true,true>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -5297,7 +5112,7 @@ inline bool DenseRow<MT,false,true>::isAligned() const noexcept
 // of the dense row).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseRow<MT,false,true>::canSMPAssign() const noexcept
+inline bool Row<MT,false,true,true>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -5319,8 +5134,8 @@ inline bool DenseRow<MT,false,true>::canSMPAssign() const noexcept
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
-   DenseRow<MT,false,true>::load( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,false,true,true>::SIMDType
+   Row<MT,false,true,true>::load( size_t index ) const noexcept
 {
    return matrix_.load( index, row_ );
 }
@@ -5342,8 +5157,8 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
-   DenseRow<MT,false,true>::loada( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,false,true,true>::SIMDType
+   Row<MT,false,true,true>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( index, row_ );
 }
@@ -5365,8 +5180,8 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
-   DenseRow<MT,false,true>::loadu( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Row<MT,false,true,true>::SIMDType
+   Row<MT,false,true,true>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( index, row_ );
 }
@@ -5390,7 +5205,7 @@ BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::SIMDType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,false,true>::store( size_t index, const SIMDType& value ) noexcept
+   Row<MT,false,true,true>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( index, row_, value );
 }
@@ -5414,7 +5229,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,false,true>::storea( size_t index, const SIMDType& value ) noexcept
+   Row<MT,false,true,true>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( index, row_, value );
 }
@@ -5438,7 +5253,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,false,true>::storeu( size_t index, const SIMDType& value ) noexcept
+   Row<MT,false,true,true>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( index, row_, value );
 }
@@ -5462,7 +5277,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseRow<MT,false,true>::stream( size_t index, const SIMDType& value ) noexcept
+   Row<MT,false,true,true>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( index, row_, value );
 }
@@ -5484,8 +5299,8 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Row<MT,false,true,true>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5515,8 +5330,8 @@ inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Row<MT,false,true,true>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5575,7 +5390,7 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAss
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,true>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5600,8 +5415,8 @@ inline void DenseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Row<MT,false,true,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5631,8 +5446,8 @@ inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAd
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Row<MT,false,true,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5679,7 +5494,7 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedAdd
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,true>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5704,8 +5519,8 @@ inline void DenseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Row<MT,false,true,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5735,8 +5550,8 @@ inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSu
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Row<MT,false,true,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5783,7 +5598,7 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedSub
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,true>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5808,8 +5623,8 @@ inline void DenseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseRow<MT,false,true>::multAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Row<MT,false,true,true>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5839,8 +5654,8 @@ inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMu
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseRow<MT,false,true>::multAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Row<MT,false,true,true>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5887,7 +5702,7 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedMul
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseRow<MT,false,true>::multAssign( const SparseVector<VT,true>& rhs )
+inline void Row<MT,false,true,true>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5916,8 +5731,8 @@ inline void DenseRow<MT,false,true>::multAssign( const SparseVector<VT,true>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseRow<MT,false,true>::divAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Row<MT,false,true,true>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5947,8 +5762,8 @@ inline DisableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDi
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseRow<MT,false,true>::divAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Row<MT,false,true,true>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5976,602 +5791,6 @@ inline EnableIf_< typename DenseRow<MT,false,true>::BLAZE_TEMPLATE VectorizedDiv
       *left /= *right; ++left; ++right;
    }
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  DENSEROW OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name DenseRow operators */
-//@{
-template< typename MT, bool SO, bool SF >
-inline void reset( DenseRow<MT,SO,SF>& row );
-
-template< typename MT, bool SO, bool SF >
-inline void clear( DenseRow<MT,SO,SF>& row );
-
-template< typename MT, bool SO, bool SF >
-inline bool isDefault( const DenseRow<MT,SO,SF>& row );
-
-template< typename MT, bool SO, bool SF >
-inline bool isIntact( const DenseRow<MT,SO,SF>& row ) noexcept;
-
-template< typename MT, bool SO, bool SF >
-inline bool isSame( const DenseRow<MT,SO,SF>& a, const DenseRow<MT,SO,SF>& b ) noexcept;
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given dense row.
-// \ingroup dense_row
-//
-// \param row The dense row to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void reset( DenseRow<MT,SO,SF>& row )
-{
-   row.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given dense row.
-// \ingroup dense_row
-//
-// \param row The dense row to be cleared.
-// \return void
-//
-// Clearing a dense row is equivalent to resetting it via the reset() function.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void clear( DenseRow<MT,SO,SF>& row )
-{
-   row.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given dense row is in default state.
-// \ingroup dense_row
-//
-// \param row The dense row to be tested for its default state.
-// \return \a true in case the given dense row is component-wise zero, \a false otherwise.
-//
-// This function checks whether the dense row is in default state. For instance, in case the
-// row is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all row elements are 0 and \a false in case any row element
-// is not 0. The following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( row( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const DenseRow<MT,SO,SF>& row )
-{
-   for( size_t i=0UL; i<row.size(); ++i )
-      if( !isDefault( row[i] ) ) return false;
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the invariants of the given dense row are intact.
-// \ingroup dense_row
-//
-// \param row The dense row to be tested.
-// \return \a true in case the given row's invariants are intact, \a false otherwise.
-//
-// This function checks whether the invariants of the dense row are intact, i.e. if its state
-// is valid. In case the invariants are intact, the function returns \a true, else it will
-// return \a false. The following example demonstrates the use of the \a isIntact() function:
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> A;
-   // ... Resizing and initialization
-   if( isIntact( row( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isIntact( const DenseRow<MT,SO,SF>& row ) noexcept
-{
-   return ( row.row_ <= row.matrix_.rows() &&
-            isIntact( row.matrix_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the two given dense rows represent the same observable state.
-// \ingroup dense_row
-//
-// \param a The first dense row to be tested for its state.
-// \param b The second dense row to be tested for its state.
-// \return \a true in case the two rows share a state, \a false otherwise.
-//
-// This overload of the isSame function tests if the two given dense rows refer to exactly the
-// same range of the same dense matrix. In case both rows represent the same observable state,
-// the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isSame( const DenseRow<MT,SO,SF>& a, const DenseRow<MT,SO,SF>& b ) noexcept
-{
-   return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a vector to a dense row.
-// \ingroup dense_row
-//
-// \param lhs The target left-hand side dense row.
-// \param rhs The right-hand side vector to be assigned.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a vector to a dense row.
-// \ingroup dense_row
-//
-// \param lhs The target left-hand side dense row.
-// \param rhs The right-hand side vector to be added.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a vector to a dense row.
-// \ingroup dense_row
-//
-// \param lhs The target left-hand side dense row.
-// \param rhs The right-hand side vector to be subtracted.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the multiplication assignment of a vector to a dense row.
-// \ingroup dense_row
-//
-// \param lhs The target left-hand side dense row.
-// \param rhs The right-hand side vector to be multiplied.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the division assignment of a vector to a dense row.
-// \ingroup dense_row
-//
-// \param lhs The target left-hand side dense row.
-// \param rhs The right-hand side vector divisor.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryDivAssign( lhs.matrix_, ~rhs, lhs.row_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given dense row.
-// \ingroup dense_row
-//
-// \param row The dense row to be derestricted.
-// \return Dense row without access restrictions.
-//
-// This function removes all restrictions on the data access to the given dense row. It returns a
-// row object that does provide the same interface but does not have any restrictions on the data
-// access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline DerestrictTrait_< DenseRow<MT,SO,SF> > derestrict( DenseRow<MT,SO,SF>& row )
-{
-   typedef DerestrictTrait_< DenseRow<MT,SO,SF> >  ReturnType;
-   return ReturnType( derestrict( row.matrix_ ), row.row_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESTRICTED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsRestricted< DenseRow<MT,SO,SF> > : public BoolConstant< IsRestricted<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct DerestrictTrait< DenseRow<MT,SO,SF> >
-{
-   using Type = DenseRow< RemoveReference_< DerestrictTrait_<MT> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  HASCONSTDATAACCESS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasConstDataAccess< DenseRow<MT,SO,SF> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  HASMUTABLEDATAACCESS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasMutableDataAccess< DenseRow<MT,SO,SF> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISALIGNED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsAligned< DenseRow<MT,SO,SF> >
-   : public BoolConstant< And< IsAligned<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISPADDED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsPadded< DenseRow<MT,SO,SF> >
-   : public BoolConstant< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISOPPOSEDVIEW SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct IsOpposedView< DenseRow<MT,false,false> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct AddTrait< DenseRow<MT,SO,SF>, T >
-{
-   using Type = AddTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct AddTrait< T, DenseRow<MT,SO,SF> >
-{
-   using Type = AddTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct SubTrait< DenseRow<MT,SO,SF>, T >
-{
-   using Type = SubTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct SubTrait< T, DenseRow<MT,SO,SF> >
-{
-   using Type = SubTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct MultTrait< DenseRow<MT,SO,SF>, T >
-{
-   using Type = MultTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct MultTrait< T, DenseRow<MT,SO,SF> >
-{
-   using Type = MultTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct CrossTrait< DenseRow<MT,SO,SF>, T >
-{
-   using Type = CrossTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct CrossTrait< T, DenseRow<MT,SO,SF> >
-{
-   using Type = CrossTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct DivTrait< DenseRow<MT,SO,SF>, T >
-{
-   using Type = DivTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct DivTrait< T, DenseRow<MT,SO,SF> >
-{
-   using Type = DivTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct SubvectorTrait< DenseRow<MT,SO,SF> >
-{
-   using Type = SubvectorTrait_< ResultType_< DenseRow<MT,SO,SF> > >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

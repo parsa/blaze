@@ -64,17 +64,18 @@ namespace blaze {
 
    \code
    using blaze::DenseColumn;
-   using blaze::SparseRow;
+   using blaze::Row;
+   using blaze::SparseColumn
 
    typedef blaze::DynamicMatrix<int,columnMajor>  DenseColumnMajor;
    typedef blaze::CompressedMatrix<int,rowMajor>  SparseRowMajor;
 
-   blaze::IsOpposedView< DenseRow<DenseColumnMajor> >::value          // Evaluates to 1
-   blaze::IsOpposedView< SparseColumn<SparseRowMajor> >::Type         // Results in TrueType
-   blaze::IsOpposedView< const volatile DenseRow<DenseColumnMajor> >  // Is derived from TrueType
-   blaze::IsOpposedView< DenseColumn<DenseColumnMajor> >::value       // Evaluates to 0
-   blaze::IsOpposedView< SparseRow<SparseRowMajor> >::Type            // Results in FalseType
-   blaze::IsOpposedView< const volatile SparseRow<SparseRowMajor> >   // Is derived from FalseType
+   blaze::IsOpposedView< Row<DenseColumnMajor> >::value          // Evaluates to 1
+   blaze::IsOpposedView< SparseColumn<SparseRowMajor> >::Type    // Results in TrueType
+   blaze::IsOpposedView< const volatile Row<DenseColumnMajor> >  // Is derived from TrueType
+   blaze::IsOpposedView< DenseColumn<DenseColumnMajor> >::value  // Evaluates to 0
+   blaze::IsOpposedView< Row<SparseRowMajor> >::Type             // Results in FalseType
+   blaze::IsOpposedView< const volatile Row<SparseRowMajor> >    // Is derived from FalseType
    \endcode
 */
 template< typename T >

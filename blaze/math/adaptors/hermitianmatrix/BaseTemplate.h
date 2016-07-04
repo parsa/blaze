@@ -560,7 +560,7 @@ namespace blaze {
    typedef HermitianMatrix< DynamicMatrix<double,columnMajor> >  DynamicHermitian;
 
    DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
-   DenseRow<DynamicHermitian> row5 = row( A, 5UL );
+   Row<DynamicHermitian> row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in

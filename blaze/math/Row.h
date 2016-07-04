@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseRow.h
-//  \brief Header file for the complete SparseRow implementation
+//  \file blaze/math/Row.h
+//  \brief Header file for the complete Row implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,20 +32,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSEROW_H_
-#define _BLAZE_MATH_SPARSEROW_H_
+#ifndef _BLAZE_MATH_ROW_H_
+#define _BLAZE_MATH_ROW_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Aliases.h>
-#include <blaze/math/Exception.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Column.h>
+#include <blaze/math/views/DenseColumn.h>
 #include <blaze/math/views/Row.h>
-#include <blaze/math/views/SparseColumn.h>
-#include <blaze/math/views/SparseRow.h>
 #include <blaze/util/Random.h>
 
 
@@ -53,33 +52,30 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  RAND SPECIALIZATION
+//  RAND SPECIALIZATION FOR DENSE ROWS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for SparseRow.
+/*!\brief Specialization of the Rand class template for dense rows.
 // \ingroup random
 //
-// This specialization of the Rand class randomizes instances of SparseRow.
+// This specialization of the Rand class randomizes dense rows.
 */
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-class Rand< SparseRow<MT,SO> >
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+class Rand< Row<MT,SO,true,SF> >
 {
  public:
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( SparseRow<MT,SO>& row ) const;
-   inline void randomize( SparseRow<MT,SO>& row, size_t nonzeros ) const;
+   inline void randomize( Row<MT,SO,true,SF>& row ) const;
 
    template< typename Arg >
-   inline void randomize( SparseRow<MT,SO>& row, const Arg& min, const Arg& max ) const;
-
-   template< typename Arg >
-   inline void randomize( SparseRow<MT,SO>& row, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   inline void randomize( Row<MT,SO,true,SF>& row, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -89,16 +85,104 @@ class Rand< SparseRow<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseRow.
+/*!\brief Randomization of a dense row.
+//
+// \param row The row to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Row<MT,SO,true,SF> >::randomize( Row<MT,SO,true,SF>& row ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<row.size(); ++i ) {
+      randomize( row[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a dense row.
+//
+// \param row The row to be randomized.
+// \param min The smallest possible value for a row element.
+// \param max The largest possible value for a row element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< Row<MT,SO,true,SF> >::randomize( Row<MT,SO,true,SF>& row,
+                                                   const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<row.size(); ++i ) {
+      randomize( row[i], min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for sparse rows.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes sparse rows.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+class Rand< Row<MT,SO,false,SF> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( Row<MT,SO,false,SF>& row ) const;
+   inline void randomize( Row<MT,SO,false,SF>& row, size_t nonzeros ) const;
+
+   template< typename Arg >
+   inline void randomize( Row<MT,SO,false,SF>& row, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( Row<MT,SO,false,SF>& row, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a sparse row.
 //
 // \param row The row to be randomized.
 // \return void
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row ) const
 {
-   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
+   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -119,7 +203,7 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row ) const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseRow.
+/*!\brief Randomization of a sparse row.
 //
 // \param row The row to be randomized.
 // \param nonzeros The number of non-zero elements of the random row.
@@ -127,10 +211,11 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row ) const
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros ) const
 {
-   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
+   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -153,7 +238,7 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t n
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseRow.
+/*!\brief Randomization of a sparse row.
 //
 // \param row The row to be randomized.
 // \param min The smallest possible value for a row element.
@@ -161,12 +246,13 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t n
 // \return void
 */
 template< typename MT     // Type of the sparse matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row,
-                                                 const Arg& min, const Arg& max ) const
+inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row,
+                                                   const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
+   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
 
    const size_t size( row.size() );
 
@@ -187,7 +273,7 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseRow.
+/*!\brief Randomization of a sparse row.
 //
 // \param row The row to be randomized.
 // \param nonzeros The number of non-zero elements of the random row.
@@ -197,12 +283,13 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT     // Type of the sparse matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t nonzeros,
-                                                 const Arg& min, const Arg& max ) const
+inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros,
+                                                   const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseRow<MT,SO> >  ElementType;
+   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
 
    const size_t size( row.size() );
 

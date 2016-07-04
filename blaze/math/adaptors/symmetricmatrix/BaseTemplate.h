@@ -556,7 +556,7 @@ namespace blaze {
    typedef SymmetricMatrix< DynamicMatrix<double,columnMajor> >  DynamicSymmetric;
 
    DynamicSymmetric A( 10UL );
-   DenseRow<DynamicSymmetric> row5 = row( A, 5UL );
+   Row<DynamicSymmetric> row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in

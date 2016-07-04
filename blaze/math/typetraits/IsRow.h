@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Row.h>
-#include <blaze/util/IntegralConstant.h>
+#include <blaze/math/views/Forward.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -67,13 +67,13 @@ namespace blaze {
 
    \code
    typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
-   typedef blaze::DenseRow<DenseMatrixType1>         DenseRowType1;
+   typedef blaze::Row<DenseMatrixType1>              DenseRowType1;
 
    typedef blaze::StaticMatrix<float,3UL,4UL,rowMajor>  DenseMatrixType2;
-   typedef blaze::DenseRow<DenseMatrixType2>            DenseRowType2;
+   typedef blaze::Row<DenseMatrixType2>                 DenseRowType2;
 
    typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrixType;
-   typedef blaze::SparseRow<SparseMatrixType>        SparseRowType;
+   typedef blaze::Row<SparseMatrixType>              SparseRowType;
 
    blaze::IsRow< SparseRowType >::value          // Evaluates to 1
    blaze::IsRow< const DenseRowType1 >::Type     // Results in TrueType
@@ -84,8 +84,56 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsRow : public BoolConstant< And< IsBaseOf<Row,T>, Not< IsBaseOf<T,Row> > >::value >
+struct IsRow : public FalseType
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsRow type trait for 'Row'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRow< Row<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsRow type trait for 'const Row'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRow< const Row<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsRow type trait for 'volatile Row'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRow< volatile Row<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsRow type trait for 'const volatile Row'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRow< const volatile Row<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

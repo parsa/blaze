@@ -74,7 +74,9 @@ namespace blaze {
 //
 // <ul>
 //    <li>blaze::StaticMatrix</li>
+//    <li>blaze::HybridMatrix</li>
 //    <li>blaze::DynamicMatrix</li>
+//    <li>blaze::CustomMatrix</li>
 //    <li>blaze::CompressedMatrix</li>
 // </ul>
 //
