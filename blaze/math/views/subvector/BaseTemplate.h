@@ -87,7 +87,7 @@ namespace blaze {
 // function:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
 
    DenseVectorType x;
    // ... Resizing and initialization
@@ -97,7 +97,7 @@ namespace blaze {
    \endcode
 
    \code
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
 
    SparseVectorType x;
    // ... Resizing and initialization
@@ -114,9 +114,9 @@ namespace blaze {
 // of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>      DenseMatrixType;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -145,7 +145,7 @@ namespace blaze {
 // the subvector can be directly accessed with the subscript operator.
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
+   using VectorType = blaze::DynamicVector<double,blaze::rowVector>;
    VectorType v;
    // ... Resizing and initialization
 
@@ -169,8 +169,8 @@ namespace blaze {
 // of constant subvectors a ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                SubvectorType;
+   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -190,8 +190,8 @@ namespace blaze {
    \endcode
 
    \code
-   typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                   SubvectorType;
+   using VectorType    = blaze::CompressedVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -220,10 +220,10 @@ namespace blaze {
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
+   using VectorType = blaze::CompressedVector<double,blaze::rowVector>;
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
-   typedef blaze::Subvector<VectorType>  SubvectorType;
+   using SubvectorType = blaze::Subvector<VectorType>;
    SubvectorType sv = subvector( v, 10UL, 60UL );  // View on the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
@@ -259,8 +259,8 @@ namespace blaze {
 // a vector, several operations are not possible on views, such as resizing and swapping:
 
    \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                SubvectorType;
+   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 42UL );
    // ... Resizing and initialization
@@ -285,17 +285,17 @@ namespace blaze {
 // possible combinations of dense and sparse vectors with fitting element types:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
    DenseVectorType d1, d2, d3;
    SparseVectorType s1, s2;
 
    // ... Resizing and initialization
 
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
    DenseMatrixType A;
 
-   typedef blaze::Subvector<DenseVectorType>  SubvectorType;
+   using SubvectorType = blaze::Subvector<DenseVectorType>;
    SubvectorType sv( subvector( d1, 0UL, 10UL ) );  // View on the range [0..9] of vector d1
 
    sv = d2;                           // Dense vector initialization of the range [0..9]
@@ -329,7 +329,7 @@ namespace blaze {
    \code
    using blaze::unaligned;
 
-   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
 
    DenseVectorType x;
    // ... Resizing and initialization
@@ -366,8 +366,8 @@ namespace blaze {
    \code
    using blaze::columnVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::Subvector<VectorType,aligned>       SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,columnVector>;
+   using SubvectorType = blaze::Subvector<VectorType,aligned>;
 
    VectorType d( 17UL );
    // ... Resizing and initialization
@@ -396,7 +396,7 @@ namespace blaze {
    \code
    using blaze::aligned;
 
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
 
    SparseVectorType x;
    // ... Resizing and initialization
@@ -413,8 +413,8 @@ namespace blaze {
 // underlying vector:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                   SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType d1;
 

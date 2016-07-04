@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/Subvector.h
-//  \brief Header file for all restructuring subvector functions
+//  \brief Header file for the implementation of the Subvector view
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -1066,7 +1066,7 @@ inline bool trySubAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the multiplication assignment of a vector to a  subvector.
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a subvector.
 // \ingroup subvector
 //
 // \param lhs The target left-hand side subvector.
@@ -1090,6 +1090,37 @@ inline bool tryMultAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryMultAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to a subvector.
+// \ingroup subvector
+//
+// \param lhs The target left-hand side subvector.
+// \param rhs The right-hand side vector divisor.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryDivAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryDivAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
 }
 /*! \endcond */
 //*************************************************************************************************

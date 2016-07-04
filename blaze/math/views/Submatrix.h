@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/Submatrix.h
-//  \brief Header file for all restructuring submatrix functions
+//  \brief Header file for the implementation of the Submatrix view
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

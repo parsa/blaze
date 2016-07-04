@@ -84,8 +84,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSubvector
-   : public FalseType
+struct IsSubvector : public FalseType
 {};
 //*************************************************************************************************
 

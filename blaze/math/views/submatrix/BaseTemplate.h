@@ -68,13 +68,13 @@ namespace blaze {
    class Submatrix;
    \endcode
 
-//  - MT: specifies the type of the dense matrix primitive. Submatrix can be used with every
-//        matrix primitive, but does not work with any matrix expression type.
+//  - MT: specifies the type of the matrix primitive. Submatrix can be used with every matrix
+//        primitive, but does not work with any matrix expression type.
 //  - AF: the alignment flag specifies whether the submatrix is aligned (\a blaze::aligned) or
 //        unaligned (\a blaze::unaligned). The default value is \a blaze::unaligned.
-//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
-//        This template parameter doesn't have to be explicitly defined, but is automatically
-//        derived from the first template parameter.
+//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix. This
+//        template parameter doesn't have to be explicitly defined, but is automatically derived
+//        from the first template parameter.
 //  - DF: specifies whether the given matrix type is a dense or sparse matrix type. This template
 //        parameter doesn't have to be defined explicitly, it is automatically derived from the
 //        first template parameter. Defining the parameter explicitly may result in a compilation
@@ -87,7 +87,7 @@ namespace blaze {
 // function:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
 
    DenseMatrixType A;
    // ... Resizing and initialization
@@ -97,7 +97,7 @@ namespace blaze {
    \endcode
 
    \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    SparseMatrixType A;
    // ... Resizing and initialization
@@ -114,8 +114,8 @@ namespace blaze {
 // of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    DenseMatrixType A, B;
    SparseMatrixType C;
@@ -140,7 +140,7 @@ namespace blaze {
 // the submatrix can be directly accessed with the function call operator:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
+   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
    MatrixType A;
    // ... Resizing and initialization
 
@@ -158,8 +158,8 @@ namespace blaze {
 // ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -181,8 +181,8 @@ namespace blaze {
    \endcode
 
    \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
+   using MatrixType    = blaze::CompressedMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -213,10 +213,10 @@ namespace blaze {
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
+   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
    MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
-   typedef blaze::Submatrix<MatrixType>  SubmatrixType;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
    SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
@@ -254,8 +254,8 @@ namespace blaze {
 // such as resizing and swapping:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A;
    // ... Resizing and initialization
@@ -281,17 +281,17 @@ namespace blaze {
 // possible combinations of dense and sparse matrices with fitting element types:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>     DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
    DenseMatrixType D1, D2, D3;
    SparseMatrixType S1, S2;
 
-   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
    SparseVectorType a, b;
 
    // ... Resizing and initialization
 
-   typedef blaze::Submatrix<DenseMatrixType>  SubmatrixType;
+   using SubmatrixType = blaze::Submatrix<DenseMatrixType>;
    SubmatrixType sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
                                                             // starting from row 0 and column 0
 
@@ -325,7 +325,7 @@ namespace blaze {
    \code
    using blaze::unaligned;
 
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
 
    DenseMatrixType A;
    // ... Resizing and initialization
@@ -362,8 +362,8 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType,aligned>   SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType,aligned>;
 
    MatrixType D( 13UL, 17UL );
    // ... Resizing and initialization
@@ -398,7 +398,7 @@ namespace blaze {
    \code
    using blaze::aligned;
 
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    SparseMatrixType A;
    // ... Resizing and initialization
@@ -415,8 +415,8 @@ namespace blaze {
 // underlying dense matrix:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType D1;
 
@@ -438,8 +438,8 @@ namespace blaze {
    using blaze::SymmetricMatrix;
    using blaze::Submatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >  SymmetricDynamicType;
-   typedef Submatrix< SymmetricDynamicType >      SubmatrixType;
+   using SymmetricDynamicType = SymmetricMatrix< DynamicMatrix<int> >;
+   using SubmatrixType        = Submatrix< SymmetricDynamicType >;
 
    // Setup of a 16x16 symmetric matrix
    SymmetricDynamicType A( 16UL );

@@ -84,8 +84,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSubmatrix
-   : public FalseType
+struct IsSubmatrix : public FalseType
 {};
 //*************************************************************************************************
 
