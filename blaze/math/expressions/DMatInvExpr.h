@@ -213,7 +213,10 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.dm_ );
+      if( !isSame( ~lhs, rhs.dm_ ) ) {
+         assign( ~lhs, rhs.dm_ );
+      }
+
       invert( ~lhs );
    }
    /*! \endcond */

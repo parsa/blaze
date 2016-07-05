@@ -63,6 +63,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -1537,6 +1538,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 {
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1548,7 +1550,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -4295,6 +4297,7 @@ inline CustomMatrix<Type,AF,PF,true>&
 {
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4306,7 +4309,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       const ResultType_<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }

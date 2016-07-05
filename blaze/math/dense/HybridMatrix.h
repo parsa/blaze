@@ -61,6 +61,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1436,6 +1437,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -1447,7 +1449,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
@@ -4346,6 +4348,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -4357,7 +4360,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );

@@ -61,6 +61,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1306,6 +1307,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
 {
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
@@ -1313,7 +1315,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
@@ -4061,6 +4063,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
 {
    typedef TransExprTrait_<This>   TT;
    typedef CTransExprTrait_<This>  CT;
+   typedef InvExprTrait_<This>     IT;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
@@ -4068,7 +4071,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
    else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( (~rhs).canAlias( this ) ) {
+   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
       DynamicMatrix tmp( ~rhs );
       swap( tmp );
    }
