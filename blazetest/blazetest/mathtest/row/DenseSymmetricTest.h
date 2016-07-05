@@ -385,7 +385,7 @@ void DenseSymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the Row class template.
+/*!\brief Testing the functionality of the dense symmetric Row specialization.
 //
 // \return void
 */
@@ -406,7 +406,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense symmetric Row class test.
+/*!\brief Macro for the execution of the Row dense symmetric test.
 */
 #define RUN_ROW_DENSESYMMETRIC_TEST \
    blazetest::mathtest::row::runTest()

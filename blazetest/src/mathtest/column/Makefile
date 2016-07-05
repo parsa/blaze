@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the densecolumn module of the Blaze test suite
+#  Makefile for the column module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
@@ -54,9 +54,13 @@ noop: $(BIN)
 
 
 # Build rules
-GeneralTest: GeneralTest.o
+DenseGeneralTest: DenseGeneralTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SymmetricTest: SymmetricTest.o
+DenseSymmetricTest: DenseSymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseGeneralTest: SparseGeneralTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseSymmetricTest: SparseSymmetricTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

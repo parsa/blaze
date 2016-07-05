@@ -40,12 +40,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <blaze/math/Column.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
-#include <blaze/math/DenseColumn.h>
-#include <blaze/math/DenseRow.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HybridMatrix.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/util/policies/ArrayDelete.h>
@@ -7624,7 +7624,7 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::DenseRow<ST>  RT;
+      typedef blaze::Row<ST>  RT;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -7718,7 +7718,7 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<OST>  RT;
+      typedef blaze::Row<OST>  RT;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -7825,7 +7825,7 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::DenseColumn<ST>  CT;
+      typedef blaze::Column<ST>  CT;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -7919,7 +7919,7 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<OST>  CT;
+      typedef blaze::Column<OST>  CT;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );

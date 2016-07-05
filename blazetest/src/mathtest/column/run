@@ -1,8 +1,9 @@
+#!/bin/bash
 #==================================================================================================
 #
-#  Makefile for the sparsecolumn module of the Blaze test suite
+#  Run script for the column module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,49 +33,11 @@
 #==================================================================================================
 
 
-# Including the compiler and library settings
-ifneq ($(MAKECMDGOALS),clean)
--include ../../Makeconfig
-endif
+PATH_COLUMN=$( dirname "${BASH_SOURCE[0]}" )
 
+echo " Running Column tests..."
 
-# Setting the source, object and dependency files
-SRC = $(wildcard ./*.cpp)
-DEP = $(SRC:.cpp=.d)
-OBJ = $(SRC:.cpp=.o)
-BIN = $(SRC:.cpp=)
-
-
-# General rules
-default: all
-all: $(BIN)
-essential: $(BIN)
-single: $(BIN)
-noop: $(BIN)
-
-
-# Build rules
-GeneralTest: GeneralTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SymmetricTest: SymmetricTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-
-# Cleanup
-clean:
-	@$(RM) $(DEP) $(OBJ) $(BIN)
-
-
-# Makefile includes
-ifneq ($(MAKECMDGOALS),clean)
--include $(DEP)
-endif
-
-
-# Makefile generation
-%.d: %.cpp
-	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
-
-
-# Setting the independent commands
-.PHONY: default all essential single noop clean
+EXE=$PATH_COLUMN/DenseGeneralTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMN/DenseSymmetricTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMN/SparseGeneralTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMN/SparseSymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

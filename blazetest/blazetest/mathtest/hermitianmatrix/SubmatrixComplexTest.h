@@ -8419,7 +8419,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the complex HermitianMatrix submatrix test.
+/*!\brief Macro for the execution of the HermitianMatrix submatrix complex test.
 */
 #define RUN_HERMITIANMATRIX_SUBMATRIXCOMPLEX_TEST \
    blazetest::mathtest::hermitianmatrix::runTest()

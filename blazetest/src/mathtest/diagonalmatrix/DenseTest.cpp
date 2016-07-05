@@ -40,13 +40,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <blaze/math/Column.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomMatrix.h>
-#include <blaze/math/DenseColumn.h>
-#include <blaze/math/DenseRow.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/HybridMatrix.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/util/Complex.h>
@@ -10080,7 +10080,7 @@ void DenseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::DenseRow<DT>  RT;
+      typedef blaze::Row<DT>  RT;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -10168,7 +10168,7 @@ void DenseTest::testRow()
    {
       test_ = "Row-major row() function (scalar assignment test)";
 
-      typedef blaze::DenseRow<DT>  RT;
+      typedef blaze::Row<DT>  RT;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -10216,7 +10216,7 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<ODT>  RT;
+      typedef blaze::Row<ODT>  RT;
 
       ODT diag( 3UL );
       diag(0,0) = 1;
@@ -10304,7 +10304,7 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function (scalar assignment test)";
 
-      typedef blaze::DenseRow<ODT>  RT;
+      typedef blaze::Row<ODT>  RT;
 
       ODT diag( 3UL );
       diag(0,0) = 1;
@@ -10365,7 +10365,7 @@ void DenseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::DenseColumn<DT>  CT;
+      typedef blaze::Column<DT>  CT;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -10453,7 +10453,7 @@ void DenseTest::testColumn()
    {
       test_ = "Row-major column() function (scalar assignment test)";
 
-      typedef blaze::DenseColumn<DT>  CT;
+      typedef blaze::Column<DT>  CT;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -10501,7 +10501,7 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<ODT>  CT;
+      typedef blaze::Column<ODT>  CT;
 
       ODT diag( 3UL );
       diag(0,0) = 1;
@@ -10589,7 +10589,7 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function (scalar assignment test)";
 
-      typedef blaze::DenseColumn<ODT>  CT;
+      typedef blaze::Column<ODT>  CT;
 
       ODT diag( 3UL );
       diag(0,0) = 1;

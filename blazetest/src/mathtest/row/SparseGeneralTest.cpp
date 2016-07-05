@@ -58,7 +58,7 @@ namespace row {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general Row class test.
+/*!\brief Constructor for the Row sparse general test.
 //
 // \exception std::runtime_error Operation error detected.
 */

@@ -416,7 +416,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse Submatrix test.
+/*!\brief Macro for the execution of the Submatrix sparse test.
 */
 #define RUN_SUBMATRIX_SPARSE_TEST \
    blazetest::mathtest::submatrix::runTest()

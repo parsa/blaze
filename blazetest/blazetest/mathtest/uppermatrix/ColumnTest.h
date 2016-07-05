@@ -45,10 +45,9 @@
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/DenseColumn.h>
+#include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/SparseColumn.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/UpperMatrix.h>

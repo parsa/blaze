@@ -8577,7 +8577,7 @@ void DenseUnalignedTest::testRow()
 
       initialize();
 
-      typedef blaze::DenseRow<SMT>  RowType;
+      typedef blaze::Row<SMT>  RowType;
 
       SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
       RowType row1 = row( sm1, 1UL );
@@ -8613,7 +8613,7 @@ void DenseUnalignedTest::testRow()
 
       initialize();
 
-      typedef blaze::DenseRow<OSMT>  RowType;
+      typedef blaze::Row<OSMT>  RowType;
 
       OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       RowType row1 = row( sm1, 1UL );
@@ -8662,7 +8662,7 @@ void DenseUnalignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::DenseColumn<SMT>  ColumnType;
+      typedef blaze::Column<SMT>  ColumnType;
 
       SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
       ColumnType col1 = column( sm1, 1UL );
@@ -8698,7 +8698,7 @@ void DenseUnalignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::DenseColumn<OSMT>  ColumnType;
+      typedef blaze::Column<OSMT>  ColumnType;
 
       OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       ColumnType col1 = column( sm1, 1UL );

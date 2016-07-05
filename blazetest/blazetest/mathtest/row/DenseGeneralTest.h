@@ -385,7 +385,7 @@ void DenseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t e
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the Row class template.
+/*!\brief Testing the functionality of the dense general Row specialization.
 //
 // \return void
 */
@@ -406,7 +406,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense general Row class test.
+/*!\brief Macro for the execution of the Row dense general test.
 */
 #define RUN_ROW_DENSEGENERAL_TEST \
    blazetest::mathtest::row::runTest()

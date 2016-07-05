@@ -260,7 +260,7 @@ void ClassTest::runDynamicMatrixTests( const MT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the matrix (de-)serialization with the given matrix. The matrix is
-// serialized and deserialized several times, using instances of DenseSubmatrix as destination
+// serialized and deserialized several times, using instances of Submatrix as destination
 // matrix type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< size_t M       // Number of rows of the matrix
@@ -276,14 +276,14 @@ void ClassTest::runDenseSubmatrixTests( const MT& src )
 
    {
       RM mat( M, N );
-      blaze::DenseSubmatrix<RM> dst( mat, 0UL, 0UL, M, N );
+      blaze::Submatrix<RM> dst( mat, 0UL, 0UL, M, N );
       randomize( dst );
       runTest( src, dst );
    }
 
    {
       CM mat( M, N );
-      blaze::DenseSubmatrix<CM> dst( mat, 0UL, 0UL, M, N );
+      blaze::Submatrix<CM> dst( mat, 0UL, 0UL, M, N );
       randomize( dst );
       runTest( src, dst );
    }
@@ -342,7 +342,7 @@ void ClassTest::runCompressedMatrixTests( const MT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the matrix (de-)serialization with the given matrix. The matrix is
-// serialized and deserialized several times, using instances of SparseSubmatrix as destination
+// serialized and deserialized several times, using instances of Submatrix as destination
 // matrix type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< size_t M       // Number of rows of the matrix
@@ -358,14 +358,14 @@ void ClassTest::runSparseSubmatrixTests( const MT& src )
 
    {
       RM mat( M, N );
-      blaze::SparseSubmatrix<RM> dst( mat, 0UL, 0UL, M, N );
+      blaze::Submatrix<RM> dst( mat, 0UL, 0UL, M, N );
       randomize( dst );
       runTest( src, dst );
    }
 
    {
       CM mat( M, N );
-      blaze::SparseSubmatrix<CM> dst( mat, 0UL, 0UL, M, N );
+      blaze::Submatrix<CM> dst( mat, 0UL, 0UL, M, N );
       randomize( dst );
       runTest( src, dst );
    }

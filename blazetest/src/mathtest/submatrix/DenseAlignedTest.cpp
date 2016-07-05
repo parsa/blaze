@@ -5983,8 +5983,8 @@ void DenseAlignedTest::testRow()
 
       initialize();
 
-      typedef blaze::DenseRow<ASMT>  AlignedRowType;
-      typedef blaze::DenseRow<USMT>  UnalignedRowType;
+      typedef blaze::Row<ASMT>  AlignedRowType;
+      typedef blaze::Row<USMT>  UnalignedRowType;
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
@@ -6032,8 +6032,8 @@ void DenseAlignedTest::testRow()
 
       initialize();
 
-      typedef blaze::DenseRow<AOSMT>  AlignedRowType;
-      typedef blaze::DenseRow<UOSMT>  UnalignedRowType;
+      typedef blaze::Row<AOSMT>  AlignedRowType;
+      typedef blaze::Row<UOSMT>  UnalignedRowType;
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
@@ -6099,8 +6099,8 @@ void DenseAlignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::DenseColumn<ASMT>  AlignedColumnType;
-      typedef blaze::DenseColumn<USMT>  UnalignedColumnType;
+      typedef blaze::Column<ASMT>  AlignedColumnType;
+      typedef blaze::Column<USMT>  UnalignedColumnType;
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
@@ -6148,8 +6148,8 @@ void DenseAlignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::DenseColumn<AOSMT>  AlignedColumnType;
-      typedef blaze::DenseColumn<UOSMT>  UnalignedColumnType;
+      typedef blaze::Column<AOSMT>  AlignedColumnType;
+      typedef blaze::Column<UOSMT>  UnalignedColumnType;
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );

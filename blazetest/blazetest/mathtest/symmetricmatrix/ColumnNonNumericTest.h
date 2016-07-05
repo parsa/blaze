@@ -45,11 +45,10 @@
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/DenseColumn.h>
+#include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/SparseColumn.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
@@ -437,7 +436,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the non-numeric SymmetricMatrix column test.
+/*!\brief Macro for the execution of the SymmetricMatrix column non-numeric test.
 */
 #define RUN_SYMMETRICMATRIX_COLUMNNONNUMERIC_TEST \
    blazetest::mathtest::symmetricmatrix::runTest()

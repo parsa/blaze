@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densecolumn/SymmetricTest.cpp
-//  \brief Source file for the symmetric DenseColumn class test
+//  \file src/mathtest/column/DenseSymmetricTest.cpp
+//  \brief Source file for the Column dense symmetric test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -44,14 +44,14 @@
 #include <blaze/math/CustomVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/policies/Deallocate.h>
-#include <blazetest/mathtest/densecolumn/SymmetricTest.h>
+#include <blazetest/mathtest/column/DenseSymmetricTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace densecolumn {
+namespace column {
 
 //=================================================================================================
 //
@@ -60,11 +60,11 @@ namespace densecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the symmetric DenseColumn class test.
+/*!\brief Constructor for the Column dense symmetric test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SymmetricTest::SymmetricTest()
+DenseSymmetricTest::DenseSymmetricTest()
    : mat_ ( 4UL )
    , tmat_( 4UL )
 {
@@ -96,28 +96,28 @@ SymmetricTest::SymmetricTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn constructors.
+/*!\brief Test of the Column constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the DenseColumn class template.
+// This function performs a test of all constructors of the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testConstructors()
+void DenseSymmetricTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn constructor";
+      test_ = "Row-major Column constructor";
 
       initialize();
 
       // 0th matrix column
       {
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
 
          checkSize    ( col0, 4UL );
          checkCapacity( col0, 4UL );
@@ -136,7 +136,7 @@ void SymmetricTest::testConstructors()
 
       // 1st matrix column
       {
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
@@ -155,7 +155,7 @@ void SymmetricTest::testConstructors()
 
       // 2nd matrix column
       {
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
 
          checkSize    ( col2, 4UL );
          checkCapacity( col2, 4UL );
@@ -174,7 +174,7 @@ void SymmetricTest::testConstructors()
 
       // 3rd matrix column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
 
          checkSize    ( col3, 4UL );
          checkCapacity( col3, 4UL );
@@ -198,13 +198,13 @@ void SymmetricTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn constructor";
+      test_ = "Column-major Column constructor";
 
       initialize();
 
       // 0th matrix column
       {
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
 
          checkSize    ( col0, 4UL );
          checkCapacity( col0, 4UL );
@@ -223,7 +223,7 @@ void SymmetricTest::testConstructors()
 
       // 1st matrix column
       {
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
@@ -242,7 +242,7 @@ void SymmetricTest::testConstructors()
 
       // 2nd matrix column
       {
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
 
          checkSize    ( col2, 4UL );
          checkCapacity( col2, 4UL );
@@ -261,7 +261,7 @@ void SymmetricTest::testConstructors()
 
       // 3rd matrix column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
 
          checkSize    ( col3, 4UL );
          checkCapacity( col3, 4UL );
@@ -283,26 +283,26 @@ void SymmetricTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn assignment operators.
+/*!\brief Test of the Column assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the DenseColumn class template.
+// This function performs a test of all assignment operators of the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testAssignment()
+void DenseSymmetricTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn homogeneous assignment";
+      test_ = "Row-major Column homogeneous assignment";
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
       col1 = 8;
 
       checkSize    ( col1,  4UL );
@@ -353,7 +353,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
       col3 = { 1, 2, 3, 4 };
 
       checkSize    ( col3, 4UL );
@@ -399,7 +399,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
       col3 = { 1, 2 };
 
       checkSize    ( col3, 4UL );
@@ -442,12 +442,12 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn copy assignment";
+      test_ = "Row-major Column copy assignment";
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
-      col1 = column( mat_, 2UL );
+      CT col1 = blaze::column( mat_, 1UL );
+      col1 = blaze::column( mat_, 2UL );
 
       checkSize    ( col1, 4UL );
       checkCapacity( col1, 4UL );
@@ -497,7 +497,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -551,7 +551,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -607,7 +607,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
@@ -654,11 +654,11 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn homogeneous assignment";
+      test_ = "Column-major Column homogeneous assignment";
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
       col1 = 8;
 
       checkSize    ( col1 ,  4UL );
@@ -709,7 +709,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
       col3 = { 1, 2, 3, 4 };
 
       checkSize    ( col3 , 4UL );
@@ -755,7 +755,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
       col3 = { 1, 2 };
 
       checkSize    ( col3, 4UL );
@@ -798,12 +798,12 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn copy assignment";
+      test_ = "Column-major Column copy assignment";
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
-      col1 = column( tmat_, 2UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
+      col1 = blaze::column( tmat_, 2UL );
 
       checkSize    ( col1 , 4UL );
       checkCapacity( col1 , 4UL );
@@ -853,7 +853,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -907,7 +907,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -963,7 +963,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
@@ -1008,27 +1008,27 @@ void SymmetricTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn addition assignment operators.
+/*!\brief Test of the Column addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testAddAssign()
+void DenseSymmetricTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major DenseColumn addition assignment
+   // Row-major Column addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn addition assignment";
+      test_ = "Row-major Column addition assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 += column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 += blaze::column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
@@ -1078,7 +1078,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1132,7 +1132,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1188,7 +1188,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1232,16 +1232,16 @@ void SymmetricTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major DenseColumn addition assignment
+   // Column-major Column addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn addition assignment";
+      test_ = "Column-major Column addition assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 += column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 += blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkCapacity( col2 , 4UL );
@@ -1291,7 +1291,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1345,7 +1345,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1401,7 +1401,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1447,27 +1447,27 @@ void SymmetricTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn subtraction assignment operators.
+/*!\brief Test of the Column subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testSubAssign()
+void DenseSymmetricTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major DenseColumn subtraction assignment
+   // Row-major Column subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn subtraction assignment";
+      test_ = "Row-major Column subtraction assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 -= column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 -= blaze::column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
@@ -1517,7 +1517,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1571,7 +1571,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1627,7 +1627,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1671,16 +1671,16 @@ void SymmetricTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major DenseColumn subtraction assignment
+   // Column-major Column subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn subtraction assignment";
+      test_ = "Column-major Column subtraction assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 -= column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 -= blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkCapacity( col2 , 4UL );
@@ -1730,7 +1730,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -1784,7 +1784,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -1840,7 +1840,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1886,27 +1886,27 @@ void SymmetricTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn multiplication assignment operators.
+/*!\brief Test of the Column multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testMultAssign()
+void DenseSymmetricTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major DenseColumn multiplication assignment
+   // Row-major Column multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn multiplication assignment";
+      test_ = "Row-major Column multiplication assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 *= column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 *= blaze::column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
@@ -1956,7 +1956,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -2010,7 +2010,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -2066,7 +2066,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -2110,16 +2110,16 @@ void SymmetricTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major DenseColumn multiplication assignment
+   // Column-major Column multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn multiplication assignment";
+      test_ = "Column-major Column multiplication assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 *= column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 *= blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkCapacity( col2 , 4UL );
@@ -2169,7 +2169,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -2223,7 +2223,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -2279,7 +2279,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -2325,15 +2325,15 @@ void SymmetricTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn division assignment operators.
+/*!\brief Test of the Column division assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the division assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testDivAssign()
+void DenseSymmetricTest::testDivAssign()
 {
    //=====================================================================================
    // Row-major dense vector multiplication assignment
@@ -2348,7 +2348,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -2402,7 +2402,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -2462,7 +2462,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
       AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
@@ -2516,7 +2516,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
       std::unique_ptr<int[]> array( new int[5] );
@@ -2566,15 +2566,15 @@ void SymmetricTest::testDivAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all DenseColumn (self-)scaling operations.
+/*!\brief Test of all Column (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the DenseColumn
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testScaling()
+void DenseSymmetricTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (v*=2)
@@ -2585,7 +2585,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 *= 3;
 
@@ -2633,7 +2633,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = col2 * 3;
 
@@ -2681,7 +2681,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = 3 * col2;
 
@@ -2729,7 +2729,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 /= 0.5;
 
@@ -2777,7 +2777,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = col2 / 0.5;
 
@@ -2817,17 +2817,17 @@ void SymmetricTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major DenseColumn::scale()
+   // Row-major Column::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn::scale()";
+      test_ = "Row-major Column::scale()";
 
       initialize();
 
       // Integral scaling the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          col3.scale( 3 );
 
          checkSize    ( col3, 4UL );
@@ -2866,7 +2866,7 @@ void SymmetricTest::testScaling()
 
       // Floating point scaling the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          col3.scale( 0.5 );
 
          checkSize    ( col3, 4UL );
@@ -2914,7 +2914,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 *= 3;
 
@@ -2962,7 +2962,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = col2 * 3;
 
@@ -3010,7 +3010,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = 3 * col2;
 
@@ -3058,7 +3058,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 /= 0.5;
 
@@ -3106,7 +3106,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = col2 / 0.5;
 
@@ -3146,17 +3146,17 @@ void SymmetricTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major DenseColumn::scale()
+   // Column-major Column::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn::scale()";
+      test_ = "Column-major Column::scale()";
 
       initialize();
 
       // Integral scaling the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          col3.scale( 3 );
 
          checkSize    ( col3 , 4UL );
@@ -3195,7 +3195,7 @@ void SymmetricTest::testScaling()
 
       // Floating point scaling the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          col3.scale( 0.5 );
 
          checkSize    ( col3 , 4UL );
@@ -3237,27 +3237,27 @@ void SymmetricTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn subscript operator.
+/*!\brief Test of the Column subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the DenseColumn class template. In case an error is detected, a \a std::runtime_error
+// of the Column specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void SymmetricTest::testSubscript()
+void DenseSymmetricTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn::operator[]";
+      test_ = "Row-major Column::operator[]";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       // Assignment to the element at index 1
       col2[1] = 9;
@@ -3497,11 +3497,11 @@ void SymmetricTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn::operator[]";
+      test_ = "Row-major Column::operator[]";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       // Assignment to the element at index 1
       col2[1] = 9;
@@ -3739,15 +3739,15 @@ void SymmetricTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the DenseColumn iterator implementation.
+/*!\brief Test of the Column iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the DenseColumn class template.
+// This function performs a test of the iterator implementation of the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIterator()
+void DenseSymmetricTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3788,7 +3788,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
          CT::ConstIterator it( begin( col2 ) );
 
          if( it == end( col2 ) || *it != 0 ) {
@@ -3803,7 +3803,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction";
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 4UL ) {
@@ -3821,7 +3821,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction";
 
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
          if( number != 4UL ) {
@@ -3839,7 +3839,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          CT::ConstIterator it ( cbegin( col3 ) );
          CT::ConstIterator end( cend( col3 ) );
 
@@ -3936,7 +3936,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
          int value = 6;
 
          for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -3974,7 +3974,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
          int value = 2;
 
          for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4012,7 +4012,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
          int value = 2;
 
          for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4050,7 +4050,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
          int value = 1;
 
          for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4088,7 +4088,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
 
          for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
@@ -4162,7 +4162,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
          OCT::ConstIterator it( begin( col2 ) );
 
          if( it == end( col2 ) || *it != 0 ) {
@@ -4177,7 +4177,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 4UL ) {
@@ -4195,7 +4195,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
          if( number != 4UL ) {
@@ -4213,7 +4213,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          OCT::ConstIterator it ( cbegin( col3 ) );
          OCT::ConstIterator end( cend( col3 ) );
 
@@ -4310,7 +4310,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
          int value = 6;
 
          for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4348,7 +4348,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
          int value = 2;
 
          for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4386,7 +4386,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
          int value = 2;
 
          for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4424,7 +4424,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
          int value = 1;
 
          for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
@@ -4462,7 +4462,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
 
          for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
@@ -4500,27 +4500,27 @@ void SymmetricTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the DenseColumn class template.
+/*!\brief Test of the \c nonZeros() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testNonZeros()
+void DenseSymmetricTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn::nonZeros()";
+      test_ = "Row-major Column::nonZeros()";
 
       initialize();
 
       // Initialization check
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       checkSize    ( col3, 4UL );
       checkCapacity( col3, 4UL );
@@ -4577,12 +4577,12 @@ void SymmetricTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn::nonZeros()";
+      test_ = "Column-major Column::nonZeros()";
 
       initialize();
 
       // Initialization check
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       checkSize    ( col3, 4UL );
       checkCapacity( col3, 4UL );
@@ -4637,15 +4637,15 @@ void SymmetricTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the DenseColumn class template.
+/*!\brief Test of the \c reset() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testReset()
+void DenseSymmetricTest::testReset()
 {
    using blaze::reset;
 
@@ -4655,13 +4655,13 @@ void SymmetricTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major DenseColumn::reset()";
+      test_ = "Row-major Column::reset()";
 
       initialize();
 
       // Resetting a single element in column 3
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          reset( col3[1] );
 
          checkSize    ( col3, 4UL );
@@ -4684,7 +4684,7 @@ void SymmetricTest::testReset()
 
       // Resetting the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          reset( col3 );
 
          checkSize    ( col3, 4UL );
@@ -4712,13 +4712,13 @@ void SymmetricTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn::reset()";
+      test_ = "Column-major Column::reset()";
 
       initialize();
 
       // Resetting a single element in column 3
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          reset( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -4741,7 +4741,7 @@ void SymmetricTest::testReset()
 
       // Resetting the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          reset( col3 );
 
          checkSize    ( col3 , 4UL );
@@ -4767,15 +4767,15 @@ void SymmetricTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the DenseColumn class template.
+/*!\brief Test of the \c clear() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the DenseColumn class template.
+// This function performs a test of the \c clear() function with the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testClear()
+void DenseSymmetricTest::testClear()
 {
    using blaze::clear;
 
@@ -4791,7 +4791,7 @@ void SymmetricTest::testClear()
 
       // Clearing a single element in column 3
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          clear( col3[1] );
 
          checkSize    ( col3, 4UL );
@@ -4825,7 +4825,7 @@ void SymmetricTest::testClear()
 
       // Clearing a single element in column 3
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          clear( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -4851,15 +4851,15 @@ void SymmetricTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the DenseColumn class template.
+/*!\brief Test of the \c isDefault() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIsDefault()
+void DenseSymmetricTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -4875,7 +4875,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with default column
       {
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
 
          if( isDefault( col0[1] ) != true ) {
             std::ostringstream oss;
@@ -4898,7 +4898,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with non-default column
       {
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
 
          if( isDefault( col1[1] ) != false ) {
             std::ostringstream oss;
@@ -4932,7 +4932,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with default column
       {
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
 
          if( isDefault( col0[1] ) != true ) {
             std::ostringstream oss;
@@ -4955,7 +4955,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with non-default column
       {
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
 
          if( isDefault( col1[1] ) != false ) {
             std::ostringstream oss;
@@ -4981,15 +4981,15 @@ void SymmetricTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the DenseColumn class template.
+/*!\brief Test of the \c isSame() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the DenseColumn class template.
+// This function performs a test of the \c isSame() function with the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIsSame()
+void DenseSymmetricTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5000,8 +5000,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns
       {
-         CT col1 = column( mat_, 1UL );
-         CT col2 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
+         CT col2 = blaze::column( mat_, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -5016,8 +5016,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns
       {
-         CT col1 = column( mat_, 1UL );
-         CT col2 = column( mat_, 2UL );
+         CT col1 = blaze::column( mat_, 1UL );
+         CT col2 = blaze::column( mat_, 2UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -5034,7 +5034,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
@@ -5062,7 +5062,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -5090,7 +5090,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -5116,12 +5116,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::Submatrix<MT>               SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 1UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -5136,12 +5136,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::Submatrix<MT>               SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 0UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 0UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -5156,12 +5156,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<MT>               SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 2UL );
 
@@ -5178,12 +5178,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<MT>               SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 3UL );
 
@@ -5200,12 +5200,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<MT>               SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 1UL, 2UL );
 
@@ -5231,8 +5231,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns
       {
-         OCT col1 = column( tmat_, 1UL );
-         OCT col2 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
+         OCT col2 = blaze::column( tmat_, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -5247,8 +5247,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns
       {
-         OCT col1 = column( tmat_, 1UL );
-         OCT col2 = column( tmat_, 2UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -5265,7 +5265,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
@@ -5293,7 +5293,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -5321,7 +5321,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -5347,12 +5347,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::Submatrix<OMT>              SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 1UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -5367,12 +5367,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::Submatrix<OMT>              SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 0UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 0UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -5387,12 +5387,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<OMT>              SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 2UL );
 
@@ -5409,12 +5409,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<OMT>              SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 3UL );
 
@@ -5431,12 +5431,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<OMT>              SubmatrixType;
-         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>       SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 1UL, 2UL );
 
@@ -5456,15 +5456,15 @@ void SymmetricTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the DenseColumn class template.
+/*!\brief Test of the \c subvector() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the DenseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testSubvector()
+void DenseSymmetricTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5477,7 +5477,7 @@ void SymmetricTest::testSubvector()
 
       typedef blaze::Subvector<CT>  SubvectorType;
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -5513,7 +5513,7 @@ void SymmetricTest::testSubvector()
 
       typedef blaze::Subvector<OCT>  SubvectorType;
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -5556,7 +5556,7 @@ void SymmetricTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void SymmetricTest::initialize()
+void DenseSymmetricTest::initialize()
 {
    // Initializing the symmetric row-major matrix
    mat_.reset();
@@ -5576,7 +5576,7 @@ void SymmetricTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace densecolumn
+} // namespace column
 
 } // namespace mathtest
 
@@ -5594,14 +5594,14 @@ void SymmetricTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running symmetric DenseColumn class test..." << std::endl;
+   std::cout << "   Running Column dense symmetric test..." << std::endl;
 
    try
    {
-      RUN_DENSECOLUMN_CLASS_TEST;
+      RUN_COLUMN_DENSESYMMETRIC_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during symmetric DenseColumn class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Column dense symmetric test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

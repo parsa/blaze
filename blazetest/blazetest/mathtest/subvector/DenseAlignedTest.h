@@ -249,7 +249,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense aligned Subvector test.
+/*!\brief Macro for the execution of the Subvector dense aligned test.
 */
 #define RUN_SUBVECTOR_DENSEALIGNED_TEST \
    blazetest::mathtest::subvector::runTest()

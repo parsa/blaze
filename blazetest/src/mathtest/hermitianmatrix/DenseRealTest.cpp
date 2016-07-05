@@ -40,11 +40,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <blaze/math/Column.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
-#include <blaze/math/DenseColumn.h>
-#include <blaze/math/DenseRow.h>
 #include <blaze/math/HybridMatrix.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/Submatrix.h>
@@ -8322,7 +8322,7 @@ void DenseRealTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::DenseRow<HT>  RT;
+      typedef blaze::Row<HT>  RT;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -8412,7 +8412,7 @@ void DenseRealTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<OHT>  RT;
+      typedef blaze::Row<OHT>  RT;
 
       OHT herm( 3UL );
       herm(0,0) =  1;
@@ -8515,7 +8515,7 @@ void DenseRealTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::DenseColumn<HT>  CT;
+      typedef blaze::Column<HT>  CT;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -8605,7 +8605,7 @@ void DenseRealTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<OHT>  CT;
+      typedef blaze::Column<OHT>  CT;
 
       OHT herm( 3UL );
       herm(0,0) =  1;

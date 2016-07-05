@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/sparsecolumn/SymmetricTest.cpp
-//  \brief Source file for the symmetric SparseColumn class test
+//  \file src/mathtest/column/SparseSymmetricTest.cpp
+//  \brief Source file for the Column sparse symmetric test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,14 +42,14 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/sparsecolumn/SymmetricTest.h>
+#include <blazetest/mathtest/column/SparseSymmetricTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace sparsecolumn {
+namespace column {
 
 //=================================================================================================
 //
@@ -58,11 +58,11 @@ namespace sparsecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the symmetric SparseColumn class test.
+/*!\brief Constructor for the Column sparse symmetric test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SymmetricTest::SymmetricTest()
+SparseSymmetricTest::SparseSymmetricTest()
    : mat_ ( 4UL )
    , tmat_( 4UL )
 {
@@ -102,28 +102,28 @@ SymmetricTest::SymmetricTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn constructors.
+/*!\brief Test of the Column constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the SparseColumn class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all constructors of the Column specialization. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testConstructors()
+void SparseSymmetricTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn constructor";
+      test_ = "Row-major Column constructor";
 
       initialize();
 
       // 0th matrix column
       {
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
 
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
@@ -141,7 +141,7 @@ void SymmetricTest::testConstructors()
 
       // 1st matrix column
       {
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
 
          checkSize    ( col1, 4UL );
          checkNonZeros( col1, 2UL );
@@ -159,7 +159,7 @@ void SymmetricTest::testConstructors()
 
       // 2nd matrix column
       {
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
 
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
@@ -177,7 +177,7 @@ void SymmetricTest::testConstructors()
 
       // 3rd matrix column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
 
          checkSize    ( col3, 4UL );
          checkNonZeros( col3, 3UL );
@@ -200,13 +200,13 @@ void SymmetricTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn constructor";
+      test_ = "Column-major Column constructor";
 
       initialize();
 
       // 0th matrix column
       {
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
 
          checkSize    ( col0, 4UL );
          checkNonZeros( col0, 0UL );
@@ -224,7 +224,7 @@ void SymmetricTest::testConstructors()
 
       // 1st matrix column
       {
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
 
          checkSize    ( col1, 4UL );
          checkNonZeros( col1, 2UL );
@@ -242,7 +242,7 @@ void SymmetricTest::testConstructors()
 
       // 2nd matrix column
       {
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
 
          checkSize    ( col2, 4UL );
          checkNonZeros( col2, 2UL );
@@ -260,7 +260,7 @@ void SymmetricTest::testConstructors()
 
       // 3rd matrix column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
 
          checkSize    ( col3, 4UL );
          checkNonZeros( col3, 3UL );
@@ -281,27 +281,27 @@ void SymmetricTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn assignment operators.
+/*!\brief Test of the Column assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the SparseColumn class template.
+// This function performs a test of all assignment operators of the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testAssignment()
+void SparseSymmetricTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn copy assignment";
+      test_ = "Row-major Column copy assignment";
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
-      col1 = column( mat_, 2UL );
+      CT col1 = blaze::column( mat_, 1UL );
+      col1 = blaze::column( mat_, 2UL );
 
       checkSize    ( col1, 4UL );
       checkNonZeros( col1, 2UL );
@@ -346,7 +346,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec1{ 0, 8, 0, 9 };
 
@@ -395,7 +395,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
@@ -441,12 +441,12 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn copy assignment";
+      test_ = "Column-major Column copy assignment";
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
-      col1 = column( tmat_, 2UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
+      col1 = blaze::column( tmat_, 2UL );
 
       checkSize    ( col1 , 4UL );
       checkNonZeros( col1 , 2UL );
@@ -491,7 +491,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec1{ 0, 8, 0, 9 };
 
@@ -540,7 +540,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
@@ -584,27 +584,27 @@ void SymmetricTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn addition assignment operators.
+/*!\brief Test of the Column addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testAddAssign()
+void SparseSymmetricTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn addition assignment
+   // Row-major Column addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn addition assignment";
+      test_ = "Row-major Column addition assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 += column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 += blaze::column( mat_, 3UL );
 
       checkSize    ( col2  , 4UL );
       checkNonZeros( col2  , 3UL );
@@ -649,7 +649,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
@@ -698,7 +698,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -741,16 +741,16 @@ void SymmetricTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn addition assignment
+   // Column-major Column addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn addition assignment";
+      test_ = "Column-major Column addition assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 += column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 += blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkNonZeros( col2 , 3UL );
@@ -795,7 +795,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
@@ -844,7 +844,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -889,27 +889,27 @@ void SymmetricTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn subtraction assignment operators.
+/*!\brief Test of the Column subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testSubAssign()
+void SparseSymmetricTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn subtraction assignment
+   // Row-major Column subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn subtraction assignment";
+      test_ = "Row-major Column subtraction assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 -= column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 -= blaze::column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
       checkNonZeros( col2, 3UL );
@@ -954,7 +954,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
@@ -1003,7 +1003,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1046,16 +1046,16 @@ void SymmetricTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn subtraction assignment
+   // Column-major Column subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn subtraction assignment";
+      test_ = "Column-major Column subtraction assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 -= column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 -= blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkNonZeros( col2 , 3UL );
@@ -1100,7 +1100,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, -4, 0, 0 };
 
@@ -1149,7 +1149,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1194,27 +1194,27 @@ void SymmetricTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn multiplication assignment operators.
+/*!\brief Test of the Column multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the multiplication assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testMultAssign()
+void SparseSymmetricTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn multiplication assignment
+   // Row-major Column multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn multiplication assignment";
+      test_ = "Row-major Column multiplication assignment";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
-      col2 *= column( mat_, 3UL );
+      CT col2 = blaze::column( mat_, 2UL );
+      col2 *= blaze::column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
       checkNonZeros( col2, 2UL );
@@ -1259,7 +1259,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, 0, -4, 0 };
 
@@ -1308,7 +1308,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1351,16 +1351,16 @@ void SymmetricTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn multiplication assignment
+   // Column-major Column multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn multiplication assignment";
+      test_ = "Column-major Column multiplication assignment";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
-      col2 *= column( tmat_, 3UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
+      col2 *= blaze::column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
       checkNonZeros( col2 , 2UL );
@@ -1405,7 +1405,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 2, 0, -4, 0 };
 
@@ -1454,7 +1454,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1499,15 +1499,15 @@ void SymmetricTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn division assignment operators.
+/*!\brief Test of the Column division assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the division assignment operators of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the division assignment operators of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testDivAssign()
+void SparseSymmetricTest::testDivAssign()
 {
    //=====================================================================================
    // Row-major dense vector division assignment
@@ -1518,7 +1518,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 1, 2, 3, -2 };
 
@@ -1567,7 +1567,7 @@ void SymmetricTest::testDivAssign()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec{ 1, 2, 3, -2 };
 
@@ -1610,15 +1610,15 @@ void SymmetricTest::testDivAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all SparseColumn (self-)scaling operations.
+/*!\brief Test of all Column (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the SparseColumn
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of all available ways to scale an instance of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testScaling()
+void SparseSymmetricTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (v*=2)
@@ -1629,7 +1629,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 *= 3;
 
@@ -1676,7 +1676,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = col2 * 3;
 
@@ -1723,7 +1723,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = 3 * col2;
 
@@ -1770,7 +1770,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 /= 0.5;
 
@@ -1817,7 +1817,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       col2 = col2 / 0.5;
 
@@ -1856,17 +1856,17 @@ void SymmetricTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major SparseColumn::scale()
+   // Row-major Column::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::scale()";
+      test_ = "Row-major Column::scale()";
 
       initialize();
 
       // Integral scaling the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          col3.scale( 3 );
 
          checkSize    ( col3, 4UL );
@@ -1904,7 +1904,7 @@ void SymmetricTest::testScaling()
 
       // Floating point scaling the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          col3.scale( 0.5 );
 
          checkSize    ( col3, 4UL );
@@ -1951,7 +1951,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 *= 3;
 
@@ -1998,7 +1998,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = col2 * 3;
 
@@ -2045,7 +2045,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = 3 * col2;
 
@@ -2092,7 +2092,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 /= 0.5;
 
@@ -2139,7 +2139,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       col2 = col2 / 0.5;
 
@@ -2178,17 +2178,17 @@ void SymmetricTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major SparseColumn::scale()
+   // Column-major Column::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::scale()";
+      test_ = "Column-major Column::scale()";
 
       initialize();
 
       // Integral scaling the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          col3.scale( 3 );
 
          checkSize    ( col3 , 4UL );
@@ -2226,7 +2226,7 @@ void SymmetricTest::testScaling()
 
       // Floating point scaling the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          col3.scale( 0.5 );
 
          checkSize    ( col3 , 4UL );
@@ -2267,27 +2267,27 @@ void SymmetricTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn subscript operator.
+/*!\brief Test of the Column subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the SparseColumn class template. In case an error is detected, a \a std::runtime_error
+// of the Column specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void SymmetricTest::testSubscript()
+void SparseSymmetricTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::operator[]";
+      test_ = "Row-major Column::operator[]";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       // Assignment to the element at index 1
       col2[1] = 9;
@@ -2520,11 +2520,11 @@ void SymmetricTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::operator[]";
+      test_ = "Row-major Column::operator[]";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       // Assignment to the element at index 1
       col2[1] = 9;
@@ -2755,15 +2755,15 @@ void SymmetricTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn iterator implementation.
+/*!\brief Test of the Column iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the iterator implementation of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIterator()
+void SparseSymmetricTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2804,7 +2804,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
          CT::ConstIterator it( begin( col2 ) );
 
          if( it == end( col2 ) || it->value() != 3 ) {
@@ -2819,7 +2819,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction";
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 2UL ) {
@@ -2837,7 +2837,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction";
 
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
          if( number != 2UL ) {
@@ -2855,7 +2855,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
          CT::ConstIterator it ( cbegin( col2 ) );
          CT::ConstIterator end( cend( col2 ) );
 
@@ -2889,7 +2889,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          int value = 6;
 
          for( CT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -2927,7 +2927,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          int value = 2;
 
          for( CT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -2965,7 +2965,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          int value = 2;
 
          for( CT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3003,7 +3003,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          int value = 1;
 
          for( CT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3041,7 +3041,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
 
          for( CT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
             *it /= 2;
@@ -3115,7 +3115,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
          OCT::ConstIterator it( begin( col2 ) );
 
          if( it == end( col2 ) || it->value() != 3 ) {
@@ -3130,7 +3130,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 2UL ) {
@@ -3148,7 +3148,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
          if( number != 2UL ) {
@@ -3166,7 +3166,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
          OCT::ConstIterator it ( cbegin( col2 ) );
          OCT::ConstIterator end( cend( col2 ) );
 
@@ -3200,7 +3200,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          int value = 6;
 
          for( OCT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3238,7 +3238,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          int value = 2;
 
          for( OCT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3276,7 +3276,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          int value = 2;
 
          for( OCT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3314,7 +3314,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          int value = 1;
 
          for( OCT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
@@ -3352,7 +3352,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
 
          for( OCT::Iterator it=begin( col3 ); it!=end( col3 ); ++it ) {
             *it /= 2;
@@ -3390,27 +3390,27 @@ void SymmetricTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the SparseColumn class template.
+/*!\brief Test of the \c nonZeros() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c nonZeros() member function of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testNonZeros()
+void SparseSymmetricTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::nonZeros()";
+      test_ = "Row-major Column::nonZeros()";
 
       initialize();
 
       // Initialization check
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       checkSize    ( col3, 4UL );
       checkNonZeros( col3, 3UL );
@@ -3464,12 +3464,12 @@ void SymmetricTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::nonZeros()";
+      test_ = "Column-major Column::nonZeros()";
 
       initialize();
 
       // Initialization check
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       checkSize    ( col3, 4UL );
       checkNonZeros( col3, 3UL );
@@ -3521,15 +3521,15 @@ void SymmetricTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the SparseColumn class template.
+/*!\brief Test of the \c reset() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reset() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testReset()
+void SparseSymmetricTest::testReset()
 {
    using blaze::reset;
 
@@ -3539,13 +3539,13 @@ void SymmetricTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::reset()";
+      test_ = "Row-major Column::reset()";
 
       initialize();
 
       // Resetting a single element in column 3
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          reset( col3[1] );
 
          checkSize    ( col3, 4UL );
@@ -3567,7 +3567,7 @@ void SymmetricTest::testReset()
 
       // Resetting the 3rd column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          reset( col3 );
 
          checkSize    ( col3, 4UL );
@@ -3594,13 +3594,13 @@ void SymmetricTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::reset()";
+      test_ = "Column-major Column::reset()";
 
       initialize();
 
       // Resetting a single element in column 3
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          reset( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -3622,7 +3622,7 @@ void SymmetricTest::testReset()
 
       // Resetting the 3rd column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          reset( col3 );
 
          checkSize    ( col3 , 4UL );
@@ -3647,15 +3647,15 @@ void SymmetricTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the SparseColumn class template.
+/*!\brief Test of the \c clear() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the SparseColumn class template.
+// This function performs a test of the \c clear() function with the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testClear()
+void SparseSymmetricTest::testClear()
 {
    using blaze::clear;
 
@@ -3671,7 +3671,7 @@ void SymmetricTest::testClear()
 
       // Clearing a single element in column 3
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
          clear( col3[1] );
 
          checkSize    ( col3, 4UL );
@@ -3704,7 +3704,7 @@ void SymmetricTest::testClear()
 
       // Clearing a single element in column 3
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
          clear( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -3729,26 +3729,26 @@ void SymmetricTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c set() member function of the SparseColumn class template.
+/*!\brief Test of the \c set() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c set() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c set() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testSet()
+void SparseSymmetricTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::set()";
+      test_ = "Row-major Column::set()";
 
       initialize();
 
-      CT col0 = column( mat_, 0UL );
+      CT col0 = blaze::column( mat_, 0UL );
 
       // Setting a non-zero element at the end of the column
       {
@@ -3889,11 +3889,11 @@ void SymmetricTest::testSet()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::set()";
+      test_ = "Column-major Column::set()";
 
       initialize();
 
-      OCT col0 = column( tmat_, 0UL );
+      OCT col0 = blaze::column( tmat_, 0UL );
 
       // Setting a non-zero element at the end of the column
       {
@@ -4032,26 +4032,26 @@ void SymmetricTest::testSet()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SparseColumn class template.
+/*!\brief Test of the \c insert() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c insert() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c insert() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testInsert()
+void SparseSymmetricTest::testInsert()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::insert()";
+      test_ = "Row-major Column::insert()";
 
       initialize();
 
-      CT col0 = column( mat_, 0UL );
+      CT col0 = blaze::column( mat_, 0UL );
 
       // Inserting a non-zero element at the end of the column
       {
@@ -4173,11 +4173,11 @@ void SymmetricTest::testInsert()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::insert()";
+      test_ = "Column-major Column::insert()";
 
       initialize();
 
-      OCT col0 = column( tmat_, 0UL );
+      OCT col0 = blaze::column( tmat_, 0UL );
 
       // Inserting a non-zero element at the end of the column
       {
@@ -4297,26 +4297,26 @@ void SymmetricTest::testInsert()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the SparseColumn class template.
+/*!\brief Test of the \c append() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c append() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testAppend()
+void SparseSymmetricTest::testAppend()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::append()";
+      test_ = "Row-major Column::append()";
 
       MT mat( 9UL );
 
-      CT col1 = column( mat, 1UL );
+      CT col1 = blaze::column( mat, 1UL );
       col1.reserve( 4UL );
 
       // Appending one non-zero element
@@ -4387,11 +4387,11 @@ void SymmetricTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::append()";
+      test_ = "Column-major Column::append()";
 
       OMT mat( 9UL );
 
-      OCT col1 = column( mat, 1UL );
+      OCT col1 = blaze::column( mat, 1UL );
       col1.reserve( 4UL );
 
       // Appending one non-zero element
@@ -4460,26 +4460,26 @@ void SymmetricTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the SparseColumn class template.
+/*!\brief Test of the \c erase() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c erase() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c erase() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testErase()
+void SparseSymmetricTest::testErase()
 {
    //=====================================================================================
    // Row-major index-based erase function
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::erase( size_t )";
+      test_ = "Row-major Column::erase( size_t )";
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       // Erasing the non-zero element at the end of the column
       col3.erase( 3UL );
@@ -4545,11 +4545,11 @@ void SymmetricTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::erase( Iterator )";
+      test_ = "Row-major Column::erase( Iterator )";
 
       initialize();
 
-      CT col3 = column( mat_, 3UL );
+      CT col3 = blaze::column( mat_, 3UL );
 
       // Erasing the non-zero element at the end of the column
       {
@@ -4651,13 +4651,13 @@ void SymmetricTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::erase( Iterator, Iterator )";
+      test_ = "Row-major Column::erase( Iterator, Iterator )";
 
       initialize();
 
       // Erasing the 2nd column
       {
-         CT col2 = column( mat_, 2UL );
+         CT col2 = blaze::column( mat_, 2UL );
 
          CT::Iterator pos = col2.erase( col2.begin(), col2.end() );
 
@@ -4689,7 +4689,7 @@ void SymmetricTest::testErase()
 
       // Erasing the first half of the 3th column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
 
          CT::Iterator pos = col3.erase( col3.begin(), col3.find( 3UL ) );
 
@@ -4724,7 +4724,7 @@ void SymmetricTest::testErase()
 
       // Erasing the second half of the 4th column
       {
-         CT col3 = column( mat_, 3UL );
+         CT col3 = blaze::column( mat_, 3UL );
 
          CT::Iterator pos = col3.erase( col3.find( 3UL ), col3.end() );
 
@@ -4756,7 +4756,7 @@ void SymmetricTest::testErase()
 
       // Trying to erase an empty range
       {
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
 
          CT::Iterator pos = col1.erase( col1.find( 1UL ), col1.find( 1UL ) );
 
@@ -4793,11 +4793,11 @@ void SymmetricTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::erase( size_t )";
+      test_ = "Column-major Column::erase( size_t )";
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the column
       col3.erase( 3UL );
@@ -4863,11 +4863,11 @@ void SymmetricTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::erase( Iterator )";
+      test_ = "Row-major Column::erase( Iterator )";
 
       initialize();
 
-      OCT col3 = column( tmat_, 3UL );
+      OCT col3 = blaze::column( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the column
       {
@@ -4969,13 +4969,13 @@ void SymmetricTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::erase( Iterator, Iterator )";
+      test_ = "Row-major Column::erase( Iterator, Iterator )";
 
       initialize();
 
       // Erasing the 2nd column
       {
-         OCT col2 = column( tmat_, 2UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
 
          OCT::Iterator pos = col2.erase( col2.begin(), col2.end() );
 
@@ -5007,7 +5007,7 @@ void SymmetricTest::testErase()
 
       // Erasing the first half of the 3th column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
 
          OCT::Iterator pos = col3.erase( col3.begin(), col3.find( 3UL ) );
 
@@ -5042,7 +5042,7 @@ void SymmetricTest::testErase()
 
       // Erasing the second half of the 4th column
       {
-         OCT col3 = column( tmat_, 3UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
 
          OCT::Iterator pos = col3.erase( col3.find( 3UL ), col3.end() );
 
@@ -5074,7 +5074,7 @@ void SymmetricTest::testErase()
 
       // Trying to erase an empty range
       {
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
 
          OCT::Iterator pos = col1.erase( col1.find( 1UL ), col1.find( 1UL ) );
 
@@ -5109,26 +5109,26 @@ void SymmetricTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the SparseColumn class template.
+/*!\brief Test of the \c reserve() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reserve() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c reserve() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testReserve()
+void SparseSymmetricTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::reserve()";
+      test_ = "Row-major Column::reserve()";
 
       MT mat( 20UL );
 
-      CT col0 = column( mat, 0UL );
+      CT col0 = blaze::column( mat, 0UL );
 
       // Increasing the capacity of the column
       col0.reserve( 10UL );
@@ -5151,11 +5151,11 @@ void SymmetricTest::testReserve()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::reserve()";
+      test_ = "Column-major Column::reserve()";
 
       OMT mat( 20UL );
 
-      OCT col0 = column( mat, 0UL );
+      OCT col0 = blaze::column( mat, 0UL );
 
       // Increasing the capacity of the column
       col0.reserve( 10UL );
@@ -5176,26 +5176,26 @@ void SymmetricTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c find() member function of the SparseColumn class template.
+/*!\brief Test of the \c find() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c find() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c find() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testFind()
+void SparseSymmetricTest::testFind()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::find()";
+      test_ = "Row-major Column::find()";
 
       initialize();
 
-      CT col2 = column( mat_, 2UL );
+      CT col2 = blaze::column( mat_, 2UL );
 
       // Searching for the first element
       {
@@ -5276,11 +5276,11 @@ void SymmetricTest::testFind()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::find()";
+      test_ = "Column-major Column::find()";
 
       initialize();
 
-      OCT col2 = column( tmat_, 2UL );
+      OCT col2 = blaze::column( tmat_, 2UL );
 
       // Searching for the first element
       {
@@ -5359,26 +5359,26 @@ void SymmetricTest::testFind()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c lowerBound() member function of the SparseColumn class template.
+/*!\brief Test of the \c lowerBound() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c lowerBound() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lowerBound() member function of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testLowerBound()
+void SparseSymmetricTest::testLowerBound()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::lowerBound()";
+      test_ = "Row-major Column::lowerBound()";
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
 
       // Determining the lower bound for index 0
       {
@@ -5468,11 +5468,11 @@ void SymmetricTest::testLowerBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::lowerBound()";
+      test_ = "Column-major Column::lowerBound()";
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
 
       // Determining the lower bound for index 0
       {
@@ -5560,26 +5560,26 @@ void SymmetricTest::testLowerBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c upperBound() member function of the SparseColumn class template.
+/*!\brief Test of the \c upperBound() member function of the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c upperBound() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c upperBound() member function of the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testUpperBound()
+void SparseSymmetricTest::testUpperBound()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::upperBound()";
+      test_ = "Row-major Column::upperBound()";
 
       initialize();
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
 
       // Determining the upper bound for index 0
       {
@@ -5669,11 +5669,11 @@ void SymmetricTest::testUpperBound()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::upperBound()";
+      test_ = "Column-major Column::upperBound()";
 
       initialize();
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
 
       // Determining the upper bound for index 0
       {
@@ -5761,15 +5761,15 @@ void SymmetricTest::testUpperBound()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the SparseColumn class template.
+/*!\brief Test of the \c isDefault() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c isDefault() function with the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIsDefault()
+void SparseSymmetricTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -5785,7 +5785,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with default column
       {
-         CT col0 = column( mat_, 0UL );
+         CT col0 = blaze::column( mat_, 0UL );
 
          if( isDefault( col0[1] ) != true ) {
             std::ostringstream oss;
@@ -5808,7 +5808,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with non-default column
       {
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
 
          if( isDefault( col1[1] ) != false ) {
             std::ostringstream oss;
@@ -5842,7 +5842,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with default column
       {
-         OCT col0 = column( tmat_, 0UL );
+         OCT col0 = blaze::column( tmat_, 0UL );
 
          if( isDefault( col0[1] ) != true ) {
             std::ostringstream oss;
@@ -5865,7 +5865,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with non-default column
       {
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
 
          if( isDefault( col1[1] ) != false ) {
             std::ostringstream oss;
@@ -5891,15 +5891,15 @@ void SymmetricTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the SparseColumn class template.
+/*!\brief Test of the \c isSame() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the SparseColumn class template.
+// This function performs a test of the \c isSame() function with the Column specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testIsSame()
+void SparseSymmetricTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5910,8 +5910,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns
       {
-         CT col1 = column( mat_, 1UL );
-         CT col2 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
+         CT col2 = blaze::column( mat_, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -5926,8 +5926,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns
       {
-         CT col1 = column( mat_, 1UL );
-         CT col2 = column( mat_, 2UL );
+         CT col1 = blaze::column( mat_, 1UL );
+         CT col2 = blaze::column( mat_, 2UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -5944,7 +5944,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
@@ -5972,7 +5972,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -6000,7 +6000,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<CT>  SubvectorType;
 
-         CT col1 = column( mat_, 1UL );
+         CT col1 = blaze::column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -6026,12 +6026,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::Submatrix<MT>                SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 1UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -6046,12 +6046,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::Submatrix<MT>                SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 0UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 0UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -6066,12 +6066,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<MT>                SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 2UL );
 
@@ -6088,12 +6088,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<MT>                SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 3UL );
 
@@ -6110,12 +6110,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<MT>                SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<MT>          SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 1UL, 2UL );
 
@@ -6141,8 +6141,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns
       {
-         OCT col1 = column( tmat_, 1UL );
-         OCT col2 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
+         OCT col2 = blaze::column( tmat_, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -6157,8 +6157,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns
       {
-         OCT col1 = column( tmat_, 1UL );
-         OCT col2 = column( tmat_, 2UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
+         OCT col2 = blaze::column( tmat_, 2UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -6175,7 +6175,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
@@ -6203,7 +6203,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -6231,7 +6231,7 @@ void SymmetricTest::testIsSame()
       {
          typedef blaze::Subvector<OCT>  SubvectorType;
 
-         OCT col1 = column( tmat_, 1UL );
+         OCT col1 = blaze::column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -6257,12 +6257,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::Submatrix<OMT>               SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 1UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -6277,12 +6277,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::Submatrix<OMT>               SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = column( sm, 0UL );
-         ColumnType col2 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 0UL );
+         ColumnType col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -6297,12 +6297,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<OMT>               SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 2UL );
 
@@ -6319,12 +6319,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<OMT>               SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 0UL, 3UL );
 
@@ -6341,12 +6341,12 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<OMT>               SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>        SubvectorType;
+         typedef blaze::Submatrix<OMT>         SubmatrixType;
+         typedef blaze::Column<SubmatrixType>  ColumnType;
+         typedef blaze::Subvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = column( sm, 1UL );
+         ColumnType col1 = blaze::column( sm, 1UL );
          SubvectorType sv1 = subvector( col1, 0UL, 2UL );
          SubvectorType sv2 = subvector( col1, 1UL, 2UL );
 
@@ -6366,15 +6366,15 @@ void SymmetricTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the SparseColumn class template.
+/*!\brief Test of the \c subvector() function with the Column specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c subvector() function used with the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SymmetricTest::testSubvector()
+void SparseSymmetricTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6387,7 +6387,7 @@ void SymmetricTest::testSubvector()
 
       typedef blaze::Subvector<CT>  SubvectorType;
 
-      CT col1 = column( mat_, 1UL );
+      CT col1 = blaze::column( mat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -6423,7 +6423,7 @@ void SymmetricTest::testSubvector()
 
       typedef blaze::Subvector<OCT>  SubvectorType;
 
-      OCT col1 = column( tmat_, 1UL );
+      OCT col1 = blaze::column( tmat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
@@ -6466,7 +6466,7 @@ void SymmetricTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void SymmetricTest::initialize()
+void SparseSymmetricTest::initialize()
 {
    // Initializing the symmetric row-major matrix
    mat_.reset();
@@ -6486,7 +6486,7 @@ void SymmetricTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace sparsecolumn
+} // namespace column
 
 } // namespace mathtest
 
@@ -6504,14 +6504,14 @@ void SymmetricTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running symmetric SparseColumn class test..." << std::endl;
+   std::cout << "   Running Column sparse symmetric test..." << std::endl;
 
    try
    {
-      RUN_SPARSECOLUMN_CLASS_TEST;
+      RUN_COLUMN_SPARSESYMMETRIC_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during symmetric SparseColumn class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during Column sparse symmetric test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

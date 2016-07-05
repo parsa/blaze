@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densecolumn/GeneralTest.h
-//  \brief Header file for the general DenseColumn class test
+//  \file blazetest/mathtest/column/DenseSymmetricTest.h
+//  \brief Header file for the Column dense symmetric test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSECOLUMN_GENERALTEST_H_
-#define _BLAZETEST_MATHTEST_DENSECOLUMN_GENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_COLUMN_DENSESYMMETRICTEST_H_
+#define _BLAZETEST_MATHTEST_COLUMN_DENSESYMMETRICTEST_H_
 
 
 //*************************************************************************************************
@@ -47,7 +47,8 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DenseColumn.h>
+#include <blaze/math/Column.h>
+#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -56,7 +57,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace densecolumn {
+namespace column {
 
 //=================================================================================================
 //
@@ -65,18 +66,18 @@ namespace densecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseColumn class template.
+/*!\brief Auxiliary class for all tests of the dense symmetric Column specialization.
 //
-// This class represents a test suite for the blaze::DenseColumn class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Column class template specialization for
+// dense symmetric matrices. It performs a series of both compile time as well as runtime tests.
 */
-class GeneralTest
+class DenseSymmetricTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit GeneralTest();
+   explicit DenseSymmetricTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -133,30 +134,31 @@ class GeneralTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;   //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                           OMT;  //!< Column-major dynamic matrix type
-   typedef blaze::DenseColumn<MT>                     CT;   //!< Dense column type for row-major matrices.
-   typedef blaze::DenseColumn<OMT>                    OCT;  //!< Dense column type for column-major matrices.
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  DMT;  //!< Row-major dynamic matrix type.
+   typedef blaze::SymmetricMatrix<DMT>                MT;   //!< Row-major dynamic matrix type.
+   typedef MT::OppositeType                           OMT;  //!< Column-major dynamic matrix type.
+   typedef blaze::Column<MT>                          CT;   //!< Dense column type for row-major matrices.
+   typedef blaze::Column<OMT>                         OCT;  //!< Dense column type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT  mat_;   //!< Row-major dynamic matrix.
-               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{5}{c}}
-                    0 & 0 & -2 &  0 &  7 \\
-                    0 & 1 &  0 &  4 & -8 \\
-                    0 & 0 & -3 &  5 &  9 \\
-                    0 & 0 &  0 & -6 & 10 \\
+   MT mat_;    //!< Row-major symmetric matrix.
+               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                    0 &  0 &  0 &  0 \\
+                    0 &  1 &  0 & -2 \\
+                    0 &  0 &  3 &  4 \\
+                    0 & -2 &  4 &  5 \\
                     \end{array}\right)\f]. */
-   OMT tmat_;  //!< Column-major dynamic matrix.
-               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{5}{c}}
-                    0 & 0 & -2 &  0 &  7 \\
-                    0 & 1 &  0 &  4 & -8 \\
-                    0 & 0 & -3 &  5 &  9 \\
-                    0 & 0 &  0 & -6 & 10 \\
+   OMT tmat_;  //!< Column-major symmetric matrix.
+               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                    0 &  0 &  0 &  0 \\
+                    0 &  1 &  0 & -2 \\
+                    0 &  0 &  3 &  4 \\
+                    0 & -2 &  4 &  5 \\
                     \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
@@ -197,7 +199,7 @@ class GeneralTest
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense column
-void GeneralTest::checkSize( const Type& column, size_t expectedSize ) const
+void DenseSymmetricTest::checkSize( const Type& column, size_t expectedSize ) const
 {
    if( size( column ) != expectedSize ) {
       std::ostringstream oss;
@@ -225,7 +227,7 @@ void GeneralTest::checkSize( const Type& column, size_t expectedSize ) const
 // exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void DenseSymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -253,7 +255,7 @@ void GeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void DenseSymmetricTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -281,7 +283,7 @@ void GeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) con
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense row or dynamic matrix
-void GeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
+void DenseSymmetricTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
@@ -309,7 +311,7 @@ void GeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense column or dynamic matrix
-void GeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+void DenseSymmetricTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -348,7 +350,7 @@ void GeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) c
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dynamic matrix
-void GeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void DenseSymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -384,13 +386,13 @@ void GeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expect
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseColumn class template.
+/*!\brief Testing the functionality of the dense symmetric Column specialization.
 //
 // \return void
 */
 void runTest()
 {
-   GeneralTest();
+   DenseSymmetricTest();
 }
 //*************************************************************************************************
 
@@ -405,14 +407,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the general DenseColumn class test.
+/*!\brief Macro for the execution of the Column dense symmetric test.
 */
-#define RUN_DENSECOLUMN_CLASS_TEST \
-   blazetest::mathtest::densecolumn::runTest()
+#define RUN_COLUMN_DENSESYMMETRIC_TEST \
+   blazetest::mathtest::column::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace densecolumn
+} // namespace column
 
 } // namespace mathtest
 

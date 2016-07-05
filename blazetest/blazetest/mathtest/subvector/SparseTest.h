@@ -286,7 +286,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse Subvector test.
+/*!\brief Macro for the execution of the Subvector sparse test.
 */
 #define RUN_SUBVECTOR_SPARSE_TEST \
    blazetest::mathtest::subvector::runTest()

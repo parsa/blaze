@@ -469,7 +469,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense non-numeric SymmetricMatrix test.
+/*!\brief Macro for the execution of the SymmetricMatrix dense non-numeric test.
 */
 #define RUN_SYMMETRICMATRIX_DENSENONNUMERIC_TEST \
    blazetest::mathtest::symmetricmatrix::runTest()

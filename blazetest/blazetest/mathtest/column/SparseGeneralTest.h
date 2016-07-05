@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/sparsecolumn/SymmetricTest.h
-//  \brief Header file for the symmetric SparseColumn class test
+//  \file blazetest/mathtest/column/SparseGeneralTest.h
+//  \brief Header file for the Column sparse general test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_SPARSECOLUMN_SYMMETRICTEST_H_
-#define _BLAZETEST_MATHTEST_SPARSECOLUMN_SYMMETRICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_COLUMN_SPARSEGENERALTEST_H_
+#define _BLAZETEST_MATHTEST_COLUMN_SPARSEGENERALTEST_H_
 
 
 //*************************************************************************************************
@@ -47,8 +47,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/SparseColumn.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/Column.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -57,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace sparsecolumn {
+namespace column {
 
 //=================================================================================================
 //
@@ -66,18 +65,18 @@ namespace sparsecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the SparseColumn class template.
+/*!\brief Auxiliary class for all tests of the sparse general Column specialization.
 //
-// This class represents a test suite for the blaze::SparseColumn class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Column class template specialization for
+// sparse general matrices. It performs a series of both compile time as well as runtime tests.
 */
-class SymmetricTest
+class SparseGeneralTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit SymmetricTest();
+   explicit SparseGeneralTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -142,31 +141,30 @@ class SymmetricTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  SMT;  //!< Row-major compressed matrix type.
-   typedef blaze::SymmetricMatrix<SMT>                   MT;   //!< Row-major compressed matrix type.
-   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type.
-   typedef blaze::SparseColumn<MT>                       CT;   //!< Sparse column type for row-major matrices.
-   typedef blaze::SparseColumn<OMT>                      OCT;  //!< Sparse column type for column-major matrices.
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
+   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type
+   typedef blaze::Column<MT>                             CT;   //!< Sparse column type for row-major matrices.
+   typedef blaze::Column<OMT>                            OCT;  //!< Sparse column type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT mat_;    //!< Row-major symmetric matrix.
-               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{4}{c}}
-                    0 &  0 &  0 &  0 \\
-                    0 &  1 &  0 & -2 \\
-                    0 &  0 &  3 &  4 \\
-                    0 & -2 &  4 &  5 \\
+   MT  mat_;   //!< Row-major compressed matrix.
+               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{5}{c}}
+                    0 & 0 & -2 &  0 &  7 \\
+                    0 & 1 &  0 &  4 & -8 \\
+                    0 & 0 & -3 &  5 &  9 \\
+                    0 & 0 &  0 & -6 & 10 \\
                     \end{array}\right)\f]. */
-   OMT tmat_;  //!< Column-major symmetric matrix.
-               /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{4}{c}}
-                    0 &  0 &  0 &  0 \\
-                    0 &  1 &  0 & -2 \\
-                    0 &  0 &  3 &  4 \\
-                    0 & -2 &  4 &  5 \\
+   OMT tmat_;  //!< Column-major compressed matrix.
+               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{5}{c}}
+                    0 & 0 & -2 &  0 &  7 \\
+                    0 & 1 &  0 &  4 & -8 \\
+                    0 & 0 & -3 &  5 &  9 \\
+                    0 & 0 &  0 & -6 & 10 \\
                     \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
@@ -207,7 +205,7 @@ class SymmetricTest
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the sparse column
-void SymmetricTest::checkSize( const Type& column, size_t expectedSize ) const
+void SparseGeneralTest::checkSize( const Type& column, size_t expectedSize ) const
 {
    if( size( column ) != expectedSize ) {
       std::ostringstream oss;
@@ -235,7 +233,7 @@ void SymmetricTest::checkSize( const Type& column, size_t expectedSize ) const
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void SymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void SparseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -263,7 +261,7 @@ void SymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void SymmetricTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void SparseGeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -291,7 +289,7 @@ void SymmetricTest::checkColumns( const Type& matrix, size_t expectedColumns ) c
 // exception is thrown.
 */
 template< typename Type >  // Type of the sparse column or compressed matrix
-void SymmetricTest::checkCapacity( const Type& object, size_t minCapacity ) const
+void SparseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
@@ -319,7 +317,7 @@ void SymmetricTest::checkCapacity( const Type& object, size_t minCapacity ) cons
 // expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the sparse column or compressed matrix
-void SymmetricTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+void SparseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -358,7 +356,7 @@ void SymmetricTest::checkNonZeros( const Type& object, size_t expectedNonZeros )
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void SymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void SparseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -394,13 +392,13 @@ void SymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_t expe
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the SparseColumn class template.
+/*!\brief Testing the functionality of the sparse general Column specialization.
 //
 // \return void
 */
 void runTest()
 {
-   SymmetricTest();
+   SparseGeneralTest();
 }
 //*************************************************************************************************
 
@@ -415,14 +413,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the symmetric SparseColumn class test.
+/*!\brief Macro for the execution of the Column sparse general test.
 */
-#define RUN_SPARSECOLUMN_CLASS_TEST \
-   blazetest::mathtest::sparsecolumn::runTest()
+#define RUN_COLUMN_SPARSEGENERAL_TEST \
+   blazetest::mathtest::column::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace sparsecolumn
+} // namespace column
 
 } // namespace mathtest
 

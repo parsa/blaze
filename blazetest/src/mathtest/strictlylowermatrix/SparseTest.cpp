@@ -39,11 +39,11 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/Column.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/SparseColumn.h>
-#include <blaze/math/SparseRow.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/util/Complex.h>
@@ -9674,7 +9674,7 @@ void SparseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::SparseRow<LT>  RT;
+      typedef blaze::Row<LT>  RT;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -9761,7 +9761,7 @@ void SparseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::SparseRow<OLT>  RT;
+      typedef blaze::Row<OLT>  RT;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -9861,7 +9861,7 @@ void SparseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::SparseColumn<LT>  CT;
+      typedef blaze::Column<LT>  CT;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -9948,7 +9948,7 @@ void SparseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::SparseColumn<OLT>  CT;
+      typedef blaze::Column<OLT>  CT;
 
       OLT lower( 3UL );
       lower(1,0) = -4;

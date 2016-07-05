@@ -393,7 +393,7 @@ void SparseSymmetricTest::checkNonZeros( const Type& matrix, size_t index, size_
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the Row class template.
+/*!\brief Testing the functionality of the sparse symmetric Row specialization.
 //
 // \return void
 */

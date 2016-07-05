@@ -338,7 +338,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense aligned Submatrix test.
+/*!\brief Macro for the execution of the Submatrix dense aligned test.
 */
 #define RUN_SUBMATRIX_DENSEALIGNED_TEST \
    blazetest::mathtest::submatrix::runTest()

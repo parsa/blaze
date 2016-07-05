@@ -5038,7 +5038,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the numeric SymmetricMatrix submatrix test.
+/*!\brief Macro for the execution of the SymmetricMatrix submatrix numeric test.
 */
 #define RUN_SYMMETRICMATRIX_SUBMATRIXNUMERIC_TEST \
    blazetest::mathtest::symmetricmatrix::runTest()

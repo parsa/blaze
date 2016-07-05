@@ -39,8 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/SparseColumn.h>
-#include <blaze/math/SparseRow.h>
+#include <blaze/math/Column.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/Submatrix.h>
@@ -10510,7 +10510,7 @@ void SparseRealTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::SparseRow<HT>  RT;
+      typedef blaze::Row<HT>  RT;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -10600,7 +10600,7 @@ void SparseRealTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::SparseRow<OHT>  RT;
+      typedef blaze::Row<OHT>  RT;
 
       OHT herm( 3UL );
       herm(0,0) =  1;
@@ -10703,7 +10703,7 @@ void SparseRealTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::SparseColumn<HT>  CT;
+      typedef blaze::Column<HT>  CT;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -10793,7 +10793,7 @@ void SparseRealTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::SparseColumn<OHT>  CT;
+      typedef blaze::Column<OHT>  CT;
 
       OHT herm( 3UL );
       herm(0,0) =  1;

@@ -46,10 +46,9 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Vector.h>
-#include <blaze/math/DenseSubvector.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/SparseSubvector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/Subvector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/serialization/Archive.h>
@@ -247,7 +246,7 @@ void ClassTest::runDynamicVectorTests( const VT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the vector (de-)serialization with the given vector. The vector is
-// serialized and deserialized several times, using instances of DenseSubvector as destination
+// serialized and deserialized several times, using instances of Subvector as destination
 // vector type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< size_t N       // Size of the vector
@@ -261,13 +260,13 @@ void ClassTest::runDenseSubvectorTests( const VT& src )
 
    {
       DV vec( N );
-      blaze::DenseSubvector<DV> dst( vec, 0UL, N );
+      blaze::Subvector<DV> dst( vec, 0UL, N );
       runTest( src, dst );
    }
 
    {
       DV vec( N );
-      blaze::DenseSubvector<DV> dst( vec, 0UL, N );
+      blaze::Subvector<DV> dst( vec, 0UL, N );
       randomize( dst );
       runTest( src, dst );
    }
@@ -315,7 +314,7 @@ void ClassTest::runCompressedVectorTests( const VT& src )
 // \exception std::runtime_error Error detected.
 //
 // This function tests the vector (de-)serialization with the given vector. The vector is
-// serialized and deserialized several times, using instances of SparseSubvector as destination
+// serialized and deserialized several times, using instances of Subvector as destination
 // vector type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< size_t N       // Size of the vector
@@ -329,13 +328,13 @@ void ClassTest::runSparseSubvectorTests( const VT& src )
 
    {
       SV vec( N );
-      blaze::SparseSubvector<SV> dst( vec, 0UL, N );
+      blaze::Subvector<SV> dst( vec, 0UL, N );
       runTest( src, dst );
    }
 
    {
       SV vec( N );
-      blaze::SparseSubvector<SV> dst( vec, 0UL, N );
+      blaze::Subvector<SV> dst( vec, 0UL, N );
       randomize( dst );
       runTest( src, dst );
    }

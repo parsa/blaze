@@ -471,7 +471,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse UniUpperMatrix test.
+/*!\brief Macro for the execution of the UniUpperMatrix sparse test.
 */
 #define RUN_UNIUPPERMATRIX_SPARSE_TEST \
    blazetest::mathtest::uniuppermatrix::runTest()

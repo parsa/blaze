@@ -1909,7 +1909,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the non-numeric SymmetricMatrix submatrix test.
+/*!\brief Macro for the execution of the SymmetricMatrix submatrix non-numeric test.
 */
 #define RUN_SYMMETRICMATRIX_SUBMATRIXNONNUMERIC_TEST \
    blazetest::mathtest::symmetricmatrix::runTest()

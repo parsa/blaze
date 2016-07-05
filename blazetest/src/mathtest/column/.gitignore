@@ -1,0 +1,7 @@
+*.d
+*.o
+DenseGeneralTest
+DenseSymmetricTest
+SparseGeneralTest
+SparseSymmetricTest
+

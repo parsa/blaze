@@ -492,7 +492,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse real HermitianMatrix test.
+/*!\brief Macro for the execution of the HermitianMatrix sparse real test.
 */
 #define RUN_HERMITIANMATRIX_SPARSEREAL_TEST \
    blazetest::mathtest::hermitianmatrix::runTest()

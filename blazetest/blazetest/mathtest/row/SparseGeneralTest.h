@@ -393,7 +393,7 @@ void SparseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the Row class template.
+/*!\brief Testing the functionality of the sparse general Row specialization.
 //
 // \return void
 */

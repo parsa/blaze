@@ -9331,7 +9331,7 @@ void SparseTest::testRow()
 
       initialize();
 
-      typedef blaze::SparseRow<SMT>  RowType;
+      typedef blaze::Row<SMT>  RowType;
 
       SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
       RowType row1 = row( sm1, 1UL );
@@ -9367,7 +9367,7 @@ void SparseTest::testRow()
 
       initialize();
 
-      typedef blaze::SparseRow<OSMT>  RowType;
+      typedef blaze::Row<OSMT>  RowType;
 
       OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       RowType row1 = row( sm1, 1UL );
@@ -9416,7 +9416,7 @@ void SparseTest::testColumn()
 
       initialize();
 
-      typedef blaze::SparseColumn<SMT>  ColumnType;
+      typedef blaze::Column<SMT>  ColumnType;
 
       SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
       ColumnType col1 = column( sm1, 1UL );
@@ -9452,7 +9452,7 @@ void SparseTest::testColumn()
 
       initialize();
 
-      typedef blaze::SparseColumn<OSMT>  ColumnType;
+      typedef blaze::Column<OSMT>  ColumnType;
 
       OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       ColumnType col1 = column( sm1, 1UL );

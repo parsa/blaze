@@ -506,7 +506,7 @@ void DenseTest::testRandomNxN()
       initializeForLU( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byDefault>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -562,7 +562,7 @@ void DenseTest::testRandomNxN()
       initializeForLU( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byLU>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -618,7 +618,7 @@ void DenseTest::testRandomNxN()
       initializeForLDLT( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byLDLT>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -674,7 +674,7 @@ void DenseTest::testRandomNxN()
       initializeForLDLH( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byLDLH>( sub );
 
       if( !isIdentity( A * sub ) ) {
@@ -730,7 +730,7 @@ void DenseTest::testRandomNxN()
       initializeForLLH( A );
       Type B( A );
 
-      blaze::DenseSubmatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
+      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
       invert<byLLH>( sub );
 
       if( !isIdentity( A * sub ) ) {

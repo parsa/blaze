@@ -60,7 +60,7 @@ namespace row {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the symmetric Row class test.
+/*!\brief Constructor for the Row dense symmetric test.
 //
 // \exception std::runtime_error Operation error detected.
 */

@@ -39,8 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/SparseColumn.h>
-#include <blaze/math/SparseRow.h>
+#include <blaze/math/Column.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/util/Complex.h>
@@ -10289,7 +10289,7 @@ void SparseNonNumericTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::SparseRow<ST>  RT;
+      typedef blaze::Row<ST>  RT;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -10383,7 +10383,7 @@ void SparseNonNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::SparseRow<OST>  RT;
+      typedef blaze::Row<OST>  RT;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -10490,7 +10490,7 @@ void SparseNonNumericTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::SparseColumn<ST>  CT;
+      typedef blaze::Column<ST>  CT;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -10584,7 +10584,7 @@ void SparseNonNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::SparseColumn<OST>  CT;
+      typedef blaze::Column<OST>  CT;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );

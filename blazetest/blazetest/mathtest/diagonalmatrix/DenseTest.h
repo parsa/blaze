@@ -431,7 +431,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense DiagonalMatrix test.
+/*!\brief Macro for the execution of the DiagonalMatrix dense test.
 */
 #define RUN_DIAGONALMATRIX_DENSE_TEST \
    blazetest::mathtest::diagonalmatrix::runTest()

@@ -43,7 +43,7 @@ all: functions simd blas lapack typetraits \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
      diagonalmatrix \
-     subvector submatrix row densecolumn sparsecolumn \
+     subvector submatrix row column \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -71,7 +71,7 @@ noop: functions simd blas lapack typetraits \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
-      subvector submatrix row densecolumn sparsecolumn \
+      subvector submatrix row column \
       determinant decomposition inversion \
       vectorserializer matrixserializer
 
@@ -232,15 +232,10 @@ row:
 	@echo "Building the Row tests..."
 	@$(MAKE) --no-print-directory -C ./row $(MAKECMDGOALS)
 
-densecolumn:
+column:
 	@echo
-	@echo "Building the DenseColumn tests..."
-	@$(MAKE) --no-print-directory -C ./densecolumn $(MAKECMDGOALS)
-
-sparsecolumn:
-	@echo
-	@echo "Building the SparseColumn tests..."
-	@$(MAKE) --no-print-directory -C ./sparsecolumn $(MAKECMDGOALS)
+	@echo "Building the Column tests..."
+	@$(MAKE) --no-print-directory -C ./column $(MAKECMDGOALS)
 
 dvecdvecadd:
 	@echo
@@ -531,8 +526,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./subvector clean
 	@$(MAKE) --no-print-directory -C ./submatrix clean
 	@$(MAKE) --no-print-directory -C ./row clean
-	@$(MAKE) --no-print-directory -C ./densecolumn clean
-	@$(MAKE) --no-print-directory -C ./sparsecolumn clean
+	@$(MAKE) --no-print-directory -C ./column clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -597,7 +591,7 @@ clean:
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
         diagonalmatrix \
-        subvector submatrix row densecolumn sparsecolumn \
+        subvector submatrix row column \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \

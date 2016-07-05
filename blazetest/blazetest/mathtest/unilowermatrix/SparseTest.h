@@ -471,7 +471,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse UniLowerMatrix test.
+/*!\brief Macro for the execution of the UniLowerMatrix sparse test.
 */
 #define RUN_UNILOWERMATRIX_SPARSE_TEST \
    blazetest::mathtest::unilowermatrix::runTest()
