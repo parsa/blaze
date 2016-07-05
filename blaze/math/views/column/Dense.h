@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/views/DenseColumn.h
-//  \brief Header file for the DenseColumn class template
+//  \file blaze/math/views/column/Dense.h
+//  \brief Column specialization for dense matrices
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_DENSECOLUMN_H_
-#define _BLAZE_MATH_VIEWS_DENSECOLUMN_H_
+#ifndef _BLAZE_MATH_VIEWS_COLUMN_DENSE_H_
+#define _BLAZE_MATH_VIEWS_COLUMN_DENSE_H_
 
 
 //*************************************************************************************************
@@ -54,42 +54,30 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
-#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
-#include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
-#include <blaze/math/typetraits/HasConstDataAccess.h>
-#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
-#include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -100,9 +88,6 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/logging/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -110,7 +95,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -120,235 +104,23 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  CLASS TEMPLATE SPECIALIZATION FOR COLUMN-MAJOR DENSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup dense_column DenseColumn
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of Column for columns on column-major dense matrices.
 // \ingroup views
+//
+// This specialization of Column adapts the class template to the requirements of column-major
+// dense matrices.
 */
-/*!\brief Reference to a specific column of a dense matrix.
-// \ingroup dense_column
-//
-// The DenseColumn template represents a reference to a specific column of a dense matrix
-// primitive. The type of the dense matrix is specified via the first template parameter:
-
-   \code
-   template< typename MT, bool SO >
-   class DenseColumn;
-   \endcode
-
-//  - MT: specifies the type of the dense matrix primitive. DenseColumn can be used with every
-//        dense matrix primitive, but does not work with any matrix expression type.
-//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the dense matrix.
-//        This template parameter doesn't have to be explicitly defined, but is automatically
-//        derived from the first template parameter.
-//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
-//        doesn't have to be explicitly defined, but is automatically derived from the first
-//        template parameter.
-//
-//
-// \n \section dense_column_setup Setup of Dense Columns
-//
-// A reference to a dense column can be created very conveniently via the \c column() function.
-// This reference can be treated as any other column vector, i.e. it can be assigned to, it can
-// be copied from, and it can be used in arithmetic operations. The reference can also be used
-// on both sides of an assignment: The column can either be used as an alias to grant write access
-// to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
-// read-access to a specific column of a matrix primitive or expression on the right-hand side of
-// an assignment. The following example demonstrates this in detail:
-
-   \code
-   typedef blaze::DynamicVector<double,blaze::columnVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>      DenseMatrixType;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A, B;
-   // ... Resizing and initialization
-
-   // Setting the 2nd column of matrix A to x
-   blaze::DenseColumn<DenseMatrixType> col2 = column( A, 2UL );
-   col2 = x;
-
-   // Setting the 3rd column of matrix B to y
-   column( B, 3UL ) = y;
-
-   // Setting x to the 1st column of matrix B
-   x = column( B, 1UL );
-
-   // Setting y to the 4th column of the result of the matrix multiplication
-   y = column( A * B, 4UL );
-   \endcode
-
-// \n \section dense_column_element_access Element access
-//
-// A dense column can be used like any other column vector. For instance, the elements of the
-// dense column can be directly accessed with the subscript operator.
-
-   \code
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a view on the 4th column of matrix A
-   blaze::DenseColumn<MatrixType> col4 = column( A, 4UL );
-
-   // Setting the 1st element of the dense column, which corresponds
-   // to the 1st element in the 4th column of matrix A
-   col4[1] = 2.0;
-   \endcode
-
-// The numbering of the column elements is
-
-                             \f[\left(\begin{array}{*{5}{c}}
-                             0 & 1 & 2 & \cdots & N-1 \\
-                             \end{array}\right),\f]
-
-// where N is the number of rows of the referenced matrix. Alternatively, the elements of a
-// column can be traversed via iterators. Just as with vectors, in case of non-const rows,
-// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// values, in case of constant columns a ConstIterator is returned:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>                ColumnType;
-
-   MatrixType A( 128UL, 256UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 31st column of matrix A
-   ColumnType col31 = column( A, 31UL );
-
-   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
-      *it = ...;  // OK; Write access to the dense column value
-      ... = *it;  // OK: Read access to the dense column value.
-   }
-
-   for( ColumnType::ConstIterator it=col31.begin(); it!=col31.end(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
-      ... = *it;  // OK: Read access to the dense column value.
-   }
-   \endcode
-
-// \n \section dense_column_common_operations Common Operations
-//
-// The current number of column elements can be obtained via the \c size() function, the current
-// capacity via the \c capacity() function, and the number of non-zero elements via the
-// \c nonZeros() function. However, since columns are references to specific columns of a matrix,
-// several operations are not possible on views, such as resizing and swapping:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>                ColumnType;
-
-   MatrixType A( 42UL, 42UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 2nd column of matrix A
-   ColumnType col2 = column( A, 2UL );
-
-   col2.size();          // Returns the number of elements in the column
-   col2.capacity();      // Returns the capacity of the column
-   col2.nonZeros();      // Returns the number of non-zero elements contained in the column
-
-   col2.resize( 84UL );  // Compilation error: Cannot resize a single column of a matrix
-
-   ColumnType col3 = column( A, 3UL );
-   swap( col2, col3 );   // Compilation error: Swap operation not allowed
-   \endcode
-
-// \n \section dense_column_arithmetic_operations Arithmetic Operations
-//
-// The following example gives an impression of the use of DenseColumn within arithmetic operations.
-// All operations (addition, subtraction, multiplication, scaling, ...) can be performed on all
-// possible combinations of dense and sparse vectors with fitting element types:
-
-   \code
-   blaze::DynamicVector<double,blaze::columnVector> a( 2UL, 2.0 ), b;
-   blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
-   c[1] = 3.0;
-
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
-   MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
-
-   typedef blaze::DenseColumn<DenseMatrix>  RowType;
-   RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
-
-   col0[0] = 0.0;           // Manual initialization of the 0th column of A
-   col0[1] = 0.0;
-   column( A, 1UL ) = 1.0;  // Homogeneous initialization of the 1st column of A
-   column( A, 2UL ) = a;    // Dense vector initialization of the 2nd column of A
-   column( A, 3UL ) = c;    // Sparse vector initialization of the 3rd column of A
-
-   b = col0 + a;                 // Dense vector/dense vector addition
-   b = c + column( A, 1UL );     // Sparse vector/dense vector addition
-   b = col0 * column( A, 2UL );  // Component-wise vector multiplication
-
-   column( A, 1UL ) *= 2.0;     // In-place scaling of the 1st column
-   b = column( A, 1UL ) * 2.0;  // Scaling of the 1st column
-   b = 2.0 * column( A, 1UL );  // Scaling of the 1st column
-
-   column( A, 2UL ) += a;                 // Addition assignment
-   column( A, 2UL ) -= c;                 // Subtraction assignment
-   column( A, 2UL ) *= column( A, 0UL );  // Multiplication assignment
-
-   double scalar = trans( c ) * column( A, 1UL );  // Scalar/dot/inner product between two vectors
-
-   A = column( A, 1UL ) * trans( c );  // Outer product between two vectors
-   \endcode
-
-// \n \section dense_column_on_row_major_matrix Dense Column on a Row-Major Matrix
-//
-// It is especially noteworthy that column views can be created for both row-major and column-major
-// matrices. Whereas the interface of a row-major matrix only allows to traverse a row directly
-// and the interface of a column-major matrix only allows to traverse a column, via views it is
-// also possible to traverse a column of a row-major matrix. For instance:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>             ColumnType;
-
-   MatrixType A( 64UL, 32UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 1st column of a column-major matrix A
-   ColumnType col1 = column( A, 1UL );
-
-   for( ColumnType::Iterator it=col1.begin(); it!=col1.end(); ++it ) {
-      // ...
-   }
-   \endcode
-
-// However, please note that creating a column view on a matrix stored in a row-major fashion
-// can result in a considerable performance decrease in comparison to a column view on a matrix
-// with column-major storage format. This is due to the non-contiguous storage of the matrix
-// elements. Therefore care has to be taken in the choice of the most suitable storage order:
-
-   \code
-   // Setup of two row-major matrices
-   blaze::DynamicMatrix<double,blaze::rowMajor> A( 128UL, 128UL );
-   blaze::DynamicMatrix<double,blaze::rowMajor> B( 128UL, 128UL );
-   // ... Resizing and initialization
-
-   // The computation of the 15th column of the multiplication between A and B ...
-   blaze::DynamicVector<double,blaze::columnVector> x = column( A * B, 15UL );
-
-   // ... is essentially the same as the following computation, which multiplies
-   // A with the 15th column of the row-major matrix B.
-   blaze::DynamicVector<double,blaze::rowVector> x = A * column( B, 15UL );
-   \endcode
-
-// Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
-// using a column-major storage order for matrix A would result in a more efficient evaluation.
-*/
-template< typename MT                               // Type of the dense matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
-        , bool SF = IsSymmetric<MT>::value >        // Symmetry flag
-class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
-                  , private Column
+template< typename MT  // Type of the dense matrix
+        , bool SF >    // Symmetry flag
+class Column<MT,true,true,SF>
+   : public DenseVector< Column<MT,true,true,SF>, false >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -358,14 +130,14 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,SO,SF>       This;           //!< Type of this DenseColumn instance.
-   typedef DenseVector<This,false>     BaseType;       //!< Base type of this DenseColumn instance.
+   typedef Column<MT,true,true,SF>     This;           //!< Type of this Column instance.
+   typedef DenseVector<This,false>     BaseType;       //!< Base type of this Column instance.
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
    typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
    typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
+   typedef const Column&               CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef ConstReference_<MT>  ConstReference;
@@ -397,7 +169,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseColumn( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -427,39 +199,38 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( initializer_list<ElementType> list );
-   inline DenseColumn& operator=( const DenseColumn& rhs );
+   inline Column& operator=( const ElementType& rhs );
+   inline Column& operator=( initializer_list<ElementType> list );
+   inline Column& operator=( const Column& rhs );
 
-   template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator/=( const DenseVector<VT,false>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator*=( Other rhs );
+   template< typename VT > inline Column& operator= ( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator+=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator-=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const noexcept;
-                              inline size_t       capacity() const noexcept;
-                              inline size_t       nonZeros() const;
-                              inline void         reset();
-   template< typename Other > inline DenseColumn& scale( const Other& scalar );
+                              inline size_t  size() const noexcept;
+                              inline size_t  capacity() const noexcept;
+                              inline size_t  nonZeros() const;
+                              inline void    reset();
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
@@ -467,11 +238,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
                             simdEnabled && VT::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
@@ -480,11 +249,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
@@ -493,11 +260,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
@@ -506,11 +271,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedDivAssign {
@@ -519,7 +282,6 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
                             AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -535,13 +297,13 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -605,46 +367,43 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
-   /*! \endcond */
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE        ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE      ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -657,16 +416,16 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The constructor for DenseColumn.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for Column.
 //
 // \param matrix The matrix containing the column.
 // \param index The index of the column.
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseColumn<MT,SO,SF>::DenseColumn( MT& matrix, size_t index )
+inline Column<MT,true,true,SF>::Column( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -674,6 +433,7 @@ inline DenseColumn<MT,SO,SF>::DenseColumn( MT& matrix, size_t index )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -686,6 +446,7 @@ inline DenseColumn<MT,SO,SF>::DenseColumn( MT& matrix, size_t index )
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subscript operator for the direct access to the column elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -695,17 +456,18 @@ inline DenseColumn<MT,SO,SF>::DenseColumn( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::operator[]( size_t index )
+inline typename Column<MT,true,true,SF>::Reference Column<MT,true,true,SF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(index,col_);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subscript operator for the direct access to the column elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -715,18 +477,19 @@ inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::operator
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstReference
-   DenseColumn<MT,SO,SF>::operator[]( size_t index ) const
+inline typename Column<MT,true,true,SF>::ConstReference
+   Column<MT,true,true,SF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the column elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -737,19 +500,20 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
 // access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::at( size_t index )
+inline typename Column<MT,true,true,SF>::Reference Column<MT,true,true,SF>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
    return (*this)[index];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the column elements.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -760,20 +524,21 @@ inline typename DenseColumn<MT,SO,SF>::Reference DenseColumn<MT,SO,SF>::at( size
 // access index.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstReference
-   DenseColumn<MT,SO,SF>::at( size_t index ) const
+inline typename Column<MT,true,true,SF>::ConstReference
+   Column<MT,true,true,SF>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
    return (*this)[index];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the column elements.
 //
 // \return Pointer to the internal element storage.
@@ -782,16 +547,17 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data() noexcept
+inline typename Column<MT,true,true,SF>::Pointer Column<MT,true,true,SF>::data() noexcept
 {
    return matrix_.data( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Low-level data access to the column elements.
 //
 // \return Pointer to the internal element storage.
@@ -800,16 +566,17 @@ inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data() noe
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstPointer DenseColumn<MT,SO,SF>::data() const noexcept
+inline typename Column<MT,true,true,SF>::ConstPointer Column<MT,true,true,SF>::data() const noexcept
 {
    return matrix_.data( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the column.
 //
 // \return Iterator to the first element of the column.
@@ -817,16 +584,17 @@ inline typename DenseColumn<MT,SO,SF>::ConstPointer DenseColumn<MT,SO,SF>::data(
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Iterator DenseColumn<MT,SO,SF>::begin()
+inline typename Column<MT,true,true,SF>::Iterator Column<MT,true,true,SF>::begin()
 {
    return matrix_.begin( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the column.
 //
 // \return Iterator to the first element of the column.
@@ -834,16 +602,17 @@ inline typename DenseColumn<MT,SO,SF>::Iterator DenseColumn<MT,SO,SF>::begin()
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::begin() const
+inline typename Column<MT,true,true,SF>::ConstIterator Column<MT,true,true,SF>::begin() const
 {
    return matrix_.cbegin( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator to the first element of the column.
 //
 // \return Iterator to the first element of the column.
@@ -851,16 +620,17 @@ inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::begi
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::cbegin() const
+inline typename Column<MT,true,true,SF>::ConstIterator Column<MT,true,true,SF>::cbegin() const
 {
    return matrix_.cbegin( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the column.
 //
 // \return Iterator just past the last element of the column.
@@ -868,16 +638,17 @@ inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::cbeg
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::Iterator DenseColumn<MT,SO,SF>::end()
+inline typename Column<MT,true,true,SF>::Iterator Column<MT,true,true,SF>::end()
 {
    return matrix_.end( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the column.
 //
 // \return Iterator just past the last element of the column.
@@ -885,16 +656,17 @@ inline typename DenseColumn<MT,SO,SF>::Iterator DenseColumn<MT,SO,SF>::end()
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::end() const
+inline typename Column<MT,true,true,SF>::ConstIterator Column<MT,true,true,SF>::end() const
 {
    return matrix_.cend( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns an iterator just past the last element of the column.
 //
 // \return Iterator just past the last element of the column.
@@ -902,12 +674,12 @@ inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::end(
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::cend() const
+inline typename Column<MT,true,true,SF>::ConstIterator Column<MT,true,true,SF>::cend() const
 {
    return matrix_.cend( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -920,6 +692,7 @@ inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::cend
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Homogenous assignment to all column elements.
 //
 // \param rhs Scalar value to be assigned to all column elements.
@@ -930,9 +703,8 @@ inline typename DenseColumn<MT,SO,SF>::ConstIterator DenseColumn<MT,SO,SF>::cend
 // of the underlying matrix are modified.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const ElementType& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator=( const ElementType& rhs )
 {
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
@@ -950,10 +722,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const ElementTyp
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief List assignment to all column elements.
 //
 // \param list The initializer list.
@@ -966,9 +740,8 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const ElementTyp
 // exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( initializer_list<ElementType> list )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
@@ -980,11 +753,13 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( initializer_list
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for DenseColumn.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for Column.
 //
 // \param rhs Dense column to be copied.
 // \return Reference to the assigned column.
@@ -997,9 +772,8 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( initializer_list
 // exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const DenseColumn& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator=( const Column& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -1019,10 +793,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const DenseColum
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for different vectors.
 //
 // \param rhs Vector to be assigned.
@@ -1036,10 +812,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const DenseColum
 // exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const Vector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1071,10 +846,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const Vector<VT,
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a vector (\f$ \vec{a}+=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be added to the dense column.
@@ -1088,10 +865,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator=( const Vector<VT,
 // exception is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator+=( const Vector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator+=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1121,10 +897,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator+=( const Vector<VT
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Subtraction assignment operator for the subtraction of a vector (\f$ \vec{a}-=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector to be subtracted from the dense column.
@@ -1138,10 +916,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator+=( const Vector<VT
 // exception is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator-=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1171,10 +948,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
@@ -1187,10 +966,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const DenseVector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1220,10 +998,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const DenseVect
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a sparse vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
@@ -1236,10 +1016,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const DenseVect
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const SparseVector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator*=( const SparseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
@@ -1263,10 +1042,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const SparseVec
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -1278,10 +1059,9 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const SparseVec
 // is thrown.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator/=( const DenseVector<VT,false>& rhs )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator/=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1311,10 +1091,12 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator/=( const DenseVect
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a dense column and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
@@ -1325,20 +1107,21 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator/=( const DenseVect
 // to scale such a row results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,SO,SF> >&
-   DenseColumn<MT,SO,SF>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF> >&
+   Column<MT,true,true,SF>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    return operator=( (*this) * rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense column by a scalar value
 //        (\f$ \vec{a}/=s \f$).
 //
@@ -1351,11 +1134,10 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,SO,SF> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,SO,SF> >&
-   DenseColumn<MT,SO,SF>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF> >&
+   Column<MT,true,true,SF>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1363,6 +1145,7 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,SO,SF> >&
 
    return operator=( (*this) / rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1375,36 +1158,39 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,SO,SF> >&
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the column.
 //
 // \return The size of the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseColumn<MT,SO,SF>::size() const noexcept
+inline size_t Column<MT,true,true,SF>::size() const noexcept
 {
    return matrix_.rows();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense column.
 //
 // \return The capacity of the dense column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseColumn<MT,SO,SF>::capacity() const noexcept
+inline size_t Column<MT,true,true,SF>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of non-zero elements in the column.
 //
 // \return The number of non-zero elements in the column.
@@ -1413,31 +1199,33 @@ inline size_t DenseColumn<MT,SO,SF>::capacity() const noexcept
 // of rows of the matrix containing the column.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline size_t DenseColumn<MT,SO,SF>::nonZeros() const
+inline size_t Column<MT,true,true,SF>::nonZeros() const
 {
    return matrix_.nonZeros( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Reset to the default initial values.
 //
 // \return void
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline void DenseColumn<MT,SO,SF>::reset()
+inline void Column<MT,true,true,SF>::reset()
 {
    matrix_.reset( col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
 // \param scalar The scalar value for the column scaling.
@@ -1448,10 +1236,9 @@ inline void DenseColumn<MT,SO,SF>::reset()
 // attempt to scale such a row results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the scalar value
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::scale( const Other& scalar )
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1472,6 +1259,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::scale( const Other& scalar 
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1484,6 +1272,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::scale( const Other& scalar 
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column can alias with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -1494,17 +1283,18 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::scale( const Other& scalar 
 // expressions to optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
+inline bool Column<MT,true,true,SF>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column can alias with the given dense column \a alias.
 //
 // \param alias The alias to be checked.
@@ -1515,19 +1305,20 @@ inline bool DenseColumn<MT,SO,SF>::canAlias( const Other* alias ) const noexcept
 // expressions to optimize the evaluation.
 */
 template< typename MT   // Type of the dense matrix
-        , bool SO       // Storage order
         , bool SF >     // Symmetry flag
 template< typename MT2  // Data type of the foreign dense column
         , bool SO2      // Storage order of the foreign dense column
         , bool SF2 >    // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,SO,SF>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,true,true,SF>::canAlias( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( alias->matrix_ ) && ( col_ == alias->col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
@@ -1538,17 +1329,18 @@ inline bool DenseColumn<MT,SO,SF>::canAlias( const DenseColumn<MT2,SO2,SF2>* ali
 // expressions to optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
         , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,SO,SF>::isAliased( const Other* alias ) const noexcept
+inline bool Column<MT,true,true,SF>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column is aliased with the given dense column \a alias.
 //
 // \param alias The alias to be checked.
@@ -1559,19 +1351,20 @@ inline bool DenseColumn<MT,SO,SF>::isAliased( const Other* alias ) const noexcep
 // expressions to optimize the evaluation.
 */
 template< typename MT   // Type of the dense matrix
-        , bool SO       // Storage order
         , bool SF >     // Symmetry flag
 template< typename MT2  // Data type of the foreign dense column
         , bool SO2      // Storage order of the foreign dense column
         , bool SF2 >    // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,SO,SF>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,true,true,SF>::isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column is properly aligned in memory.
 //
 // \return \a true in case the dense column is aligned, \a false if not.
@@ -1581,16 +1374,17 @@ inline bool DenseColumn<MT,SO,SF>::isAliased( const DenseColumn<MT2,SO2,SF2>* al
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseColumn<MT,SO,SF>::isAligned() const noexcept
+inline bool Column<MT,true,true,SF>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the dense column can be used in SMP assignments.
 //
 // \return \a true in case the dense column can be used in SMP assignments, \a false if not.
@@ -1601,16 +1395,17 @@ inline bool DenseColumn<MT,SO,SF>::isAligned() const noexcept
 // the dense column).
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const noexcept
+inline bool Column<MT,true,true,SF>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1622,17 +1417,18 @@ inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const noexcept
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
-   DenseColumn<MT,SO,SF>::load( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,true,true,SF>::SIMDType
+   Column<MT,true,true,SF>::load( size_t index ) const noexcept
 {
    return matrix_.load( index, col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1645,17 +1441,18 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
-   DenseColumn<MT,SO,SF>::loada( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,true,true,SF>::SIMDType
+   Column<MT,true,true,SF>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( index, col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unaligned load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1668,17 +1465,18 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
-   DenseColumn<MT,SO,SF>::loadu( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,true,true,SF>::SIMDType
+   Column<MT,true,true,SF>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( index, col_ );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1691,17 +1489,18 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::SIMDType
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::store( size_t index, const SIMDType& value ) noexcept
+   Column<MT,true,true,SF>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( index, col_, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1715,17 +1514,18 @@ BLAZE_ALWAYS_INLINE void
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::storea( size_t index, const SIMDType& value ) noexcept
+   Column<MT,true,true,SF>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( index, col_, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Unaligned store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1739,17 +1539,18 @@ BLAZE_ALWAYS_INLINE void
 // compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::storeu( size_t index, const SIMDType& value ) noexcept
+   Column<MT,true,true,SF>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( index, col_, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned, non-temporal store of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1763,17 +1564,18 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,SO,SF>::stream( size_t index, const SIMDType& value ) noexcept
+   Column<MT,true,true,SF>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( index, col_, value );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
@@ -1785,11 +1587,10 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseColumn<MT,SO,SF>::assign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Column<MT,true,true,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1801,10 +1602,12 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssi
    if( ipos < (~rhs).size() )
       matrix_(ipos,col_) = (~rhs)[ipos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be assigned.
@@ -1816,11 +1619,10 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssi
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseColumn<MT,SO,SF>::assign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Column<MT,true,true,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1861,10 +1663,12 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssig
       }
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be assigned.
@@ -1876,20 +1680,21 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAssig
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,SO,SF>::assign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,true,true,SF>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
@@ -1901,11 +1706,10 @@ inline void DenseColumn<MT,SO,SF>::assign( const SparseVector<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseColumn<MT,SO,SF>::addAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Column<MT,true,true,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1917,10 +1721,12 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddA
    if( ipos < (~rhs).size() )
       matrix_(ipos,col_) += (~rhs)[ipos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the addition assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be added.
@@ -1932,11 +1738,10 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddA
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseColumn<MT,SO,SF>::addAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Column<MT,true,true,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1965,10 +1770,12 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAs
       *left += *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be added.
@@ -1980,20 +1787,21 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedAddAs
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,SO,SF>::addAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,true,true,SF>::addAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) += element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
@@ -2005,11 +1813,10 @@ inline void DenseColumn<MT,SO,SF>::addAssign( const SparseVector<VT,false>& rhs 
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseColumn<MT,SO,SF>::subAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Column<MT,true,true,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2021,10 +1828,12 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubA
    if( ipos < (~rhs).size() )
       matrix_(ipos,col_) -= (~rhs)[ipos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the subtraction assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be subtracted.
@@ -2036,11 +1845,10 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubA
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseColumn<MT,SO,SF>::subAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Column<MT,true,true,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2069,10 +1877,12 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAs
       *left -= *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be subtracted.
@@ -2084,20 +1894,21 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedSubAs
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,SO,SF>::subAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,true,true,SF>::subAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) -= element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
@@ -2109,11 +1920,10 @@ inline void DenseColumn<MT,SO,SF>::subAssign( const SparseVector<VT,false>& rhs 
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseColumn<MT,SO,SF>::multAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Column<MT,true,true,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2125,10 +1935,12 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMult
    if( ipos < (~rhs).size() )
       matrix_(ipos,col_) *= (~rhs)[ipos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the multiplication assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector to be multiplied.
@@ -2140,11 +1952,10 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMult
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseColumn<MT,SO,SF>::multAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Column<MT,true,true,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2173,10 +1984,12 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultA
       *left *= *right; ++left, ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the multiplication assignment of a sparse vector.
 //
 // \param rhs The right-hand side sparse vector to be multiplied.
@@ -2188,10 +2001,9 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedMultA
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,SO,SF>::multAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,true,true,SF>::multAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2202,10 +2014,12 @@ inline void DenseColumn<MT,SO,SF>::multAssign( const SparseVector<VT,false>& rhs
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),col_) = tmp[element->index()] * element->value();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the division assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -2217,11 +2031,10 @@ inline void DenseColumn<MT,SO,SF>::multAssign( const SparseVector<VT,false>& rhs
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseColumn<MT,SO,SF>::divAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Column<MT,true,true,SF>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2233,10 +2046,12 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivA
    if( ipos < (~rhs).size() )
       matrix_(ipos,col_) /= (~rhs)[ipos];
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief SIMD optimized implementation of the division assignment of a dense vector.
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -2248,11 +2063,10 @@ inline DisableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivA
 // assignment operator.
 */
 template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseColumn<MT,SO,SF>::divAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Column<MT,true,true,SF>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2280,6 +2094,7 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAs
       *left /= *right; ++left; ++right;
    }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2291,21 +2106,22 @@ inline EnableIf_< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE VectorizedDivAs
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR GENERAL ROW-MAJOR MATRICES
+//  CLASS TEMPLATE SPECIALIZATION FOR GENERAL ROW-MAJOR DENSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of DenseColumn for general row-major matrices.
+/*!\brief Specialization of Column for general row-major dense matrices.
 // \ingroup views
 //
-// This specialization of DenseColumn adapts the class template to the requirements of general
-// row-major matrices.
+// This specialization of Column adapts the class template to the requirements of general
+// row-major dense matrices.
 */
 template< typename MT >  // Type of the dense matrix
-class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,false>, false >
-                                  , private Column
+class Column<MT,false,true,false>
+   : public DenseVector< Column<MT,false,true,false>, false >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -2315,13 +2131,13 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,false,false>  This;           //!< Type of this DenseColumn instance.
-   typedef DenseVector<This,false>      BaseType;       //!< Base type of this DenseColumn instance.
+   typedef Column<MT,false,true,false>  This;           //!< Type of this Column instance.
+   typedef DenseVector<This,false>      BaseType;       //!< Base type of this Column instance.
    typedef ColumnTrait_<MT>             ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>             ElementType;    //!< Type of the column elements.
    typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseColumn&           CompositeType;  //!< Data type for composite expression templates.
+   typedef const Column&                CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef ConstReference_<MT>  ConstReference;
@@ -2650,7 +2466,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseColumn( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2680,33 +2496,33 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( initializer_list<ElementType> list );
-   inline DenseColumn& operator=( const DenseColumn& rhs );
+   inline Column& operator=( const ElementType& rhs );
+   inline Column& operator=( initializer_list<ElementType> list );
+   inline Column& operator=( const Column& rhs );
 
-   template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator/=( const DenseVector<VT,false>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator*=( Other rhs );
+   template< typename VT > inline Column& operator= ( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator+=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator-=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const noexcept;
-                              inline size_t       capacity() const noexcept;
-                              inline size_t       nonZeros() const;
-                              inline void         reset();
-   template< typename Other > inline DenseColumn& scale( const Other& scalar );
+                              inline size_t  size() const noexcept;
+                              inline size_t  capacity() const noexcept;
+                              inline size_t  nonZeros() const;
+                              inline void    reset();
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2718,13 +2534,13 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    inline bool canAlias ( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias ( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias ( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -2751,31 +2567,31 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2802,14 +2618,14 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for DenseColumn.
+/*!\brief The constructor for Column.
 //
 // \param matrix The matrix containing the column.
 // \param index The index of the column.
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,false>::DenseColumn( MT& matrix, size_t index )
+inline Column<MT,false,true,false>::Column( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -2840,8 +2656,8 @@ inline DenseColumn<MT,false,false>::DenseColumn( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Reference
-   DenseColumn<MT,false,false>::operator[]( size_t index )
+inline typename Column<MT,false,true,false>::Reference
+   Column<MT,false,true,false>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(index,col_);
@@ -2861,8 +2677,8 @@ inline typename DenseColumn<MT,false,false>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstReference
-   DenseColumn<MT,false,false>::operator[]( size_t index ) const
+inline typename Column<MT,false,true,false>::ConstReference
+   Column<MT,false,true,false>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
@@ -2883,8 +2699,8 @@ inline typename DenseColumn<MT,false,false>::ConstReference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Reference
-   DenseColumn<MT,false,false>::at( size_t index )
+inline typename Column<MT,false,true,false>::Reference
+   Column<MT,false,true,false>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -2907,8 +2723,8 @@ inline typename DenseColumn<MT,false,false>::Reference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstReference
-   DenseColumn<MT,false,false>::at( size_t index ) const
+inline typename Column<MT,false,true,false>::ConstReference
+   Column<MT,false,true,false>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -2929,7 +2745,7 @@ inline typename DenseColumn<MT,false,false>::ConstReference
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>::data() noexcept
+inline typename Column<MT,false,true,false>::Pointer Column<MT,false,true,false>::data() noexcept
 {
    return matrix_.data() + col_;
 }
@@ -2947,7 +2763,7 @@ inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstPointer DenseColumn<MT,false,false>::data() const noexcept
+inline typename Column<MT,false,true,false>::ConstPointer Column<MT,false,true,false>::data() const noexcept
 {
    return matrix_.data() + col_;
 }
@@ -2964,7 +2780,7 @@ inline typename DenseColumn<MT,false,false>::ConstPointer DenseColumn<MT,false,f
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Iterator DenseColumn<MT,false,false>::begin()
+inline typename Column<MT,false,true,false>::Iterator Column<MT,false,true,false>::begin()
 {
    return Iterator( matrix_, 0UL, col_ );
 }
@@ -2981,8 +2797,8 @@ inline typename DenseColumn<MT,false,false>::Iterator DenseColumn<MT,false,false
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstIterator
-   DenseColumn<MT,false,false>::begin() const
+inline typename Column<MT,false,true,false>::ConstIterator
+   Column<MT,false,true,false>::begin() const
 {
    return ConstIterator( matrix_, 0UL, col_ );
 }
@@ -2999,8 +2815,8 @@ inline typename DenseColumn<MT,false,false>::ConstIterator
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstIterator
-   DenseColumn<MT,false,false>::cbegin() const
+inline typename Column<MT,false,true,false>::ConstIterator
+   Column<MT,false,true,false>::cbegin() const
 {
    return ConstIterator( matrix_, 0UL, col_ );
 }
@@ -3017,7 +2833,7 @@ inline typename DenseColumn<MT,false,false>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::Iterator DenseColumn<MT,false,false>::end()
+inline typename Column<MT,false,true,false>::Iterator Column<MT,false,true,false>::end()
 {
    return Iterator( matrix_, size(), col_ );
 }
@@ -3034,8 +2850,8 @@ inline typename DenseColumn<MT,false,false>::Iterator DenseColumn<MT,false,false
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstIterator
-   DenseColumn<MT,false,false>::end() const
+inline typename Column<MT,false,true,false>::ConstIterator
+   Column<MT,false,true,false>::end() const
 {
    return ConstIterator( matrix_, size(), col_ );
 }
@@ -3052,8 +2868,8 @@ inline typename DenseColumn<MT,false,false>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,false>::ConstIterator
-   DenseColumn<MT,false,false>::cend() const
+inline typename Column<MT,false,true,false>::ConstIterator
+   Column<MT,false,true,false>::cend() const
 {
    return ConstIterator( matrix_, size(), col_ );
 }
@@ -3081,8 +2897,8 @@ inline typename DenseColumn<MT,false,false>::ConstIterator
 // of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator=( const ElementType& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator=( const ElementType& rhs )
 {
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
@@ -3118,8 +2934,8 @@ inline DenseColumn<MT,false,false>&
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator=( initializer_list<ElementType> list )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
@@ -3137,7 +2953,7 @@ inline DenseColumn<MT,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for DenseColumn.
+/*!\brief Copy assignment operator for Column.
 //
 // \param rhs Dense column to be copied.
 // \return Reference to the assigned column.
@@ -3150,8 +2966,8 @@ inline DenseColumn<MT,false,false>&
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator=( const DenseColumn& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator=( const Column& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -3191,8 +3007,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
@@ -3245,8 +3061,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator+=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator+=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3296,8 +3112,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator-=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator-=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3346,8 +3162,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator*=( const DenseVector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3396,8 +3212,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator*=( const SparseVector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator*=( const SparseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
@@ -3439,8 +3255,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator/=( const DenseVector<VT,false>& rhs )
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator/=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3487,8 +3303,8 @@ inline DenseColumn<MT,false,false>&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,false> >&
-   DenseColumn<MT,false,false>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false> >&
+   Column<MT,false,true,false>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3513,8 +3329,8 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,false> >&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,false> >&
-   DenseColumn<MT,false,false>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false> >&
+   Column<MT,false,true,false>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3541,7 +3357,7 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,false> >&
 // \return The size of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,false>::size() const noexcept
+inline size_t Column<MT,false,true,false>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -3556,7 +3372,7 @@ inline size_t DenseColumn<MT,false,false>::size() const noexcept
 // \return The capacity of the dense column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,false>::capacity() const noexcept
+inline size_t Column<MT,false,true,false>::capacity() const noexcept
 {
    return matrix_.rows();
 }
@@ -3574,7 +3390,7 @@ inline size_t DenseColumn<MT,false,false>::capacity() const noexcept
 // of columns of the matrix containing the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,false>::nonZeros() const
+inline size_t Column<MT,false,true,false>::nonZeros() const
 {
    const size_t rows( size() );
    size_t nonzeros( 0UL );
@@ -3596,7 +3412,7 @@ inline size_t DenseColumn<MT,false,false>::nonZeros() const
 // \return void
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseColumn<MT,false,false>::reset()
+inline void Column<MT,false,true,false>::reset()
 {
    using blaze::clear;
 
@@ -3631,7 +3447,7 @@ inline void DenseColumn<MT,false,false>::reset()
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseColumn<MT,false,false>& DenseColumn<MT,false,false>::scale( const Other& scalar )
+inline Column<MT,false,true,false>& Column<MT,false,true,false>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3677,7 +3493,7 @@ inline DenseColumn<MT,false,false>& DenseColumn<MT,false,false>::scale( const Ot
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,false>::canAlias( const Other* alias ) const noexcept
+inline bool Column<MT,false,true,false>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3700,7 +3516,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,false>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,false,true,false>::canAlias( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -3721,7 +3537,7 @@ inline bool DenseColumn<MT,false,false>::canAlias( const DenseColumn<MT2,SO2,SF2
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,false>::isAliased( const Other* alias ) const noexcept
+inline bool Column<MT,false,true,false>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3744,7 +3560,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,false>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,false,true,false>::isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -3763,7 +3579,7 @@ inline bool DenseColumn<MT,false,false>::isAliased( const DenseColumn<MT2,SO2,SF
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,false>::isAligned() const noexcept
+inline bool Column<MT,false,true,false>::isAligned() const noexcept
 {
    return false;
 }
@@ -3783,7 +3599,7 @@ inline bool DenseColumn<MT,false,false>::isAligned() const noexcept
 // the dense column).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,false>::canSMPAssign() const noexcept
+inline bool Column<MT,false,true,false>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3805,7 +3621,7 @@ inline bool DenseColumn<MT,false,false>::canSMPAssign() const noexcept
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseColumn<MT,false,false>::assign( const DenseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3835,7 +3651,7 @@ inline void DenseColumn<MT,false,false>::assign( const DenseVector<VT,false>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,false>::assign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3860,7 +3676,7 @@ inline void DenseColumn<MT,false,false>::assign( const SparseVector<VT,false>& r
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseColumn<MT,false,false>::addAssign( const DenseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3890,7 +3706,7 @@ inline void DenseColumn<MT,false,false>::addAssign( const DenseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,false>::addAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::addAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3915,7 +3731,7 @@ inline void DenseColumn<MT,false,false>::addAssign( const SparseVector<VT,false>
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseColumn<MT,false,false>::subAssign( const DenseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3945,7 +3761,7 @@ inline void DenseColumn<MT,false,false>::subAssign( const DenseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,false>::subAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::subAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3970,7 +3786,7 @@ inline void DenseColumn<MT,false,false>::subAssign( const SparseVector<VT,false>
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseColumn<MT,false,false>::multAssign( const DenseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4000,7 +3816,7 @@ inline void DenseColumn<MT,false,false>::multAssign( const DenseVector<VT,false>
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,false>::multAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::multAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4029,7 +3845,7 @@ inline void DenseColumn<MT,false,false>::multAssign( const SparseVector<VT,false
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void DenseColumn<MT,false,false>::divAssign( const DenseVector<VT,false>& rhs )
+inline void Column<MT,false,true,false>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4053,21 +3869,22 @@ inline void DenseColumn<MT,false,false>::divAssign( const DenseVector<VT,false>&
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR SYMMETRIC ROW-MAJOR MATRICES
+//  CLASS TEMPLATE SPECIALIZATION FOR SYMMETRIC ROW-MAJOR DENSE MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of DenseColumn for symmetric row-major matrices.
+/*!\brief Specialization of Column for symmetric row-major dense matrices.
 // \ingroup views
 //
-// This specialization of DenseColumn adapts the class template to the requirements of symmetric
-// row-major matrices.
+// This specialization of Column adapts the class template to the requirements of symmetric
+// row-major dense matrices.
 */
 template< typename MT >  // Type of the dense matrix
-class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true>, false >
-                                 , private Column
+class Column<MT,false,true,true>
+   : public DenseVector< Column<MT,false,true,true>, false >
+   , private View
 {
  private:
    //**Type definitions****************************************************************************
@@ -4077,14 +3894,14 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
 
  public:
    //**Type definitions****************************************************************************
-   typedef DenseColumn<MT,false,true>  This;           //!< Type of this DenseColumn instance.
-   typedef DenseVector<This,false>     BaseType;       //!< Base type of this DenseColumn instance.
+   typedef Column<MT,false,true,true>  This;           //!< Type of this Column instance.
+   typedef DenseVector<This,false>     BaseType;       //!< Base type of this Column instance.
    typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
    typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
    typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const DenseColumn&          CompositeType;  //!< Data type for composite expression templates.
+   typedef const Column&               CompositeType;  //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    typedef ConstReference_<MT>  ConstReference;
@@ -4116,7 +3933,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseColumn( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4146,33 +3963,33 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DenseColumn& operator=( const ElementType& rhs );
-   inline DenseColumn& operator=( initializer_list<ElementType> list );
-   inline DenseColumn& operator=( const DenseColumn& rhs );
+   inline Column& operator=( const ElementType& rhs );
+   inline Column& operator=( initializer_list<ElementType> list );
+   inline Column& operator=( const Column& rhs );
 
-   template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator/=( const DenseVector<VT,false>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator*=( Other rhs );
+   template< typename VT > inline Column& operator= ( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator+=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator-=( const Vector<VT,false>& rhs );
+   template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DenseColumn >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       size() const noexcept;
-                              inline size_t       capacity() const noexcept;
-                              inline size_t       nonZeros() const;
-                              inline void         reset();
-   template< typename Other > inline DenseColumn& scale( const Other& scalar );
+                              inline size_t  size() const noexcept;
+                              inline size_t  capacity() const noexcept;
+                              inline size_t  nonZeros() const;
+                              inline void    reset();
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4244,13 +4061,13 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool canAlias( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, bool SO2, bool SF2 >
-   inline bool isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept;
+   inline bool isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -4314,31 +4131,31 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b ) noexcept;
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2, typename VT >
-   friend bool tryDivAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
+   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
-   template< typename MT2, bool SO2, bool SF2 >
-   friend DerestrictTrait_< DenseColumn<MT2,SO2,SF2> > derestrict( DenseColumn<MT2,SO2,SF2>& dm );
+   template< typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4365,14 +4182,14 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for DenseColumn.
+/*!\brief The constructor for Column.
 //
 // \param matrix The matrix containing the column.
 // \param index The index of the column.
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,true>::DenseColumn( MT& matrix, size_t index )
+inline Column<MT,false,true,true>::Column( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -4403,8 +4220,8 @@ inline DenseColumn<MT,false,true>::DenseColumn( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Reference
-   DenseColumn<MT,false,true>::operator[]( size_t index )
+inline typename Column<MT,false,true,true>::Reference
+   Column<MT,false,true,true>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(col_,index);
@@ -4424,8 +4241,8 @@ inline typename DenseColumn<MT,false,true>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstReference
-   DenseColumn<MT,false,true>::operator[]( size_t index ) const
+inline typename Column<MT,false,true,true>::ConstReference
+   Column<MT,false,true,true>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
@@ -4446,8 +4263,8 @@ inline typename DenseColumn<MT,false,true>::ConstReference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Reference
-   DenseColumn<MT,false,true>::at( size_t index )
+inline typename Column<MT,false,true,true>::Reference
+   Column<MT,false,true,true>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -4470,8 +4287,8 @@ inline typename DenseColumn<MT,false,true>::Reference
 // access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstReference
-   DenseColumn<MT,false,true>::at( size_t index ) const
+inline typename Column<MT,false,true,true>::ConstReference
+   Column<MT,false,true,true>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -4492,7 +4309,7 @@ inline typename DenseColumn<MT,false,true>::ConstReference
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::data() noexcept
+inline typename Column<MT,false,true,true>::Pointer Column<MT,false,true,true>::data() noexcept
 {
    return matrix_.data( col_ );
 }
@@ -4510,8 +4327,8 @@ inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::
 // of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstPointer
-   DenseColumn<MT,false,true>::data() const noexcept
+inline typename Column<MT,false,true,true>::ConstPointer
+   Column<MT,false,true,true>::data() const noexcept
 {
    return matrix_.data( col_ );
 }
@@ -4528,7 +4345,7 @@ inline typename DenseColumn<MT,false,true>::ConstPointer
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Iterator DenseColumn<MT,false,true>::begin()
+inline typename Column<MT,false,true,true>::Iterator Column<MT,false,true,true>::begin()
 {
    return matrix_.begin( col_ );
 }
@@ -4545,7 +4362,7 @@ inline typename DenseColumn<MT,false,true>::Iterator DenseColumn<MT,false,true>:
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,true>::begin() const
+inline typename Column<MT,false,true,true>::ConstIterator Column<MT,false,true,true>::begin() const
 {
    return matrix_.cbegin( col_ );
 }
@@ -4562,7 +4379,7 @@ inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,t
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,true>::cbegin() const
+inline typename Column<MT,false,true,true>::ConstIterator Column<MT,false,true,true>::cbegin() const
 {
    return matrix_.cbegin( col_ );
 }
@@ -4579,7 +4396,7 @@ inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,t
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::Iterator DenseColumn<MT,false,true>::end()
+inline typename Column<MT,false,true,true>::Iterator Column<MT,false,true,true>::end()
 {
    return matrix_.end( col_ );
 }
@@ -4596,7 +4413,7 @@ inline typename DenseColumn<MT,false,true>::Iterator DenseColumn<MT,false,true>:
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,true>::end() const
+inline typename Column<MT,false,true,true>::ConstIterator Column<MT,false,true,true>::end() const
 {
    return matrix_.cend( col_ );
 }
@@ -4613,7 +4430,7 @@ inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,t
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,true>::cend() const
+inline typename Column<MT,false,true,true>::ConstIterator Column<MT,false,true,true>::cend() const
 {
    return matrix_.cend( col_ );
 }
@@ -4637,7 +4454,7 @@ inline typename DenseColumn<MT,false,true>::ConstIterator DenseColumn<MT,false,t
 // \return Reference to the assigned column.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const ElementType& rhs )
+inline Column<MT,false,true,true>& Column<MT,false,true,true>::operator=( const ElementType& rhs )
 {
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
@@ -4673,8 +4490,8 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const 
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator=( initializer_list<ElementType> list )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
@@ -4692,7 +4509,7 @@ inline DenseColumn<MT,false,true>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for DenseColumn.
+/*!\brief Copy assignment operator for Column.
 //
 // \param rhs Dense column to be copied.
 // \return Reference to the assigned column.
@@ -4705,7 +4522,7 @@ inline DenseColumn<MT,false,true>&
 // exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const DenseColumn& rhs )
+inline Column<MT,false,true,true>& Column<MT,false,true,true>::operator=( const Column& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -4745,8 +4562,8 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::operator=( const 
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4798,8 +4615,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator+=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator+=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4849,8 +4666,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator-=( const Vector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator-=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4899,8 +4716,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator*=( const DenseVector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4949,8 +4766,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator*=( const SparseVector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator*=( const SparseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
@@ -4992,8 +4809,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator/=( const DenseVector<VT,false>& rhs )
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator/=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5040,8 +4857,8 @@ inline DenseColumn<MT,false,true>&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,true> >&
-   DenseColumn<MT,false,true>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true> >&
+   Column<MT,false,true,true>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5066,8 +4883,8 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,true> >&
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,true> >&
-   DenseColumn<MT,false,true>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true> >&
+   Column<MT,false,true,true>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5094,7 +4911,7 @@ inline EnableIf_< IsNumeric<Other>, DenseColumn<MT,false,true> >&
 // \return The size of the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,true>::size() const noexcept
+inline size_t Column<MT,false,true,true>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -5109,7 +4926,7 @@ inline size_t DenseColumn<MT,false,true>::size() const noexcept
 // \return The capacity of the dense column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,true>::capacity() const noexcept
+inline size_t Column<MT,false,true,true>::capacity() const noexcept
 {
    return matrix_.capacity( col_ );
 }
@@ -5127,7 +4944,7 @@ inline size_t DenseColumn<MT,false,true>::capacity() const noexcept
 // of rows of the matrix containing the column.
 */
 template< typename MT >  // Type of the dense matrix
-inline size_t DenseColumn<MT,false,true>::nonZeros() const
+inline size_t Column<MT,false,true,true>::nonZeros() const
 {
    return matrix_.nonZeros( col_ );
 }
@@ -5142,7 +4959,7 @@ inline size_t DenseColumn<MT,false,true>::nonZeros() const
 // \return void
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseColumn<MT,false,true>::reset()
+inline void Column<MT,false,true,true>::reset()
 {
    matrix_.reset( col_ );
 }
@@ -5163,7 +4980,7 @@ inline void DenseColumn<MT,false,true>::reset()
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::scale( const Other& scalar )
+inline Column<MT,false,true,true>& Column<MT,false,true,true>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5209,7 +5026,7 @@ inline DenseColumn<MT,false,true>& DenseColumn<MT,false,true>::scale( const Othe
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,true>::canAlias( const Other* alias ) const noexcept
+inline bool Column<MT,false,true,true>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5232,7 +5049,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,true>::canAlias( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,false,true,true>::canAlias( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -5253,7 +5070,7 @@ inline bool DenseColumn<MT,false,true>::canAlias( const DenseColumn<MT2,SO2,SF2>
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool DenseColumn<MT,false,true>::isAliased( const Other* alias ) const noexcept
+inline bool Column<MT,false,true,true>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5276,7 +5093,7 @@ template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Data type of the foreign dense column
         , bool SO2       // Storage order of the foreign dense column
         , bool SF2 >     // Symmetry flag of the foreign dense column
-inline bool DenseColumn<MT,false,true>::isAliased( const DenseColumn<MT2,SO2,SF2>* alias ) const noexcept
+inline bool Column<MT,false,true,true>::isAliased( const Column<MT2,SO2,true,SF2>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( col_ == alias->col_ );
 }
@@ -5295,7 +5112,7 @@ inline bool DenseColumn<MT,false,true>::isAliased( const DenseColumn<MT2,SO2,SF2
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,true>::isAligned() const noexcept
+inline bool Column<MT,false,true,true>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -5315,7 +5132,7 @@ inline bool DenseColumn<MT,false,true>::isAligned() const noexcept
 // the dense column).
 */
 template< typename MT >  // Type of the dense matrix
-inline bool DenseColumn<MT,false,true>::canSMPAssign() const noexcept
+inline bool Column<MT,false,true,true>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -5335,8 +5152,8 @@ inline bool DenseColumn<MT,false,true>::canSMPAssign() const noexcept
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
-   DenseColumn<MT,false,true>::load( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,false,true,true>::SIMDType
+   Column<MT,false,true,true>::load( size_t index ) const noexcept
 {
    return matrix_.load( col_, index );
 }
@@ -5358,8 +5175,8 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
-   DenseColumn<MT,false,true>::loada( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,false,true,true>::SIMDType
+   Column<MT,false,true,true>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( col_, index );
 }
@@ -5381,8 +5198,8 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
-   DenseColumn<MT,false,true>::loadu( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename Column<MT,false,true,true>::SIMDType
+   Column<MT,false,true,true>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( col_, index );
 }
@@ -5405,7 +5222,7 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::SIMDType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::store( size_t index, const SIMDType& value ) noexcept
+   Column<MT,false,true,true>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( col_, index, value );
 }
@@ -5429,7 +5246,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::storea( size_t index, const SIMDType& value ) noexcept
+   Column<MT,false,true,true>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( col_, index, value );
 }
@@ -5453,7 +5270,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::storeu( size_t index, const SIMDType& value ) noexcept
+   Column<MT,false,true,true>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( col_, index, value );
 }
@@ -5477,7 +5294,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseColumn<MT,false,true>::stream( size_t index, const SIMDType& value ) noexcept
+   Column<MT,false,true,true>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( col_, index, value );
 }
@@ -5499,8 +5316,8 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseColumn<MT,false,true>::assign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Column<MT,false,true,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5530,8 +5347,8 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   DenseColumn<MT,false,true>::assign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   Column<MT,false,true,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5590,7 +5407,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,true>::assign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,true>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5615,8 +5432,8 @@ inline void DenseColumn<MT,false,true>::assign( const SparseVector<VT,false>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseColumn<MT,false,true>::addAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Column<MT,false,true,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5646,8 +5463,8 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   DenseColumn<MT,false,true>::addAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   Column<MT,false,true,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5694,7 +5511,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,true>::addAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,true>::addAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5719,8 +5536,8 @@ inline void DenseColumn<MT,false,true>::addAssign( const SparseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseColumn<MT,false,true>::subAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Column<MT,false,true,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5750,8 +5567,8 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   DenseColumn<MT,false,true>::subAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   Column<MT,false,true,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5798,7 +5615,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,true>::subAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,true>::subAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5823,8 +5640,8 @@ inline void DenseColumn<MT,false,true>::subAssign( const SparseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseColumn<MT,false,true>::multAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Column<MT,false,true,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5854,8 +5671,8 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   DenseColumn<MT,false,true>::multAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   Column<MT,false,true,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5902,7 +5719,7 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void DenseColumn<MT,false,true>::multAssign( const SparseVector<VT,false>& rhs )
+inline void Column<MT,false,true,true>::multAssign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5931,8 +5748,8 @@ inline void DenseColumn<MT,false,true>::multAssign( const SparseVector<VT,false>
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseColumn<MT,false,true>::divAssign( const DenseVector<VT,false>& rhs )
+inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Column<MT,false,true,true>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5962,8 +5779,8 @@ inline DisableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   DenseColumn<MT,false,true>::divAssign( const DenseVector<VT,false>& rhs )
+inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   Column<MT,false,true,true>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5991,603 +5808,6 @@ inline EnableIf_< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Vectorized
       *left /= *right; ++left; ++right;
    }
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  DENSECOLUMN OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name DenseColumn operators */
-//@{
-template< typename MT, bool SO, bool SF >
-inline void reset( DenseColumn<MT,SO,SF>& column );
-
-template< typename MT, bool SO, bool SF >
-inline void clear( DenseColumn<MT,SO,SF>& column );
-
-template< typename MT, bool SO, bool SF >
-inline bool isDefault( const DenseColumn<MT,SO,SF>& column );
-
-template< typename MT, bool SO, bool SF >
-inline bool isIntact( const DenseColumn<MT,SO,SF>& column ) noexcept;
-
-template< typename MT, bool SO, bool SF >
-inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b ) noexcept;
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given dense column.
-// \ingroup dense_column
-//
-// \param column The dense column to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void reset( DenseColumn<MT,SO,SF>& column )
-{
-   column.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given dense column.
-// \ingroup dense_column
-//
-// \param column The dense column to be cleared.
-// \return void
-//
-// Clearing a dense column is equivalent to resetting it via the reset() function.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void clear( DenseColumn<MT,SO,SF>& column )
-{
-   column.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given dense column is in default state.
-// \ingroup dense_column
-//
-// \param column The dense column to be tested for its default state.
-// \return \a true in case the given dense column is component-wise zero, \a false otherwise.
-//
-// This function checks whether the dense column is in default state. For instance, in case the
-// column is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all column elements are 0 and \a false in case any column element
-// is not 0. The following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::DynamicMatrix<int,columnMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( column( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const DenseColumn<MT,SO,SF>& column )
-{
-   for( size_t i=0UL; i<column.size(); ++i )
-      if( !isDefault( column[i] ) ) return false;
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the invariants of the given dense column are intact.
-// \ingroup dense_column
-//
-// \param column The dense column to be tested.
-// \return \a true in case the given column's invariants are intact, \a false otherwise.
-//
-// This function checks whether the invariants of the dense column are intact, i.e. if its
-// state is valid. In case the invariants are intact, the function returns \a true, else it
-// will return \a false. The following example demonstrates the use of the \a isIntact()
-// function:
-
-   \code
-   blaze::DynamicMatrix<int,columnMajor> A;
-   // ... Resizing and initialization
-   if( isIntact( column( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isIntact( const DenseColumn<MT,SO,SF>& column ) noexcept
-{
-   return ( column.col_ <= column.matrix_.columns() &&
-            isIntact( column.matrix_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the two given dense columns represent the same observable state.
-// \ingroup dense_column
-//
-// \param a The first dense column to be tested for its state.
-// \param b The second dense column to be tested for its state.
-// \return \a true in case the two columns share a state, \a false otherwise.
-//
-// This overload of the isSame function tests if the two given dense columns refer to exactly the
-// same range of the same dense matrix. In case both columns represent the same observable state,
-// the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b ) noexcept
-{
-   return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a vector to a dense column.
-// \ingroup dense_column
-//
-// \param lhs The target left-hand side dense column.
-// \param rhs The right-hand side vector to be assigned.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a vector to a dense column.
-// \ingroup dense_column
-//
-// \param lhs The target left-hand side dense column.
-// \param rhs The right-hand side vector to be added.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryAddAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a vector to a dense column.
-// \ingroup dense_column
-//
-// \param lhs The target left-hand side dense column.
-// \param rhs The right-hand side vector to be subtracted.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return trySubAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the multiplication assignment of a vector to a dense column.
-// \ingroup dense_column
-//
-// \param lhs The target left-hand side dense column.
-// \param rhs The right-hand side vector to be multiplied.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryMultAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the division assignment of a vector to a dense column.
-// \ingroup dense_column
-//
-// \param lhs The target left-hand side dense column.
-// \param rhs The right-hand side vector divisor.
-// \param index The index of the first element to be modified.
-// \return \a true in case the assignment would be successful, \a false if not.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , bool SF        // Symmetry flag
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
-{
-   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
-
-   return tryDivAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given dense column.
-// \ingroup dense_column
-//
-// \param column The dense column to be derestricted.
-// \return Dense column without access restrictions.
-//
-// This function removes all restrictions on the data access to the given dense column. It returns
-// a column object that does provide the same interface but does not have any restrictions on the
-// data access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline DerestrictTrait_< DenseColumn<MT,SO,SF> > derestrict( DenseColumn<MT,SO,SF>& column )
-{
-   typedef DerestrictTrait_< DenseColumn<MT,SO,SF> >  ReturnType;
-   return ReturnType( derestrict( column.matrix_ ), column.col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESTRICTED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsRestricted< DenseColumn<MT,SO,SF> > : public BoolConstant< IsRestricted<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct DerestrictTrait< DenseColumn<MT,SO,SF> >
-{
-   using Type = DenseColumn< RemoveReference_< DerestrictTrait_<MT> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  HASCONSTDATAACCESS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasConstDataAccess< DenseColumn<MT,SO,SF> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  HASMUTABLEDATAACCESS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasMutableDataAccess< DenseColumn<MT,SO,SF> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISALIGNED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsAligned< DenseColumn<MT,SO,SF> >
-   : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISPADDED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsPadded< DenseColumn<MT,SO,SF> >
-   : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISOPPOSEDVIEW SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct IsOpposedView< DenseColumn<MT,false,false> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct AddTrait< DenseColumn<MT,SO,SF>, T >
-{
-   using Type = AddTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct AddTrait< T, DenseColumn<MT,SO,SF> >
-{
-   using Type = AddTrait_< T, ColumnTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct SubTrait< DenseColumn<MT,SO,SF>, T >
-{
-   using Type = SubTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct SubTrait< T, DenseColumn<MT,SO,SF> >
-{
-   using Type = SubTrait_< T, ColumnTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct MultTrait< DenseColumn<MT,SO,SF>, T >
-{
-   using Type = MultTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct MultTrait< T, DenseColumn<MT,SO,SF> >
-{
-   using Type = MultTrait_< T, ColumnTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct CrossTrait< DenseColumn<MT,SO,SF>, T >
-{
-   using Type = CrossTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct CrossTrait< T, DenseColumn<MT,SO,SF> >
-{
-   using Type = CrossTrait_< T, ColumnTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, typename T >
-struct DivTrait< DenseColumn<MT,SO,SF>, T >
-{
-   using Type = DivTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool SF >
-struct DivTrait< T, DenseColumn<MT,SO,SF> >
-{
-   using Type = DivTrait_< T, ColumnTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct SubvectorTrait< DenseColumn<MT,SO,SF> >
-{
-   using Type = SubvectorTrait_< ResultType_< DenseColumn<MT,SO,SF> > >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -43,7 +43,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/views/Forward.h>
@@ -84,20 +84,11 @@ struct ColumnExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct DenseResult**************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult {
-      using Type = DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>;
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct SparseResult*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T >
-   struct SparseResult {
-      using Type = SparseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>;
+   struct Result {
+      using Type = Column<T,IsColumnMajorMatrix<T>::value,IsDenseMatrix<T>::value,IsSymmetric<T>::value>;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -115,11 +106,9 @@ struct ColumnExprTrait
                             , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
                                  , ColumnExprTrait< RemoveCV_<Tmp> >
                                  , Failure >
-                            , If_< IsDenseMatrix<Tmp>
-                                 , DenseResult<Tmp>
-                                 , If_< IsSparseMatrix<Tmp>
-                                      , SparseResult<Tmp>
-                                      , Failure > >
+                            , If_< IsMatrix<Tmp>
+                                 , Result<Tmp>
+                                 , Failure >
                             >::Type;
    /*! \endcond */
    //**********************************************************************************************

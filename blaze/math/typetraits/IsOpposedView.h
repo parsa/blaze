@@ -63,17 +63,16 @@ namespace blaze {
 // to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 
    \code
-   using blaze::DenseColumn;
+   using blaze::Column;
    using blaze::Row;
-   using blaze::SparseColumn
 
    typedef blaze::DynamicMatrix<int,columnMajor>  DenseColumnMajor;
    typedef blaze::CompressedMatrix<int,rowMajor>  SparseRowMajor;
 
    blaze::IsOpposedView< Row<DenseColumnMajor> >::value          // Evaluates to 1
-   blaze::IsOpposedView< SparseColumn<SparseRowMajor> >::Type    // Results in TrueType
+   blaze::IsOpposedView< Column<SparseRowMajor> >::Type          // Results in TrueType
    blaze::IsOpposedView< const volatile Row<DenseColumnMajor> >  // Is derived from TrueType
-   blaze::IsOpposedView< DenseColumn<DenseColumnMajor> >::value  // Evaluates to 0
+   blaze::IsOpposedView< Column<DenseColumnMajor> >::value       // Evaluates to 0
    blaze::IsOpposedView< Row<SparseRowMajor> >::Type             // Results in FalseType
    blaze::IsOpposedView< const volatile Row<SparseRowMajor> >    // Is derived from FalseType
    \endcode

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseColumn.h
-//  \brief Header file for the complete SparseColumn implementation
+//  \file blaze/math/Column.h
+//  \brief Header file for the complete Column implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSECOLUMN_H_
-#define _BLAZE_MATH_SPARSECOLUMN_H_
+#ifndef _BLAZE_MATH_COLUMN_H_
+#define _BLAZE_MATH_COLUMN_H_
 
 
 //*************************************************************************************************
@@ -42,9 +42,10 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/smp/DenseVector.h>
+#include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
-#include <blaze/math/views/SparseColumn.h>
 #include <blaze/util/Random.h>
 
 
@@ -52,33 +53,30 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  RAND SPECIALIZATION
+//  RAND SPECIALIZATION FOR DENSE COLUMNS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for SparseColumn.
+/*!\brief Specialization of the Rand class template for dense columns.
 // \ingroup random
 //
-// This specialization of the Rand class randomizes instances of SparseColumn.
+// This specialization of the Rand class randomizes dense columns.
 */
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-class Rand< SparseColumn<MT,SO> >
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+class Rand< Column<MT,SO,true,SF> >
 {
  public:
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( SparseColumn<MT,SO>& column ) const;
-   inline void randomize( SparseColumn<MT,SO>& column, size_t nonzeros ) const;
+   inline void randomize( Column<MT,SO,true,SF>& column ) const;
 
    template< typename Arg >
-   inline void randomize( SparseColumn<MT,SO>& column, const Arg& min, const Arg& max ) const;
-
-   template< typename Arg >
-   inline void randomize( SparseColumn<MT,SO>& column, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   inline void randomize( Column<MT,SO,true,SF>& column, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -88,16 +86,104 @@ class Rand< SparseColumn<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseColumn.
+/*!\brief Randomization of a dense column.
+//
+// \param column The column to be randomized.
+// \return void
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Column<MT,SO,true,SF> >::randomize( Column<MT,SO,true,SF>& column ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<column.size(); ++i ) {
+      randomize( column[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a dense column.
+//
+// \param column The column to be randomized.
+// \param min The smallest possible value for a column element.
+// \param max The largest possible value for a column element.
+// \return void
+*/
+template< typename MT     // Type of the dense matrix
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< Column<MT,SO,true,SF> >::randomize( Column<MT,SO,true,SF>& column,
+                                                      const Arg& min, const Arg& max ) const
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<column.size(); ++i ) {
+      randomize( column[i], min, max );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION FOR SPARSE COLUMNS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for sparse columns.
+// \ingroup random
+//
+// This specialization of the Rand class randomizes sparse columns.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+class Rand< Column<MT,SO,false,SF> >
+{
+ public:
+   //**Randomize functions*************************************************************************
+   /*!\name Randomize functions */
+   //@{
+   inline void randomize( Column<MT,SO,false,SF>& column ) const;
+   inline void randomize( Column<MT,SO,false,SF>& column, size_t nonzeros ) const;
+
+   template< typename Arg >
+   inline void randomize( Column<MT,SO,false,SF>& column, const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( Column<MT,SO,false,SF>& column, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a sparse column.
 //
 // \param column The column to be randomized.
 // \return void
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column ) const
 {
-   typedef ElementType_< SparseColumn<MT,SO> >  ElementType;
+   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
 
    const size_t size( column.size() );
 
@@ -118,7 +204,7 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseColumn.
+/*!\brief Randomization of a sparse column.
 //
 // \param column The column to be randomized.
 // \param nonzeros The number of non-zero elements of the random column.
@@ -126,10 +212,11 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column 
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column, size_t nonzeros ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column, size_t nonzeros ) const
 {
-   typedef ElementType_< SparseColumn<MT,SO> >  ElementType;
+   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
 
    const size_t size( column.size() );
 
@@ -152,7 +239,7 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseColumn.
+/*!\brief Randomization of a sparse column.
 //
 // \param column The column to be randomized.
 // \param min The smallest possible value for a column element.
@@ -160,12 +247,13 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
 // \return void
 */
 template< typename MT     // Type of the sparse matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
-                                                    const Arg& min, const Arg& max ) const
+inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column,
+                                                       const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseColumn<MT,SO> >  ElementType;
+   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
 
    const size_t size( column.size() );
 
@@ -186,7 +274,7 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a SparseColumn.
+/*!\brief Randomization of a sparse column.
 //
 // \param column The column to be randomized.
 // \param nonzeros The number of non-zero elements of the random column.
@@ -196,12 +284,13 @@ inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT     // Type of the sparse matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , bool SF >       // Symmetry flag
 template< typename Arg >  // Min/max argument type
-inline void Rand< SparseColumn<MT,SO> >::randomize( SparseColumn<MT,SO>& column, size_t nonzeros,
-                                                    const Arg& min, const Arg& max ) const
+inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column, size_t nonzeros,
+                                                       const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< SparseColumn<MT,SO> >  ElementType;
+   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
 
    const size_t size( column.size() );
 

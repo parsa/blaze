@@ -44,9 +44,8 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool, bool > class DenseColumn;
+template< typename, bool, bool, bool > class Column;
 template< typename, bool, bool, bool > class Row;
-template< typename, bool, bool > class SparseColumn;
 template< typename, bool, bool, bool > class Submatrix;
 template< typename, bool, bool, bool > class Subvector;
 

@@ -40,11 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Column.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/math/views/Forward.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -67,13 +65,13 @@ namespace blaze {
 
    \code
    typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
-   typedef blaze::DenseColumn<DenseMatrixType1>      DenseColumnType1;
+   typedef blaze::Column<DenseMatrixType1>           DenseColumnType1;
 
    typedef blaze::StaticMatrix<float,3UL,4UL,rowMajor>  DenseMatrixType2;
-   typedef blaze::DenseColumn<DenseMatrixType2>         DenseColumnType2;
+   typedef blaze::Column<DenseMatrixType2>              DenseColumnType2;
 
    typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrixType;
-   typedef blaze::SparseColumn<SparseMatrixType>     SparseColumnType;
+   typedef blaze::Column<SparseMatrixType>           SparseColumnType;
 
    blaze::IsColumn< SparseColumnType >::value       // Evaluates to 1
    blaze::IsColumn< const DenseColumnType1 >::Type  // Results in TrueType
@@ -84,9 +82,56 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsColumn
-   : public BoolConstant< And< IsBaseOf<Column,T>, Not< IsBaseOf<T,Column> > >::value >
+struct IsColumn : public FalseType
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumn type trait for 'Column'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsColumn< Column<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumn type trait for 'const Column'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsColumn< const Column<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumn type trait for 'volatile Column'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsColumn< volatile Column<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumn type trait for 'const volatile Column'.
+// \ingroup math_type_traits
+*/
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsColumn< const volatile Column<MT,SO,DF,SF> > : public TrueType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

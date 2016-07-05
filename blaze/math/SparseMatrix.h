@@ -76,7 +76,6 @@
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
-#include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/Submatrix.h>
 
 #endif

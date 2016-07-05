@@ -41,7 +41,18 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
@@ -52,12 +63,20 @@
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
+#include <blaze/math/typetraits/IsOpposedView.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
+#include <blaze/math/views/column/BaseTemplate.h>
+#include <blaze/math/views/column/Dense.h>
+#include <blaze/math/views/column/Sparse.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -91,10 +110,10 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a view on the 3rd column of the dense matrix D
-   blaze::DenseColumn<DenseMatrix> = column( D, 3UL );
+   blaze::Column<DenseMatrix> = column( D, 3UL );
 
    // Creating a view on the 4th column of the sparse matrix S
-   blaze::SparseColumn<SparseMatrix> = column( S, 4UL );
+   blaze::Column<SparseMatrix> = column( S, 4UL );
    \endcode
 */
 template< typename MT  // Type of the matrix
@@ -131,10 +150,10 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTrait_<MT
    // ... Resizing and initialization
 
    // Creating a view on the 3rd column of the dense matrix D
-   blaze::DenseColumn<DenseMatrix> = column( D, 3UL );
+   blaze::Column<DenseMatrix> = column( D, 3UL );
 
    // Creating a view on the 4th column of the sparse matrix S
-   blaze::SparseColumn<SparseMatrix> = column( S, 4UL );
+   blaze::Column<SparseMatrix> = column( S, 4UL );
    \endcode
 */
 template< typename MT  // Type of the matrix
@@ -403,6 +422,650 @@ inline EnableIf_< IsMatTransExpr<MT>, ColumnExprTrait_<MT> >
 
    return trans( row( (~matrix).operand(), index ) );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
+//  COLUMN OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Column operators */
+//@{
+template< typename MT, bool SO, bool DF, bool SF >
+inline void reset( Column<MT,SO,DF,SF>& column );
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline void clear( Column<MT,SO,DF,SF>& column );
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline bool isDefault( const Column<MT,SO,DF,SF>& column );
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept;
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline bool isSame( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept;
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given column.
+// \ingroup column
+//
+// \param column The column to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void reset( Column<MT,SO,DF,SF>& column )
+{
+   column.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given column.
+// \ingroup column
+//
+// \param column The column to be cleared.
+// \return void
+//
+// Clearing a column is equivalent to resetting it via the reset() function.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void clear( Column<MT,SO,DF,SF>& column )
+{
+   column.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given column is in default state.
+// \ingroup column
+//
+// \param column The column to be tested for its default state.
+// \return \a true in case the given column is component-wise zero, \a false otherwise.
+//
+// This function checks whether the column is in default state. For instance, in case the
+// column is instantiated for a built-in integral or floating point data type, the function
+// returns \a true in case all column elements are 0 and \a false in case any column element
+// is not 0. The following example demonstrates the use of the \a isDefault function:
+
+   \code
+   blaze::DynamicMatrix<int,columnMajor> A;
+   // ... Resizing and initialization
+   if( isDefault( column( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline bool isDefault( const Column<MT,SO,DF,SF>& column )
+{
+   for( size_t i=0UL; i<column.size(); ++i )
+      if( !isDefault( column[i] ) ) return false;
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given sparse column is in default state.
+// \ingroup sparse_column
+//
+// \param column The sparse column to be tested for its default state.
+// \return \a true in case the given column is component-wise zero, \a false otherwise.
+//
+// This function checks whether the sparse column is in default state. For instance, in case
+// the column is instantiated for a built-in integral or floating point data type, the function
+// returns \a true in case all column elements are 0 and \a false in case any vector element is
+// not 0. The following example demonstrates the use of the \a isDefault function:
+
+   \code
+   blaze::CompressedMatrix<double,columnMajor> A;
+   // ... Resizing and initialization
+   if( isDefault( column( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isDefault( const Column<MT,SO,false,SF>& column )
+{
+   typedef ConstIterator_< Column<MT,SO,false,SF> >  ConstIterator;
+
+   const ConstIterator end( column.end() );
+   for( ConstIterator element=column.begin(); element!=end; ++element )
+      if( !isDefault( element->value() ) ) return false;
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given column are intact.
+// \ingroup column
+//
+// \param column The column to be tested.
+// \return \a true in case the given column's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the column are intact, i.e. if its state is
+// valid. In case the invariants are intact, the function returns \a true, else it will return
+// \a false. The following example demonstrates the use of the \a isIntact() function:
+
+   \code
+   blaze::DynamicMatrix<int,columnMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( column( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
+{
+   return ( column.col_ <= column.matrix_.columns() &&
+            isIntact( column.matrix_ ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given columns represent the same observable state.
+// \ingroup column
+//
+// \param a The first column to be tested for its state.
+// \param b The second column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the two given columns refer to exactly the
+// same range of the same matrix. In case both columns represent the same observable state,
+// the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline bool isSame( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+{
+   return ( isSame( a.matrix_, b.matrix_ ) && ( a.col_ == b.col_ ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a column.
+// \ingroup column
+//
+// \param lhs The target left-hand side column.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , bool DF        // Density flag
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a column.
+// \ingroup column
+//
+// \param lhs The target left-hand side column.
+// \param rhs The right-hand side vector to be added.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , bool DF        // Density flag
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAddAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a column.
+// \ingroup column
+//
+// \param lhs The target left-hand side column.
+// \param rhs The right-hand side vector to be subtracted.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , bool DF        // Density flag
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool trySubAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a column.
+// \ingroup column
+//
+// \param lhs The target left-hand side column.
+// \param rhs The right-hand side vector to be multiplied.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , bool DF        // Density flag
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryMultAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryMultAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to a column.
+// \ingroup column
+//
+// \param lhs The target left-hand side column.
+// \param rhs The right-hand side vector divisor.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , bool DF        // Density flag
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryDivAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryDivAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given column.
+// \ingroup column
+//
+// \param column The column to be derestricted.
+// \return Column without access restrictions.
+//
+// This function removes all restrictions on the data access to the given column. It returns a
+// column object that does provide the same interface but does not have any restrictions on the
+// data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline DerestrictTrait_< Column<MT,SO,DF,SF> > derestrict( Column<MT,SO,DF,SF>& column )
+{
+   typedef DerestrictTrait_< Column<MT,SO,DF,SF> >  ReturnType;
+   return ReturnType( derestrict( column.matrix_ ), column.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESTRICTED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRestricted< Column<MT,SO,DF,SF> > : public BoolConstant< IsRestricted<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DERESTRICTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct DerestrictTrait< Column<MT,SO,DF,SF> >
+{
+   using Type = Column< RemoveReference_< DerestrictTrait_<MT> > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct HasConstDataAccess< Column<MT,SO,true,SF> >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct HasMutableDataAccess< Column<MT,SO,true,SF> >
+   : public BoolConstant< HasMutableDataAccess<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct IsAligned< Column<MT,SO,true,SF> >
+   : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct IsPadded< Column<MT,SO,true,SF> >
+   : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISOPPOSEDVIEW SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool DF >
+struct IsOpposedView< Column<MT,false,DF,false> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ADDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct AddTrait< Column<MT,SO,DF,SF>, T >
+{
+   using Type = AddTrait_< ColumnTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct AddTrait< T, Column<MT,SO,DF,SF> >
+{
+   using Type = AddTrait_< T, ColumnTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct SubTrait< Column<MT,SO,DF,SF>, T >
+{
+   using Type = SubTrait_< ColumnTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct SubTrait< T, Column<MT,SO,DF,SF> >
+{
+   using Type = SubTrait_< T, ColumnTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MULTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct MultTrait< Column<MT,SO,DF,SF>, T >
+{
+   using Type = MultTrait_< ColumnTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct MultTrait< T, Column<MT,SO,DF,SF> >
+{
+   using Type = MultTrait_< T, ColumnTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct CrossTrait< Column<MT,SO,DF,SF>, T >
+{
+   using Type = CrossTrait_< ColumnTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct CrossTrait< T, Column<MT,SO,DF,SF> >
+{
+   using Type = CrossTrait_< T, ColumnTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct DivTrait< Column<MT,SO,DF,SF>, T >
+{
+   using Type = DivTrait_< ColumnTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct DivTrait< T, Column<MT,SO,DF,SF> >
+{
+   using Type = DivTrait_< T, ColumnTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct SubvectorTrait< Column<MT,SO,DF,SF> >
+{
+   using Type = SubvectorTrait_< ResultType_< Column<MT,SO,DF,SF> > >;
+};
 /*! \endcond */
 //*************************************************************************************************
 

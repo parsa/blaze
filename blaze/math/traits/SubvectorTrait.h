@@ -76,11 +76,11 @@ namespace blaze {
 //    <li>blaze::StaticVector</li>
 //    <li>blaze::HybridVector</li>
 //    <li>blaze::DynamicVector</li>
+//    <li>blaze::CustomVector</li>
 //    <li>blaze::CompressedVector</li>
 //    <li>blaze::Subvector</li>
 //    <li>blaze::Row</li>
-//    <li>blaze::DenseColumn</li>
-//    <li>blaze::SparseColumn</li>
+//    <li>blaze::Column</li>
 // </ul>
 //
 //

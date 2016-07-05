@@ -40,9 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DenseColumn.h>
+#include <blaze/math/Column.h>
 #include <blaze/math/Row.h>
-#include <blaze/math/SparseColumn.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/math/Subvector.h>
 
