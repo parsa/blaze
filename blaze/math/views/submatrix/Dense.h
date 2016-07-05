@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -680,7 +681,8 @@ class Submatrix<MT,unaligned,false,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -691,7 +693,8 @@ class Submatrix<MT,unaligned,false,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -2717,13 +2720,19 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE V
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row_+i,column_+j    ) += (~rhs)(i,j    );
-         matrix_(row_+i,column_+j+1UL) += (~rhs)(i,j+1UL);
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+i,column_+i) += (~rhs)(i,i);
       }
-      if( jpos < n_ ) {
-         matrix_(row_+i,column_+jpos) += (~rhs)(i,jpos);
+      else {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
+            matrix_(row_+i,column_+j    ) += (~rhs)(i,j    );
+            matrix_(row_+i,column_+j+1UL) += (~rhs)(i,j+1UL);
+         }
+         if( jpos < n_ ) {
+            matrix_(row_+i,column_+jpos) += (~rhs)(i,jpos);
+         }
       }
    }
 }
@@ -2906,13 +2915,19 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE V
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row_+i,column_+j    ) -= (~rhs)(i,j    );
-         matrix_(row_+i,column_+j+1UL) -= (~rhs)(i,j+1UL);
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+i,column_+i) -= (~rhs)(i,i);
       }
-      if( jpos < n_ ) {
-         matrix_(row_+i,column_+jpos) -= (~rhs)(i,jpos);
+      else {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
+            matrix_(row_+i,column_+j    ) -= (~rhs)(i,j    );
+            matrix_(row_+i,column_+j+1UL) -= (~rhs)(i,j+1UL);
+         }
+         if( jpos < n_ ) {
+            matrix_(row_+i,column_+jpos) -= (~rhs)(i,jpos);
+         }
       }
    }
 }
@@ -3651,7 +3666,8 @@ class Submatrix<MT,unaligned,true,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -3662,7 +3678,8 @@ class Submatrix<MT,unaligned,true,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -5643,13 +5660,19 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE Ve
    const size_t ipos( m_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row_+i    ,column_+j) += (~rhs)(i    ,j);
-         matrix_(row_+i+1UL,column_+j) += (~rhs)(i+1UL,j);
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+j,column_+j) += (~rhs)(j,j);
       }
-      if( ipos < m_ ) {
-         matrix_(row_+ipos,column_+j) += (~rhs)(ipos,j);
+      else {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
+            matrix_(row_+i    ,column_+j) += (~rhs)(i    ,j);
+            matrix_(row_+i+1UL,column_+j) += (~rhs)(i+1UL,j);
+         }
+         if( ipos < m_ ) {
+            matrix_(row_+ipos,column_+j) += (~rhs)(ipos,j);
+         }
       }
    }
 }
@@ -5832,13 +5855,19 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE Ve
    const size_t ipos( m_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row_+i    ,column_+j) -= (~rhs)(i    ,j);
-         matrix_(row_+i+1UL,column_+j) -= (~rhs)(i+1UL,j);
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+j,column_+j) -= (~rhs)(j,j);
       }
-      if( ipos < m_ ) {
-         matrix_(row_+ipos,column_+j) -= (~rhs)(ipos,j);
+      else {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
+            matrix_(row_+i    ,column_+j) -= (~rhs)(i    ,j);
+            matrix_(row_+i+1UL,column_+j) -= (~rhs)(i+1UL,j);
+         }
+         if( ipos < m_ ) {
+            matrix_(row_+ipos,column_+j) -= (~rhs)(ipos,j);
+         }
       }
    }
 }
@@ -6175,7 +6204,8 @@ class Submatrix<MT,aligned,false,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -6186,7 +6216,8 @@ class Submatrix<MT,aligned,false,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -8201,13 +8232,19 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE Vec
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row_+i,column_+j    ) += (~rhs)(i,j    );
-         matrix_(row_+i,column_+j+1UL) += (~rhs)(i,j+1UL);
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+i,column_+i) += (~rhs)(i,i);
       }
-      if( jpos < n_ ) {
-         matrix_(row_+i,column_+jpos) += (~rhs)(i,jpos);
+      else {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
+            matrix_(row_+i,column_+j    ) += (~rhs)(i,j    );
+            matrix_(row_+i,column_+j+1UL) += (~rhs)(i,j+1UL);
+         }
+         if( jpos < n_ ) {
+            matrix_(row_+i,column_+jpos) += (~rhs)(i,jpos);
+         }
       }
    }
 }
@@ -8390,13 +8427,19 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE Vec
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row_+i,column_+j    ) -= (~rhs)(i,j    );
-         matrix_(row_+i,column_+j+1UL) -= (~rhs)(i,j+1UL);
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+i,column_+i) -= (~rhs)(i,i);
       }
-      if( jpos < n_ ) {
-         matrix_(row_+i,column_+jpos) -= (~rhs)(i,jpos);
+      else {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
+            matrix_(row_+i,column_+j    ) -= (~rhs)(i,j    );
+            matrix_(row_+i,column_+j+1UL) -= (~rhs)(i,j+1UL);
+         }
+         if( jpos < n_ ) {
+            matrix_(row_+i,column_+jpos) -= (~rhs)(i,jpos);
+         }
       }
    }
 }
@@ -8733,7 +8776,8 @@ class Submatrix<MT,aligned,true,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -8744,7 +8788,8 @@ class Submatrix<MT,aligned,true,true>
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
                             AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value };
+                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
 
@@ -10711,13 +10756,19 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE Vect
    const size_t ipos( m_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row_+i    ,column_+j) += (~rhs)(i    ,j);
-         matrix_(row_+i+1UL,column_+j) += (~rhs)(i+1UL,j);
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+j,column_+j) += (~rhs)(j,j);
       }
-      if( ipos < m_ ) {
-         matrix_(row_+ipos,column_+j) += (~rhs)(ipos,j);
+      else {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
+            matrix_(row_+i    ,column_+j) += (~rhs)(i    ,j);
+            matrix_(row_+i+1UL,column_+j) += (~rhs)(i+1UL,j);
+         }
+         if( ipos < m_ ) {
+            matrix_(row_+ipos,column_+j) += (~rhs)(ipos,j);
+         }
       }
    }
 }
@@ -10900,13 +10951,19 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE Vect
    const size_t ipos( m_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row_+i    ,column_+j) -= (~rhs)(i    ,j);
-         matrix_(row_+i+1UL,column_+j) -= (~rhs)(i+1UL,j);
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      if( IsDiagonal<MT2>::value ) {
+         matrix_(row_+j,column_+j) -= (~rhs)(j,j);
       }
-      if( ipos < m_ ) {
-         matrix_(row_+ipos,column_+j) -= (~rhs)(ipos,j);
+      else {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
+            matrix_(row_+i    ,column_+j) -= (~rhs)(i    ,j);
+            matrix_(row_+i+1UL,column_+j) -= (~rhs)(i+1UL,j);
+         }
+         if( ipos < m_ ) {
+            matrix_(row_+ipos,column_+j) -= (~rhs)(ipos,j);
+         }
       }
    }
 }
