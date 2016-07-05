@@ -42,8 +42,6 @@
 
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/TrueType.h>
 
 
