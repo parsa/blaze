@@ -6129,7 +6129,7 @@
 // vector are immediately visible in the subvector.
 //
 //
-// \n \section views_subvector_class The Subvector Class Template
+// \n \section views_subvectors_class The Subvector Class Template
 // <hr>
 //
 // The blaze::Subvector class template represents a view on a specific subvector of a dense or
@@ -6526,7 +6526,7 @@
 // immediately visible in the submatrix.
 //
 //
-// \n \section views_submatrix_class The Submatrix Class Template
+// \n \section views_submatrices_class The Submatrix Class Template
 // <hr>
 //
 // The blaze::Submatrix template represents a view on a specific submatrix of a dense or sparse
@@ -6975,7 +6975,7 @@
 // and changes made via the matrix are immediately visible in the row.
 //
 //
-// \n \section views_row_class The Row Class Template
+// \n \section views_rows_class The Row Class Template
 // <hr>
 //
 // The blaze::Row class template represents a reference to a specific row of a dense or sparse
@@ -6992,7 +6992,7 @@
    class Row;
    \endcode
 
-// \c MT specifies the type of the dense matrix primitive. Row can be used with every dense matrix
+// \c MT specifies the type of the dense matrix primitive. Row can be used with every matrix
 // primitive, but does not work with any matrix expression type.
 //
 //
@@ -7269,50 +7269,28 @@
 // This reference is valid an can be used in every way any other column vector can be used as long
 // as the matrix containing the column is not resized or entirely destroyed. Changes made to the
 // elements (e.g. modifying values, inserting or erasing elements) are immediately visible in the
-// matrix and changes made via the matrix are immediately visible in the column. \b Blaze provides
-// two column types: \ref views_dense_column and \ref views_sparse_column.
+// matrix and changes made via the matrix are immediately visible in the column.
 //
 //
-// \n \section views_dense_column DenseColumn
+// \n \section views_columns_class The Column Class Template
 // <hr>
 //
-// The blaze::DenseColumn class template represents a reference to a specific column of a dense
-// matrix primitive. It can be included via the header file
+// The blaze::Column class template represents a reference to a specific column of a dense or
+// sparse matrix primitive. It can be included via the header file
 
    \code
-   #include <blaze/math/DenseColumn.h>
+   #include <blaze/math/Column.h>
    \endcode
 
-// The type of the dense matrix is specified via template parameter:
+// The type of the matrix is specified via template parameter:
 
    \code
    template< typename MT >
-   class DenseColumn;
+   class Column;
    \endcode
 
-// \c MT specifies the type of the dense matrix primitive. DenseColumn can be used with every
-// dense matrix primitive, but does not work with any matrix expression type.
-//
-//
-// \n \section views_sparse_column SparseColumn
-// <hr>
-//
-// The blaze::SparseColumn class template represents a reference to a specific column of a sparse
-// matrix primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/SparseColumn.h>
-   \endcode
-
-// The type of the sparse matrix is specified via template parameter:
-
-   \code
-   template< typename MT >
-   class SparseColumn;
-   \endcode
-
-// \c MT specifies the type of the sparse matrix primitive. SparseColumn can be used with every
-// sparse matrix primitive, but does not work with any matrix expression type.
+// \c MT specifies the type of the matrix primitive. Column can be used with every matrix
+// primitive, but does not work with any matrix expression type.
 //
 //
 // \n \section views_colums_setup Setup of Columns
@@ -7339,7 +7317,7 @@
    // ... Resizing and initialization
 
    // Setting the 1st column of matrix A to x
-   blaze::DenseColumn<DenseMatrixType> col1 = column( A, 1UL );
+   blaze::Column<DenseMatrixType> col1 = column( A, 1UL );
    col1 = x;
 
    // Setting the 4th column of matrix B to y
@@ -7352,10 +7330,10 @@
    y = column( C * D, 2UL );
    \endcode
 
-// The \c column() function can be used on any dense or sparse matrix, including expressions,
-// as illustrated by the source code example. However, both \ref views_dense_column and
-// \ref views_sparse_column cannot be instantiated for expression types, but only for dense
-// and sparse matrix primitives, respectively, i.e. for matrix types that offer write access.
+// The \c column() function can be used on any dense or sparse matrix, including expressions, as
+// illustrated by the source code example. However, columns cannot be instantiated for expression
+// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
+// access.
 //
 //
 // \n \section views_columns_common_operations Common Operations
@@ -7370,7 +7348,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>         ColumnType;
+   typedef blaze::Column<MatrixType>              ColumnType;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -7405,7 +7383,7 @@
 
    \code
    typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::DenseColumn<MatrixType>         ColumnType;
+   typedef blaze::Column<MatrixType>              ColumnType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7426,7 +7404,7 @@
 
    \code
    typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::SparseColumn<MatrixType>           ColumnType;
+   typedef blaze::Column<MatrixType>                 ColumnType;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7459,7 +7437,7 @@
    typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
    MatrixType A( 100UL, 10UL );  // Non-initialized 10x100 matrix
 
-   typedef blaze::SparseColumn<MatrixType>  ColumnType;
+   typedef blaze::Column<MatrixType>  ColumnType;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    // The subscript operator provides access to all possible elements of the sparse column,
@@ -7501,8 +7479,8 @@
    typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
    MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   typedef blaze::DenseColumn<DenseMatrix>  RowType;
-   RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
+   typedef blaze::Column<DenseMatrix>  ColumnType;
+   ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;           // Manual initialization of the 0th column of A
    col0[1] = 0.0;
@@ -7538,7 +7516,7 @@
 
    \code
    typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::SparseColumn<MatrixType>        ColumnType;
+   typedef blaze::Column<MatrixType>              ColumnType;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
