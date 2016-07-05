@@ -277,8 +277,8 @@ namespace blaze {
    using MatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
    MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   using RowType = blaze::Column<DenseMatrix>;
-   RowType col0( column( A, 0UL ) );  // Reference to the 0th column of A
+   using ColumnType = blaze::Column<DenseMatrix>;
+   ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;           // Manual initialization of the 0th column of A
    col0[1] = 0.0;

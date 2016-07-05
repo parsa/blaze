@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/row/BaseTemplate.h
-//  \brief Header file for the implementation of the base template of the Row
+//  \brief Header file for the implementation of the Row base template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -65,7 +65,7 @@ namespace blaze {
 // The type of the matrix is specified via the first template parameter:
 
    \code
-   template< typename MT, bool SO, bool SF, bool DF >
+   template< typename MT, bool SO, bool DF, bool SF >
    class Row;
    \endcode
 
@@ -74,13 +74,13 @@ namespace blaze {
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix. This
 //        template parameter doesn't have to be explicitly defined, but is automatically derived
 //        from the first template parameter.
-//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
-//        doesn't have to be explicitly defined, but is automatically derived from the first
-//        template parameter.
 //  - DF: specifies whether the given matrix type is a dense or sparse matrix type. This template
 //        parameter doesn't have to be defined explicitly, it is automatically derived from the
 //        first template parameter. Defining the parameter explicitly may result in a compilation
 //        error!
+//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
+//        doesn't have to be explicitly defined, but is automatically derived from the first
+//        template parameter.
 //
 //
 // \n \section row_setup Setup of Rows

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/subvector/BaseTemplate.h
-//  \brief Header file for the implementation of the base template of the Subvector
+//  \brief Header file for the implementation of the Subvector base template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
