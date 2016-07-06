@@ -48,6 +48,7 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
+#include <blazemark/armadillo/DMatTrans.h>
 #include <blazemark/blaze/DMatTrans.h>
 #include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/boost/DMatTrans.h>
@@ -209,6 +210,19 @@ void dmattrans( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::dmattrans( N, steps ) );
          const double runtime( run->getGMMResult() / steps );
+         std::cout << "     " << std::setw(12) << N << runtime << std::endl;
+      }
+   }
+#endif
+
+#if BLAZEMARK_ARMADILLO_MODE
+   if( benchmarks.runArmadillo ) {
+      std::cout << "   Armadillo (Seconds):\n";
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getSize()  );
+         const size_t steps( run->getSteps() );
+         run->setArmadilloResult( blazemark::armadillo::dmattrans( N, steps ) );
+         const double runtime( run->getArmadilloResult() / steps );
          std::cout << "     " << std::setw(12) << N << runtime << std::endl;
       }
    }

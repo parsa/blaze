@@ -739,6 +739,9 @@ DMATTRANS="\$(OBJECT_PATH)/BLAZE_DMatTrans.o \$(OBJECT_PATH)/BOOST_DMatTrans.o"
 if [ "$GMM" = "yes" ]; then
    DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/GMM_DMatTrans.o"
 fi
+if [ "$ARMADILLO" = "yes" ]; then
+   DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/ARMADILLO_DMatTrans.o"
+fi
 if [ "$FLENS" = "yes" ]; then
    DMATTRANS="$DMATTRANS \$(OBJECT_PATH)/FLENS_DMatTrans.o"
 fi
@@ -4037,6 +4040,14 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/GMM_DMatTrans.o:
 	@echo "  Building the GMM++ kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_DMatTrans.o \$(INSTALL_PATH)/src/gmm/DMatTrans.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$ARMADILLO" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/ARMADILLO_DMatTrans.o:
+	@echo "  Building the Armadillo kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DMatTrans.o \$(INSTALL_PATH)/src/armadillo/DMatTrans.cpp \$(INCLUDES)
 EOF
 fi
 
