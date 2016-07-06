@@ -117,7 +117,7 @@ void estimateSteps( Run& run )
 
    ::blaze::setSeed( ::blazemark::seed );
 
-   const size_t N( run.getSteps() );
+   const size_t N( run.getSize() );
 
    blaze::DynamicMatrix<element_t,rowMajor> A( N, N ), B( N, N );
    blaze::timing::WcTimer timer;
