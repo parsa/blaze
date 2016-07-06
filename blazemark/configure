@@ -278,6 +278,13 @@ if [ "$BLAS" = "yes" ]; then
    fi
 fi
 
+if [ -n "$LAPACK_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$LAPACK_LIBRARY_PATH " ]]; then
+   LIBRARIES="${LIBRARIES%" "} -L$LAPACK_LIBRARY_PATH "
+fi
+if [ -n "$LAPACK_LIBRARIES" ]; then
+   LIBRARIES="${LIBRARIES%" "} $LAPACK_LIBRARIES"
+fi
+
 if [ "$BLITZ" = "yes" ]; then
    if [ -n "$BLITZ_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BLITZ_LIBRARY_PATH " ]]; then
       LIBRARIES="${LIBRARIES%" "} -L$BLITZ_LIBRARY_PATH "
@@ -755,6 +762,22 @@ if [ "$EIGEN" = "yes" ]; then
    SMATTRANS="$SMATTRANS \$(OBJECT_PATH)/EIGEN_SMatTrans.o"
 fi
 SMATTRANS="$SMATTRANS \$(OBJECT_PATH)/MAIN_SMatTrans.o"
+
+# Configuration of the dense matrix inversion benchmark
+DMATINV="\$(OBJECT_PATH)/BLAZE_DMatInv.o \$(OBJECT_PATH)/BOOST_DMatInv.o"
+if [ "$GMM" = "yes" ]; then
+   DMATINV="$DMATINV \$(OBJECT_PATH)/GMM_DMatInv.o"
+fi
+if [ "$ARMADILLO" = "yes" ]; then
+   DMATINV="$DMATINV \$(OBJECT_PATH)/ARMADILLO_DMatInv.o"
+fi
+if [ "$MTL" = "yes" ]; then
+   DMATINV="$DMATINV \$(OBJECT_PATH)/MTL_DMatInv.o"
+fi
+if [ "$EIGEN" = "yes" ]; then
+   DMATINV="$DMATINV \$(OBJECT_PATH)/EIGEN_DMatInv.o"
+fi
+DMATINV="$DMATINV \$(OBJECT_PATH)/MAIN_DMatInv.o"
 
 # Configuration of the dense matrix/dense matrix addition benchmark
 DMATDMATADD="\$(OBJECT_PATH)/CLASSIC_DMatDMatAdd.o \$(OBJECT_PATH)/BLAZE_DMatDMatAdd.o \$(OBJECT_PATH)/BOOST_DMatDMatAdd.o"
@@ -2129,6 +2152,8 @@ binaries: $MODULES
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmattrans $DMATTRANS \$(LIBRARIES)
 	@echo "  Building sparse matrix transpose (smattrans) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/smattrans $SMATTRANS \$(LIBRARIES)
+	@echo "  Building dense matrix inversion (dmatinv) binary..."
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatinv $DMATINV \$(LIBRARIES)
 	@echo "  Building dense matrix/dense matrix addition (dmatdmatadd) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdmatadd $DMATDMATADD \$(LIBRARIES)
 	@echo "  Building dense matrix/transpose dense matrix addition (dmattdmatadd) binary..."
@@ -4092,6 +4117,63 @@ cat >> Makefile <<EOF
 \$(OBJECT_PATH)/MAIN_SMatTrans.o:
 	@echo "  Building the benchmark..."
 	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SMatTrans.o \$(INSTALL_PATH)/src/main/SMatTrans.cpp \$(INCLUDES)
+EOF
+
+
+# Dense matrix inversion
+cat >> Makefile <<EOF
+
+dmatinv: \$(BINARY_PATH)/dmatinv
+\$(BINARY_PATH)/dmatinv: $DMATINV
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dmatinv $DMATINV \$(LIBRARIES)
+	@echo "... finished"
+	@echo
+\$(OBJECT_PATH)/BLAZE_DMatInv.o:
+	@echo
+	@echo "Building dense matrix inversion (dmatinv) binary..."
+	@echo "  Building the Blaze kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DMatInv.o \$(INSTALL_PATH)/src/blaze/DMatInv.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BOOST_DMatInv.o:
+	@echo "  Building the Boost uBLAS kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_DMatInv.o \$(INSTALL_PATH)/src/boost/DMatInv.cpp \$(INCLUDES)
+EOF
+
+if [ "$GMM" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/GMM_DMatInv.o:
+	@echo "  Building the GMM++ kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_DMatInv.o \$(INSTALL_PATH)/src/gmm/DMatInv.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$ARMADILLO" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/ARMADILLO_DMatInv.o:
+	@echo "  Building the Armadillo kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DMatInv.o \$(INSTALL_PATH)/src/armadillo/DMatInv.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$MTL" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/MTL_DMatInv.o:
+	@echo "  Building the MTL kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/MTL_DMatInv.o \$(INSTALL_PATH)/src/mtl/DMatInv.cpp \$(INCLUDES)
+EOF
+fi
+
+if [ "$EIGEN" = "yes" ]; then
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/EIGEN_DMatInv.o:
+	@echo "  Building the Eigen kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_DMatInv.o \$(INSTALL_PATH)/src/eigen/DMatInv.cpp \$(INCLUDES)
+EOF
+fi
+
+cat >> Makefile <<EOF
+\$(OBJECT_PATH)/MAIN_DMatInv.o:
+	@echo "  Building the benchmark..."
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DMatInv.o \$(INSTALL_PATH)/src/main/DMatInv.cpp \$(INCLUDES)
 EOF
 
 
@@ -7971,6 +8053,7 @@ clean:
         bin/tsvectsmatmult $TSVECTSMATMULT \\
         bin/dmattrans $DMATTRANS \\
         bin/smattrans $SMATTRANS \\
+        bin/dmatinv $DMATINV \\
         bin/dmatdmatadd $DMATDMATADD \\
         bin/dmattdmatadd $DMATTDMATADD \\
         bin/tdmatdmatadd $TDMATDMATADD \\

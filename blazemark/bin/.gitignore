@@ -13,6 +13,7 @@ dmatdmatadd
 dmatdmatmult
 dmatdmatsub
 dmatdvecmult
+dmatinv
 dmatscalarmult
 dmatsmatadd
 dmatsmatmult

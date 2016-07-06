@@ -84,6 +84,13 @@ BLAS_INCLUDE_FILE=
 BLAS_LIBRARY_PATH=
 BLAS_LIBRARIES=
 
+# Configuration of the LAPACK library (optional)
+# The Blaze library requires a LAPACK library for the matrix inversion benchmark. For
+# this benchmark it is mandatory to specify the LAPACK library path and the required
+# LAPACK libraries.
+LAPACK_LIBRARY_PATH=
+LAPACK_LIBRARIES=
+
 # Configuration of the Blitz++ library (optional)
 # With this setting it is possible to include the Blitz++ expression template library
 # to the benchmark process of the Blaze benchmark suite. The Blaze benchmark suite
