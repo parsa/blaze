@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SMatDVecMult.cpp
+//  \file src/main/SMatDVecMult.cpp
 //  \brief Source file for the sparse matrix/dense vector multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

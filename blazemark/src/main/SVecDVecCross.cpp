@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SVecDVecCross.cpp
+//  \file src/main/SVecDVecCross.cpp
 //  \brief Source file for the sparse vector/dense vector cross product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

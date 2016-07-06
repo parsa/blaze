@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TSVecSVecMult.cpp
+//  \file src/main/TSVecSVecMult.cpp
 //  \brief Source file for the sparse vector/sparse vector inner product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

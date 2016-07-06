@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SVecDVecAdd.cpp
+//  \file src/main/SVecDVecAdd.cpp
 //  \brief Source file for the sparse vector/dense vector addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

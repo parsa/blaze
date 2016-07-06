@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecNorm.cpp
+//  \file src/main/DVecNorm.cpp
 //  \brief Source file for the dense vector norm benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

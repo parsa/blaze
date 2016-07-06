@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DMatTSMatMult.cpp
+//  \file src/main/DMatTSMatMult.cpp
 //  \brief Source file for the dense matrix/transpose sparse matrix multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

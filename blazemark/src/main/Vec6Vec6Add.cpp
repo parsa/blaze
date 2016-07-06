@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Vec6Vec6Add.cpp
+//  \file src/main/Vec6Vec6Add.cpp
 //  \brief Source file for the 6-dimensional vector/vector addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

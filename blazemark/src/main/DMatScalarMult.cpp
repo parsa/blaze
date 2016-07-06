@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DMatScalarMult.cpp
+//  \file src/main/DMatScalarMult.cpp
 //  \brief Source file for the dense matrix/scalar multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

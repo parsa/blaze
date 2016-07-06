@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecSVecMult.cpp
+//  \file src/main/DVecSVecMult.cpp
 //  \brief Source file for the dense vector/sparse vector multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

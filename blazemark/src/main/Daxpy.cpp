@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Daxpy.cpp
+//  \file src/main/Daxpy.cpp
 //  \brief Source file for the daxpy product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

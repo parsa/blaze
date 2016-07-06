@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecTSVecMult.cpp
+//  \file src/main/DVecTSVecMult.cpp
 //  \brief Source file for the dense vector/sparse vector outer product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

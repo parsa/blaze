@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SMatSMatAdd.cpp
+//  \file src/main/SMatSMatAdd.cpp
 //  \brief Source file for the sparse matrix/sparse matrix addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

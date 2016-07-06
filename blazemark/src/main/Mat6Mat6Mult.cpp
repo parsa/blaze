@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Mat6Mat6Mult.cpp
+//  \file src/main/Mat6Mat6Mult.cpp
 //  \brief Source file for the 6-dimensional matrix/matrix multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

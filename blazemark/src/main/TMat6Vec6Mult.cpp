@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TMat6Vec6Mult.cpp
+//  \file src/main/TMat6Vec6Mult.cpp
 //  \brief Source file for the 6-dimensional transpose matrix/vector multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

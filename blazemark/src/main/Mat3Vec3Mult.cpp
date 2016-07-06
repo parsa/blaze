@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Mat3Vec3Mult.cpp
+//  \file src/main/Mat3Vec3Mult.cpp
 //  \brief Source file for the 3-dimensional matrix/vector multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Mat6Mat6Add.cpp
+//  \file src/main/Mat6Mat6Add.cpp
 //  \brief Source file for the 6-dimensional matrix/matrix addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

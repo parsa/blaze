@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SMatScalarMult.cpp
+//  \file src/main/SMatScalarMult.cpp
 //  \brief Source file for the sparse matrix/scalar multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

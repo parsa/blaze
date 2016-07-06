@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Mat3TMat3Mult.cpp
+//  \file src/main/Mat3TMat3Mult.cpp
 //  \brief Source file for the 3D matrix/transpose matrix multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

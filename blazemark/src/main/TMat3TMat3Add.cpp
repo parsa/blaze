@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TMat3TMat3Add.cpp
+//  \file src/main/TMat3TMat3Add.cpp
 //  \brief Source file for the 3-dimensional transpose matrix/transpose matrix addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

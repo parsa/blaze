@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SMatDMatAdd.cpp
+//  \file src/main/SMatDMatAdd.cpp
 //  \brief Source file for the sparse matrix/dense matrix addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

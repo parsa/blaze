@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecScalarMult.cpp
+//  \file src/main/DVecScalarMult.cpp
 //  \brief Source file for the dense vector/scalar multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

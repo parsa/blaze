@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SMatDMatMult.cpp
+//  \file src/main/SMatDMatMult.cpp
 //  \brief Source file for the sparse matrix/dense matrix multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

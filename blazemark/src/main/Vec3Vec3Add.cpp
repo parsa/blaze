@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/Vec3Vec3Add.cpp
+//  \file src/main/Vec3Vec3Add.cpp
 //  \brief Source file for the 3-dimensional vector/vector addition benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved

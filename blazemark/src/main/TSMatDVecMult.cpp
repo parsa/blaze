@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TSMatDVecMult.cpp
+//  \file src/main/TSMatDVecMult.cpp
 //  \brief Source file for the transpose sparse matrix/dense vector multiplication benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
