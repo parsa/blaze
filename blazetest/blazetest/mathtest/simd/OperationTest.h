@@ -144,71 +144,73 @@ class OperationTest : private blaze::NonCopyable
    void testStream        ();
    void testStoreu        ( size_t offset );
 
-   void testAddition      ( blaze::TrueType );
+   void testAddition      ( blaze::TrueType  );
    void testAddition      ( blaze::FalseType );
-   void testSubtraction   ( blaze::TrueType );
+   void testSubtraction   ( blaze::TrueType  );
    void testSubtraction   ( blaze::FalseType );
-   void testMultiplication( blaze::TrueType );
+   void testMultiplication( blaze::TrueType  );
    void testMultiplication( blaze::FalseType );
-   void testDivision      ( blaze::TrueType );
+   void testFMA           ( blaze::TrueType  );
+   void testFMA           ( blaze::FalseType );
+   void testDivision      ( blaze::TrueType  );
    void testDivision      ( blaze::FalseType );
 
-   void testAbs           ( blaze::TrueType );
+   void testAbs           ( blaze::TrueType  );
    void testAbs           ( blaze::FalseType );
-   void testConj          ( blaze::TrueType );
+   void testConj          ( blaze::TrueType  );
    void testConj          ( blaze::FalseType );
-   void testSqrt          ( blaze::TrueType );
+   void testSqrt          ( blaze::TrueType  );
    void testSqrt          ( blaze::FalseType );
-   void testInvSqrt       ( blaze::TrueType );
+   void testInvSqrt       ( blaze::TrueType  );
    void testInvSqrt       ( blaze::FalseType );
-   void testCbrt          ( blaze::TrueType );
+   void testCbrt          ( blaze::TrueType  );
    void testCbrt          ( blaze::FalseType );
-   void testInvCbrt       ( blaze::TrueType );
+   void testInvCbrt       ( blaze::TrueType  );
    void testInvCbrt       ( blaze::FalseType );
-   void testFloor         ( blaze::TrueType );
+   void testFloor         ( blaze::TrueType  );
    void testFloor         ( blaze::FalseType );
-   void testCeil          ( blaze::TrueType );
+   void testCeil          ( blaze::TrueType  );
    void testCeil          ( blaze::FalseType );
 
-   void testPow           ( blaze::TrueType );
+   void testPow           ( blaze::TrueType  );
    void testPow           ( blaze::FalseType );
-   void testExp           ( blaze::TrueType );
+   void testExp           ( blaze::TrueType  );
    void testExp           ( blaze::FalseType );
-   void testLog           ( blaze::TrueType );
+   void testLog           ( blaze::TrueType  );
    void testLog           ( blaze::FalseType );
-   void testLog10         ( blaze::TrueType );
+   void testLog10         ( blaze::TrueType  );
    void testLog10         ( blaze::FalseType );
 
-   void testSin           ( blaze::TrueType );
+   void testSin           ( blaze::TrueType  );
    void testSin           ( blaze::FalseType );
-   void testAsin          ( blaze::TrueType );
+   void testAsin          ( blaze::TrueType  );
    void testAsin          ( blaze::FalseType );
-   void testSinh          ( blaze::TrueType );
+   void testSinh          ( blaze::TrueType  );
    void testSinh          ( blaze::FalseType );
-   void testAsinh         ( blaze::TrueType );
+   void testAsinh         ( blaze::TrueType  );
    void testAsinh         ( blaze::FalseType );
 
-   void testCos           ( blaze::TrueType );
+   void testCos           ( blaze::TrueType  );
    void testCos           ( blaze::FalseType );
-   void testAcos          ( blaze::TrueType );
+   void testAcos          ( blaze::TrueType  );
    void testAcos          ( blaze::FalseType );
-   void testCosh          ( blaze::TrueType );
+   void testCosh          ( blaze::TrueType  );
    void testCosh          ( blaze::FalseType );
-   void testAcosh         ( blaze::TrueType );
+   void testAcosh         ( blaze::TrueType  );
    void testAcosh         ( blaze::FalseType );
 
-   void testTan           ( blaze::TrueType );
+   void testTan           ( blaze::TrueType  );
    void testTan           ( blaze::FalseType );
-   void testAtan          ( blaze::TrueType );
+   void testAtan          ( blaze::TrueType  );
    void testAtan          ( blaze::FalseType );
-   void testTanh          ( blaze::TrueType );
+   void testTanh          ( blaze::TrueType  );
    void testTanh          ( blaze::FalseType );
-   void testAtanh         ( blaze::TrueType );
+   void testAtanh         ( blaze::TrueType  );
    void testAtanh         ( blaze::FalseType );
 
-   void testErf           ( blaze::TrueType );
+   void testErf           ( blaze::TrueType  );
    void testErf           ( blaze::FalseType );
-   void testErfc          ( blaze::TrueType );
+   void testErfc          ( blaze::TrueType  );
    void testErfc          ( blaze::FalseType );
 
    void testReduction     ();
@@ -237,6 +239,7 @@ class OperationTest : private blaze::NonCopyable
    T* b_;  //!< The second aligned array of size NN.
    T* c_;  //!< The third aligned array of size NN.
    T* d_;  //!< The fourth aligned array of size NN.
+   T* e_;  //!< The fifth aligned array of size NN.
 
    std::string test_;  //!< Label of the currently performed test.
    //@}
@@ -270,6 +273,7 @@ OperationTest<T>::OperationTest()
    , b_    ( blaze::allocate<T>( NN ) )  // The second aligned array of size NN
    , c_    ( blaze::allocate<T>( NN ) )  // The third aligned array of size NN
    , d_    ( blaze::allocate<T>( NN ) )  // The fourth aligned array of size NN
+   , e_    ( blaze::allocate<T>( NN ) )  // The fifth aligned array of size NN
    , test_ ()                            // Label of the currently performed test
 {
    testStorea();
@@ -282,6 +286,7 @@ OperationTest<T>::OperationTest()
    testAddition      ( typename blaze::HasSIMDAdd    <T,T>::Type() );
    testSubtraction   ( typename blaze::HasSIMDSub    <T,T>::Type() );
    testMultiplication( typename blaze::HasSIMDMult   <T,T>::Type() );
+   testFMA           ( typename blaze::HasSIMDMult   <T,T>::Type() );
    testDivision      ( typename blaze::HasSIMDDiv    <T,T>::Type() );
 
    testAbs           ( typename blaze::HasSIMDAbs    < T >::Type() );
@@ -339,6 +344,7 @@ OperationTest<T>::~OperationTest()
    blaze::deallocate( b_ );
    blaze::deallocate( c_ );
    blaze::deallocate( d_ );
+   blaze::deallocate( e_ );
 }
 //*************************************************************************************************
 
@@ -571,6 +577,52 @@ void OperationTest<T>::testMultiplication( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testMultiplication( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the FMA operation.
+//
+// \return void
+// \exception std::runtime_error FMA error detected.
+//
+// This function tests the FMA operation by comparing the results of a vectorized and a scalar
+// FMA. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testFMA( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "FMA operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      d_[i] = ( a_[i] * b_[i] ) + c_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( e_+i, fma( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
+   }
+
+   compare( d_, e_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the FMA operation.
+//
+// \return void
+//
+// This function is called in case the FMA operation is not available for the given data type
+// \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testFMA( blaze::FalseType )
 {}
 //*************************************************************************************************
 
@@ -1976,6 +2028,7 @@ void OperationTest<T>::initialize()
       randomize( b_[i] );
       randomize( c_[i] );
       randomize( d_[i] );
+      randomize( e_[i] );
    }
 }
 //*************************************************************************************************
@@ -2001,6 +2054,7 @@ void OperationTest<T>::initialize( T min, T max )
       randomize( b_[i], min, max );
       randomize( c_[i], min, max );
       randomize( d_[i], min, max );
+      randomize( e_[i], min, max );
    }
 }
 //*************************************************************************************************
