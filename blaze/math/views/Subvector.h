@@ -765,7 +765,7 @@ template< typename VT, bool AF, bool TF, bool DF >
 inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept;
 
 template< typename VT, bool AF, bool TF, bool DF >
-inline bool isSame( const Subvector<VT,AF,TF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept;
+inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
