@@ -100,14 +100,6 @@ struct HasSIMDDivHelper< float, float >
                          bool( BLAZE_AVX_MODE ) ||
                          bool( BLAZE_MIC_MODE ) };
 };
-
-template<>
-struct HasSIMDDivHelper< complex<float>, float >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
-};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -116,14 +108,6 @@ struct HasSIMDDivHelper< complex<float>, float >
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDDivHelper< double, double >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
-                         bool( BLAZE_AVX_MODE  ) ||
-                         bool( BLAZE_MIC_MODE  ) };
-};
-
-template<>
-struct HasSIMDDivHelper< complex<double>, double >
 {
    enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
                          bool( BLAZE_AVX_MODE  ) ||
