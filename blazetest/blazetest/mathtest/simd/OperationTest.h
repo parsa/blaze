@@ -150,8 +150,10 @@ class OperationTest : private blaze::NonCopyable
    void testSubtraction   ( blaze::FalseType );
    void testMultiplication( blaze::TrueType  );
    void testMultiplication( blaze::FalseType );
-   void testFMA           ( blaze::TrueType  );
-   void testFMA           ( blaze::FalseType );
+   void testFmadd         ( blaze::TrueType  );
+   void testFmadd         ( blaze::FalseType );
+   void testFmsub         ( blaze::TrueType  );
+   void testFmsub         ( blaze::FalseType );
    void testDivision      ( blaze::TrueType  );
    void testDivision      ( blaze::FalseType );
 
@@ -286,7 +288,8 @@ OperationTest<T>::OperationTest()
    testAddition      ( typename blaze::HasSIMDAdd    <T,T>::Type() );
    testSubtraction   ( typename blaze::HasSIMDSub    <T,T>::Type() );
    testMultiplication( typename blaze::HasSIMDMult   <T,T>::Type() );
-   testFMA           ( typename blaze::HasSIMDMult   <T,T>::Type() );
+   testFmadd         ( typename blaze::HasSIMDMult   <T,T>::Type() );
+   testFmsub         ( typename blaze::HasSIMDMult   <T,T>::Type() );
    testDivision      ( typename blaze::HasSIMDDiv    <T,T>::Type() );
 
    testAbs           ( typename blaze::HasSIMDAbs    < T >::Type() );
@@ -582,21 +585,22 @@ void OperationTest<T>::testMultiplication( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the FMA operation.
+/*!\brief Testing the fused multiply-add operation.
 //
 // \return void
-// \exception std::runtime_error FMA error detected.
+// \exception std::runtime_error Fused multiply-add error detected.
 //
-// This function tests the FMA operation by comparing the results of a vectorized and a scalar
-// FMA. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the fused multiply-add operation by comparing the results of a vectorized
+// and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
 */
 template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testFMA( blaze::TrueType )
+void OperationTest<T>::testFmadd( blaze::TrueType )
 {
    using blaze::loada;
    using blaze::storea;
 
-   test_ = "FMA operation";
+   test_ = "Fused multiply-add operation";
 
    initialize();
 
@@ -605,7 +609,7 @@ void OperationTest<T>::testFMA( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      storea( e_+i, fma( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
+      storea( e_+i, fmadd( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
    }
 
    compare( d_, e_ );
@@ -614,15 +618,62 @@ void OperationTest<T>::testFMA( blaze::TrueType )
 
 
 //*************************************************************************************************
-/*!\brief Skipping the test of the FMA operation.
+/*!\brief Skipping the test of the fused multiply-add operation.
 //
 // \return void
 //
-// This function is called in case the FMA operation is not available for the given data type
-// \a T.
+// This function is called in case the fused multiply-add operation is not available for the
+// given data type \a T.
 */
 template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testFMA( blaze::FalseType )
+void OperationTest<T>::testFmadd( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the fused multiply-subtract operation.
+//
+// \return void
+// \exception std::runtime_error Fused multiply-subtract error detected.
+//
+// This function tests the fused multiply-subtract operation by comparing the results of a
+// vectorized and a scalar operation. In case any error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testFmsub( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Fused multiply-subtract operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      d_[i] = ( a_[i] * b_[i] ) - c_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( e_+i, fmsub( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
+   }
+
+   compare( d_, e_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the fused multiply-subtract operation.
+//
+// \return void
+//
+// This function is called in case the fused multiply-subtract operation is not available for
+// the given data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testFmsub( blaze::FalseType )
 {}
 //*************************************************************************************************
 
