@@ -364,20 +364,13 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
    if( n == 0UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*n*n ) ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>();
-   }
+   randomize( matrix, nonzeros );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -411,7 +404,7 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
    if( n == 0UL ) return;
 
    matrix.reset();
-   matrix.reserve( nonzeros );
+   matrix.reserve( nonzeros+1UL );
 
    while( matrix.nonZeros() < nonzeros ) {
       matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>();
@@ -496,20 +489,13 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
    if( n == 0UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*n*n ) ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>( min, max );
-   }
+   randomize( matrix, nonzeros, min, max );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -547,7 +533,7 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
    if( n == 0UL ) return;
 
    matrix.reset();
-   matrix.reserve( nonzeros );
+   matrix.reserve( nonzeros+1UL );
 
    while( matrix.nonZeros() < nonzeros ) {
       matrix( rand<size_t>( 0UL, n-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ET>( min, max );
