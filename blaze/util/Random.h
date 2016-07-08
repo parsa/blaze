@@ -54,18 +54,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename > class Rand;
-
-
-
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
+//  DOXYGEN DOCUMENTATION
 //
 //=================================================================================================
 
@@ -122,6 +111,48 @@ template< typename > class Rand;
 // generator has to be set explicitly via the setSeed() function. Otherwise a random seed is used
 // for the random number generation.
 */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Random number functions */
+//@{
+template< typename T >
+inline T rand();
+
+template< typename T, typename... Args >
+inline T rand( Args&&... args );
+
+template< typename T >
+inline void randomize( T& value );
+
+template< typename T, typename... Args >
+inline void randomize( T& value, Args&&... args );
+
+inline uint32_t defaultSeed();
+inline uint32_t getSeed();
+inline void     setSeed( uint32_t seed );
+//@}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief Random number generator.
 // \ingroup random
 //
@@ -164,8 +195,8 @@ class Random : private NonCreatable
 //
 //=================================================================================================
 
-template< typename Type > uint32_t Random<Type>::seed_( static_cast<uint32_t>( std::time(0) ) );
-template< typename Type > Type     Random<Type>::rng_ ( seed_ );
+template< typename Type > uint32_t Random<Type>::seed_( defaultSeed() );
+template< typename Type > Type     Random<Type>::rng_ ( defaultSeed() );
 
 
 
@@ -835,27 +866,6 @@ inline void Rand< complex<T> >::randomize( complex<T>& value, const T& realmin, 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Random number functions */
-//@{
-template< typename T >
-inline T rand();
-
-template< typename T, typename... Args >
-inline T rand( Args&&... args );
-
-template< typename T >
-inline void randomize( T& value );
-
-template< typename T, typename... Args >
-inline void randomize( T& value, Args&&... a1 );
-
-inline uint32_t getSeed();
-inline void     setSeed( uint32_t seed );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Random number function.
 // \ingroup random
 //
@@ -937,6 +947,20 @@ inline void randomize( T& value, Args&&... args )
 {
    Rand<T> tmp;
    tmp.randomize( value, std::forward<Args>( args )... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the default random seed.
+// \ingroup random
+//
+// \return The default random seed.
+*/
+inline uint32_t defaultSeed()
+{
+   static const uint32_t seed = static_cast<uint32_t>( std::time(0) );
+   return seed;
 }
 //*************************************************************************************************
 
