@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/StrictlyUpperMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -52,6 +53,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/StrictlyLowerMatrix.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -101,13 +103,18 @@ class Rand< StrictlyUpperMatrix<MT,SO,DF> >
    /*!\name Randomize functions */
    //@{
    inline void randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix ) const;
-   inline void randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix, size_t nonzeros ) const;
+   inline void randomize( StrictlyUpperMatrix<MT,false,DF>& matrix, size_t nonzeros ) const;
+   inline void randomize( StrictlyUpperMatrix<MT,true,DF>& matrix, size_t nonzeros ) const;
 
    template< typename Arg >
    inline void randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max ) const;
 
    template< typename Arg >
-   inline void randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix, size_t nonzeros,
+   inline void randomize( StrictlyUpperMatrix<MT,false,DF>& matrix, size_t nonzeros,
+                          const Arg& min, const Arg& max ) const;
+
+   template< typename Arg >
+   inline void randomize( StrictlyUpperMatrix<MT,true,DF>& matrix, size_t nonzeros,
                           const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
@@ -274,7 +281,7 @@ template< typename MT     // Type of the adapted matrix
 template< typename Arg >  // Min/max argument type
 inline const StrictlyUpperMatrix<MT,SO,DF>
    Rand< StrictlyUpperMatrix<MT,SO,DF> >::generate( size_t n, size_t nonzeros,
-                                               const Arg& min, const Arg& max ) const
+                                                    const Arg& min, const Arg& max ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -352,22 +359,13 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
-   if( n == 0UL ) return;
+   if( n == 0UL || n == 1UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.2*n*n ) ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t row( rand<size_t>( 0UL, n-1UL ) );
-      const size_t col( rand<size_t>( row+1UL, n-1UL ) );
-      matrix(row,col) = rand<ET>();
-   }
+   randomize( matrix, nonzeros );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -375,7 +373,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse StrictlyUpperMatrix.
+/*!\brief Randomization of a row-major sparse StrictlyUpperMatrix.
 //
 // \param matrix The matrix to be randomized.
 // \param nonzeros The number of non-zero elements of the random matrix.
@@ -385,7 +383,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Numeric flag
-inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix, size_t nonzeros ) const
+inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,false,DF>& matrix, size_t nonzeros ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
@@ -397,15 +395,79 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   if( n == 0UL ) return;
+   if( n == 0UL || n == 1UL ) return;
 
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t row( rand<size_t>( 0UL, n-1UL ) );
-      const size_t col( rand<size_t>( row+1UL, n-1UL ) );
-      matrix(row,col) = rand<ET>();
+   std::vector<size_t> dist( n-1UL );
+
+   for( size_t nz=0UL; nz<nonzeros; ) {
+      const size_t index = rand<size_t>( 0UL, n-2UL );
+      if( dist[index] == n - index - 1UL ) continue;
+      ++dist[index];
+      ++nz;
+   }
+
+   for( size_t i=0UL; i<n-1UL; ++i ) {
+      const Indices indices( i+1UL, n-1UL, dist[i] );
+      for( size_t j : indices ) {
+         matrix.append( i, j, rand<ET>() );
+      }
+      matrix.finalize( i );
+   }
+
+   matrix.finalize( n-1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a column-major sparse StrictlyUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param nonzeros The number of non-zero elements of the random matrix.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Numeric flag
+inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,true,DF>& matrix, size_t nonzeros ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
+
+   typedef ElementType_<MT>  ET;
+
+   const size_t n( matrix.rows() );
+
+   if( nonzeros > StrictlyUpperMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
+
+   if( n == 0UL || n == 1UL ) return;
+
+   matrix.reset();
+   matrix.reserve( nonzeros );
+   matrix.finalize( 0UL );
+
+   std::vector<size_t> dist( n );
+
+   for( size_t nz=0UL; nz<nonzeros; ) {
+      const size_t index = rand<size_t>( 1UL, n-1UL );
+      if( dist[index] == index ) continue;
+      ++dist[index];
+      ++nz;
+   }
+
+   for( size_t j=1UL; j<n; ++j ) {
+      const Indices indices( 0UL, j-1UL, dist[j] );
+      for( size_t i : indices ) {
+         matrix.append( i, j, rand<ET>() );
+      }
+      matrix.finalize( j );
    }
 }
 /*! \endcond */
@@ -426,7 +488,7 @@ template< typename MT     // Type of the adapted matrix
         , bool DF >       // Numeric flag
 template< typename Arg >  // Min/max argument type
 inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix,
-                                                         const Arg& min, const Arg& max ) const
+                                                              const Arg& min, const Arg& max ) const
 {
    randomize( matrix, min, max, typename IsDenseMatrix<MT>::Type() );
 }
@@ -448,7 +510,7 @@ template< typename MT     // Type of the adapted matrix
         , bool DF >       // Numeric flag
 template< typename Arg >  // Min/max argument type
 inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix,
-                                                         const Arg& min, const Arg& max, TrueType ) const
+                                                              const Arg& min, const Arg& max, TrueType ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
@@ -480,26 +542,17 @@ template< typename MT     // Type of the adapted matrix
         , bool DF >       // Numeric flag
 template< typename Arg >  // Min/max argument type
 inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix,
-                                                         const Arg& min, const Arg& max, FalseType ) const
+                                                              const Arg& min, const Arg& max, FalseType ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
-   if( n == 0UL ) return;
+   if( n == 0UL || n == 1UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.2*n*n ) ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t row( rand<size_t>( 0UL, n-1UL ) );
-      const size_t col( rand<size_t>( row+1UL, n-1UL ) );
-      matrix(row,col) = rand<ET>( min, max );
-   }
+   randomize( matrix, nonzeros, min, max );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -507,7 +560,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse StrictlyUpperMatrix.
+/*!\brief Randomization of a row-major sparse StrictlyUpperMatrix.
 //
 // \param matrix The matrix to be randomized.
 // \param nonzeros The number of non-zero elements of the random matrix.
@@ -520,8 +573,8 @@ template< typename MT     // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
         , bool DF >       // Numeric flag
 template< typename Arg >  // Min/max argument type
-inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,SO,DF>& matrix,
-                                                         size_t nonzeros, const Arg& min, const Arg& max ) const
+inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,false,DF>& matrix,
+                                                              size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
@@ -533,15 +586,83 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   if( n == 0UL ) return;
+   if( n == 0UL || n == 1UL ) return;
 
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t row( rand<size_t>( 0UL, n-1UL ) );
-      const size_t col( rand<size_t>( row+1UL, n-1UL ) );
-      matrix(row,col) = rand<ET>( min, max );
+   std::vector<size_t> dist( n-1UL );
+
+   for( size_t nz=0UL; nz<nonzeros; ) {
+      const size_t index = rand<size_t>( 0UL, n-2UL );
+      if( dist[index] == n - index - 1UL ) continue;
+      ++dist[index];
+      ++nz;
+   }
+
+   for( size_t i=0UL; i<n-1UL; ++i ) {
+      const Indices indices( i+1UL, n-1UL, dist[i] );
+      for( size_t j : indices ) {
+         matrix.append( i, j, rand<ET>( min, max ) );
+      }
+      matrix.finalize( i );
+   }
+
+   matrix.finalize( n-1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Randomization of a column-major sparse StrictlyUpperMatrix.
+//
+// \param matrix The matrix to be randomized.
+// \param nonzeros The number of non-zero elements of the random matrix.
+// \param min The smallest possible value for a matrix element.
+// \param max The largest possible value for a matrix element.
+// \return void
+// \exception std::invalid_argument Invalid number of non-zero elements.
+*/
+template< typename MT     // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF >       // Numeric flag
+template< typename Arg >  // Min/max argument type
+inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatrix<MT,true,DF>& matrix,
+                                                              size_t nonzeros, const Arg& min, const Arg& max ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
+
+   typedef ElementType_<MT>  ET;
+
+   const size_t n( matrix.rows() );
+
+   if( nonzeros > StrictlyUpperMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
+
+   if( n == 0UL || n == 1UL ) return;
+
+   matrix.reset();
+   matrix.reserve( nonzeros );
+   matrix.finalize( 0UL );
+
+   std::vector<size_t> dist( n );
+
+   for( size_t nz=0UL; nz<nonzeros; ) {
+      const size_t index = rand<size_t>( 1UL, n-1UL );
+      if( dist[index] == index ) continue;
+      ++dist[index];
+      ++nz;
+   }
+
+   for( size_t j=1UL; j<n; ++j ) {
+      const Indices indices( 0UL, j-1UL, dist[j] );
+      for( size_t i : indices ) {
+         matrix.append( i, j, rand<ET>( min, max ) );
+      }
+      matrix.finalize( j );
    }
 }
 /*! \endcond */
