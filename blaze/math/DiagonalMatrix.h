@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -348,21 +349,13 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
    if( n == 0UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, n ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t i( rand<size_t>( 0UL, n-1UL ) );
-      matrix(i,i) = rand<ET>();
-   }
+   randomize( matrix, nonzeros );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -397,9 +390,17 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t i( rand<size_t>( 0UL, n-1UL ) );
-      matrix(i,i) = rand<ET>();
+   Indices indices( 0UL, n-1UL, nonzeros );
+   size_t i( 0UL );
+
+   for( size_t index : indices ) {
+      for( ; i<index; ++i )
+         matrix.finalize( i );
+      matrix.append( i, i, rand<ET>() );
+   }
+
+   for( ; i<n; ++i ) {
+      matrix.finalize( i );
    }
 }
 /*! \endcond */
@@ -476,21 +477,13 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
-
    const size_t n( matrix.rows() );
 
    if( n == 0UL ) return;
 
    const size_t nonzeros( rand<size_t>( 1UL, n ) );
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
-
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t i( rand<size_t>( 0UL, n-1UL ) );
-      matrix(i,i) = rand<ET>( min, max );
-   }
+   randomize( matrix, nonzeros, min, max );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -529,9 +522,17 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
    matrix.reset();
    matrix.reserve( nonzeros );
 
-   while( matrix.nonZeros() < nonzeros ) {
-      const size_t i( rand<size_t>( 0UL, n-1UL ) );
-      matrix(i,i) = rand<ET>( min, max );
+   Indices indices( 0UL, n-1UL, nonzeros );
+   size_t i( 0UL );
+
+   for( size_t index : indices ) {
+      for( ; i<index; ++i )
+         matrix.finalize( i );
+      matrix.append( i, i, rand<ET>( min, max ) );
+   }
+
+   for( ; i<n; ++i ) {
+      matrix.finalize( i );
    }
 }
 /*! \endcond */
