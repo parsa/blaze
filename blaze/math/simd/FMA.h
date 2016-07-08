@@ -43,6 +43,7 @@
 #include <blaze/math/simd/Addition.h>
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Subtraction.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -51,12 +52,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD FMA OPERATORS
+//  SIMD FMADD OPERATORS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 16-bit integral SIMD values of the same type.
+/*!\brief Fused multiply-add of three vectors of 16-bit integral SIMD values of the same type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -64,15 +65,13 @@ namespace blaze {
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 16-bit integral elements in \a a and \a b and adds the
-// intermediate result to the packed elements in \a c. This operation is only available for SSE2
+// packed elements in \a c to the intermediate result. This operation is only available for SSE2
 // and AVX2.
 */
 template< typename T >  // Type of the operands
 BLAZE_ALWAYS_INLINE const T
-   fma( const SIMDi16<T>& a, const SIMDi16<T>& b, const SIMDi16<T>& c ) noexcept
+   fmadd( const SIMDi16<T>& a, const SIMDi16<T>& b, const SIMDi16<T>& c ) noexcept
 #if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
 {
    return ( a * b ) + c;
@@ -84,7 +83,7 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 16-bit integral SIMD values of different type.
+/*!\brief Fused multiply-add of three vectors of 16-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -92,17 +91,15 @@ BLAZE_ALWAYS_INLINE const T
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 16-bit integral elements in \a a and \a b and adds the
-// intermediate result to the packed elements in \a c. This operation is only available for SSE2
+// packed elements in \a c to the intermediate result. This operation is only available for SSE2
 // and AVX2.
 */
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
 BLAZE_ALWAYS_INLINE const SIMDuint16
-   fma( const SIMDi16<T1>& a, const SIMDi16<T2>& b, const SIMDi16<T3>& c ) noexcept
+   fmadd( const SIMDi16<T1>& a, const SIMDi16<T2>& b, const SIMDi16<T3>& c ) noexcept
 #if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
 {
    return ( a * b ) + c;
@@ -114,7 +111,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 16-bit integral complex SIMD values.
+/*!\brief Fused multiply-add of three vectors of 16-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -122,15 +119,13 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 16-bit integral complex elements in \a a and \a b and
-// adds the intermediate result to the packed elements in \a c. This operation is only available
+// adds the packed elements in \a c to the intermediate result. This operation is only available
 // for SSE2 and AVX2.
 */
 template< typename T >  // Type of the operands
 BLAZE_ALWAYS_INLINE const T
-   fma( const SIMDci16<T>& a, const SIMDci16<T>& b, const SIMDci16<T>& c ) noexcept
+   fmadd( const SIMDci16<T>& a, const SIMDci16<T>& b, const SIMDci16<T>& c ) noexcept
 #if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
 {
    return ( a * b ) + c;
@@ -142,7 +137,7 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 32-bit integral SIMD values of the same type.
+/*!\brief Fused multiply-add of three vectors of 32-bit integral SIMD values of the same type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -150,15 +145,13 @@ BLAZE_ALWAYS_INLINE const T
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 32-bit integral elements in \a a and \a b and adds the
-// intermediate result to the packed elements in \a c. This operation is only available for SSE2
+// packed elements in \a c to the intermediate result. This operation is only available for SSE2
 // and AVX2.
 */
 template< typename T >  // Type of the operands
 BLAZE_ALWAYS_INLINE const T
-   fma( const SIMDi32<T>& a, const SIMDi32<T>& b, const SIMDi32<T>& c ) noexcept
+   fmadd( const SIMDi32<T>& a, const SIMDi32<T>& b, const SIMDi32<T>& c ) noexcept
 #if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
 {
    return ( a * b ) + c;
@@ -170,7 +163,7 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 32-bit integral SIMD values of different type.
+/*!\brief Fused multiply-add of three vectors of 32-bit integral SIMD values of different type.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -178,17 +171,15 @@ BLAZE_ALWAYS_INLINE const T
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 32-bit integral elements in \a a and \a b and adds the
-// intermediate result to the packed elements in \a c. This operation is only available for SSE2
+// packed elements in \a c to the intermediate result. This operation is only available for SSE2
 // and AVX2.
 */
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
 BLAZE_ALWAYS_INLINE const SIMDuint32
-   fma( const SIMDi32<T1>& a, const SIMDi32<T2>& b, const SIMDi32<T3>& c ) noexcept
+   fmadd( const SIMDi32<T1>& a, const SIMDi32<T2>& b, const SIMDi32<T3>& c ) noexcept
 #if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
 {
    return ( a * b ) + c;
@@ -200,7 +191,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of 32-bit integral complex SIMD values.
+/*!\brief Fused multiply-add of three vectors of 32-bit integral complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -208,15 +199,13 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed 32-bit integral complex elements in \a a and \a b and
-// adds the intermediate result to the packed elements in \a c. This operation is only available
+// adds the packed elements in \a c to the intermediate result. This operation is only available
 // for SSE2 and AVX2.
 */
 template< typename T >  // Type of the operands
 BLAZE_ALWAYS_INLINE const T
-   fma( const SIMDci32<T>& a, const SIMDci32<T>& b, const SIMDci32<T>& c ) noexcept
+   fmadd( const SIMDci32<T>& a, const SIMDci32<T>& b, const SIMDci32<T>& c ) noexcept
 #if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
 {
    return ( a * b ) + c;
@@ -228,7 +217,7 @@ BLAZE_ALWAYS_INLINE const T
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of single precision SIMD values.
+/*!\brief Fused multiply-add of three vectors of single precision SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -236,14 +225,12 @@ BLAZE_ALWAYS_INLINE const T
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed single-precision (32-bit) floating-point elements in
-// \a a and \a b and adds the intermediate result to the packed elements in \a c. This operation
+// \a a and \a b and adds the packed elements in \a c to the intermediate result. This operation
 // is only available for SSE2, AVX, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDfloat
-   fma( const SIMDfloat& a, const SIMDfloat& b, const SIMDfloat& c ) noexcept
+   fmadd( const SIMDfloat& a, const SIMDfloat& b, const SIMDfloat& c ) noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
 {
    return _mm512_fmadd_ps( a.value, b.value, c.value );
@@ -267,7 +254,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of single precision complex SIMD values.
+/*!\brief Fused multiply-add of three vectors of single precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -275,14 +262,12 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed single-precision (32-bit) complex elements in \a a and
-// \a b and adds the intermediate result to the packed elements in \a c. This operation is only
+// \a b and adds the packed elements in \a c to the intermediate result. This operation is only
 // available for SSE2, AVX, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
-   fma( const SIMDcfloat& a, const SIMDcfloat& b, const SIMDcfloat& c ) noexcept
+   fmadd( const SIMDcfloat& a, const SIMDcfloat& b, const SIMDcfloat& c ) noexcept
 #if BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
 {
    return ( a * b ) + c;
@@ -294,7 +279,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of double precision SIMD values.
+/*!\brief Fused multiply-add of three vectors of double precision SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -302,14 +287,12 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed double-precision (64-bit) floating-point elements in
-// \a a and \a b and adds the intermediate result to the packed elements in \a c. This operation
+// \a a and \a b and adds the packed elements in \a c to the intermediate result. This operation
 // is only available for SSE2, AVX, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDdouble
-   fma( const SIMDdouble& a, const SIMDdouble& b, const SIMDdouble& c ) noexcept
+   fmadd( const SIMDdouble& a, const SIMDdouble& b, const SIMDdouble& c ) noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
 {
    return _mm512_fmadd_pd( a.value, b.value, c.value );
@@ -333,7 +316,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 
 
 //*************************************************************************************************
-/*!\brief FMA of three vectors of double precision complex SIMD values.
+/*!\brief Fused multiply-add of three vectors of double precision complex SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD multiplication operand.
@@ -341,17 +324,307 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 // \param c The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the
-
 // This operation multiplies the packed double-precision (64-bit) complex elements in \a a and
-// \a b and adds the intermediate result to the packed elements in \a c. This operation is only
+// \a b and adds the packed elements in \a c to the intermediate result. This operation is only
 // available for SSE2, AVX, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
-   fma( const SIMDcdouble& a, const SIMDcdouble& b, const SIMDcdouble& c ) noexcept
+   fmadd( const SIMDcdouble& a, const SIMDcdouble& b, const SIMDcdouble& c ) noexcept
 #if BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
 {
    return ( a * b ) + c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIMD FMSUB OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 16-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 16-bit integral elements in \a a and \a b and subtracts
+// the packed elements in \a c from the intermediate result. This operation is only available for
+// SSE2 and AVX2.
+*/
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const T
+   fmsub( const SIMDi16<T>& a, const SIMDi16<T>& b, const SIMDi16<T>& c ) noexcept
+#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 16-bit integral SIMD values of different type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 16-bit integral elements in \a a and \a b and subtracts
+// the packed elements in \a c from the intermediate result. This operation is only available for
+// SSE2 and AVX2.
+*/
+template< typename T1    // Type of the left-hand side multiplication operand
+        , typename T2    // Type of the right-hand side multiplication operand
+        , typename T3 >  // Type of the right-hand side subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDuint16
+   fmsub( const SIMDi16<T1>& a, const SIMDi16<T2>& b, const SIMDi16<T3>& c ) noexcept
+#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 16-bit integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 16-bit integral complex elements in \a a and \a b and
+// subtracts the packed elements in \a c from the intermediate result. This operation is only
+// available for SSE2 and AVX2.
+*/
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const T
+   fmsub( const SIMDci16<T>& a, const SIMDci16<T>& b, const SIMDci16<T>& c ) noexcept
+#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 32-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 32-bit integral elements in \a a and \a b and subtracts
+// the packed elements in \a c from the intermediate result. This operation is only available for
+// SSE2 and AVX2.
+*/
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const T
+   fmsub( const SIMDi32<T>& a, const SIMDi32<T>& b, const SIMDi32<T>& c ) noexcept
+#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 32-bit integral SIMD values of different type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 32-bit integral elements in \a a and \a b and subtracts
+// the packed elements in \a c from the intermediate result. This operation is only available for
+// SSE2 and AVX2.
+*/
+template< typename T1    // Type of the left-hand side multiplication operand
+        , typename T2    // Type of the right-hand side multiplication operand
+        , typename T3 >  // Type of the right-hand side subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDuint32
+   fmsub( const SIMDi32<T1>& a, const SIMDi32<T2>& b, const SIMDi32<T3>& c ) noexcept
+#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of 32-bit integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed 32-bit integral complex elements in \a a and \a b and
+// subtracts the packed elements in \a c from the intermediate result. This operation is only
+// available for SSE2 and AVX2.
+*/
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const T
+   fmsub( const SIMDci32<T>& a, const SIMDci32<T>& b, const SIMDci32<T>& c ) noexcept
+#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of single precision SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed single-precision (32-bit) floating-point elements in
+// \a a and \a b and subtracts the packed elements in \a c from the intermediate result. This
+// operation is only available for SSE2, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDfloat
+   fmsub( const SIMDfloat& a, const SIMDfloat& b, const SIMDfloat& c ) noexcept
+#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
+{
+   return _mm512_fmsub_ps( a.value, b.value, c.value );
+}
+#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
+{
+   return _mm256_fmsub_ps( a.value, b.value, c.value );
+}
+#elif BLAZE_FMA_MODE && BLAZE_SSE_MODE
+{
+   return _mm_fmsub_ps( a.value, b.value, c.value );
+}
+#elif BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of single precision complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed single-precision (32-bit) complex elements in \a a and
+// \a b and subtracts the packed elements in \a c from the intermediate result. This operation
+// is only available for SSE2, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcfloat
+   fmsub( const SIMDcfloat& a, const SIMDcfloat& b, const SIMDcfloat& c ) noexcept
+#if BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of double precision SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed double-precision (64-bit) floating-point elements in
+// \a a and \a b and subtracts the packed elements in \a c from the intermediate result. This
+// operation is only available for SSE2, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDdouble
+   fmsub( const SIMDdouble& a, const SIMDdouble& b, const SIMDdouble& c ) noexcept
+#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
+{
+   return _mm512_fmsub_pd( a.value, b.value, c.value );
+}
+#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
+{
+   return _mm256_fmsub_pd( a.value, b.value, c.value );
+}
+#elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
+{
+   return _mm_fmsub_pd( a.value, b.value, c.value );
+}
+#elif BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Fused multiply-subtract of three vectors of double precision complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication operand.
+// \param b The right-hand side SIMD multiplication operand.
+// \param c The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operation multiplies the packed double-precision (64-bit) complex elements in \a a and
+// \a b and subtracts the packed elements in \a c from the intermediate result. This operation
+// is only available for SSE2, AVX, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcdouble
+   fmsub( const SIMDcdouble& a, const SIMDcdouble& b, const SIMDcdouble& c ) noexcept
+#if BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
+{
+   return ( a * b ) - c;
 }
 #else
 = delete;
