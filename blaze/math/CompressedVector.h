@@ -46,6 +46,7 @@
 #include <blaze/math/sparse/CompressedVector.h>
 #include <blaze/math/SparseVector.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 
 
@@ -220,12 +221,7 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
 
-   vector.reset();
-   vector.reserve( nonzeros );
-
-   while( vector.nonZeros() < nonzeros ) {
-      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
-   }
+   randomize( vector, nonzeros );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -255,8 +251,10 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
    vector.reset();
    vector.reserve( nonzeros );
 
-   while( vector.nonZeros() < nonzeros ) {
-      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>();
+   const Indices indices( 0UL, vector.size(), nonzeros );
+
+   for( size_t index : indices ) {
+      vector.append( index, rand<Type>() );
    }
 }
 /*! \endcond */
@@ -284,12 +282,7 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 
    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
 
-   vector.reset();
-   vector.reserve( nonzeros );
-
-   while( vector.nonZeros() < nonzeros ) {
-      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
-   }
+   randomize( vector, nonzeros, min, max );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -323,8 +316,10 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
    vector.reset();
    vector.reserve( nonzeros );
 
-   while( vector.nonZeros() < nonzeros ) {
-      vector[ rand<size_t>( 0UL, size-1UL ) ] = rand<Type>( min, max );
+   const Indices indices( 0UL, vector.size(), nonzeros );
+
+   for( size_t index : indices ) {
+      vector.append( index, rand<Type>( min, max ) );
    }
 }
 /*! \endcond */
