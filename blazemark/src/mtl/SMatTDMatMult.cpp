@@ -76,7 +76,6 @@ double smattdmatmult( size_t N, size_t F, size_t steps )
    typedef ::mtl::mat::parameters<row_major>  row_parameters;
    typedef ::mtl::mat::parameters<col_major>  col_parameters;
    typedef ::mtl::compressed2D<element_t,row_parameters>  compressed2D;
-   typedef ::mtl::mat::inserter<compressed2D>  inserter;
 
    ::blaze::setSeed( seed );
 

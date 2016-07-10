@@ -73,7 +73,6 @@ double smatscalarmult( size_t N, size_t F, size_t steps )
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::mat::parameters<row_major>  parameters;
    typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
-   typedef ::mtl::mat::inserter<compressed2D>  inserter;
 
    ::blaze::setSeed( seed );
 
