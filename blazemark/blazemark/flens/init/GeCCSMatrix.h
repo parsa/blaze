@@ -41,10 +41,10 @@
 //*************************************************************************************************
 
 #include <flens/matrixtypes/general/impl/geccsmatrix.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -110,8 +110,8 @@ void init( ::flens::GeCCSMatrix< ::flens::CCS<Type,::flens::IndexBaseZero<IndexT
    else
    {
       for( IndexType j=tmp.firstCol(); j<=tmp.lastCol(); ++j ) {
-         ::blazemark::Indices indices( columns, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, columns-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             tmp(*it,j) += ::blaze::rand<Type>( 0, 10 );
          }
       }

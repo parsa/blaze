@@ -42,10 +42,10 @@
 
 #include <vector>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -111,8 +111,8 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::rowMajor>& m, size_t nonzeros
    else
    {
       for( size_t i=0UL; i<M; ++i ) {
-         ::blazemark::Indices indices( N, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
          }
          m.finalize( i );
@@ -160,8 +160,8 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonze
    else
    {
       for( size_t j=0UL; j<N; ++j ) {
-         ::blazemark::Indices indices( M, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, M-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
          }
          m.finalize( j );

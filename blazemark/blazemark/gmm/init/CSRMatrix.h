@@ -41,10 +41,10 @@
 //*************************************************************************************************
 
 #include <gmm/gmm_matrix.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -102,8 +102,8 @@ void init( ::gmm::csr_matrix<Type>& m, size_t nonzeros )
    else
    {
       for( size_t i=0UL; i<M; ++i ) {
-         ::blazemark::Indices indices( N, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             tmp(i,*it) = ::blaze::rand<Type>( 0, 10 );
          }
       }

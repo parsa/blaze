@@ -43,10 +43,10 @@
 #include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -107,8 +107,8 @@ void init( ::blaze::UniLowerMatrix< ::blaze::CompressedMatrix<Type,::blaze::rowM
    else
    {
       for( size_t i=1UL; i<N; ++i ) {
-         ::blazemark::Indices indices( N, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it >= i ) break;
             m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
          }
@@ -152,8 +152,8 @@ void init( ::blaze::UniLowerMatrix< ::blaze::CompressedMatrix<Type,::blaze::colu
    else
    {
       for( size_t j=0UL; j<N; ++j ) {
-         ::blazemark::Indices indices( N, nonzeros );
-         for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
+         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it <= j ) continue;
             m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
          }

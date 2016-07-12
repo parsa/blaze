@@ -42,9 +42,9 @@
 
 #include <vector>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blazemark/system/Types.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -85,8 +85,8 @@ void init( ::blaze::CompressedVector<Type,TF>& v, size_t nonzeros )
 {
    const size_t N( v.size() );
 
-   ::blazemark::Indices indices( N, nonzeros );
-   for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+   ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
+   for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
       v[*it] = ::blaze::rand<Type>( 0, 10 );
    }
 }

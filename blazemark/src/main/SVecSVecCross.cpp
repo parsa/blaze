@@ -55,7 +55,6 @@
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
-#include <blazemark/util/Indices.h>
 #include <blazemark/util/Parser.h>
 #include <blazemark/util/StaticSparseRun.h>
 

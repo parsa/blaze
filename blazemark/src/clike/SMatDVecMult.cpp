@@ -38,11 +38,11 @@
 //*************************************************************************************************
 
 #include <iostream>
+#include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/clike/SMatDVecMult.h>
 #include <blazemark/system/Config.h>
-#include <blazemark/util/Indices.h>
 
 
 namespace blazemark {
@@ -81,8 +81,8 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
    size_t counter( 0 );
 
    for( size_t i=0UL; i<N; ++i ) {
-      ::blazemark::Indices indices( N, F );
-      for( ::blazemark::Indices::Iterator it=indices.begin(); it!=indices.end(); ++it ) {
+      ::blaze::Indices indices( 0UL, N-1UL, F );
+      for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
          value[counter] = ::blaze::rand<element_t>();
          index[counter] = *it;
          ++counter;
