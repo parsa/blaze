@@ -605,11 +605,11 @@ void OperationTest<T>::testFmadd( blaze::TrueType )
    initialize();
 
    for( size_t i=0UL; i<N; ++i ) {
-      d_[i] = ( a_[i] * b_[i] ) + c_[i];
+      d_[i] = a_[i] * b_[i] + c_[i];
    }
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      storea( e_+i, fmadd( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
+      storea( e_+i, loada( a_+i ) * loada( b_+i ) + loada( c_+i ) );
    }
 
    compare( d_, e_ );
@@ -652,11 +652,11 @@ void OperationTest<T>::testFmsub( blaze::TrueType )
    initialize();
 
    for( size_t i=0UL; i<N; ++i ) {
-      d_[i] = ( a_[i] * b_[i] ) - c_[i];
+      d_[i] = a_[i] * b_[i] - c_[i];
    }
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      storea( e_+i, fmsub( loada( a_+i ), loada( b_+i ), loada( c_+i ) ) );
+      storea( e_+i, loada( a_+i ) * loada( b_+i ) - loada( c_+i ) );
    }
 
    compare( d_, e_ );
