@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC POWER FUNCTIONS
+//  32-BIT FLOATING POINT SIMD TYPES
 //
 //=================================================================================================
 
@@ -63,24 +63,33 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDfloat& a, const SIMDfloat& b ) noexcept
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T>& a, const SIMDf32<T>& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
-   return _mm512_pow_ps( a.value, b.value );
+   return _mm512_pow_ps( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_pow_ps( a.value, b.value );
+   return _mm256_pow_ps( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_pow_ps( a.value, b.value );
+   return _mm_pow_ps( (~a).eval().value, (~b).eval().value );
 }
 #else
 = delete;
 #endif
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Computes the exponential value of a vector of double precision floating point values.
@@ -92,18 +101,19 @@ BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDfloat& a, const SIMDfloat& b 
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDdouble& a, const SIMDdouble& b ) noexcept
+template< typename T >  // Type of the operands
+BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T>& a, const SIMDf64<T>& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
-   return _mm512_pow_pd( a.value, b.value );
+   return _mm512_pow_pd( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_pow_pd( a.value, b.value );
+   return _mm256_pow_pd( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_pow_pd( a.value, b.value );
+   return _mm_pow_pd( (~a).eval().value, (~b).eval().value );
 }
 #else
 = delete;

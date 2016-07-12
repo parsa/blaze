@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD MULTIPLICATION OPERATORS
+//  16-BIT INTEGRAL SIMD TYPES
 //
 //=================================================================================================
 
@@ -262,6 +262,14 @@ BLAZE_ALWAYS_INLINE const T
 #endif
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  32-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Multiplication of two vectors of 32-bit integral SIMD values of the same type.
@@ -495,6 +503,73 @@ BLAZE_ALWAYS_INLINE const T
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Expression object for 32-bit floating point multiplication operations.
+// \ingroup simd
+//
+// The SIMDf32MultExpr class represents the compile time expression for 32-bit floating point
+// multiplication operations.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct SIMDf32MultExpr : public SIMDf32< SIMDf32MultExpr<T1,T2> >
+{
+   //**Type definitions****************************************************************************
+   using This     = SIMDf32MultExpr<T1,T2>;  //!< Type of this SIMDf32MultExpr instance.
+   using BaseType = SIMDf32<This>;           //!< Base type of this SIMDf32MultExpr instance.
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf32MultExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf32MultExpr( const T1& a, const T2& b )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+   {}
+   //**********************************************************************************************
+
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 32-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
+#if BLAZE_MIC_MODE
+   {
+      return _mm512_mul_ps( a_.eval().value, b_.eval().value );
+   }
+#elif BLAZE_AVX_MODE
+   {
+      return _mm256_mul_ps( a_.eval().value, b_.eval().value );
+   }
+#elif BLAZE_SSE_MODE
+   {
+      return _mm_mul_ps( a_.eval().value, b_.eval().value );
+   }
+#else
+   = delete;
+#endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+
 //*************************************************************************************************
 /*!\brief Multiplication of two vectors of single precision floating point SIMD values.
 // \ingroup simd
@@ -505,23 +580,13 @@ BLAZE_ALWAYS_INLINE const T
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDfloat
-   operator*( const SIMDfloat& a, const SIMDfloat& b ) noexcept
-#if BLAZE_MIC_MODE
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDf32MultExpr<T1,T2>
+   operator*( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 {
-   return _mm512_mul_ps( a.value, b.value );
+   return SIMDf32MultExpr<T1,T2>( ~a, ~b );
 }
-#elif BLAZE_AVX_MODE
-{
-   return _mm256_mul_ps( a.value, b.value );
-}
-#elif BLAZE_SSE_MODE
-{
-   return _mm_mul_ps( a.value, b.value );
-}
-#else
-= delete;
-#endif
 //*************************************************************************************************
 
 
@@ -625,6 +690,73 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Expression object for 64-bit floating point multiplication operations.
+// \ingroup simd
+//
+// The SIMDf64MultExpr class represents the compile time expression for 64-bit floating point
+// multiplication operations.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct SIMDf64MultExpr : public SIMDf64< SIMDf64MultExpr<T1,T2> >
+{
+   //**Type definitions****************************************************************************
+   using This     = SIMDf64MultExpr<T1,T2>;  //!< Type of this SIMDf64MultExpr instance.
+   using BaseType = SIMDf64<This>;           //!< Base type of this SIMDf64MultExpr instance.
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf64MultExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf64MultExpr( const T1& a, const T2& b )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+   {}
+   //**********************************************************************************************
+
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 64-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
+#if BLAZE_MIC_MODE
+   {
+      return _mm512_mul_pd( a_.eval().value, b_.eval().value );
+   }
+#elif BLAZE_AVX_MODE
+   {
+      return _mm256_mul_pd( a_.eval().value, b_.eval().value );
+   }
+#elif BLAZE_SSE2_MODE
+   {
+      return _mm_mul_pd( a_.eval().value, b_.eval().value );
+   }
+#else
+   = delete;
+#endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+
 //*************************************************************************************************
 /*!\brief Multiplication of two vectors of double precision floating point SIMD values.
 // \ingroup simd
@@ -635,23 +767,13 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDdouble
-   operator*( const SIMDdouble& a, const SIMDdouble& b ) noexcept
-#if BLAZE_MIC_MODE
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDf64MultExpr<T1,T2>
+   operator*( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 {
-   return _mm512_mul_pd( a.value, b.value );
+   return SIMDf64MultExpr<T1,T2>( ~a, ~b );
 }
-#elif BLAZE_AVX_MODE
-{
-   return _mm256_mul_pd( a.value, b.value );
-}
-#elif BLAZE_SSE2_MODE
-{
-   return _mm_mul_pd( a.value, b.value );
-}
-#else
-= delete;
-#endif
 //*************************************************************************************************
 
 

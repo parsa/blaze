@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC INVERSE SINE FUNCTIONS
+//  32-BIT FLOATING POINT SIMD TYPES
 //
 //=================================================================================================
 
@@ -62,24 +62,33 @@ namespace blaze {
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDfloat asin( const SIMDfloat& a ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const SIMDfloat asin( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
-   return _mm512_asin_ps( a.value );
+   return _mm512_asin_ps( (~a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_asin_ps( a.value );
+   return _mm256_asin_ps( (~a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_asin_ps( a.value );
+   return _mm_asin_ps( (~a).eval().value );
 }
 #else
 = delete;
 #endif
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Inverse sine of a vector of double precision floating point values.
@@ -90,18 +99,19 @@ BLAZE_ALWAYS_INLINE const SIMDfloat asin( const SIMDfloat& a ) noexcept
 //
 // This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
-BLAZE_ALWAYS_INLINE const SIMDdouble asin( const SIMDdouble& a ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const SIMDdouble asin( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_MIC_MODE
 {
-   return _mm512_asin_pd( a.value );
+   return _mm512_asin_pd( (~a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_asin_pd( a.value );
+   return _mm256_asin_pd( (~a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_asin_pd( a.value );
+   return _mm_asin_pd( (~a).eval().value );
 }
 #else
 = delete;

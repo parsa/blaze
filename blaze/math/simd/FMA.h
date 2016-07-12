@@ -52,583 +52,1423 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD FMADD OPERATORS
+//  32-BIT FLOATING POINT SIMD TYPES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 16-bit integral SIMD values of the same type.
+/*!\brief Expression object for 32-bit floating point fused multiply-add operations.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral elements in \a a and \a b and adds the
-// packed elements in \a c to the intermediate result. This operation is only available for SSE2
-// and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmadd( const SIMDi16<T>& a, const SIMDi16<T>& b, const SIMDi16<T>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
-{
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 16-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral elements in \a a and \a b and adds the
-// packed elements in \a c to the intermediate result. This operation is only available for SSE2
-// and AVX2.
+// The SIMDf32FmaddExpr class represents the compile time expression for 32-bit floating point
+// fused multiply-add operations.
 */
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
-BLAZE_ALWAYS_INLINE const SIMDuint16
-   fmadd( const SIMDi16<T1>& a, const SIMDi16<T2>& b, const SIMDi16<T3>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+struct SIMDf32FmaddExpr : public SIMDf32< SIMDf32FmaddExpr<T1,T2,T3> >
 {
-   return ( a * b ) + c;
-}
+   //**Type definitions****************************************************************************
+   using This     = SIMDf32FmaddExpr<T1,T2,T3>;  //!< Type of this SIMDf32FMaddExpr instance.
+   using BaseType = SIMDf32<This>;               //!< Base type of this SIMDf32FMaddExpr instance.
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf32FmaddExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   // \param c The right-hand side operand for the addition.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf32FmaddExpr( const T1& a, const T2& b, const T3& c )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+      , c_( c )  // The right-hand side operand for the addition
+   {}
+   //**********************************************************************************************
+
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 32-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
+#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
+   {
+      return _mm512_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
+#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
+   {
+      return _mm256_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
+#elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
+   {
+      return _mm_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #else
-= delete;
+   = delete;
 #endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   const T3 c_;  //!< The right-hand side operand for the addition.
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 16-bit integral complex SIMD values.
+/*!\brief Expression object for 32-bit floating point fused multiply-subtract operations.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral complex elements in \a a and \a b and
-// adds the packed elements in \a c to the intermediate result. This operation is only available
-// for SSE2 and AVX2.
+// The SIMDf32FmsubExpr class represents the compile time expression for 32-bit floating point
+// fused multiply-subtract operations.
 */
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmadd( const SIMDci16<T>& a, const SIMDci16<T>& b, const SIMDci16<T>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+template< typename T1    // Type of the left-hand side multiplication operand
+        , typename T2    // Type of the right-hand side multiplication operand
+        , typename T3 >  // Type of the right-hand side subtraction operand
+struct SIMDf32FmsubExpr : public SIMDf32< SIMDf32FmsubExpr<T1,T2,T3> >
 {
-   return ( a * b ) + c;
-}
+   //**Type definitions****************************************************************************
+   using This     = SIMDf32MultExpr<T1,T2>;  //!< Type of this SIMDf32FMsubExpr instance.
+   using BaseType = SIMDf32<This>;           //!< Base type of this SIMDf32FMsubExpr instance.
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf32FmsubExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   // \param c The right-hand side operand for the subtraction.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf32FmsubExpr( const T1& a, const T2& b, const T3& c )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+      , c_( c )  // The right-hand side operand for the subtraction
+   {}
+   //**********************************************************************************************
+
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 32-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
+#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
+   {
+      return _mm512_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
+#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
+   {
+      return _mm256_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
+#elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
+   {
+      return _mm_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #else
-= delete;
+   = delete;
 #endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   const T3 c_;  //!< The right-hand side operand for the subtraction.
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 32-bit integral SIMD values of the same type.
+/*!\brief Addition operator for fusing a 32-bit floating point multiplication and addition.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the packed 32-bit integral elements in \a a and \a b and adds the
-// packed elements in \a c to the intermediate result. This operation is only available for SSE2
-// and AVX2.
+// This operator fuses a 32-bit floating point multiplication with the addition of a 32-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
 */
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmadd( const SIMDi32<T>& a, const SIMDi32<T>& b, const SIMDi32<T>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3 >  // Type of the second addition operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmaddExpr<T1,T2,T3>
+   operator+( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32<T3>& b )
 {
-   return ( a * b ) + c;
+   return SIMDf32FmaddExpr<T1,T2,T3>( a.a_, a.b_, ~b );
 }
-#else
-= delete;
 #endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 32-bit integral SIMD values of different type.
+/*!\brief Addition operator for fusing a 32-bit floating point multiplication and addition.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
+// \param a The left-hand side SIMD addition operand.
+// \param b The right-hand side SIMD multiplication expression.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the packed 32-bit integral elements in \a a and \a b and adds the
-// packed elements in \a c to the intermediate result. This operation is only available for SSE2
-// and AVX2.
+// This operator fuses a 32-bit floating point multiplication with the addition of a 32-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first addition operand
+        , typename T2    // Type of the first multiplication operand
+        , typename T3 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmaddExpr<T2,T3,T1>
+   operator+( const SIMDf32<T1>& a, const SIMDf32MultExpr<T2,T3>& b )
+{
+   return SIMDf32FmaddExpr<T2,T3,T1>( b.a_, b.b_, ~a );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for fusing a 32-bit floating point multiplication and addition.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 32-bit floating point multiplication with the addition of a 32-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first operand of the left-hand side multiplication
+        , typename T2    // Type of the second operand of the left-hand side multiplication
+        , typename T3    // Type of the first operand of the right-hand side multiplication
+        , typename T4 >  // Type of the second operand of the right-hand side multiplication
+BLAZE_ALWAYS_INLINE const SIMDf32FmaddExpr< T1, T2, SIMDf32MultExpr<T3,T4> >
+   operator+( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32MultExpr<T3,T4>& b )
+{
+   return SIMDf32FmaddExpr< T1, T2, SIMDf32MultExpr<T3,T4> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 32-bit floating point FMA expression with
+//        a 32-bit floating point operand.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD addition operand.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 32-bit floating
+// point FMA expression and a 32-bit floating point operand. It restructures the expression
+// \f$ (a*b+c) + d \f$ to the expression \f$ (a*b) + (c+d) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA addition operand
+        , typename T4 >  // Type of the second addition operand
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32<T4>& b )
+{
+   return ( a.a_ * a.b_ ) + ( a.c_ + (~b) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 32-bit floating point operand with a
+//        32-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD addition operand.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 32-bit floating
+// point operand and a 32-bit floating point FMA expression. It restructures the expression
+// \f$ a + (b*c+d) \f$ to the expression \f$ (b*c) + (d+a) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first addition operand
+        , typename T2    // Type of the first FMA multiplication operand
+        , typename T3    // Type of the second FMA multiplication operand
+        , typename T4 >  // Type of the FMA addition operand
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32<T1>& a, const SIMDf32FmaddExpr<T2,T3,T4>& b )
+{
+   return ( b.a_ * b.b_ ) + ( b.c_ + (~a) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 32-bit floating point FMA expression with
+//        a 32-bit floating point multiplication expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 32-bit floating
+// point FMA expression and a 32-bit floating point multiplication expression. It restructures the
+// expression \f$ (a*b+c) + (d*e) \f$ to the expression \f$ (a*b) + (d*e+c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA addition operand
+        , typename T4    // Type of the first multiplication operand
+        , typename T5 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmaddExpr< T4, T5, SIMDf32FmaddExpr<T1,T2,T3> >
+   operator+( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32MultExpr<T4,T5>& b )
+{
+   return SIMDf32FmaddExpr< T4, T5, SIMDf32FmaddExpr<T1,T2,T3> >( b.a_, b.b_, a );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 32-bit floating point multiplication
+//        expression with a 32-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 32-bit floating
+// point multiplication expression and a 32-bit floating point FMA expression. It restructures the
+// expression \f$ (a*b) + (c*d+e) \f$ to the expression \f$ (a*b) + (c*d+e)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3    // Type of the first FMA multiplication operand
+        , typename T4    // Type of the second FMA multiplication operand
+        , typename T5 >  // Type of the FMA addition operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmaddExpr< T1, T2, SIMDf32FmaddExpr<T3,T4,T5> >
+   operator+( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32FmaddExpr<T3,T4,T5>& b )
+{
+   return SIMDf32FmaddExpr< T1, T2, SIMDf32FmaddExpr<T3,T4,T5> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 32-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b+c) + (d*e+f) \f$ to the expression
+// \f$ (a*b) + (d*e+c+f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 32-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b+c) + (d*e-f) \f$ to the expression
+// \f$ (a*b) + (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( a.c_ - b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 32-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b-c) + (d*e+f) \f$ to the expression
+// \f$ (a*b) + (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( b.c_ - a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 32-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b-c) + (d*e-f) \f$ to the expression
+// \f$ (a*b) + (d*e-f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) - ( b.c_ + a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction operator for fusing a 32-bit floating point multiplication and subtraction.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 32-bit floating point multiplication with the subtraction of a 32-bit
+// floating point operand. It returns an expression representing the fused multiply-subtract
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3 >  // Type of the second subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmsubExpr<T1,T2,T3>
+   operator-( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32<T3>& b )
+{
+   return SIMDf32FmsubExpr<T1,T2,T3>( a.a_, a.b_, ~b );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction operator for fusing a 32-bit floating point multiplication and subtraction.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 32-bit floating point multiplication with the subtraction of a 32-bit
+// floating point operand. It returns an expression representing the fused multiply-subtract
+// (FMA) operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first operand of the left-hand side multiplication
+        , typename T2    // Type of the second operand of the left-hand side multiplication
+        , typename T3    // Type of the first operand of the right-hand side multiplication
+        , typename T4 >  // Type of the second operand of the right-hand side multiplication
+BLAZE_ALWAYS_INLINE const SIMDf32FmsubExpr< T1, T2, SIMDf32MultExpr<T3,T4> >
+   operator-( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32MultExpr<T3,T4>& b )
+{
+   return SIMDf32FmsubExpr< T1, T2, SIMDf32MultExpr<T3,T4> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 32-bit floating point FMA expression
+//        with a 32-bit floating point operand.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD subtraction operand.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 32-bit
+// floating point FMA expression and a 32-bit floating point operand. It restructures the
+// expression \f$ (a*b+c) + d \f$ to the expression \f$ (a*b) + (c+d) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA subtraction operand
+        , typename T4 >  // Type of the second subtraction operand
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32<T4>& b )
+{
+   return ( a.a_ * a.b_ ) - ( a.c_ + (~b) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 32-bit floating point FMA expression
+//        with a 32-bit floating point multiplication expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 32-bit
+// floating point FMA expression and a 32-bit floating point multiplication expression. It
+// restructures the expression \f$ (a*b-c) - (d*e) \f$ to the expression \f$ (a*b) - (d*e+c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA subtraction operand
+        , typename T4    // Type of the first multiplication operand
+        , typename T5 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32MultExpr<T4,T5>& b )
+{
+   return ( a.a_ * a.b_ ) - ( b.a_ * b.b_ + a.c_ );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 32-bit floating point multiplication
+//        expression with a 32-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 32-bit
+// floating point multiplication expression and a 32-bit floating point FMA expression. It
+// restructures the expression \f$ (a*b) - (c*d+e) \f$ to the expression \f$ (a*b) - (c*d+e)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3    // Type of the first FMA multiplication operand
+        , typename T4    // Type of the second FMA multiplication operand
+        , typename T5 >  // Type of the FMA subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDf32FmsubExpr< T1, T2, SIMDf32FmsubExpr<T3,T4,T5> >
+   operator-( const SIMDf32MultExpr<T1,T2>& a, const SIMDf32FmsubExpr<T3,T4,T5>& b )
+{
+   return SIMDf32FmsubExpr< T1, T2, SIMDf32FmsubExpr<T3,T4,T5> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 32-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b+c) - (d*e+f) \f$ to
+// the expression \f$ (a*b) - (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( b.c_ - a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 32-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b+c) - (d*e-f) \f$ to
+// the expression \f$ (a*b) - (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmaddExpr<T1,T2,T3>& a, const SIMDf32FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) - ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 32-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b-c) - (d*e+f) \f$ to
+// the expression \f$ (a*b) - (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 32-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 32-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b-c) - (d*e-f) \f$ to
+// the expression \f$ (a*b) - (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf32FmsubExpr<T1,T2,T3>& a, const SIMDf32FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( a.c_ - b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Expression object for 64-bit floating point fused multiply-add operations.
+// \ingroup simd
+//
+// The SIMDf64FmaddExpr class represents the compile time expression for 64-bit floating point
+// fused multiply-add operations.
 */
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
-BLAZE_ALWAYS_INLINE const SIMDuint32
-   fmadd( const SIMDi32<T1>& a, const SIMDi32<T2>& b, const SIMDi32<T3>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
+struct SIMDf64FmaddExpr : public SIMDf64< SIMDf64FmaddExpr<T1,T2,T3> >
 {
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
+   //**Type definitions****************************************************************************
+   using This     = SIMDf64FmaddExpr<T1,T2,T3>;  //!< Type of this SIMDf64FMaddExpr instance.
+   using BaseType = SIMDf64<This>;               //!< Base type of this SIMDf64FMaddExpr instance.
+   //**********************************************************************************************
 
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf64FmaddExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   // \param c The right-hand side operand for the addition.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf64FmaddExpr( const T1& a, const T2& b, const T3& c )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+      , c_( c )  // The right-hand side operand for the addition
+   {}
+   //**********************************************************************************************
 
-//*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of 32-bit integral complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 32-bit integral complex elements in \a a and \a b and
-// adds the packed elements in \a c to the intermediate result. This operation is only available
-// for SSE2 and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmadd( const SIMDci32<T>& a, const SIMDci32<T>& b, const SIMDci32<T>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of single precision SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed single-precision (32-bit) floating-point elements in
-// \a a and \a b and adds the packed elements in \a c to the intermediate result. This operation
-// is only available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDfloat
-   fmadd( const SIMDfloat& a, const SIMDfloat& b, const SIMDfloat& c ) noexcept
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 64-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
-{
-   return _mm512_fmadd_ps( a.value, b.value, c.value );
-}
+   {
+      return _mm512_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_fmadd_ps( a.value, b.value, c.value );
-}
-#elif BLAZE_FMA_MODE && BLAZE_SSE_MODE
-{
-   return _mm_fmadd_ps( a.value, b.value, c.value );
-}
-#elif BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of single precision complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed single-precision (32-bit) complex elements in \a a and
-// \a b and adds the packed elements in \a c to the intermediate result. This operation is only
-// available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDcfloat
-   fmadd( const SIMDcfloat& a, const SIMDcfloat& b, const SIMDcfloat& c ) noexcept
-#if BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of double precision SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed double-precision (64-bit) floating-point elements in
-// \a a and \a b and adds the packed elements in \a c to the intermediate result. This operation
-// is only available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDdouble
-   fmadd( const SIMDdouble& a, const SIMDdouble& b, const SIMDdouble& c ) noexcept
-#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
-{
-   return _mm512_fmadd_pd( a.value, b.value, c.value );
-}
-#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_fmadd_pd( a.value, b.value, c.value );
-}
+   {
+      return _mm256_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
-{
-   return _mm_fmadd_pd( a.value, b.value, c.value );
-}
-#elif BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) + c;
-}
+   {
+      return _mm_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #else
-= delete;
+   = delete;
 #endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   const T3 c_;  //!< The right-hand side operand for the addition.
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Fused multiply-add of three vectors of double precision complex SIMD values.
+/*!\brief Expression object for 64-bit floating point fused multiply-subtract operations.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD addition operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed double-precision (64-bit) complex elements in \a a and
-// \a b and adds the packed elements in \a c to the intermediate result. This operation is only
-// available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDcdouble
-   fmadd( const SIMDcdouble& a, const SIMDcdouble& b, const SIMDcdouble& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) + c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIMD FMSUB OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 16-bit integral SIMD values of the same type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral elements in \a a and \a b and subtracts
-// the packed elements in \a c from the intermediate result. This operation is only available for
-// SSE2 and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmsub( const SIMDi16<T>& a, const SIMDi16<T>& b, const SIMDi16<T>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 16-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral elements in \a a and \a b and subtracts
-// the packed elements in \a c from the intermediate result. This operation is only available for
-// SSE2 and AVX2.
+// The SIMDf64FmsubExpr class represents the compile time expression for 64-bit floating point
+// fused multiply-subtract operations.
 */
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side subtraction operand
-BLAZE_ALWAYS_INLINE const SIMDuint16
-   fmsub( const SIMDi16<T1>& a, const SIMDi16<T2>& b, const SIMDi16<T3>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
+struct SIMDf64FmsubExpr : public SIMDf64< SIMDf64FmsubExpr<T1,T2,T3> >
 {
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
+   //**Type definitions****************************************************************************
+   using This     = SIMDf64MultExpr<T1,T2>;  //!< Type of this SIMDf64FMsubExpr instance.
+   using BaseType = SIMDf64<This>;           //!< Base type of this SIMDf64FMsubExpr instance.
+   //**********************************************************************************************
 
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the SIMDf64FmsubExpr class.
+   //
+   // \param a The left-hand side operand for the multiplication.
+   // \param b The right-hand side operand for the multiplication.
+   // \param c The right-hand side operand for the subtraction.
+   */
+   explicit BLAZE_ALWAYS_INLINE SIMDf64FmsubExpr( const T1& a, const T2& b, const T3& c )
+      : a_( a )  // The left-hand side operand for the multiplication
+      , b_( b )  // The right-hand side operand for the multiplication
+      , c_( c )  // The right-hand side operand for the subtraction
+   {}
+   //**********************************************************************************************
 
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 16-bit integral complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 16-bit integral complex elements in \a a and \a b and
-// subtracts the packed elements in \a c from the intermediate result. This operation is only
-// available for SSE2 and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmsub( const SIMDci16<T>& a, const SIMDci16<T>& b, const SIMDci16<T>& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX2_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 32-bit integral SIMD values of the same type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 32-bit integral elements in \a a and \a b and subtracts
-// the packed elements in \a c from the intermediate result. This operation is only available for
-// SSE2 and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmsub( const SIMDi32<T>& a, const SIMDi32<T>& b, const SIMDi32<T>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 32-bit integral SIMD values of different type.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 32-bit integral elements in \a a and \a b and subtracts
-// the packed elements in \a c from the intermediate result. This operation is only available for
-// SSE2 and AVX2.
-*/
-template< typename T1    // Type of the left-hand side multiplication operand
-        , typename T2    // Type of the right-hand side multiplication operand
-        , typename T3 >  // Type of the right-hand side subtraction operand
-BLAZE_ALWAYS_INLINE const SIMDuint32
-   fmsub( const SIMDi32<T1>& a, const SIMDi32<T2>& b, const SIMDi32<T3>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of 32-bit integral complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed 32-bit integral complex elements in \a a and \a b and
-// subtracts the packed elements in \a c from the intermediate result. This operation is only
-// available for SSE2 and AVX2.
-*/
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const T
-   fmsub( const SIMDci32<T>& a, const SIMDci32<T>& b, const SIMDci32<T>& c ) noexcept
-#if BLAZE_SSE4_MODE || BLAZE_AVX2_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of single precision SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed single-precision (32-bit) floating-point elements in
-// \a a and \a b and subtracts the packed elements in \a c from the intermediate result. This
-// operation is only available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDfloat
-   fmsub( const SIMDfloat& a, const SIMDfloat& b, const SIMDfloat& c ) noexcept
+   //**Evaluation function*************************************************************************
+   /*!\brief Evaluation of the expression object.
+   //
+   // \return The resulting packed 64-bit floating point value.
+   */
+   BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
-{
-   return _mm512_fmsub_ps( a.value, b.value, c.value );
-}
+   {
+      return _mm512_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_fmsub_ps( a.value, b.value, c.value );
-}
-#elif BLAZE_FMA_MODE && BLAZE_SSE_MODE
-{
-   return _mm_fmsub_ps( a.value, b.value, c.value );
-}
-#elif BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of single precision complex SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed single-precision (32-bit) complex elements in \a a and
-// \a b and subtracts the packed elements in \a c from the intermediate result. This operation
-// is only available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDcfloat
-   fmsub( const SIMDcfloat& a, const SIMDcfloat& b, const SIMDcfloat& c ) noexcept
-#if BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of double precision SIMD values.
-// \ingroup simd
-//
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
-// \return The result of the FMA operation.
-//
-// This operation multiplies the packed double-precision (64-bit) floating-point elements in
-// \a a and \a b and subtracts the packed elements in \a c from the intermediate result. This
-// operation is only available for SSE2, AVX, and AVX-512.
-*/
-BLAZE_ALWAYS_INLINE const SIMDdouble
-   fmsub( const SIMDdouble& a, const SIMDdouble& b, const SIMDdouble& c ) noexcept
-#if BLAZE_FMA_MODE && BLAZE_MIC_MODE
-{
-   return _mm512_fmsub_pd( a.value, b.value, c.value );
-}
-#elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_fmsub_pd( a.value, b.value, c.value );
-}
+   {
+      return _mm256_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
-{
-   return _mm_fmsub_pd( a.value, b.value, c.value );
-}
-#elif BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
-{
-   return ( a * b ) - c;
-}
+   {
+      return _mm_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+   }
 #else
-= delete;
+   = delete;
 #endif
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   const T1 a_;  //!< The left-hand side operand for the multiplication.
+   const T2 b_;  //!< The right-hand side operand for the multiplication.
+   const T3 c_;  //!< The right-hand side operand for the subtraction.
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Fused multiply-subtract of three vectors of double precision complex SIMD values.
+/*!\brief Addition operator for fusing a 64-bit floating point multiplication and addition.
 // \ingroup simd
 //
-// \param a The left-hand side SIMD multiplication operand.
-// \param b The right-hand side SIMD multiplication operand.
-// \param c The right-hand side SIMD subtraction operand.
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD addition operand.
 // \return The result of the FMA operation.
 //
-// This operation multiplies the packed double-precision (64-bit) complex elements in \a a and
-// \a b and subtracts the packed elements in \a c from the intermediate result. This operation
-// is only available for SSE2, AVX, and AVX-512.
+// This operator fuses a 64-bit floating point multiplication with the addition of a 64-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
 */
-BLAZE_ALWAYS_INLINE const SIMDcdouble
-   fmsub( const SIMDcdouble& a, const SIMDcdouble& b, const SIMDcdouble& c ) noexcept
-#if BLAZE_SSE2_MODE || BLAZE_AVX_MODE || BLAZE_MIC_MODE
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3 >  // Type of the second addition operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmaddExpr<T1,T2,T3>
+   operator+( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64<T3>& b )
 {
-   return ( a * b ) - c;
+   return SIMDf64FmaddExpr<T1,T2,T3>( a.a_, a.b_, ~b );
 }
-#else
-= delete;
 #endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition operator for fusing a 64-bit floating point multiplication and addition.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD addition operand.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 64-bit floating point multiplication with the addition of a 64-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first addition operand
+        , typename T2    // Type of the first multiplication operand
+        , typename T3 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmaddExpr<T2,T3,T1>
+   operator+( const SIMDf64<T1>& a, const SIMDf64MultExpr<T2,T3>& b )
+{
+   return SIMDf64FmaddExpr<T2,T3,T1>( b.a_, b.b_, ~a );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for fusing a 64-bit floating point multiplication and addition.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 64-bit floating point multiplication with the addition of a 64-bit
+// floating point operand. It returns an expression representing the fused multiply-add (FMA)
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first operand of the left-hand side multiplication
+        , typename T2    // Type of the second operand of the left-hand side multiplication
+        , typename T3    // Type of the first operand of the right-hand side multiplication
+        , typename T4 >  // Type of the second operand of the right-hand side multiplication
+BLAZE_ALWAYS_INLINE const SIMDf64FmaddExpr< T1, T2, SIMDf64MultExpr<T3,T4> >
+   operator+( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64MultExpr<T3,T4>& b )
+{
+   return SIMDf64FmaddExpr< T1, T2, SIMDf64MultExpr<T3,T4> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 64-bit floating point FMA expression with
+//        a 64-bit floating point operand.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD addition operand.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 64-bit floating
+// point FMA expression and a 64-bit floating point operand. It restructures the expression
+// \f$ (a*b+c) + d \f$ to the expression \f$ (a*b) + (c+d) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA addition operand
+        , typename T4 >  // Type of the second addition operand
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64<T4>& b )
+{
+   return ( a.a_ * a.b_ ) + ( a.c_ + (~b) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 64-bit floating point operand with a
+//        64-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD addition operand.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 64-bit floating
+// point operand and a 64-bit floating point FMA expression. It restructures the expression
+// \f$ a + (b*c+d) \f$ to the expression \f$ (b*c) + (d+a) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first addition operand
+        , typename T2    // Type of the first FMA multiplication operand
+        , typename T3    // Type of the second FMA multiplication operand
+        , typename T4 >  // Type of the FMA addition operand
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64<T1>& a, const SIMDf64FmaddExpr<T2,T3,T4>& b )
+{
+   return ( b.a_ * b.b_ ) + ( b.c_ + (~a) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 64-bit floating point FMA expression with
+//        a 64-bit floating point multiplication expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 64-bit floating
+// point FMA expression and a 64-bit floating point multiplication expression. It restructures the
+// expression \f$ (a*b+c) + (d*e) \f$ to the expression \f$ (a*b) + (d*e+c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA addition operand
+        , typename T4    // Type of the first multiplication operand
+        , typename T5 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmaddExpr< T4, T5, SIMDf64FmaddExpr<T1,T2,T3> >
+   operator+( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64MultExpr<T4,T5>& b )
+{
+   return SIMDf64FmaddExpr< T4, T5, SIMDf64FmaddExpr<T1,T2,T3> >( b.a_, b.b_, a );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of a 64-bit floating point multiplication
+//        expression with a 64-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of a 64-bit floating
+// point multiplication expression and a 64-bit floating point FMA expression. It restructures the
+// expression \f$ (a*b) + (c*d+e) \f$ to the expression \f$ (a*b) + (c*d+e)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3    // Type of the first FMA multiplication operand
+        , typename T4    // Type of the second FMA multiplication operand
+        , typename T5 >  // Type of the FMA addition operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmaddExpr< T1, T2, SIMDf64FmaddExpr<T3,T4,T5> >
+   operator+( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64FmaddExpr<T3,T4,T5>& b )
+{
+   return SIMDf64FmaddExpr< T1, T2, SIMDf64FmaddExpr<T3,T4,T5> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 64-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b+c) + (d*e+f) \f$ to the expression
+// \f$ (a*b) + (d*e+c+f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 64-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b+c) + (d*e-f) \f$ to the expression
+// \f$ (a*b) + (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( a.c_ - b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 64-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b-c) + (d*e+f) \f$ to the expression
+// \f$ (a*b) + (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) + ( b.c_ - a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the addition of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the addition of two 64-bit floating
+// point FMA expressions. It restructures the expression \f$ (a*b-c) + (d*e-f) \f$ to the expression
+// \f$ (a*b) + (d*e-f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator+( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) + ( ( b.a_ * b.b_ ) - ( b.c_ + a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction operator for fusing a 64-bit floating point multiplication and subtraction.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD subtraction operand.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 64-bit floating point multiplication with the subtraction of a 64-bit
+// floating point operand. It returns an expression representing the fused multiply-subtract
+// operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3 >  // Type of the second subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmsubExpr<T1,T2,T3>
+   operator-( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64<T3>& b )
+{
+   return SIMDf64FmsubExpr<T1,T2,T3>( a.a_, a.b_, ~b );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction operator for fusing a 64-bit floating point multiplication and subtraction.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The result of the FMA operation.
+//
+// This operator fuses a 64-bit floating point multiplication with the subtraction of a 64-bit
+// floating point operand. It returns an expression representing the fused multiply-subtract
+// (FMA) operation.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first operand of the left-hand side multiplication
+        , typename T2    // Type of the second operand of the left-hand side multiplication
+        , typename T3    // Type of the first operand of the right-hand side multiplication
+        , typename T4 >  // Type of the second operand of the right-hand side multiplication
+BLAZE_ALWAYS_INLINE const SIMDf64FmsubExpr< T1, T2, SIMDf64MultExpr<T3,T4> >
+   operator-( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64MultExpr<T3,T4>& b )
+{
+   return SIMDf64FmsubExpr< T1, T2, SIMDf64MultExpr<T3,T4> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 64-bit floating point FMA expression
+//        with a 64-bit floating point operand.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD subtraction operand.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 64-bit
+// floating point FMA expression and a 64-bit floating point operand. It restructures the
+// expression \f$ (a*b+c) + d \f$ to the expression \f$ (a*b) + (c+d) \f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA subtraction operand
+        , typename T4 >  // Type of the second subtraction operand
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64<T4>& b )
+{
+   return ( a.a_ * a.b_ ) - ( a.c_ + (~b) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 64-bit floating point FMA expression
+//        with a 64-bit floating point multiplication expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD multiplication expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 64-bit
+// floating point FMA expression and a 64-bit floating point multiplication expression. It
+// restructures the expression \f$ (a*b-c) - (d*e) \f$ to the expression \f$ (a*b) - (d*e+c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first FMA multiplication operand
+        , typename T2    // Type of the second FMA multiplication operand
+        , typename T3    // Type of the FMA subtraction operand
+        , typename T4    // Type of the first multiplication operand
+        , typename T5 >  // Type of the second multiplication operand
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64MultExpr<T4,T5>& b )
+{
+   return ( a.a_ * a.b_ ) - ( b.a_ * b.b_ + a.c_ );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of a 64-bit floating point multiplication
+//        expression with a 64-bit floating point FMA expression.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD multiplication expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of a 64-bit
+// floating point multiplication expression and a 64-bit floating point FMA expression. It
+// restructures the expression \f$ (a*b) - (c*d+e) \f$ to the expression \f$ (a*b) - (c*d+e)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand
+        , typename T2    // Type of the second multiplication operand
+        , typename T3    // Type of the first FMA multiplication operand
+        , typename T4    // Type of the second FMA multiplication operand
+        , typename T5 >  // Type of the FMA subtraction operand
+BLAZE_ALWAYS_INLINE const SIMDf64FmsubExpr< T1, T2, SIMDf64FmsubExpr<T3,T4,T5> >
+   operator-( const SIMDf64MultExpr<T1,T2>& a, const SIMDf64FmsubExpr<T3,T4,T5>& b )
+{
+   return SIMDf64FmsubExpr< T1, T2, SIMDf64FmsubExpr<T3,T4,T5> >( a.a_, a.b_, b );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 64-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b+c) - (d*e+f) \f$ to
+// the expression \f$ (a*b) - (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( b.c_ - a.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 64-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b+c) - (d*e-f) \f$ to
+// the expression \f$ (a*b) - (d*e+f-c)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the addition operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmaddExpr<T1,T2,T3>& a, const SIMDf64FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) - ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 64-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b-c) - (d*e+f) \f$ to
+// the expression \f$ (a*b) - (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the addition operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64FmaddExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( a.c_ + b.c_ ) );
+}
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restructuring operator for the subtraction of two 64-bit floating point FMA expressions.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD FMA expression.
+// \param b The right-hand side SIMD FMA expression.
+// \return The restructured expression.
+//
+// This operator implements a performance optimized treatment of the subtraction of two 64-bit
+// floating point FMA expressions. It restructures the expression \f$ (a*b-c) - (d*e-f) \f$ to
+// the expression \f$ (a*b) - (d*e+c-f)\f$.
+*/
+#if BLAZE_FMA_MODE
+template< typename T1    // Type of the first multiplication operand of the left-hand side FMA
+        , typename T2    // Type of the second multiplication operand of the left-hand side FMA
+        , typename T3    // Type of the subtraction operand of the left-hand side FMA
+        , typename T4    // Type of the first multiplication operand of the right-hand side FMA
+        , typename T5    // Type of the second multiplication operand of the right-hand side FMA
+        , typename T6 >  // Type of the subtraction operand of the right-hand side FMA
+BLAZE_ALWAYS_INLINE const auto
+   operator-( const SIMDf64FmsubExpr<T1,T2,T3>& a, const SIMDf64FmsubExpr<T4,T5,T6>& b )
+{
+   return ( a.a_ * a.b_ ) - ( ( b.a_ * b.b_ ) + ( a.c_ - b.c_ ) );
+}
+#endif
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

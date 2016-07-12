@@ -55,7 +55,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD STOREU FUNCTIONS
+//  8-BIT INTEGRAL SIMD TYPES
 //
 //=================================================================================================
 
@@ -115,6 +115,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  16-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Unaligned store of a vector of 2-byte integral values.
 // \ingroup simd
@@ -170,6 +178,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  32-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Unaligned store of a vector of 4-byte integral values.
@@ -233,6 +249,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Unaligned store of a vector of 8-byte integral values.
 // \ingroup simd
@@ -295,6 +319,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Unaligned store of a vector of 'float' values.
 // \ingroup simd
@@ -306,17 +338,19 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 // This function stores a vector of 'float' values. In contrast to the according \c storea()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( float* address, const SIMDfloat& value ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE void storeu( float* address, const SIMDf32<T>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_ps( address     , value.value );
-   _mm512_packstorehi_ps( address+16UL, value.value );
+   const SIMDfloat( (~value).eval().value );
+   _mm512_packstorelo_ps( address     , tmp );
+   _mm512_packstorehi_ps( address+16UL, tmp );
 #elif BLAZE_AVX_MODE
-   _mm256_storeu_ps( address, value.value );
+   _mm256_storeu_ps( address, (~value).eval().value );
 #elif BLAZE_SSE_MODE
-   _mm_storeu_ps( address, value.value );
+   _mm_storeu_ps( address, (~value).eval().value );
 #else
-   *address = value.value;
+   *address = (~value).eval().value;
 #endif
 }
 //*************************************************************************************************
@@ -351,6 +385,14 @@ BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const SIMDcfloat& valu
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Unaligned store of a vector of 'double' values.
 // \ingroup simd
@@ -362,17 +404,19 @@ BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const SIMDcfloat& valu
 // This function stores a vector of 'double' values. In contrast to the according \c storea()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( double* address, const SIMDdouble& value ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE void storeu( double* address, const SIMDf64<T>& value ) noexcept
 {
 #if BLAZE_MIC_MODE
-   _mm512_packstorelo_pd( address    , value.value );
-   _mm512_packstorehi_pd( address+8UL, value.value );
+   const SIMDdouble tmp( (~value).eval().value );
+   _mm512_packstorelo_pd( address    , tmp );
+   _mm512_packstorehi_pd( address+8UL, tmp );
 #elif BLAZE_AVX_MODE
-   _mm256_storeu_pd( address, value.value );
+   _mm256_storeu_pd( address, (~value).eval().value );
 #elif BLAZE_SSE2_MODE
-   _mm_storeu_pd( address, value.value );
+   _mm_storeu_pd( address, (~value).eval().value );
 #else
-   *address = value.value;
+   *address = (~value).eval().value;
 #endif
 }
 //*************************************************************************************************

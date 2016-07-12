@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD ADDITION OPERATORS
+//  8-BIT INTEGRAL SIMD TYPES
 //
 //=================================================================================================
 
@@ -135,6 +135,14 @@ BLAZE_ALWAYS_INLINE const T
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  16-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Addition of two vectors of 16-bit integral SIMD values of the same type.
 // \ingroup simd
@@ -216,6 +224,14 @@ BLAZE_ALWAYS_INLINE const T
 #endif
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  32-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Addition of two vectors of 32-bit integral SIMD values of the same type.
@@ -311,6 +327,14 @@ BLAZE_ALWAYS_INLINE const T
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64 SIMD TYPES INTEGRAL
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Addition of two vectors of 64-bit integral SIMD values of the same type.
 // \ingroup simd
@@ -405,6 +429,14 @@ BLAZE_ALWAYS_INLINE const T
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Addition of two vectors of single precision floating point SIMD values.
 // \ingroup simd
@@ -415,19 +447,21 @@ BLAZE_ALWAYS_INLINE const T
 //
 // This operation is only available for SSE, AVX, and AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDfloat
-   operator+( const SIMDfloat& a, const SIMDfloat& b ) noexcept
+   operator+( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
-   return _mm512_add_ps( a.value, b.value );
+   return _mm512_add_ps( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_add_ps( a.value, b.value );
+   return _mm256_add_ps( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SSE_MODE
 {
-   return _mm_add_ps( a.value, b.value );
+   return _mm_add_ps( (~a).eval().value, (~b).eval().value );
 }
 #else
 = delete;
@@ -465,6 +499,14 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Addition of two vectors of double precision floating point SIMD values.
 // \ingroup simd
@@ -475,19 +517,21 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 //
 // This operation is only available for SSE2, AVX, and AVX-512.
 */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDdouble
-   operator+( const SIMDdouble& a, const SIMDdouble& b ) noexcept
+   operator+( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 #if BLAZE_MIC_MODE
 {
-   return _mm512_add_pd( a.value, b.value );
+   return _mm512_add_pd( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_add_pd( a.value, b.value );
+   return _mm256_add_pd( (~a).eval().value, (~b).eval().value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_add_pd( a.value, b.value );
+   return _mm_add_pd( (~a).eval().value, (~b).eval().value );
 }
 #else
 = delete;

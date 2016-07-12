@@ -57,7 +57,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIMD STREAM FUNCTIONS
+//  8-BIT INTEGRAL SIMD TYPES
 //
 //=================================================================================================
 
@@ -114,6 +114,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  16-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Aligned, non-temporal store of a vector of 2-byte integral values.
 // \ingroup simd
@@ -166,6 +174,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  32-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Aligned, non-temporal store of a vector of 4-byte integral values.
@@ -224,6 +240,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Aligned, non-temporal store of a vector of 8-byte integral values.
 // \ingroup simd
@@ -281,6 +305,14 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Aligned, non-temporal store of a vector of 'float' values.
 // \ingroup simd
@@ -289,18 +321,19 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 // \param value The 'float' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( float* address, const SIMDfloat& value ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE void stream( float* address, const SIMDf32<T>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_storenr_ps( address, value.value );
+   _mm512_storenr_ps( address, (~value).eval().value );
 #elif BLAZE_AVX_MODE
-   _mm256_stream_ps( address, value.value );
+   _mm256_stream_ps( address, (~value).eval().value );
 #elif BLAZE_SSE_MODE
-   _mm_stream_ps( address, value.value );
+   _mm_stream_ps( address, (~value).eval().value );
 #else
-   *address = value.value;
+   *address = (~value).eval().value;
 #endif
 }
 //*************************************************************************************************
@@ -332,6 +365,14 @@ BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const SIMDcfloat& valu
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Aligned, non-temporal store of a vector of 'double' values.
 // \ingroup simd
@@ -340,18 +381,19 @@ BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const SIMDcfloat& valu
 // \param value The 'double' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( double* address, const SIMDdouble& value ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE void stream( double* address, const SIMDf64<T>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_MIC_MODE
-   _mm512_storenr_pd( address, value.value );
+   _mm512_storenr_pd( address, (~value).eval().value );
 #elif BLAZE_AVX_MODE
-   _mm256_stream_pd( address, value.value );
+   _mm256_stream_pd( address, (~value).eval().value );
 #elif BLAZE_SSE2_MODE
-   _mm_stream_pd( address, value.value );
+   _mm_stream_pd( address, (~value).eval().value );
 #else
-   *address = value.value;
+   *address = (~value).eval().value;
 #endif
 }
 //*************************************************************************************************

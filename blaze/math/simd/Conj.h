@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  INTRINSIC COMPLEX CONJUGATE FUNCTIONS
+//  8-BIT INTEGRAL SIMD TYPES
 //
 //=================================================================================================
 
@@ -67,6 +67,14 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi8<T>& a ) noexcept
 }
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  16-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Complex conjugate of a vector of 16-bit integral values.
@@ -107,6 +115,14 @@ BLAZE_ALWAYS_INLINE const SIMDcint16 conj( const SIMDcint16& a ) noexcept
 #endif
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  32-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Complex conjugate of a vector of 32-bit integral values.
@@ -152,6 +168,14 @@ BLAZE_ALWAYS_INLINE const SIMDcint32 conj( const SIMDcint32& a ) noexcept
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Complex conjugate of a vector of 64-bit integral values.
 // \ingroup simd
@@ -167,6 +191,14 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi64<T>& a ) noexcept
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Complex conjugate of a vector of single precision floating point values.
 // \ingroup simd
@@ -174,9 +206,10 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi64<T>& a ) noexcept
 // \param a The vector of single precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE const SIMDfloat conj( const SIMDfloat& a ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const T conj( const SIMDf32<T>& a ) noexcept
 {
-   return a;
+   return (~a);
 }
 //*************************************************************************************************
 
@@ -210,6 +243,14 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat conj( const SIMDcfloat& a ) noexcept
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Complex conjugate of a vector of double precision floating point values.
 // \ingroup simd
@@ -217,9 +258,10 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat conj( const SIMDcfloat& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE const SIMDdouble conj( const SIMDdouble& a ) noexcept
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const T conj( const SIMDf64<T>& a ) noexcept
 {
-   return a;
+   return (~a);
 }
 //*************************************************************************************************
 
