@@ -1555,6 +1555,32 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major DynamicMatrix dense matrix assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1657,6 +1683,32 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << mat2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
@@ -2381,6 +2433,33 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major DynamicMatrix dense matrix assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2485,6 +2564,33 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << mat2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 6UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
+          mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
@@ -3006,6 +3112,36 @@ void ClassTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix addition assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major DynamicMatrix dense matrix addition assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -3059,6 +3195,36 @@ void ClassTest::testAddAssign()
       mat1(0,1) =  2;
       mat1(1,0) = -3;
       mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix addition assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ {  1, 2, 0 },
+                                                           { -3, 0, 4 } };
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
                                                       { 5,  0, 0 } };
@@ -3492,6 +3658,37 @@ void ClassTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix addition assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major DynamicMatrix dense matrix addition assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -3546,6 +3743,37 @@ void ClassTest::testAddAssign()
       mat1(0,1) =  2;
       mat1(1,0) = -3;
       mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 += mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix addition assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
                                                          { 5,  0, 0 } };
@@ -3997,6 +4225,36 @@ void ClassTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix subtraction assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { -1, -2,  0 },
+                                                        {  3,  0, -4 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major DynamicMatrix dense matrix subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -4080,7 +4338,37 @@ void ClassTest::testSubAssign()
    }
 
    {
-      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (unaligned/unpadded)";
+      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { -1, -2,  0 },
+                                                           {  3,  0, -4 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
       using blaze::padded;
@@ -4491,6 +4779,37 @@ void ClassTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix subtraction assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { -1, -2,  0 },
+                                                        {  3,  0, -4 } };
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major DynamicMatrix dense matrix subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -4545,6 +4864,37 @@ void ClassTest::testSubAssign()
       mat1(0,1) = -2;
       mat1(1,0) =  3;
       mat1(1,2) = -4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix subtraction assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { -1, -2,  0 },
+                                                           {  3,  0, -4 } };
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
                                                          { 5,  0, 0 } };
@@ -4996,6 +5346,39 @@ void ClassTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix multiplication assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { 0, 2, 0, 0 },
+                                                        { 1, 3, 0, 4 },
+                                                        { 0, 0, 0, 5 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                      { 0, 3, 0 },
+                                                      { 4, 0, 5 } };
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major DynamicMatrix dense matrix multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -5053,6 +5436,39 @@ void ClassTest::testMultAssign()
       mat1(1,1) = 3;
       mat1(1,3) = 4;
       mat1(2,3) = 5;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                      { 0, 3, 0 },
+                                                      { 4, 0, 5 } };
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix multiplication assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { 0, 2, 0, 0 },
+                                                           { 1, 3, 0, 4 },
+                                                           { 0, 0, 0, 5 } };
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
                                                       { 0, 3, 0 },
@@ -5248,6 +5664,40 @@ void ClassTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix multiplication assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ { 0, 2, 0, 0 },
+                                                        { 1, 3, 0, 4 },
+                                                        { 0, 0, 0, 5 } };
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major DynamicMatrix dense matrix multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -5306,6 +5756,40 @@ void ClassTest::testMultAssign()
       mat1(1,1) = 3;
       mat1(1,3) = 4;
       mat1(2,3) = 5;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
+
+      mat2 *= mat1;
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 4UL );
+      checkNonZeros( mat2, 7UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 || mat2(0,2) != 0 || mat2(0,3) != 10 ||
+          mat2(1,0) != 3 || mat2(1,1) != 9 || mat2(1,2) != 0 || mat2(1,3) != 12 ||
+          mat2(2,0) != 0 || mat2(2,1) != 8 || mat2(2,2) != 0 || mat2(2,3) != 25 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 0 10 )\n( 3 9 0 12 )\n( 0 8 0 25 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix multiplication assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ { 0, 2, 0, 0 },
+                                                           { 1, 3, 0, 4 },
+                                                           { 0, 0, 0, 5 } };
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
                                                          { 0, 3, 0 },
