@@ -145,7 +145,7 @@ inline Indices::Indices( size_t min, size_t max, size_t number )
       {
          const size_t value = rand<size_t>(min,max);
          BLAZE_INTERNAL_ASSERT( min <= value && value <= max, "Invalid index detected" );
-         const ConstIterator pos = std::lower_bound( indices_.begin(), indices_.end(), value );
+         const auto pos = std::lower_bound( indices_.begin(), indices_.end(), value );
 
          if( pos == indices_.end() || *pos != value ) {
             indices_.insert( pos, value );
@@ -161,7 +161,7 @@ inline Indices::Indices( size_t min, size_t max, size_t number )
       {
          const size_t value = rand<size_t>(min,max);
          BLAZE_INTERNAL_ASSERT( min <= value && value <= max, "Invalid index detected" );
-         const ConstIterator pos = std::lower_bound( indices_.begin(), indices_.end(), value );
+         const auto pos = std::lower_bound( indices_.begin(), indices_.end(), value );
 
          if( pos != indices_.end() && *pos == value ) {
             indices_.erase( pos );
