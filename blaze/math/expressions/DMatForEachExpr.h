@@ -178,7 +178,6 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
    typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
@@ -310,7 +309,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
       //
       // \return The resulting SIMD element.
       */
-      inline SIMDType load() const noexcept {
+      inline auto load() const noexcept {
          return op_.load( it_.load() );
       }
       //*******************************************************************************************
@@ -502,7 +501,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( !SO || ( i % SIMDSIZE == 0UL ), "Invalid row access index"    );

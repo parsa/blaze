@@ -165,7 +165,6 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    typedef AddTrait_<RE1,RE2>           ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>      SIMDType;       //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
@@ -304,7 +303,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
       //
       // \return The resulting SIMD element.
       */
-      inline SIMDType load() const noexcept {
+      inline auto load() const noexcept {
          return left_.load() + right_.load();
       }
       //*******************************************************************************************
@@ -491,7 +490,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE SIMDType load( size_t index ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t index ) const noexcept {
       BLAZE_INTERNAL_ASSERT( index < lhs_.size()    , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL, "Invalid vector access index" );
       return lhs_.load( index ) + rhs_.load( index );

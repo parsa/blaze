@@ -354,7 +354,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       //
       // \return The resulting SIMD element.
       */
-      inline SIMDType load() const noexcept {
+      inline auto load() const noexcept {
          return set( *left_ ) * right_.load();
       }
       //*******************************************************************************************
@@ -547,7 +547,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE SIMDType load( size_t i, size_t j ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < lhs_.size()    , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size()    , "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
