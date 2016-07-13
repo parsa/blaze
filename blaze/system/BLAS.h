@@ -42,48 +42,21 @@
 //
 //=================================================================================================
 
-//*************************************************************************************************
-/*!\brief Compilation switch for the BLAS mode.
-// \ingroup system
-//
-// This compilation switch enables/disables the BLAS mode. In case the BLAS mode is enabled,
-// several basic linear algebra functions (such as for instance matrix-matrix multiplications
-// between two dense matrices) are handled by performance optimized BLAS functions. Note that
-// in this case it is mandatory to provide the according BLAS header file for the compilation
-// of the Blaze library. In case the BLAS mode is disabled, all linear algebra functions use
-// the default implementations of the Blaze library and therefore BLAS is not a requirement
-// for the compilation process.
-//
-// Possible settings for the BLAS switch:
-//  - Deactivated: \b 0
-//  - Activated  : \b 1
-//
-// Note that changing the setting of the BLAS mode requires a recompilation of the Blaze
-// library. Also note that this switch is automatically set by the configuration script of
-// the Blaze library.
-*/
-#define BLAZE_BLAS_MODE 0
-//*************************************************************************************************
+#include <blaze/config/BLAS.h>
 
 
-//*************************************************************************************************
-/*!\brief Compilation switch for the parallel BLAS mode.
-// \ingroup system
+
+
+//=================================================================================================
 //
-// This compilation switch specifies whether the used BLAS library is itself parallelized or not.
-// In case the given BLAS library is itself parallelized, the Blaze library does not perform any
-// attempt to parallelize the execution of BLAS kernels. If, however, the given BLAS library is
-// not parallelized Blaze will attempt to parallelize the execution of BLAS kernels.
+//  BLAS INCLUDE FILE CONFIGURATION
 //
-// Possible settings for the switch:
-//  - BLAS library is not parallelized: \b 0
-//  - BLAS library is parallelized    : \b 1
-//
-// Note that changing the setting of the BLAS mode requires a recompilation of the Blaze library.
-// Also note that this switch is automatically set by the configuration script of the Blaze
-// library.
-*/
-#define BLAZE_BLAS_IS_PARALLEL 0
-//*************************************************************************************************
+//=================================================================================================
+
+#if BLAZE_BLAS_MODE
+extern "C" {
+#include BLAZE_BLAS_INCLUDE_FILE
+}
+#endif
 
 #endif

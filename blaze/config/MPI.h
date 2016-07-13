@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/system/MPI.h
-//  \brief System settings for the MPI parallelization
+//  \file blaze/config/MPI.h
+//  \brief Configuration of the MPI parallelization
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,16 +32,20 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_SYSTEM_MPI_H_
-#define _BLAZE_SYSTEM_MPI_H_
 
-
-//=================================================================================================
+//*************************************************************************************************
+/*!\brief Compilation switch for the MPI parallelization.
+// \ingroup mpi
 //
-//  MPI MODE CONFIGURATION
+// This compilation switch enables/disables the MPI parallelization.
 //
-//=================================================================================================
-
-#include <blaze/config/MPI.h>
-
-#endif
+// Possible settings for the MPI switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+//
+// Note that changing the setting of the MPI parallel mode requires a recompilation of the
+// Blaze library. Also note that this switch is automatically set by the configuration script
+// of the Blaze library.
+*/
+#define BLAZE_MPI_PARALLEL_MODE 0
+//*************************************************************************************************

@@ -74,14 +74,6 @@ LIBRARY="static"
 # this setting.
 LIBRARY_DIRECTIVES=
 
-# Specification of the cache size
-# Via this setting it is possible to specify the size of the outermost cache level. It
-# influences the choice of the evaluation strategy of mathematical expression to achieve
-# the highest possible performance. The value must be given in Bytes. For instance, a
-# 3 MiByte cache must be specified as "3145728". If no cache size is specified, a cache
-# of 3 MiByte is assumed.
-CACHE_SIZE=
-
 # Configuration of the boost library
 # The boost library (see www.boost.org) is precondition for the Blaze library, i.e., it
 # is not possible to compile the library without boost. Blaze requires you to have at
@@ -98,28 +90,3 @@ BOOST_INCLUDE_PATH=
 BOOST_LIBRARY_PATH=
 BOOST_SYSTEM_LIBRARY=
 BOOST_THREAD_LIBRARY=
-
-# Configuration of the BLAS library (optional)
-# The Blaze library offers the possibilty to use a BLAS library for certain basic linear
-# algebraic operations (such as for instance matrix-matrix multiplications). If the BLAS
-# switch is set to 'yes', the library expects the according headers in order to compile
-# properly. In case the BLAS include directory is not set, it is assumed that the header
-# file is installed in standard paths (as for instance '/usr/include/'). Additionally, in
-# case the name of the BLAS include file is not set, it is assumed that the BLAS include
-# file is named 'cblas.h'. The BLAS_IS_PARALLEL switch specifies if the given BLAS library
-# is itself parallelized or not. If set to 'yes' Blaze will not perform any additional
-# parallelization attempt, if set to 'no' Blaze will attempt to parallelize the execution
-# of BLAS kernels.
-BLAS="no"
-BLAS_INCLUDE_PATH=
-BLAS_INCLUDE_FILE=
-BLAS_IS_PARALLEL="no"
-
-# Configuration of the MPI library (optional)
-# If set to 'yes' the MPI parallel execution of the Blaze library will be activated. If
-# set to 'yes' and in case the MPI include directory is not explicitly specified it is
-# assumed that the MPI headers are installed in standard paths.
-#   yes: Activation of the MPI parallelization
-#   no : Deactivation of the MPI parallelization (default)
-MPI="no"
-MPI_INCLUDE_PATH=
