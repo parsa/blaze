@@ -133,10 +133,9 @@
 //**Configuration and Installation*****************************************************************
 /*!\page configuration_and_installation Configuration and Installation
 //
-// Setting up the \b Blaze library on a particular system is a fairly easy two step process. Since
-// \b Blaze is a template library and therefore mainly consists of header files no compilation is
-// required. In the following, this two step process is explained in detail, preceded only by a
-// short summary of the requirements.
+// Since \b Blaze is a header-only library, setting up the \b Blaze library on a particular system
+// is a fairly easy two step process. In the following, this two step process is explained in
+// detail, preceded only by a short summary of the requirements.
 //
 //
 // \n \section requirements Requirements
@@ -162,53 +161,14 @@
 // no LAPACK library is available the use of these features will result in a linker error.
 //
 //
-// \n \section step_1_configuration Step 1: Configuration
+// \n \section step_1_installation Step 1: Installation
 // <hr>
 //
-// \subsection step_1_configuration_unix Linux/MacOSX User
+// \subsection step_1_installation_unix Linux/MacOSX User
 //
-// The first step is to adapt the \c Configfile in the \b Blaze home directory to the local
-// configuration. Any text editor can be used for this task:
-
-   \code
-   vi ./Configfile
-   \endcode
-
-// In the \c Configfile, the kind of installation (debug or release), the library types (static
-// and/or dynamic), the compiler including compiler flags, and several include paths have to be
-// specified. Afterwards, the \c configure script can be run, which uses the \c Configfile to
-// update and create several files:
-
-   \code
-   ./configure
-   \endcode
-
-// This step can also be omitted, but results in a default configuration that does not guarantee
-// the highest performance for all operations. For instance, without running the \c configure
-// script, \b Blaze assumes that no BLAS library is installed on the system and cannot use BLAS
-// functionality for instance for the matrix/matrix multiplication.
-//
-// In order to further customize the \b Blaze library the header files in the <em>./blaze/config/</em>
-// subdirectory can be adapted. See section \ref configuration_files for more details.
-//
-// \n \subsection step_1_configuration_windows Windows User
-//
-// Unfortunately, for Windows users there is no \c configure script available (yet). Therefore
-// Windows user have to manually configure the \b Blaze library. Most configuration headers are
-// located in the <em>./blaze/config/</em> subdirectory. The one exception is the \c BLAS.h
-// header in the <em>./blaze/system/</em> subdirectory that contains the configuration of the
-// BLAS functionality. Note that in case the \c BLAZE_BLAS_MODE symbol is set to 1, the correct
-// BLAS header file has to be specified!
-//
-//
-// \n \section step_2_installation Step 2: Installation
-// <hr>
-//
-// \subsection step_2_configuration_unix Linux/MacOSX User
-//
-// The second step is the installation of the header files. Since \b Blaze mainly consists of
-// header files, the <em>./blaze</em> subdirectory can be simply copied to a standard include
-// directory (note that this requires root privileges):
+// The first step is the installation of the header files. Since \b Blaze only consists of header
+// files, the <tt>./blaze</tt> subdirectory can be simply copied to a standard include directory
+// (note that this requires root privileges):
 
    \code
    cp -r ./blaze /usr/local/include
@@ -218,66 +178,49 @@
 // \c CPLUS_INCLUDE_PATH environment variable can be set. The specified directory will be
 // searched after any directories specified on the command line with the option \c -I and
 // before the standard default directories (such as \c /usr/local/include and \c /usr/include).
-// Assuming a user misterX, the environment variable can be set as follows:
+// Assuming a user named 'Jon', the environment variable can be set as follows:
 
    \code
-   CPLUS_INCLUDE_PATH=/usr/home/misterX/blaze
+   CPLUS_INCLUDE_PATH=/usr/home/jon/blaze
    export CPLUS_INCLUDE_PATH
    \endcode
 
-// Last but not least, the <em>./blaze</em> subdirectory can be explicitly specified on the
+// Last but not least, the <tt>./blaze</tt> subdirectory can be explicitly specified on the
 // command line. The following example demonstrates this by means of the GNU C++ compiler:
 
    \code
-   g++ -I/usr/home/misterX/blaze -o BlazeTest BlazeTest.cpp
+   g++ -I/usr/home/jon/blaze -o BlazeTest BlazeTest.cpp
    \endcode
 
-// \n \subsection step_2_configuration_windows Windows User
+// \n \subsection step_1_installation_windows Windows User
 //
 // Windows doesn't have a standard include directory. Therefore the \b Blaze header files can be
 // copied to any other directory or simply left in the default \b Blaze directory. However, the
 // chosen include directory has to be explicitly specified as include path. In Visual Studio,
 // this is done via the project property pages, configuration properties, C/C++, General settings.
-// Here the additional include directories can be specified. Note that there are small differences
-// between VS2008 and VS2010:
-// <a href="http://blogs.msdn.com/b/vsproject/archive/2009/07/07/vc-directories.aspx">VC++ Directories</a>.
+// Here the additional include directories can be specified.
 //
 //
-// \n \section step_3_compilation Step 3 (Optional): Compilation
+// \n \section step_2_configuration Step 2: Configuration
 // <hr>
 //
-// \subsection step_3_configuration_unix Linux/MacOSX User
+// The second step is the configuration and customization of the \b Blaze library. Many aspects of
+// \b Blaze can be adapted to specific requirements, environments and architectures by customizing
+// the header files in the <tt>./blaze/config/</tt> subdirectory. Since the default settings are
+// reasonable for most systems this step can also be skipped. However, in order to achieve maximum
+// performance a customization of at least the following configuration files is required:
 //
-// Next to the math library, \b Blaze also contains a small number of additional (sub-)libraries.
-// If these libraries, such as the blaze::logging functionality, are required it is necessary to
-// create the \b Blaze library files. For that purpose, the \c configure script has created a
-// \c Makefile that can be used for the compilation process:
-
-   \code
-   make
-   \endcode
-
-// Afterwards, the \c libblaze.so and/or \c libblaze.a libraries are contained in the \a lib
-// subdirectory and can be copied to a standard library directory (note that this requires
-// root privilages). However, this step can be omitted if only the \b Blaze math library is
-// required.
-
-   \code
-   cp ./lib/* /usr/local/lib
-   \endcode
-
-// Alternatively, on Unix-based systems the \c LD_LIBRARY_PATH environment variable can be
-// extended to also consider the \b Blaze \a lib directory:
-
-   \code
-   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/home/misterX/blaze/lib
-   export LD_LIBRARY_PATH
-   \endcode
-
-// \n \subsection step_3_configuration_windows Windows User
+//  - <b><tt>./blaze/config/BLAS.h</tt></b>: Via this configuration file \b Blaze can be enabled
+//    to use a third-party BLAS library for several basic linear algebra functions (such as for
+//    instance dense matrix multiplications). In case no BLAS library is used, all linear algebra
+//    functions use the default implementations of the Blaze library and therefore BLAS is not a
+//    requirement for the compilation process. However, please note that performance may be limited.
+//  - <b><tt>./blaze/config/CacheSize.h</tt></b>: This file contains the hardware specific cache
+//    settings. \b Blaze uses this information to optimize its cache usage. For maximum performance
+//    it is recommended to adapt these setting to a specific target architecture.
 //
-// For Windows users, a comfortable compilation of the extended \b Blaze features is not (yet)
-// supported.
+// For an overview of other customization options and more details, please see the section
+// \ref configuration_files.
 //
 // \n Next: \ref getting_started
 */
@@ -4461,6 +4404,7 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
+   using blaze::Row;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
@@ -5031,6 +4975,7 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::HermitianMatrix;
+   using blaze::Row;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
@@ -6529,8 +6474,8 @@
 // \n \section views_submatrices_class The Submatrix Class Template
 // <hr>
 //
-// The blaze::Submatrix template represents a view on a specific submatrix of a dense or sparse
-// matrix primitive. It can be included via the header file
+// The blaze::Submatrix class template represents a view on a specific submatrix of a dense or
+// sparse matrix primitive. It can be included via the header file
 
    \code
    #include <blaze/math/Submatrix.h>
@@ -6546,7 +6491,7 @@
 //  - \c MT: specifies the type of the matrix primitive. Submatrix can be used with every matrix
 //           primitive, but does not work with any matrix expression type.
 //  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
-//        unaligned (blaze::unaligned). The default value is blaze::unaligned.
+//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
 //
 //
 // \n \section views_submatrices_setup Setup of Submatrices
@@ -6992,8 +6937,8 @@
    class Row;
    \endcode
 
-// \c MT specifies the type of the dense matrix primitive. Row can be used with every matrix
-// primitive, but does not work with any matrix expression type.
+// \c MT specifies the type of the matrix primitive. Row can be used with every matrix primitive,
+// but does not work with any matrix expression type.
 //
 //
 // \n \section views_rows_setup Setup of Rows
@@ -8250,7 +8195,7 @@
 // seriously decrease due to the overhead caused by the thread setup. However, in order to be
 // able to adjust the \b Blaze library to a specific system, it is possible to configure these
 // thresholds manually. All shared memory thresholds are contained within the configuration file
-// <em>./blaze/config/Thresholds.h</em>.
+// <tt>./blaze/config/Thresholds.h</tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique (see also \ref cpp_threads_parallelization and
@@ -8493,7 +8438,7 @@
 // Otherwise, the performance could seriously decrease due to the overhead caused by the thread
 // setup. However, in order to be able to adjust the \b Blaze library to a specific system, it
 // is possible to configure these thresholds manually. All thresholds are contained within the
-// configuration file <em>./blaze/config/Thresholds.h</em>.
+// configuration file <tt>./blaze/config/Thresholds.h</tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique. Therefore the default values cannot guarantee
@@ -8595,7 +8540,7 @@
 // As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
 // an operation in parallel (see \ref openmp_parallelization or \ref cpp_threads_parallelization).
 // All thresholds related to the Boost thread parallelization are also contained within the
-// configuration file <em>./blaze/config/Thresholds.h</em>.
+// configuration file <tt>./blaze/config/Thresholds.h</tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique. Therefore the default values cannot guarantee
@@ -8678,7 +8623,7 @@
 //
 // The third option is the general deactivation of the parallel execution (even in case OpenMP is
 // enabled on the command line). This can be achieved via the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION
-// switch in the <em>./blaze/config/SMP.h</em> configuration file:
+// switch in the <tt>./blaze/config/SMP.h</tt> configuration file:
 
    \code
    #define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
@@ -10236,7 +10181,7 @@
 //
 //
 // Sometimes it might necessary to adapt \b Blaze to specific requirements. For this purpose
-// \b Blaze provides several configuration files in the <em>./blaze/config/</em> subdirectory,
+// \b Blaze provides several configuration files in the <tt>./blaze/config/</tt> subdirectory,
 // which provide ample opportunity to customize internal settings, behavior, and thresholds.
 // This chapter explains the most important of these configuration files.
 //
@@ -10251,7 +10196,7 @@
    blaze::StaticVector<double,3UL> x;  // Creates a 3-dimensional static column vector
    \endcode
 
-// The header file <em>./blaze/config/TransposeFlag.h</em> allows the configuration of the default
+// The header file <tt>./blaze/config/TransposeFlag.h</tt> allows the configuration of the default
 // vector storage (i.e. the default transpose flag of the vectors). Via the \c defaultTransposeFlag
 // value the default transpose flag for all vector of the \b Blaze library can be specified:
 
@@ -10271,7 +10216,7 @@
    blaze::StaticMatrix<double,3UL,3UL>  A;  // Creates a 3x3 row-major matrix
    \endcode
 
-// The header file <em>./blaze/config/StorageOrder.h</em> allows the configuration of the default
+// The header file <tt>./blaze/config/StorageOrder.h</tt> allows the configuration of the default
 // matrix storage order. Via the \c defaultStorageOrder value the default storage order for all
 // matrices of the \b Blaze library can be specified.
 
@@ -10288,7 +10233,7 @@
 // the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
 // MIC intrinsics, depending on which instruction set is available. However, it is possible to
 // disable the vectorization entirely by the compile time switch in the configuration file
-// <em>./blaze/config/Vectorization.h</em>:
+// <tt>./blaze/config/Vectorization.h</tt>:
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
@@ -10308,7 +10253,7 @@
 // application of the custom \b Blaze kernels for small dense matrix/dense vector multiplications
 // and the BLAS kernels for large multiplications. All thresholds, including the thresholds for
 // the OpenMP-based parallelization, are contained within the configuration file
-// <em>./blaze/config/Thresholds.h</em>.
+// <tt>./blaze/config/Thresholds.h</tt>.
 //
 //
 // \n \section padding Padding
@@ -10319,7 +10264,7 @@
 // downside padding introduces an additional memory overhead, which can be large depending on
 // the used data type.
 //
-// The configuration file <em>./blaze/config/Optimizations.h</em> provides a compile time switch
+// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
 // that can be used to (de-)activate padding:
 
    \code
@@ -10339,7 +10284,7 @@
 // memory bandwidth cannot be exhausted the use of non-temporal stores can decrease performance
 // instead of increasing it.
 //
-// The configuration file <em>./blaze/config/Optimizations.h</em> provides a compile time switch
+// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
 // that can be used to (de-)activate streaming:
 
    \code
