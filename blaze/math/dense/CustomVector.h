@@ -807,7 +807,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   BLAZE_UNUSED_PARAMETER( ptr, n, nn );
+   UNUSED_PARAMETER( ptr, n, nn );
 }
 //*************************************************************************************************
 
@@ -886,7 +886,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   BLAZE_UNUSED_PARAMETER( ptr, n, nn, d );
+   UNUSED_PARAMETER( ptr, n, nn, d );
 }
 //*************************************************************************************************
 
@@ -1794,7 +1794,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn )
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   BLAZE_UNUSED_PARAMETER( ptr, n, nn );
+   UNUSED_PARAMETER( ptr, n, nn );
 }
 //*************************************************************************************************
 
@@ -1869,7 +1869,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn, 
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   BLAZE_UNUSED_PARAMETER( ptr, n, nn, d );
+   UNUSED_PARAMETER( ptr, n, nn, d );
 }
 //*************************************************************************************************
 
