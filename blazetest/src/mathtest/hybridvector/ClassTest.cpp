@@ -623,6 +623,32 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "HybridVector dense vector assignment (mixed type)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      blaze::HybridVector<short,7UL,blaze::rowVector> vec1{ 1, 2, 3, 4, 5 };
+      blaze::HybridVector<int,7UL,blaze::rowVector> vec2;
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 7UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "HybridVector dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -831,6 +857,29 @@ void ClassTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "HybridVector dense vector addition assignment (mixed type)";
+
+      blaze::HybridVector<short,7UL,blaze::rowVector> vec1{ 1, 0, -2, 3, 0 };
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
+
+      vec2 += vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "HybridVector dense vector addition assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -945,6 +994,29 @@ void ClassTest::testSubAssign()
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
+
+   {
+      test_ = "HybridVector dense vector subtraction assignment (mixed type)";
+
+      blaze::HybridVector<short,7UL,blaze::rowVector> vec1{ -1, 0, 2, -3, 0 };
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
+
+      vec2 -= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "HybridVector dense vector subtraction assignment (aligned/padded)";
@@ -1063,6 +1135,29 @@ void ClassTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "HybridVector dense vector multiplication assignment (mixed type)";
+
+      blaze::HybridVector<short,7UL,blaze::rowVector> vec1{ 1, 0, -2, 3, 0 };
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2{ 0, 4, 2, -6, 7 };
+
+      vec2 *= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 2UL );
+
+      if( vec2[0] != 0 || vec2[1] != 0 || vec2[2] != -4 || vec2[3] != -18 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 0 -4 -18 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "HybridVector dense vector multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1177,6 +1272,29 @@ void ClassTest::testDivAssign()
    //=====================================================================================
    // Dense vector division assignment
    //=====================================================================================
+
+   {
+      test_ = "HybridVector dense vector division assignment (mixed type)";
+
+      blaze::HybridVector<short,7UL,blaze::rowVector> vec1{ 1, 2, -3, 4, 1 };
+      blaze::HybridVector<int,8UL,blaze::rowVector> vec2{ 2, 0, -3, 8, 0 };
+
+      vec2 /= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 2 || vec2[1] != 0 || vec2[2] != 1 || vec2[3] != 2 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 2 0 1 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "HybridVector dense vector division assignment (aligned/padded)";
