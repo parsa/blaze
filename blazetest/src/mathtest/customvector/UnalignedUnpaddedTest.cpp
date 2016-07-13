@@ -445,6 +445,39 @@ void UnalignedUnpaddedTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "CustomVector dense vector assignment (mixed type)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      UnalignedUnpadded vec1( blaze::allocate<short>( 5UL ), 5UL, blaze::Deallocate() );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[2] = 3;
+      vec1[3] = 4;
+      vec1[4] = 5;
+
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2 = vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 5UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 || vec2[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "CustomVector dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -558,6 +591,45 @@ void UnalignedUnpaddedTest::testAddAssign()
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
+
+   {
+      test_ = "CustomVector dense vector addition assignment (mixed type)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      UnalignedUnpadded vec1( blaze::allocate<short>( 5UL ), 5UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  0;
+      vec1[2] = -2;
+      vec1[3] =  3;
+      vec1[4] =  0;
+
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2[0] =  0;
+      vec2[1] =  4;
+      vec2[2] =  2;
+      vec2[3] = -6;
+      vec2[4] =  7;
+
+      vec2 += vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "CustomVector dense vector addition assignment (aligned/padded)";
@@ -693,6 +765,45 @@ void UnalignedUnpaddedTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "CustomVector dense vector subtraction assignment (mixed type)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      UnalignedUnpadded vec1( blaze::allocate<short>( 5UL ), 5UL, blaze::Deallocate() );
+      vec1[0] = -1;
+      vec1[1] =  0;
+      vec1[2] =  2;
+      vec1[3] = -3;
+      vec1[4] =  0;
+
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2[0] =  0;
+      vec2[1] =  4;
+      vec2[2] =  2;
+      vec2[3] = -6;
+      vec2[4] =  7;
+
+      vec2 -= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 4 || vec2[2] != 0 || vec2[3] != -3 || vec2[4] != 7 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 4 0 -3 7 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "CustomVector dense vector subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -826,6 +937,45 @@ void UnalignedUnpaddedTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "CustomVector dense vector multiplication assignment (mixed type)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      UnalignedUnpadded vec1( blaze::allocate<short>( 5UL ), 5UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  0;
+      vec1[2] = -2;
+      vec1[3] =  3;
+      vec1[4] =  0;
+
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2[0] =  0;
+      vec2[1] =  4;
+      vec2[2] =  2;
+      vec2[3] = -6;
+      vec2[4] =  7;
+
+      vec2 *= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 2UL );
+
+      if( vec2[0] != 0 || vec2[1] != 0 || vec2[2] != -4 || vec2[3] != -18 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 0 -4 -18 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "CustomVector dense vector multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -957,6 +1107,45 @@ void UnalignedUnpaddedTest::testDivAssign()
    //=====================================================================================
    // Dense vector division assignment
    //=====================================================================================
+
+   {
+      test_ = "CustomVector dense vector division assignment (mixed type)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      UnalignedUnpadded vec1( blaze::allocate<short>( 5UL ), 5UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  2;
+      vec1[2] = -3;
+      vec1[3] =  4;
+      vec1[4] =  1;
+
+      VT vec2( new int[5UL], 5UL, blaze::ArrayDelete() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -3;
+      vec2[3] =  8;
+      vec2[4] =  0;
+
+      vec2 /= vec1;
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 5UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 2 || vec2[1] != 0 || vec2[2] != 1 || vec2[3] != 2 || vec2[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 2 0 1 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "CustomVector dense vector division assignment (aligned/padded)";
