@@ -5141,6 +5141,7 @@ inline bool Column<MT,false,true,true>::canSMPAssign() const noexcept
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Load of a SIMD element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
