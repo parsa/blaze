@@ -251,7 +251,7 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
    vector.reset();
    vector.reserve( nonzeros );
 
-   const Indices indices( 0UL, vector.size(), nonzeros );
+   const Indices indices( 0UL, vector.size()-1UL, nonzeros );
 
    for( size_t index : indices ) {
       vector.append( index, rand<Type>() );
@@ -316,7 +316,7 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
    vector.reset();
    vector.reserve( nonzeros );
 
-   const Indices indices( 0UL, vector.size(), nonzeros );
+   const Indices indices( 0UL, vector.size()-1UL, nonzeros );
 
    for( size_t index : indices ) {
       vector.append( index, rand<Type>( min, max ) );
