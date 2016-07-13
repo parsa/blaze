@@ -95,15 +95,15 @@ struct SIMDf32FmaddExpr : public SIMDf32< SIMDf32FmaddExpr<T1,T2,T3> >
    BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
    {
-      return _mm512_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm512_fmadd_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
    {
-      return _mm256_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm256_fmadd_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
    {
-      return _mm_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm_fmadd_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #else
    = delete;
@@ -158,15 +158,15 @@ struct SIMDf32FmsubExpr : public SIMDf32< SIMDf32FmsubExpr<T1,T2,T3> >
    BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
 #if BLAZE_FMA_MODE && BLAZE_MIC_MODE
    {
-      return _mm512_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm512_fmsub_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #elif BLAZE_FMA_MODE && BLAZE_AVX_MODE
    {
-      return _mm256_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm256_fmsub_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #elif BLAZE_FMA_MODE && BLAZE_SSE2_MODE
    {
-      return _mm_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
+      return _mm_fmsub_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
 #else
    = delete;
