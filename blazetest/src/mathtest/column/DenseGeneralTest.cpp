@@ -42,6 +42,7 @@
 #include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blazetest/mathtest/column/DenseGeneralTest.h>
@@ -527,6 +528,51 @@ void DenseGeneralTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector assignment (mixed type)";
+
+      initialize();
+
+      CT col1 = blaze::column( mat_, 1UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec1{ 0, 8, 0, 9 };
+
+      col1 = vec1;
+
+      checkSize    ( col1,  4UL );
+      checkCapacity( col1,  4UL );
+      checkNonZeros( col1,  2UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  5UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( col1[0] != 0 || col1[1] != 8 || col1[2] != 0 || col1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                     "( 0  8  0  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  9  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -883,6 +929,51 @@ void DenseGeneralTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Column-major dense vector assignment (mixed type)";
+
+      initialize();
+
+      OCT col1 = blaze::column( tmat_, 1UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec1{ 0, 8, 0, 9 };
+
+      col1 = vec1;
+
+      checkSize    ( col1 ,  4UL );
+      checkCapacity( col1 ,  4UL );
+      checkNonZeros( col1 ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( col1[0] != 0 || col1[1] != 8 || col1[2] != 0 || col1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                     "( 0  8  0  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  9  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1108,6 +1199,51 @@ void DenseGeneralTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector addition assignment (mixed type)";
+
+      initialize();
+
+      CT col2 = blaze::column( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 += vec;
+
+      checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
+      checkNonZeros( col2,  2UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  5UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 0 -4 -3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0  7 )\n"
+                                     "( 0  1 -4  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector addition assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1319,6 +1455,51 @@ void DenseGeneralTest::testAddAssign()
    //=====================================================================================
    // Column-major dense vector addition assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector addition assignment (mixed type)";
+
+      initialize();
+
+      OCT col2 = blaze::column( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 += vec;
+
+      checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
+      checkNonZeros( col2 ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 0 -4 -3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0  7 )\n"
+                                     "( 0  1 -4  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector addition assignment (aligned/padded)";
@@ -1547,6 +1728,51 @@ void DenseGeneralTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector subtraction assignment (mixed type)";
+
+      initialize();
+
+      CT col2 = blaze::column( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 -= vec;
+
+      checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
+      checkNonZeros( col2,  3UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  5UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( -4 4 -3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  7 )\n"
+                                     "( 0  1  4  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1758,6 +1984,51 @@ void DenseGeneralTest::testSubAssign()
    //=====================================================================================
    // Column-major dense vector subtraction assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector subtraction assignment (mixed type)";
+
+      initialize();
+
+      OCT col2 = blaze::column( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 -= vec;
+
+      checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
+      checkNonZeros( col2 ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( -4 4 -3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  7 )\n"
+                                     "( 0  1  4  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector subtraction assignment (aligned/padded)";
@@ -1986,6 +2257,51 @@ void DenseGeneralTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector multiplication assignment (mixed type)";
+
+      initialize();
+
+      CT col2 = blaze::column( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 *= vec;
+
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 1UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 5UL );
+      checkNonZeros( mat_, 9UL );
+
+      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( -4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  7 )\n"
+                                     "( 0  1  0  4 -8 )\n"
+                                     "( 0  0  0  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2197,6 +2513,51 @@ void DenseGeneralTest::testMultAssign()
    //=====================================================================================
    // Column-major dense vector multiplication assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector multiplication assignment (mixed type)";
+
+      initialize();
+
+      OCT col2 = blaze::column( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ 2, -4, 0, 0 };
+
+      col2 *= vec;
+
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 1UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( -4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -4  0  7 )\n"
+                                     "( 0  1  0  4 -8 )\n"
+                                     "( 0  0  0  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector multiplication assignment (aligned/padded)";
@@ -2425,6 +2786,51 @@ void DenseGeneralTest::testDivAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector division assignment (mixed type)";
+
+      initialize();
+
+      CT col2 = blaze::column( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ -1, 2, 3, 4 };
+
+      col2 /= vec;
+
+      checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
+      checkNonZeros( col2,  2UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  5UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( col2[0] != 2 || col2[1] != 0 || col2[2] != -1 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -1 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0  7 )\n"
+                                     "( 0  1  0  4 -8 )\n"
+                                     "( 0  0 -1  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector division assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2584,6 +2990,51 @@ void DenseGeneralTest::testDivAssign()
    //=====================================================================================
    // Column-major dense vector division assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector division assignment (mixed type)";
+
+      initialize();
+
+      OCT col2 = blaze::column( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::columnVector> vec{ -1, 2, 3, 4 };
+
+      col2 /= vec;
+
+      checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
+      checkNonZeros( col2 ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( col2[0] != 2 || col2[1] != 0 || col2[2] != -1 || col2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col2 << "\n"
+             << "   Expected result:\n( 2 0 -1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -1 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0  7 )\n"
+                                     "( 0  1  0  4 -8 )\n"
+                                     "( 0  0 -1  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector division assignment (aligned/padded)";
