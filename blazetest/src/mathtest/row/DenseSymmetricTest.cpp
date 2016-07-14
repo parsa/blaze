@@ -42,6 +42,7 @@
 #include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blazetest/mathtest/row/DenseSymmetricTest.h>
@@ -489,6 +490,51 @@ void DenseSymmetricTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector assignment (mixed type)";
+
+      initialize();
+
+      RT row1 = blaze::row( mat_, 1UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec1{ 0, 8, 0, 9 };
+
+      row1 = vec1;
+
+      checkSize    ( row1, 4UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -845,6 +891,51 @@ void DenseSymmetricTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Column-major dense vector assignment (mixed type)";
+
+      initialize();
+
+      ORT row1 = blaze::row( tmat_, 1UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec1{ 0, 8, 0, 9 };
+
+      row1 = vec1;
+
+      checkSize    ( row1 , 4UL );
+      checkCapacity( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major dense vector assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1070,6 +1161,51 @@ void DenseSymmetricTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector addition assignment (mixed type)";
+
+      initialize();
+
+      RT row2 = blaze::row( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, -4, 0, 0 };
+
+      row2 += vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 -4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector addition assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1281,6 +1417,51 @@ void DenseSymmetricTest::testAddAssign()
    //=====================================================================================
    // Column-major dense vector addition assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector addition assignment (mixed type)";
+
+      initialize();
+
+      ORT row2 = blaze::row( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, -4, 0, 0 };
+
+      row2 += vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 -4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector addition assignment (aligned/padded)";
@@ -1509,6 +1690,51 @@ void DenseSymmetricTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector subtraction assignment (mixed type)";
+
+      initialize();
+
+      RT row2 = blaze::row( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, -4, 0, 0 };
+
+      row2 -= vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -2 4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector subtraction assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -1720,6 +1946,51 @@ void DenseSymmetricTest::testSubAssign()
    //=====================================================================================
    // Column-major dense vector subtraction assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector subtraction assignment (mixed type)";
+
+      initialize();
+
+      ORT row2 = blaze::row( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, -4, 0, 0 };
+
+      row2 -= vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -2 4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector subtraction assignment (aligned/padded)";
@@ -1948,6 +2219,51 @@ void DenseSymmetricTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector multiplication assignment (mixed type)";
+
+      initialize();
+
+      RT row2 = blaze::row( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, 0, -4, 0 };
+
+      row2 *= vec;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 1UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 5UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 -12 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2161,6 +2477,51 @@ void DenseSymmetricTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major dense vector multiplication assignment (mixed type)";
+
+      initialize();
+
+      ORT row2 = blaze::row( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 2, 0, -4, 0 };
+
+      row2 *= vec;
+
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 1UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 5UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 -12 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major dense vector multiplication assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2340,6 +2701,51 @@ void DenseSymmetricTest::testDivAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major dense vector division assignment (mixed type)";
+
+      initialize();
+
+      RT row2 = blaze::row( mat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 1, 2, 3, -2 };
+
+      row2 /= vec;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  1 || mat_(2,3) != -2 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -2 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major dense vector division assignment (aligned/padded)";
 
       using blaze::aligned;
@@ -2452,6 +2858,51 @@ void DenseSymmetricTest::testDivAssign()
    //=====================================================================================
    // Column-major dense vector division assignment
    //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector division assignment (mixed type)";
+
+      initialize();
+
+      ORT row2 = blaze::row( tmat_, 2UL );
+
+      const blaze::DynamicVector<short,blaze::rowVector> vec{ 1, 2, 3, -2 };
+
+      row2 /= vec;
+
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 1 || row2[3] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 1 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  1 || tmat_(2,3) != -2 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -2 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  1 -2 )\n"
+                                     "(  0 -2 -2  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major dense vector division assignment (aligned/padded)";
