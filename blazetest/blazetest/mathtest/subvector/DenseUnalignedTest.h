@@ -125,11 +125,11 @@ class DenseUnalignedTest
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   VT  vec_;   //!< Dynamic column vector.
-               /*!< The 8-dimensional dense vector is initialized as
-                    \f[\left(\begin{array}{*{4}{c}}
-                    0 & 1 & 0 & -2 & -3 & 0 & 4 & 0 \\
-                    \end{array}\right)\f]. */
+   VT vec_;  //!< Dynamic column vector.
+             /*!< The 8-dimensional dense vector is initialized as
+                  \f[\left(\begin{array}{*{4}{c}}
+                  0 & 1 & 0 & -2 & -3 & 0 & 4 & 0 \\
+                  \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
    //@}

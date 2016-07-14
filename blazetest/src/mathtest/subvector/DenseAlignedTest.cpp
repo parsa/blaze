@@ -343,6 +343,34 @@ void DenseAlignedTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Subvector dense vector assignment (mixed type)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      randomize( vec, short(randmin), short(randmax) );
+
+      sv1 = vec;
+      sv2 = vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Subvector dense vector assignment (aligned/padded)";
 
       initialize();
@@ -517,6 +545,34 @@ void DenseAlignedTest::testAddAssign()
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
+
+   {
+      test_ = "Subvector dense vector addition assignment (mixed type)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      randomize( vec, short(randmin), short(randmax) );
+
+      sv1 += vec;
+      sv2 += vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Subvector dense vector addition assignment (aligned/padded)";
@@ -695,6 +751,34 @@ void DenseAlignedTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Subvector dense vector subtraction assignment (mixed type)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      randomize( vec, short(randmin), short(randmax) );
+
+      sv1 -= vec;
+      sv2 -= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Subvector dense vector subtraction assignment (aligned/padded)";
 
       initialize();
@@ -869,6 +953,34 @@ void DenseAlignedTest::testMultAssign()
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
+
+   {
+      test_ = "Subvector dense vector multiplication assignment (mixed type)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      randomize( vec, short(randmin), short(randmax) );
+
+      sv1 *= vec;
+      sv2 *= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Subvector dense vector multiplication assignment (aligned/padded)";
@@ -1046,6 +1158,34 @@ void DenseAlignedTest::testDivAssign()
    //=====================================================================================
    // Dense vector division assignment
    //=====================================================================================
+
+   {
+      test_ = "Subvector dense vector division assignment (mixed type)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      randomize( vec, short(1), short(randmax) );
+
+      sv1 /= vec;
+      sv2 /= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Division assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Subvector dense vector division assignment (aligned/padded)";
