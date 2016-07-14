@@ -608,6 +608,55 @@ void DenseUnalignedTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major dense matrix assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {  0, 11,  0 },
+                                                      { 12, 13, 14 } };
+
+      sm = mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 11 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 12 || mat_(2,1) != 13 || mat_(2,2) != 14 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 11  0  0 )\n"
+                                     "( 12 13 14  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major dense matrix assignment (aligned/padded)";
 
       initialize();
@@ -676,6 +725,55 @@ void DenseUnalignedTest::testAssignment()
       mat(1,0) = 12;
       mat(1,1) = 13;
       mat(1,2) = 14;
+
+      sm = mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 11 || sm(0,2) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) != 13 || sm(1,2) != 14 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 11  0 )\n( 12 13 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 11 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 12 || mat_(2,1) != 13 || mat_(2,2) != 14 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 11  0  0 )\n"
+                                     "( 12 13 14  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major dense matrix assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {  0, 11,  0 },
+                                                         { 12, 13, 14 } };
 
       sm = mat;
 
@@ -1226,6 +1324,55 @@ void DenseUnalignedTest::testAssignment()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major dense matrix assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {  0, 12 },
+                                                      { 11, 13 },
+                                                      {  0, 14 } };
+
+      sm = mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 12 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 11 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 14 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 12  0  7 )\n"
+                                     "( 0 11 13  4 -8 )\n"
+                                     "( 0  0 14  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major dense matrix assignment (aligned/padded)";
 
       initialize();
@@ -1293,6 +1440,55 @@ void DenseUnalignedTest::testAssignment()
       mat(0,1) = 12;
       mat(1,1) = 13;
       mat(2,1) = 14;
+
+      sm = mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 ||
+          sm(1,0) != 11 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 14 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12 )\n( 11 13 )\n(  0 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 12 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 11 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 14 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 12  0  7 )\n"
+                                     "( 0 11 13  4 -8 )\n"
+                                     "( 0  0 14  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major dense matrix assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {  0, 12 },
+                                                         { 11, 13 },
+                                                         {  0, 14 } };
 
       sm = mat;
 
@@ -1676,6 +1872,55 @@ void DenseUnalignedTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major dense matrix addition assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {  0, 11,  0 },
+                                                      { 12, 13, 14 } };
+
+      sm += mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 12 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 10 || mat_(2,1) != 13 || mat_(2,2) != 11 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 12  0  0 )\n"
+                                     "( 10 13 11  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major dense matrix addition assignment (aligned/padded)";
 
       initialize();
@@ -1744,6 +1989,55 @@ void DenseUnalignedTest::testAddAssign()
       mat(1,0) = 12;
       mat(1,1) = 13;
       mat(1,2) = 14;
+
+      sm += mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 12 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 10 || mat_(2,1) != 13 || mat_(2,2) != 11 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 12  0  0 )\n"
+                                     "( 10 13 11  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major dense matrix addition assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {  0, 11,  0 },
+                                                         { 12, 13, 14 } };
 
       sm += mat;
 
@@ -2109,6 +2403,55 @@ void DenseUnalignedTest::testAddAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major dense matrix addition assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {  0, 12 },
+                                                      { 11, 13 },
+                                                      {  0, 14 } };
+
+      sm += mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 10 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 12 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 11 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 10  0  7 )\n"
+                                     "( 0 12 13  4 -8 )\n"
+                                     "( 0  0 11  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major dense matrix addition assignment (aligned/padded)";
 
       initialize();
@@ -2176,6 +2519,55 @@ void DenseUnalignedTest::testAddAssign()
       mat(0,1) = 12;
       mat(1,1) = 13;
       mat(2,1) = 14;
+
+      sm += mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 10 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 12 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 11 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 10  0  7 )\n"
+                                     "( 0 12 13  4 -8 )\n"
+                                     "( 0  0 11  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major dense matrix addition assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {  0, 12 },
+                                                         { 11, 13 },
+                                                         {  0, 14 } };
 
       sm += mat;
 
@@ -2559,6 +2951,55 @@ void DenseUnalignedTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major dense matrix subtraction assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {   0, -11,   0 },
+                                                      { -12, -13, -14 } };
+
+      sm -= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12  0 )\n( 12 13 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 12 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 10 || mat_(2,1) != 13 || mat_(2,2) != 11 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 12  0  0 )\n"
+                                     "( 10 13 11  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major dense matrix subtraction assignment (aligned/padded)";
 
       initialize();
@@ -2645,6 +3086,55 @@ void DenseUnalignedTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 12  0 )\n( 12 13 14 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 12 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 10 || mat_(2,1) != 13 || mat_(2,2) != 11 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 12  0  0 )\n"
+                                     "( 10 13 11  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major dense matrix subtraction assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {   0, -11,   0 },
+                                                         { -12, -13, -14 } };
+
+      sm -= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 12 || sm(0,2) !=  0 ||
+          sm(1,0) != 10 || sm(1,1) != 13 || sm(1,2) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 12  0 )\n( 10 13 11 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2992,6 +3482,55 @@ void DenseUnalignedTest::testSubAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major dense matrix subtraction assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {   0, -12 },
+                                                      { -11, -13 },
+                                                      {   0, -14 } };
+
+      sm -= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 10 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 12 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 11 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 10  0  7 )\n"
+                                     "( 0 12 13  4 -8 )\n"
+                                     "( 0  0 11  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major dense matrix subtraction assignment (aligned/padded)";
 
       initialize();
@@ -3059,6 +3598,55 @@ void DenseUnalignedTest::testSubAssign()
       mat(0,1) = -12;
       mat(1,1) = -13;
       mat(2,1) = -14;
+
+      sm -= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 10 ||
+          sm(1,0) != 12 || sm(1,1) != 13 ||
+          sm(2,0) !=  0 || sm(2,1) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 10 )\n( 12 13 )\n(  0 11 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 10 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 12 || tmat_(1,2) != 13 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 11 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 10  0  7 )\n"
+                                     "( 0 12 13  4 -8 )\n"
+                                     "( 0  0 11  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major dense matrix subtraction assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {   0, -12 },
+                                                         { -11, -13 },
+                                                         {   0, -14 } };
 
       sm -= mat;
 
@@ -3443,6 +4031,55 @@ void DenseUnalignedTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Row-major/row-major dense matrix multiplication assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ { -11, -12 },
+                                                      {  13,  14 } };
+
+      sm *= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
+
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 13 || mat_(1,1) != 14 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 22 || mat_(2,1) != 24 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "( 13 14  0  0 )\n"
+                                     "( 22 24 -3  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Row-major/row-major dense matrix multiplication assignment (aligned/padded)";
 
       initialize();
@@ -3550,7 +4187,56 @@ void DenseUnalignedTest::testMultAssign()
    }
 
    {
-      test_ = "Row-major/column-major dense matrix multiplication assignment (aligned/padded))";
+      test_ = "Row-major/column-major dense matrix multiplication assignment (mixed type)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 2UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ { -11, -12 },
+                                                         {  13,  14 } };
+
+      sm *= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  2UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
+
+      if( sm(0,0) != 13 || sm(0,1) != 14 ||
+          sm(1,0) != 22 || sm(1,1) != 24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 13 14 )\n( 22 24 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 13 || mat_(1,1) != 14 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 22 || mat_(2,1) != 24 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "( 13 14  0  0 )\n"
+                                     "( 22 24 -3  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major dense matrix multiplication assignment (aligned/padded)";
 
       initialize();
 
@@ -3871,6 +4557,53 @@ void DenseUnalignedTest::testMultAssign()
    //=====================================================================================
 
    {
+      test_ = "Column-major/row-major dense matrix multiplication assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+
+      const blaze::DynamicMatrix<short,rowMajor> mat{ {  11,  12 },
+                                                      { -13, -14 } };
+
+      sm *= mat;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
+
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 26 || tmat_(0,2) != 28 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 11 || tmat_(1,2) != 12 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0 26 28  0  7 )\n"
+                                     "( 0 11 12  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Column-major/row-major dense matrix multiplication assignment (aligned/padded)";
 
       initialize();
@@ -3974,7 +4707,54 @@ void DenseUnalignedTest::testMultAssign()
    }
 
    {
-      test_ = "Column-major/column-major dense matrix multiplication assignment (aligned/padded))";
+      test_ = "Column-major/column-major dense matrix multiplication assignment (mixed type)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+
+      const blaze::DynamicMatrix<short,columnMajor> mat{ {  11,  12 },
+                                                         { -13, -14 } };
+
+      sm *= mat;
+
+      checkRows    ( sm   ,  2UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
+
+      if( sm(0,0) != 26 || sm(0,1) != 28 ||
+          sm(1,0) != 11 || sm(1,1) != 12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 26 28 )\n( 11 12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 26 || tmat_(0,2) != 28 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 11 || tmat_(1,2) != 12 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0 26 28  0  7 )\n"
+                                     "( 0 11 12  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major dense matrix multiplication assignment (aligned/padded)";
 
       initialize();
 
