@@ -3653,7 +3653,6 @@ void OperationTest<MT1,MT2>::testInvOperation()
       if( !isSquare( lhs_ * rhs_ ) || blaze::isDefault( det( lhs_ * rhs_ ) ) )
          return;
 
-
       testCustomOperation( blaze::Inv(), "inv" );
    }
 #endif
