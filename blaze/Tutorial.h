@@ -213,11 +213,15 @@
 //  - <b><tt>./blaze/config/BLAS.h</tt></b>: Via this configuration file \b Blaze can be enabled
 //    to use a third-party BLAS library for several basic linear algebra functions (such as for
 //    instance dense matrix multiplications). In case no BLAS library is used, all linear algebra
-//    functions use the default implementations of the Blaze library and therefore BLAS is not a
+//    functions use the default implementations of the \b Blaze library and therefore BLAS is not a
 //    requirement for the compilation process. However, please note that performance may be limited.
 //  - <b><tt>./blaze/config/CacheSize.h</tt></b>: This file contains the hardware specific cache
 //    settings. \b Blaze uses this information to optimize its cache usage. For maximum performance
 //    it is recommended to adapt these setting to a specific target architecture.
+//  - <b><tt>./blaze/config/Thresholds.h</tt></b>: This file contains all thresholds for the
+//    customization of the \b Blaze compute kernels. In order to tune the kernels for a specific
+//    architecture and to maximize performance it can be necessary to adjust the thresholds,
+//    especially for a parallel execution (see \ref shared_memory_parallelization).
 //
 // For an overview of other customization options and more details, please see the section
 // \ref configuration_files.
@@ -10201,7 +10205,7 @@
 // value the default transpose flag for all vector of the \b Blaze library can be specified:
 
    \code
-   const bool defaultTransposeFlag = columnVector;
+   constexpr bool defaultTransposeFlag = columnVector;
    \endcode
 
 // Valid settings for the \c defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
@@ -10221,13 +10225,48 @@
 // matrices of the \b Blaze library can be specified.
 
    \code
-   const bool defaultStorageOrder = rowMajor;
+   constexpr bool defaultStorageOrder = rowMajor;
    \endcode
 
 // Valid settings for the \c defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
 //
 //
+// \n \section blas_mode BLAS Mode
+// <hr>
+//
+// In order to achieve maximum performance for multiplications with dense matrices, \b Blaze can
+// be configured to use a BLAS library. Via the following compilation switch in the configuration
+// file <tt>./blaze/config/BLAS.h</tt> BLAS can be enabled:
+
+   \code
+   #define BLAZE_BLAS_MODE 1
+   \endcode
+
+// In case the selected BLAS library provides parallel execution, the \c BLAZE_BLAS_IS_PARALLEL
+// switch should be activated to prevent \b Blaze from parallelizing on its own:
+
+   \code
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   \endcode
+
+// In case no BLAS library is available, \b Blaze will still work and will not be reduced in
+// functionality, but performance may be limited.
+//
+//
+// \n \section cache_size Cache Size
+// <hr>
+//
+// The optimization of several \b Blaze compute kernels depends on the cache size of the target
+// architecture. By default, \b Blaze assumes a cache size of 3 MiByte. However, for optimal
+// speed the exact cache size of the system should be provided via the \c cacheSize value in the
+// <tt>./blaze/config/CacheSize.h</tt> configuration file:
+
+   \code
+   constexpr size_t cacheSize = 3145728UL;
+   \endcode
+
 // \n \section vectorization Vectorization
+// <hr>
 //
 // In order to achieve maximum performance and to exploit the compute power of a target platform
 // the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
@@ -10247,6 +10286,7 @@
 //
 //
 // \n \section thresholds Thresholds
+// <hr>
 //
 // \b Blaze provides several thresholds that can be adapted to the characteristics of the target
 // platform. For instance, the \c DMATDVECMULT_THRESHOLD specifies the threshold between the
@@ -10257,6 +10297,7 @@
 //
 //
 // \n \section padding Padding
+// <hr>
 //
 // By default the \b Blaze library uses padding for all dense vectors and matrices in order to
 // achieve maximum performance in all operations. Due to padding, the proper alignment of data
@@ -10268,7 +10309,7 @@
 // that can be used to (de-)activate padding:
 
    \code
-   const bool usePadding = true;
+   constexpr bool usePadding = true;
    \endcode
 
 // If \c usePadding is set to \c true padding is enabled for all dense vectors and matrices, if
@@ -10277,6 +10318,7 @@
 //
 //
 // \n \section streaming Streaming (Non-Temporal Stores)
+// <hr>
 //
 // For vectors and matrices that don't fit into the cache anymore non-temporal stores can provide
 // a significant performance advantage of about 20%. However, this advantage is only in effect in
@@ -10288,7 +10330,7 @@
 // that can be used to (de-)activate streaming:
 
    \code
-   const bool useStreaming = true;
+   constexpr bool useStreaming = true;
    \endcode
 
 // If \c useStreaming is set to \c true streaming is enabled, if it is set to \c false streaming
