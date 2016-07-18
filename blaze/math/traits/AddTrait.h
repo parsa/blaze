@@ -43,14 +43,17 @@
 #include <utility>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/MakeSigned.h>
 
 
 namespace blaze {
@@ -146,7 +149,13 @@ struct AddTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct AddType { using Type = decltype( std::declval<Type1>() + std::declval<Type2>() ); };
+   struct NativeType { using Type = decltype( std::declval<Type1>() + std::declval<Type2>() ); };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct SignedType { using Type = MakeSigned_< typename NativeType::Type >; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -156,7 +165,9 @@ struct AddTrait
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
                             , AddTrait<Type1,Type2>
-                            , AddType >::Type;
+                            , If_< And< IsIntegral<T1>, IsIntegral<T2> >
+                                      , SignedType
+                                      , NativeType > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
