@@ -46,12 +46,15 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/All.h>
+#include <blaze/util/typetraits/Any.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsVolatile.h>
 #include <blaze/util/typetraits/MakeSigned.h>
 
@@ -165,9 +168,9 @@ struct AddTrait
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
                             , AddTrait<Type1,Type2>
-                            , If_< And< IsIntegral<T1>, IsIntegral<T2> >
-                                      , SignedType
-                                      , NativeType > >::Type;
+                            , If_< And< All< IsIntegral, T1, T2 >, Any< IsSigned, T1, T2 > >
+                                 , SignedType
+                                 , NativeType > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
