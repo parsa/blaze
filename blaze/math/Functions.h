@@ -88,9 +88,6 @@ BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T >
-BLAZE_ALWAYS_INLINE T round( T a ) noexcept;
-
-template< typename T >
 BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
 
 template< typename T1, typename T2 >
@@ -240,87 +237,6 @@ BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
 {
    return max( a, max( b, args... ) );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Rounds the given input value.
-// \ingroup math
-//
-// \param a Value to be rounded.
-// \return The rounded value.
-//
-// This function rounds the given input value. In case the first digit after the comma
-// is smaller than five the value is rounded down. Otherwise it is rounded up. Note that
-// this function only works for integral and floating point types. The attempt to use the
-// function for any other type will result in a compile time error.
-*/
-template< typename T >
-BLAZE_ALWAYS_INLINE T round( T a ) noexcept
-{
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   return a;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Rounds the given single precision floating point value.
-// \ingroup math
-//
-// \param a Value to be rounded.
-// \return The rounded value.
-//
-// This function rounds the given single precision floating point value. In case the first
-// digit after the comma is smaller than five the value is rounded down. Otherwise it is
-// rounded up.
-*/
-BLAZE_ALWAYS_INLINE float round( float a ) noexcept
-{
-   return std::floor( a + 0.5F );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Rounds the given double precision floating point value.
-// \ingroup math
-//
-// \param a Value to be rounded.
-// \return The rounded value.
-//
-// This function rounds the given double precision floating point value. In case the first
-// digit after the comma is smaller than five the value is rounded down. Otherwise it is
-// rounded up.
-*/
-BLAZE_ALWAYS_INLINE double round( double a ) noexcept
-{
-   return std::floor( a + 0.5 );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Rounds the given long double precision floating point value.
-// \ingroup math
-//
-// \param a Value to be rounded.
-// \return The rounded value.
-//
-// This function rounds the given long double precision floating point value. In case the
-// first digit after the comma is smaller than five the value is rounded down. Otherwise
-// it is rounded up.
-*/
-BLAZE_ALWAYS_INLINE long double round( long double a ) noexcept
-{
-   return std::floor( a + 0.5L );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
