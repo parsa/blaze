@@ -46,6 +46,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsLongDouble.h>
 
 
@@ -63,11 +64,11 @@ namespace blaze {
 //
 // This type trait tests whether or not the given template parameter is invertible. The type
 // is considered to be invertible if it is either BLAS compatible (i.e. \c float, \c double,
-// \c complex<float>, or \c complex<double>), <tt>long double</tt>, or any dense matrix type
-// with a BLAS compatible element type. If the given type is invertible, the \a value member
-// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// \c complex<float>, or \c complex<double>), <tt>long double</tt>, <tt>complex<long double></tt>
+// or any dense matrix type with a BLAS compatible element type. If the given type is invertible,
+// the \a value member constant is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    blaze::IsInvertible< float >::value                  // Evaluates to 1
@@ -82,6 +83,8 @@ template< typename T >
 struct IsInvertible
    : public BoolConstant< Or< IsBLASCompatible<T>
                             , IsLongDouble<T>
+                            , And< IsComplex<T>
+                                 , IsLongDouble< UnderlyingElement_<T> > >
                             , And< IsDenseMatrix<T>
                                  , IsBLASCompatible< UnderlyingElement_<T> > >
                             >::value >
