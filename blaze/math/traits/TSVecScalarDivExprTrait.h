@@ -80,9 +80,13 @@ struct TSVecScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<VT> >, IsBuiltin<ST> >
-                         , DivTrait_< UnderlyingBuiltin_<VT> ,ST >
-                         , DivTrait_< UnderlyingNumeric_<VT>, ST > >;
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<VT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<VT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<VT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<VT>, ST > >
+                         , ST >;
    //**********************************************************************************************
 
  public:

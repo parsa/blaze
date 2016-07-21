@@ -55,6 +55,7 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -80,9 +81,13 @@ struct DMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
-                         , DivTrait_< UnderlyingBuiltin_<MT>, ST >
-                         , DivTrait_< UnderlyingNumeric_<MT>, ST > >;
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<MT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<MT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<MT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<MT>, ST > >
+                         , ST >;
    //**********************************************************************************************
 
  public:

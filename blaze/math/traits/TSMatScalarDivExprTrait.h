@@ -80,9 +80,13 @@ struct TSMatScalarDivExprTraitHelper
 {
  private:
    //**********************************************************************************************
-   using ScalarType = If_< And< IsComplex< UnderlyingNumeric_<MT> >, IsBuiltin<ST> >
-                         , DivTrait_< UnderlyingBuiltin_<MT>, ST >
-                         , DivTrait_< UnderlyingNumeric_<MT>, ST > >;
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<MT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<MT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<MT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<MT>, ST > >
+                         , ST >;
    //**********************************************************************************************
 
  public:
