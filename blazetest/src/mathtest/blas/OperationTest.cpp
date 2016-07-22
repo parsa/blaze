@@ -69,7 +69,7 @@ OperationTest::OperationTest()
    // Single precision tests
    //=====================================================================================
 
-   //testDot < float >();
+   //testDotu< float >();
    //testTrsm< float >();
 
 
@@ -77,7 +77,7 @@ OperationTest::OperationTest()
    // Double precision tests
    //=====================================================================================
 
-   testDot < double >();
+   testDotu< double >();
    testTrsm< double >();
 
 
@@ -85,7 +85,7 @@ OperationTest::OperationTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testDot < complex<float> >();
+   //testDotu< complex<float> >();
    //testTrsm< complex<float> >();
 
 
@@ -93,7 +93,7 @@ OperationTest::OperationTest()
    // Double precision complex tests
    //=====================================================================================
 
-   testDot < complex<double> >();
+   testDotu< complex<double> >();
    testTrsm< complex<double> >();
 }
 //*************************************************************************************************

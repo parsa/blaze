@@ -89,7 +89,7 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   template< typename Type > void testDot();
+   template< typename Type > void testDotu();
    template< typename Type > void testTrsm();
    //@}
    //**********************************************************************************************
@@ -113,7 +113,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the dense vector dot product functions (dot).
+/*!\brief Test of the dense vector dot product functions (dotu).
 //
 // \return void
 // \exception std::runtime_error Error detected.
@@ -122,7 +122,7 @@ class OperationTest
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void OperationTest::testDot()
+void OperationTest::testDotu()
 {
 #if BLAZETEST_MATHTEST_BLAS_MODE
 
@@ -134,7 +134,7 @@ void OperationTest::testDot()
    blaze::StaticVector<Type,7UL,blaze::columnVector> y;
    randomize( y );
 
-   const Type result1( dot( x, y ) );
+   const Type result1( dotu( x, y ) );
    const Type result2( x * y );
 
    if( !blaze::equal( result1, result2 ) ) {
@@ -146,8 +146,8 @@ void OperationTest::testDot()
           << "     " << typeid( Type ).name() << "\n"
           << "   Left-hand side operand (x):\n" << x << "\n"
           << "   Right-hand side operand (y):\n" << y << "\n"
-          << "   dot( x, y ) = " << result1 << "\n"
-          << "   x * y       = " << result2 << "\n";
+          << "   dotu( x, y ) = " << result1 << "\n"
+          << "   x * y        = " << result2 << "\n";
       throw std::runtime_error( oss.str() );
    }
 
