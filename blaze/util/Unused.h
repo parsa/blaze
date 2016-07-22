@@ -50,9 +50,9 @@ namespace blaze {
 //
 // \return void
 //
-// The UNUSED_PARAMETER function provides the functionality to suppress warnings about up to
-// six unused parameters. Usually this problem occurs in case a parameter is given a name but
-// is not used within the function:
+// The UNUSED_PARAMETER function provides the functionality to suppress warnings about any number
+// of unused parameters. Usually this problem occurs in case a parameter is given a name but is
+// not used within the function:
 
    \code
    void f( int x )
@@ -77,79 +77,9 @@ namespace blaze {
    }
    \endcode
 */
-template< typename T1 >
-inline void UNUSED_PARAMETER( const T1& )
+template< typename... Args >
+inline void UNUSED_PARAMETER( const Args&... )
 {}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UNUSED_PARAMETER function for two parameters.
-// \ingroup util
-//
-// \return void
-*/
-template< typename T1, typename T2 >
-inline void UNUSED_PARAMETER( const T1&, const T2& )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UNUSED_PARAMETER function for three parameters.
-// \ingroup util
-//
-// \return void
-*/
-template< typename T1, typename T2, typename T3 >
-inline void UNUSED_PARAMETER( const T1&, const T2&, const T3& )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UNUSED_PARAMETER function for four parameters.
-// \ingroup util
-//
-// \return void
-*/
-template< typename T1, typename T2, typename T3, typename T4 >
-inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4& )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UNUSED_PARAMETER function for five parameters.
-// \ingroup util
-//
-// \return void
-*/
-template< typename T1, typename T2, typename T3, typename T4, typename T5 >
-inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4&, const T5& )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UNUSED_PARAMETER function for six parameters.
-// \ingroup util
-//
-// \return void
-*/
-template< typename T1, typename T2, typename T3, typename T4, typename T5, typename T6 >
-inline void UNUSED_PARAMETER( const T1&, const T2&, const T3&, const T4&, const T5&, const T6& )
-{}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
