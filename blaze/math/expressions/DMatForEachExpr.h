@@ -1382,6 +1382,38 @@ inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& d
 
 
 //*************************************************************************************************
+/*!\brief Restricts each single element of the dense matrix \a dm to the range \f$[min..max]\f$.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \param min The lower delimiter.
+// \param min The upper delimiter.
+// \return The matrix with restricted elements.
+//
+// The \a clip() function restricts each element of the input matrix \a dm to the range
+// \f$[min..max]\f$. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a clip() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = clip( A, -1.0, 1.0 );
+   \endcode
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , typename DT >  // Type of the delimiters
+inline const DMatForEachExpr<MT,Clip<DT>,SO>
+   clip( const DenseMatrix<MT,SO>& dm, const DT& min, const DT& max )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Clip<DT>,SO>( ~dm, Clip<DT>( min, max ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the exponential value for each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //

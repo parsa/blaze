@@ -1249,6 +1249,38 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 
 
 //*************************************************************************************************
+/*!\brief Restricts each single element of the sparse matrix \a sm to the range \f$[min..max]\f$.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \param min The lower delimiter.
+// \param min The upper delimiter.
+// \return The matrix with restricted elements.
+//
+// The \a clip() function restricts each element of the input matrix \a sm to the range
+// \f$[min..max]\f$. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a clip() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = clip( A, -1.0, 1.0 );
+   \endcode
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , typename DT >  // Type of the delimiters
+inline const SMatForEachExpr<MT,Clip<DT>,SO>
+   clip( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Clip<DT>,SO>( ~sm, Clip<DT>( min, max ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the exponential value for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
@@ -1261,7 +1293,7 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 // The following example demonstrates the use of the \a pow() function:
 
    \code
-   blaze::DynamicMatrix<double> A, B;
+   blaze::CompressedMatrix<double> A, B;
    // ... Resizing and initialization
    B = pow( A, 4.2 );
    \endcode

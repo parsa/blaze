@@ -1445,6 +1445,38 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 
 
 //*************************************************************************************************
+/*!\brief Restricts each single element of the dense vector \a dv to the range \f$[min..max]\f$.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \param min The lower delimiter.
+// \param min The upper delimiter.
+// \return The vector with restricted elements.
+//
+// The \a clip() function restricts each element of the input vector \a dv to the range
+// \f$[min..max]\f$. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a clip() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = clip( a, -1.0, 1.0 );
+   \endcode
+*/
+template< typename VT    // Type of the dense vector
+        , bool TF        // Transpose flag
+        , typename DT >  // Type of the delimiters
+inline const DVecForEachExpr<VT,Clip<DT>,TF>
+   clip( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Clip<DT>,TF>( ~dv, Clip<DT>( min, max ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the exponential value for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -1457,9 +1489,9 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 // The following example demonstrates the use of the \a pow() function:
 
    \code
-   blaze::DynamicVector<double> A, B;
+   blaze::DynamicVector<double> a, b;
    // ... Resizing and initialization
-   B = pow( A, 4.2 );
+   b = pow( a, 4.2 );
    \endcode
 */
 template< typename VT    // Type of the dense vector
