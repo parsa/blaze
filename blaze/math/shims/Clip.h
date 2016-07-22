@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Clip.h
+//  \brief Header file for the clip shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,55 +32,62 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_CLIP_H_
+#define _BLAZE_MATH_SHIMS_CLIP_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Abs.h>
-#include <blaze/math/shims/Acos.h>
-#include <blaze/math/shims/Acosh.h>
-#include <blaze/math/shims/Asin.h>
-#include <blaze/math/shims/Asinh.h>
-#include <blaze/math/shims/Atan.h>
-#include <blaze/math/shims/Atanh.h>
-#include <blaze/math/shims/Cbrt.h>
-#include <blaze/math/shims/Ceil.h>
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Clip.h>
-#include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Cos.h>
-#include <blaze/math/shims/Cosh.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Erf.h>
-#include <blaze/math/shims/Erfc.h>
-#include <blaze/math/shims/Exp.h>
-#include <blaze/math/shims/Floor.h>
-#include <blaze/math/shims/Imaginary.h>
-#include <blaze/math/shims/InvCbrt.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/InvSqrt.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsDivisor.h>
-#include <blaze/math/shims/IsNaN.h>
-#include <blaze/math/shims/IsOne.h>
-#include <blaze/math/shims/IsReal.h>
-#include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Log.h>
-#include <blaze/math/shims/Log10.h>
-#include <blaze/math/shims/Pow.h>
-#include <blaze/math/shims/Real.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Round.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Sin.h>
-#include <blaze/math/shims/Sinh.h>
-#include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
-#include <blaze/math/shims/Tan.h>
-#include <blaze/math/shims/Tanh.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLIP SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Restricts the given value to the range \f$[min..max]\f$.
+// \ingroup math_shims
+//
+// \param a The given value/object.
+// \param min The lower limit of the range.
+// \param max The upper limit of the range.
+// \return The clipped value.
+//
+// The \a clip shim represents an abstract interface for restricting a value to the specified
+// range \f$[min..max]\f$:
+
+   \code
+   double d1 =  0.5;
+   double d2 =  1.5;
+   double d3 = -1.5;
+
+   clip( d1, -1.0, 1.0 );  // Results in 0.5
+   clip( d2, -1.0, 1.0 );  // Results in 1.0
+   clip( d3, -1.0, 1.0 );  // Results in -1.0
+   \endcode
+*/
+template< typename T >
+const T clip( const T& a, const T& min, const T& max ) noexcept
+{
+   if( a < min )
+      return min;
+   else if( max < a )
+      return max;
+   else return a;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
