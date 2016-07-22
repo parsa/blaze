@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/blas/dotu.h
-//  \brief Header file for BLAS dot product (dotu)
+//  \file blaze/math/blas/dotc.h
+//  \brief Header file for BLAS conjugate dot product (dotc)
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_BLAS_DOTU_H_
-#define _BLAZE_MATH_BLAS_DOTU_H_
+#ifndef _BLAZE_MATH_BLAS_DOTC_H_
+#define _BLAZE_MATH_BLAS_DOTC_H_
 
 
 //*************************************************************************************************
@@ -56,27 +56,27 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (DOTU)
+//  BLAS WRAPPER FUNCTIONS (DOTC)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (dotu) */
+/*!\name BLAS wrapper functions (dotc) */
 //@{
 #if BLAZE_BLAS_MODE
 
-float dotu( const int n, const float* x, const int incX, const float* y, const int incY );
+float dotc( const int n, const float* x, const int incX, const float* y, const int incY );
 
-double dotu( const int n, const double* x, const int incX, const double* y, const int incY );
+double dotc( const int n, const double* x, const int incX, const double* y, const int incY );
 
-complex<float> dotu( const int n, const complex<float>* x, const int incX,
+complex<float> dotc( const int n, const complex<float>* x, const int incX,
                      const complex<float>* y, const int incY );
 
-complex<double> dotu( const int n, const complex<double>* x, const int incX,
+complex<double> dotc( const int n, const complex<double>* x, const int incX,
                       const complex<double>* y, const int incY );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
 
 #endif
 //@}
@@ -85,7 +85,7 @@ ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a dense vector dot product for single precision operands
+/*!\brief BLAS kernel for a dense vector complex conjugate dot product for single precision operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
@@ -96,10 +96,10 @@ ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2
 // \param incY The stride within vector \a y.
 // \return void
 //
-// This function performs the dense vector dot product for single precision operands based on
-// the BLAS cblas_sdot() function.
+// This function performs the dot product of the complex conjugate of a single precision dense
+// vector with another single precision dense vector based on the BLAS cblas_sdot() function.
 */
-BLAZE_ALWAYS_INLINE float dotu( const int n, const float* x, const int incX,
+BLAZE_ALWAYS_INLINE float dotc( const int n, const float* x, const int incX,
                                 const float* y, const int incY )
 {
    return cblas_sdot( n, x, incX, y, incY );
@@ -110,7 +110,7 @@ BLAZE_ALWAYS_INLINE float dotu( const int n, const float* x, const int incX,
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a dense vector dot product for double precision operands
+/*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
@@ -121,10 +121,10 @@ BLAZE_ALWAYS_INLINE float dotu( const int n, const float* x, const int incX,
 // \param incY The stride within vector \a y.
 // \return void
 //
-// This function performs the dense vector dot product for double precision operands based on
-// the BLAS cblas_ddot() function.
+// This function performs the dot product of the complex conjugate of a double precision dense
+// vector with another double precision dense vector based on the BLAS cblas_ddot() function.
 */
-BLAZE_ALWAYS_INLINE double dotu( const int n, const double* x, const int incX,
+BLAZE_ALWAYS_INLINE double dotc( const int n, const double* x, const int incX,
                                  const double* y, const int incY )
 {
    return cblas_ddot( n, x, incX, y, incY );
@@ -135,8 +135,8 @@ BLAZE_ALWAYS_INLINE double dotu( const int n, const double* x, const int incX,
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a dense vector dot product for single precision complex operands
-//        (\f$ s=\vec{x}*\vec{y} \f$).
+/*!\brief BLAS kernel for a dense vector conjugate dot product for single precision complex
+//        operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
 // \param n The size of the two dense vectors \a x and \a y \f$[0..\infty)\f$.
@@ -146,14 +146,15 @@ BLAZE_ALWAYS_INLINE double dotu( const int n, const double* x, const int incX,
 // \param incY The stride within vector \a y.
 // \return void
 //
-// This function performs the dense vector dot product for single precision complex operands
-// based on the BLAS cblas_cdotu_sub() function.
+// This function performs the dot product of the complex conjugate of a single precision
+// complex dense vector with another single precision complex dense vector based on the BLAS
+// cblas_cdotc_sub() function.
 */
-BLAZE_ALWAYS_INLINE complex<float> dotu( const int n, const complex<float>* x, const int incX,
+BLAZE_ALWAYS_INLINE complex<float> dotc( const int n, const complex<float>* x, const int incX,
                                          const complex<float>* y, const int incY )
 {
    complex<float> tmp;
-   cblas_cdotu_sub( n, x, incX, y, incY, &tmp );
+   cblas_cdotc_sub( n, x, incX, y, incY, &tmp );
    return tmp;
 }
 #endif
@@ -162,8 +163,8 @@ BLAZE_ALWAYS_INLINE complex<float> dotu( const int n, const complex<float>* x, c
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a dense vector dot product for double precision complex operands
-//        (\f$ s=\vec{x}*\vec{y} \f$).
+/*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision
+//        complex operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
 // \param n The size of the two dense vectors \a x and \a y \f$[0..\infty)\f$.
@@ -173,14 +174,15 @@ BLAZE_ALWAYS_INLINE complex<float> dotu( const int n, const complex<float>* x, c
 // \param incY The stride within vector \a y.
 // \return void
 //
-// This function performs the dense vector dot product for double precision complex operands
-// based on the BLAS cblas_zdotu_sub() function.
+// This function performs the dot product of the complex conjugate of a double precision
+// complex dense vector with another double precision complex dense vector based on the BLAS
+// cblas_zdotc_sub() function.
 */
-BLAZE_ALWAYS_INLINE complex<double> dotu( const int n, const complex<double>* x, const int incX,
+BLAZE_ALWAYS_INLINE complex<double> dotc( const int n, const complex<double>* x, const int incX,
                                           const complex<double>* y, const int incY )
 {
    complex<double> tmp;
-   cblas_zdotu_sub( n, x, incX, y, incY, &tmp );
+   cblas_zdotc_sub( n, x, incX, y, incY, &tmp );
    return tmp;
 }
 #endif
@@ -189,20 +191,20 @@ BLAZE_ALWAYS_INLINE complex<double> dotu( const int n, const complex<double>* x,
 
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for a dense vector dot product (\f$ s=\vec{x}*\vec{y} \f$).
+/*!\brief BLAS kernel for a dense vector complex conjugate dot product (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
 // \param y The left-hand side dense vector operand.
 // \param x The right-hand side dense vector operand.
 // \return void
 //
-// This function performs the dense vector dot product based on the BLAS dotu() functions. Note
-// that the function only works for vectors with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with vectors of any other
-// element type results in a compile time error.
+// This function performs the dot product of the complex conjugate of a dense vector with another
+// dense vector based on the BLAS dotc() functions. Note that the function only works for vectors
+// with \c float, \c double, \c complex<float>, or \c complex<double> element type. The attempt
+// to call the function with vectors of any other element type results in a compile time error.
 */
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y )
+ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y )
 {
    using boost::numeric_cast;
 
@@ -217,7 +219,7 @@ ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2
 
    const int n( numeric_cast<int>( (~x).size() ) );
 
-   return dotu( n, (~x).data(), 1, (~y).data(), 1 );
+   return dotc( n, (~x).data(), 1, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
