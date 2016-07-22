@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/blas/dot.h>
+#include <blaze/math/blas/dotu.h>
 #include <blaze/math/blas/gemm.h>
 #include <blaze/math/blas/gemv.h>
 #include <blaze/math/blas/trmm.h>
