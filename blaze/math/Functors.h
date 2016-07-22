@@ -49,6 +49,7 @@
 #include <blaze/math/functors/Atanh.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Ceil.h>
+#include <blaze/math/functors/Clip.h>
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Cos.h>
 #include <blaze/math/functors/Cosh.h>
