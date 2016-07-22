@@ -176,8 +176,6 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const size_t threads      ( TheThreadBackend::size() );
@@ -397,8 +395,6 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const size_t threads      ( TheThreadBackend::size() );
@@ -619,8 +615,6 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const size_t threads      ( TheThreadBackend::size() );
@@ -842,8 +836,6 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
    const size_t threads      ( TheThreadBackend::size() );
