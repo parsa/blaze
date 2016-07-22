@@ -2066,7 +2066,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool DynamicMatrix<Type,SO>::canSMPAssign() const noexcept
 {
-   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -4838,7 +4838,7 @@ inline bool DynamicMatrix<Type,true>::isAligned() const noexcept
 template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::canSMPAssign() const noexcept
 {
-   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

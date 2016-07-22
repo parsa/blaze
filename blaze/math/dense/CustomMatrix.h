@@ -2277,7 +2277,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool CustomMatrix<Type,AF,PF,SO>::canSMPAssign() const noexcept
 {
-   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 //*************************************************************************************************
 
@@ -5052,7 +5052,7 @@ template< typename Type  // Data type of the matrix
         , bool PF >      // Padding flag
 inline bool CustomMatrix<Type,AF,PF,true>::canSMPAssign() const noexcept
 {
-   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

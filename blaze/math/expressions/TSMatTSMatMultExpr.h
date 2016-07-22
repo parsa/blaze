@@ -367,7 +367,7 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( rows() > SMP_TSMATTSMATMULT_THRESHOLD );
+      return ( rows() * columns() >= SMP_TSMATTSMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

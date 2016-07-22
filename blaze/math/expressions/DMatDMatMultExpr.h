@@ -444,7 +444,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    inline bool canSMPAssign() const noexcept {
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < DMATDMATMULT_THRESHOLD ) ) &&
-             ( rows() > SMP_DMATDMATMULT_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -4306,11 +4306,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
-   inline bool canSMPAssign() const {
-      LeftOperand_<MMM> A( matrix_.leftOperand() );
+   inline bool canSMPAssign() const noexcept {
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < DMATDMATMULT_THRESHOLD ) ) &&
-             ( A.rows() > SMP_DMATDMATMULT_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATDMATMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

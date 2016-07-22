@@ -620,7 +620,7 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
    */
    inline bool canSMPAssign() const noexcept {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( ( ( SO == rowMajor ) ? rows() : columns() ) > SMP_DMATDMATSUB_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATDMATSUB_THRESHOLD );
    }
    //**********************************************************************************************
 

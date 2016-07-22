@@ -324,7 +324,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    */
    inline bool canSMPAssign() const noexcept {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( rows() > SMP_DMATTDMATADD_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATTDMATADD_THRESHOLD );
    }
    //**********************************************************************************************
 

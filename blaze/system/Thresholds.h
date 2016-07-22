@@ -586,11 +586,11 @@ constexpr size_t SMP_TSVECTSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATASSIGN_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when an assignment with a simple dense matrix can be executed
-// in parallel. In case the number of rows/columns of the target matrix is larger or equal to this
-// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// in parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATASSIGN_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATASSIGN_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -601,11 +601,11 @@ constexpr size_t SMP_DMATASSIGN_DEBUG_THRESHOLD = 16UL;
 // This debug value is used instead of the blaze::SMP_DMATDMATADD_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix addition
 // can be executed in parallel. This threshold affects both additions between two row-major matrices
-// or two column-major dense matrices. In case the number of rows/columns of the target matrix is
+// or two column-major dense matrices. In case the number of elements of the target matrix is
 // larger or equal to this threshold, the operation is executed in parallel. If the number of
-// rows/columns is below this threshold the operation is executed single-threaded.
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATDMATADD_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATDMATADD_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -617,11 +617,11 @@ constexpr size_t SMP_DMATDMATADD_DEBUG_THRESHOLD = 16UL;
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
 // addition can be executed in parallel. This threshold affects both additions between a row-major
 // matrix and a column-major matrix and a column-major matrix and a row-major matrix. In case the
-// number of rows/columns of the target matrix is larger or equal to this threshold, the operation
-// is executed in parallel. If the number of rows/columns is below this threshold the operation is
+// number of elements of the target matrix is larger or equal to this threshold, the operation
+// is executed in parallel. If the number of elements is below this threshold the operation is
 // executed single-threaded.
 */
-constexpr size_t SMP_DMATTDMATADD_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATTDMATADD_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -632,11 +632,11 @@ constexpr size_t SMP_DMATTDMATADD_DEBUG_THRESHOLD = 16UL;
 // This debug value is used instead of the blaze::SMP_DMATDMATSUB_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
 // subtraction can be executed in parallel. This threshold affects both subtractions between two
-// row-major matrices or two column-major dense matrices. In case the number of rows/columns of
+// row-major matrices or two column-major dense matrices. In case the number of elements of
 // the target matrix is larger or equal to this threshold, the operation is executed in parallel.
-// If the number of rows/columns is below this threshold the operation is executed single-threaded.
+// If the number of elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATDMATSUB_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATDMATSUB_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -648,11 +648,11 @@ constexpr size_t SMP_DMATDMATSUB_DEBUG_THRESHOLD = 16UL;
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
 // subtraction can be executed in parallel. This threshold affects both subtractions between a
 // row-major matrix and a column-major matrix and a column-major matrix and a row-major matrix.
-// In case the number of rows/columns of the target matrix is larger or equal to this threshold,
-// the operation is executed in parallel. If the number of rows/columns is below this threshold
-// the operation is executed single-threaded.
+// In case the number of elements of the target matrix is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATTDMATSUB_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATTDMATSUB_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -662,11 +662,11 @@ constexpr size_t SMP_DMATTDMATSUB_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATSCALARMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense matrix/scalar multiplication or division can be
-// executed in parallel. In case the number of rows/columns of the target matrix is larger or equal
-// to this threshold, the operation is executed in parallel. If the number of rows/columns is below
+// executed in parallel. In case the number of elements of the target matrix is larger or equal
+// to this threshold, the operation is executed in parallel. If the number of elements is below
 // this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATSCALARMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATSCALARMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -676,11 +676,11 @@ constexpr size_t SMP_DMATSCALARMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATDMATMULT_USER_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -690,11 +690,11 @@ constexpr size_t SMP_DMATDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATTDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -704,11 +704,11 @@ constexpr size_t SMP_DMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TDMATDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/row-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TDMATDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TDMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -718,11 +718,11 @@ constexpr size_t SMP_TDMATDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TDMATTDMATMULT_USER_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a column-major dense matrix/column-major dense
-// matrix multiplication can be executed in parallel. In case the number of rows/columns of the
-// target matrix is larger or equal to this threshold, the operation is executed in parallel. If
-// the number of rows/columns is below this threshold the operation is executed single-threaded.
+// matrix multiplication can be executed in parallel. In case the number of elements of the target
+// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
+// number of elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TDMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TDMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -732,11 +732,11 @@ constexpr size_t SMP_TDMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -746,11 +746,11 @@ constexpr size_t SMP_DMATSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DMATTSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -760,11 +760,11 @@ constexpr size_t SMP_DMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TDMATSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/row-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TDMATSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TDMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -774,11 +774,11 @@ constexpr size_t SMP_TDMATSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TDMATTSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/column-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TDMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TDMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -788,11 +788,11 @@ constexpr size_t SMP_TDMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_SMATDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/row-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_SMATDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_SMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -802,11 +802,11 @@ constexpr size_t SMP_SMATDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_SMATTDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/column-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_SMATTDMATMULT_DEBUG_THRESHOLD = 72UL;
+constexpr size_t SMP_SMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -816,11 +816,11 @@ constexpr size_t SMP_SMATTDMATMULT_DEBUG_THRESHOLD = 72UL;
 //
 // This debug value is used instead of the blaze::SMP_TSMATDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/row-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TSMATDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TSMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -830,11 +830,11 @@ constexpr size_t SMP_TSMATDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TSMATTDMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/column-major dense matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TSMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TSMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -844,11 +844,11 @@ constexpr size_t SMP_TSMATTDMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_SMATSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/row-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_SMATSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_SMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -858,11 +858,11 @@ constexpr size_t SMP_SMATSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_SMATTSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/column-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_SMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_SMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -872,11 +872,11 @@ constexpr size_t SMP_SMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TSMATSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/row-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TSMATSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TSMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -886,11 +886,11 @@ constexpr size_t SMP_TSMATSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_TSMATTSMATMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/column-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
-// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// multiplication can be executed in parallel. In case the number of elements of the target matrix
+// is larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_TSMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_TSMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -900,11 +900,11 @@ constexpr size_t SMP_TSMATTSMATMULT_DEBUG_THRESHOLD = 16UL;
 //
 // This debug value is used instead of the blaze::SMP_DVECTDVECMULT_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/dense vector outer product can be executed
-// in parallel. In case the number of rows/columns of the target matrix is larger or equal to this
-// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// in parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DVECTDVECMULT_DEBUG_THRESHOLD = 16UL;
+constexpr size_t SMP_DVECTDVECMULT_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 

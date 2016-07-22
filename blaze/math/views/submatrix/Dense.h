@@ -2259,7 +2259,7 @@ inline bool Submatrix<MT,unaligned,false,true>::isAligned() const noexcept
 template< typename MT >  // Type of the dense matrix
 inline bool Submatrix<MT,unaligned,false,true>::canSMPAssign() const noexcept
 {
-   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5205,7 +5205,7 @@ inline bool Submatrix<MT,unaligned,true,true>::isAligned() const noexcept
 template< typename MT >  // Type of the dense matrix
 inline bool Submatrix<MT,unaligned,true,true>::canSMPAssign() const noexcept
 {
-   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7779,7 +7779,7 @@ inline bool Submatrix<MT,aligned,false,true>::isAligned() const noexcept
 template< typename MT >  // Type of the dense matrix
 inline bool Submatrix<MT,aligned,false,true>::canSMPAssign() const noexcept
 {
-   return ( rows() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10310,7 +10310,7 @@ inline bool Submatrix<MT,aligned,true,true>::isAligned() const noexcept
 template< typename MT >  // Type of the dense matrix
 inline bool Submatrix<MT,aligned,true,true>::canSMPAssign() const noexcept
 {
-   return ( columns() > SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************

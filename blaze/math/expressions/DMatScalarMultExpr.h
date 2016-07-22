@@ -623,7 +623,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    */
    inline bool canSMPAssign() const noexcept {
       return matrix_.canSMPAssign() ||
-             ( ( ( SO == rowMajor ) ? rows() : columns() ) > SMP_DMATSCALARMULT_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATSCALARMULT_THRESHOLD );
    }
    //**********************************************************************************************
 

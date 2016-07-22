@@ -776,8 +776,8 @@ constexpr size_t SMP_TSVECTSMATMULT_USER_THRESHOLD = 260UL;
 // \ingroup config
 //
 // This threshold specifies when an assignment with a simple dense matrix can be executed in
-// parallel. In case the number of rows/columns of the target matrix is larger or equal to this
-// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -787,10 +787,11 @@ constexpr size_t SMP_TSVECTSMATMULT_USER_THRESHOLD = 260UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 220. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 48400 (which corresponds to a matrix size of
+// \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATASSIGN_USER_THRESHOLD = 220UL;
+constexpr size_t SMP_DMATASSIGN_USER_THRESHOLD = 48400UL;
 //*************************************************************************************************
 
 
@@ -800,9 +801,9 @@ constexpr size_t SMP_DMATASSIGN_USER_THRESHOLD = 220UL;
 //
 // This threshold specifies when a row-major dense matrix/row-major dense matrix addition can
 // be executed in parallel. This threshold affects both additions between two row-major matrices
-// or two column-major dense matrices. In case the number of rows/columns of the target matrix
-// is larger or equal to this threshold, the operation is executed in parallel. If the number of
-// rows/columns is below this threshold the operation is executed single-threaded.
+// or two column-major dense matrices. In case the number of elements of the target matrix is
+// larger or equal to this threshold, the operation is executed in parallel. If the number of
+// elements is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
 // shared memory parallelization technique. Therefore the default value cannot guarantee maximum
@@ -811,10 +812,11 @@ constexpr size_t SMP_DMATASSIGN_USER_THRESHOLD = 220UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 190. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 36100 (which corresponds to a matrix size of
+// \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATDMATADD_USER_THRESHOLD = 190UL;
+constexpr size_t SMP_DMATDMATADD_USER_THRESHOLD = 36100UL;
 //*************************************************************************************************
 
 
@@ -825,9 +827,9 @@ constexpr size_t SMP_DMATDMATADD_USER_THRESHOLD = 190UL;
 // This threshold specifies when a row-major dense matrix/column-major dense matrix addition can
 // be executed in parallel. This threshold affects both additions between a row-major matrix and
 // a column-major matrix and a column-major matrix and a row-major matrix. In case the number of
-// rows/columns of the target matrix is larger or equal to this threshold, the operation is
-// executed in parallel. If the number of rows/columns is below this threshold the operation is
-// executed single-threaded.
+// elements of the target matrix is larger or equal to this threshold, the operation is executed
+// in parallel. If the number of elements is below this threshold the operation is executed
+// single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
 // shared memory parallelization technique. Therefore the default value cannot guarantee maximum
@@ -836,10 +838,11 @@ constexpr size_t SMP_DMATDMATADD_USER_THRESHOLD = 190UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 175. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 30625 (which corresponds to a matrix size of
+// \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATTDMATADD_USER_THRESHOLD = 175UL;
+constexpr size_t SMP_DMATTDMATADD_USER_THRESHOLD = 30625UL;
 //*************************************************************************************************
 
 
@@ -849,9 +852,9 @@ constexpr size_t SMP_DMATTDMATADD_USER_THRESHOLD = 175UL;
 //
 // This threshold specifies when a row-major dense matrix/row-major dense matrix subtraction
 // can be executed in parallel. This threshold affects both subtractions between two row-major
-// matrices or two column-major dense matrices. In case the number of rows/columns of the target
+// matrices or two column-major dense matrices. In case the number of elements of the target
 // matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// number of elements is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
 // shared memory parallelization technique. Therefore the default value cannot guarantee maximum
@@ -860,10 +863,11 @@ constexpr size_t SMP_DMATTDMATADD_USER_THRESHOLD = 175UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 190. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 36100 (which corresponds to a matrix size of
+// \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATDMATSUB_USER_THRESHOLD = 190UL;
+constexpr size_t SMP_DMATDMATSUB_USER_THRESHOLD = 36100UL;
 //*************************************************************************************************
 
 
@@ -874,9 +878,9 @@ constexpr size_t SMP_DMATDMATSUB_USER_THRESHOLD = 190UL;
 // This threshold specifies when a row-major dense matrix/column-major dense matrix subtraction
 // can be executed in parallel. This threshold affects both subtractions between a row-major
 // matrix and a column-major matrix and a column-major matrix and a row-major matrix. In case
-// the number of rows/columns of the target matrix is larger or equal to this threshold, the
-// operation is executed in parallel. If the number of rows/columns is below this threshold
-// the operation is executed single-threaded.
+// the number of elements of the target matrix is larger or equal to this threshold, the
+// operation is executed in parallel. If the number of elements is below this threshold the
+// operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
 // shared memory parallelization technique. Therefore the default value cannot guarantee maximum
@@ -885,10 +889,11 @@ constexpr size_t SMP_DMATDMATSUB_USER_THRESHOLD = 190UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 175. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 30625 (which corresponds to a matrix size of
+// \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATTDMATSUB_USER_THRESHOLD = 175UL;
+constexpr size_t SMP_DMATTDMATSUB_USER_THRESHOLD = 30625UL;
 //*************************************************************************************************
 
 
@@ -897,8 +902,8 @@ constexpr size_t SMP_DMATTDMATSUB_USER_THRESHOLD = 175UL;
 // \ingroup config
 //
 // This threshold specifies when a dense matrix/scalar multiplication or division can be executed
-// in parallel. In case the number of rows/columns of the target matrix is larger or equal to this
-// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// in parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -908,10 +913,11 @@ constexpr size_t SMP_DMATTDMATSUB_USER_THRESHOLD = 175UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 220. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 48400 (which corresponds to a matrix size of
+// \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATSCALARMULT_USER_THRESHOLD = 220UL;
+constexpr size_t SMP_DMATSCALARMULT_USER_THRESHOLD = 48400UL;
 //*************************************************************************************************
 
 
@@ -920,8 +926,8 @@ constexpr size_t SMP_DMATSCALARMULT_USER_THRESHOLD = 220UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major dense matrix/row-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -931,10 +937,11 @@ constexpr size_t SMP_DMATSCALARMULT_USER_THRESHOLD = 220UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 55. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 3025 (which corresponds to a matrix size of
+// \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATDMATMULT_USER_THRESHOLD = 55UL;
+constexpr size_t SMP_DMATDMATMULT_USER_THRESHOLD = 3025UL;
 //*************************************************************************************************
 
 
@@ -943,8 +950,8 @@ constexpr size_t SMP_DMATDMATMULT_USER_THRESHOLD = 55UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major dense matrix/column-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -954,10 +961,11 @@ constexpr size_t SMP_DMATDMATMULT_USER_THRESHOLD = 55UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 55. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 3025 (which corresponds to a matrix size of
+// \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATTDMATMULT_USER_THRESHOLD = 55UL;
+constexpr size_t SMP_DMATTDMATMULT_USER_THRESHOLD = 3025UL;
 //*************************************************************************************************
 
 
@@ -966,8 +974,8 @@ constexpr size_t SMP_DMATTDMATMULT_USER_THRESHOLD = 55UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major dense matrix/row-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -977,10 +985,11 @@ constexpr size_t SMP_DMATTDMATMULT_USER_THRESHOLD = 55UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 55. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 3025 (which corresponds to a matrix size of
+// \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TDMATDMATMULT_USER_THRESHOLD = 55UL;
+constexpr size_t SMP_TDMATDMATMULT_USER_THRESHOLD = 3025UL;
 //*************************************************************************************************
 
 
@@ -989,8 +998,8 @@ constexpr size_t SMP_TDMATDMATMULT_USER_THRESHOLD = 55UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major dense matrix/column-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1000,10 +1009,11 @@ constexpr size_t SMP_TDMATDMATMULT_USER_THRESHOLD = 55UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 55. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 3025 (which corresponds to a matrix size of
+// \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TDMATTDMATMULT_USER_THRESHOLD = 55UL;
+constexpr size_t SMP_TDMATTDMATMULT_USER_THRESHOLD = 3025UL;
 //*************************************************************************************************
 
 
@@ -1012,8 +1022,8 @@ constexpr size_t SMP_TDMATTDMATMULT_USER_THRESHOLD = 55UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major dense matrix/row-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1023,10 +1033,11 @@ constexpr size_t SMP_TDMATTDMATMULT_USER_THRESHOLD = 55UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 64. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 4096 (which corresponds to a matrix size of
+// \f$ 64 \times 64 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATSMATMULT_USER_THRESHOLD = 64UL;
+constexpr size_t SMP_DMATSMATMULT_USER_THRESHOLD = 4096UL;
 //*************************************************************************************************
 
 
@@ -1035,8 +1046,8 @@ constexpr size_t SMP_DMATSMATMULT_USER_THRESHOLD = 64UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major dense matrix/column-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1046,10 +1057,11 @@ constexpr size_t SMP_DMATSMATMULT_USER_THRESHOLD = 64UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 68. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 4624 (which corresponds to a matrix size of
+// \f$ 68 \times 68 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DMATTSMATMULT_USER_THRESHOLD = 68UL;
+constexpr size_t SMP_DMATTSMATMULT_USER_THRESHOLD = 4624UL;
 //*************************************************************************************************
 
 
@@ -1058,8 +1070,8 @@ constexpr size_t SMP_DMATTSMATMULT_USER_THRESHOLD = 68UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major dense matrix/row-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1069,10 +1081,11 @@ constexpr size_t SMP_DMATTSMATMULT_USER_THRESHOLD = 68UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 90. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 8100 (which corresponds to a matrix size of
+// \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TDMATSMATMULT_USER_THRESHOLD = 90UL;
+constexpr size_t SMP_TDMATSMATMULT_USER_THRESHOLD = 8100UL;
 //*************************************************************************************************
 
 
@@ -1081,8 +1094,8 @@ constexpr size_t SMP_TDMATSMATMULT_USER_THRESHOLD = 90UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major dense matrix/column-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1092,10 +1105,11 @@ constexpr size_t SMP_TDMATSMATMULT_USER_THRESHOLD = 90UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 90. In case the threshold is set to 0, the operation
+// The default setting for this threshold is 8100 (which corresponds to a matrix size of
+// \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-constexpr size_t SMP_TDMATTSMATMULT_USER_THRESHOLD = 90UL;
+constexpr size_t SMP_TDMATTSMATMULT_USER_THRESHOLD = 8100UL;
 //*************************************************************************************************
 
 
@@ -1104,8 +1118,8 @@ constexpr size_t SMP_TDMATTSMATMULT_USER_THRESHOLD = 90UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major sparse matrix/row-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1115,10 +1129,11 @@ constexpr size_t SMP_TDMATTSMATMULT_USER_THRESHOLD = 90UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 88. In case the threshold is set to 0, the operation
+// The default setting for this threshold is 7744 (which corresponds to a matrix size of
+// \f$ 88 \times 88 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-constexpr size_t SMP_SMATDMATMULT_USER_THRESHOLD = 88UL;
+constexpr size_t SMP_SMATDMATMULT_USER_THRESHOLD = 7744UL;
 //*************************************************************************************************
 
 
@@ -1127,8 +1142,8 @@ constexpr size_t SMP_SMATDMATMULT_USER_THRESHOLD = 88UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major sparse matrix/column-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1138,10 +1153,11 @@ constexpr size_t SMP_SMATDMATMULT_USER_THRESHOLD = 88UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 72. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 5184 (which corresponds to a matrix size of
+// \f$ 72 \times 72 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_SMATTDMATMULT_USER_THRESHOLD = 72UL;
+constexpr size_t SMP_SMATTDMATMULT_USER_THRESHOLD = 5184UL;
 //*************************************************************************************************
 
 
@@ -1150,8 +1166,8 @@ constexpr size_t SMP_SMATTDMATMULT_USER_THRESHOLD = 72UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major sparse matrix/row-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1161,10 +1177,11 @@ constexpr size_t SMP_SMATTDMATMULT_USER_THRESHOLD = 72UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 66. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 4356 (which corresponds to a matrix size of
+// \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TSMATDMATMULT_USER_THRESHOLD = 66UL;
+constexpr size_t SMP_TSMATDMATMULT_USER_THRESHOLD = 4356UL;
 //*************************************************************************************************
 
 
@@ -1173,8 +1190,8 @@ constexpr size_t SMP_TSMATDMATMULT_USER_THRESHOLD = 66UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major sparse matrix/column-major dense matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1184,10 +1201,11 @@ constexpr size_t SMP_TSMATDMATMULT_USER_THRESHOLD = 66UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 66. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 4356 (which corresponds to a matrix size of
+// \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TSMATTDMATMULT_USER_THRESHOLD = 66UL;
+constexpr size_t SMP_TSMATTDMATMULT_USER_THRESHOLD = 4356UL;
 //*************************************************************************************************
 
 
@@ -1196,8 +1214,8 @@ constexpr size_t SMP_TSMATTDMATMULT_USER_THRESHOLD = 66UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major sparse matrix/row-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1207,10 +1225,11 @@ constexpr size_t SMP_TSMATTDMATMULT_USER_THRESHOLD = 66UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 150. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 22500 (which corresponds to a matrix size of
+// \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_SMATSMATMULT_USER_THRESHOLD = 150UL;
+constexpr size_t SMP_SMATSMATMULT_USER_THRESHOLD = 22500UL;
 //*************************************************************************************************
 
 
@@ -1219,8 +1238,8 @@ constexpr size_t SMP_SMATSMATMULT_USER_THRESHOLD = 150UL;
 // \ingroup config
 //
 // This threshold specifies when a row-major sparse matrix/column-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1230,10 +1249,11 @@ constexpr size_t SMP_SMATSMATMULT_USER_THRESHOLD = 150UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 140. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 19600 (which corresponds to a matrix size of
+// \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_SMATTSMATMULT_USER_THRESHOLD = 140UL;
+constexpr size_t SMP_SMATTSMATMULT_USER_THRESHOLD = 19600UL;
 //*************************************************************************************************
 
 
@@ -1242,8 +1262,8 @@ constexpr size_t SMP_SMATTSMATMULT_USER_THRESHOLD = 140UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major sparse matrix/row-major sparse matrix multiplication
-// can be executed in parallel. In case the number of rows/columns of the target matrix is larger
-// or equal to this threshold, the operation is executed in parallel. If the number of rows/columns
+// can be executed in parallel. In case the number of elements of the target matrix is larger
+// or equal to this threshold, the operation is executed in parallel. If the number of elements
 // is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1253,10 +1273,11 @@ constexpr size_t SMP_SMATTSMATMULT_USER_THRESHOLD = 140UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 140. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 19600 (which corresponds to a matrix size of
+// \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TSMATSMATMULT_USER_THRESHOLD = 140UL;
+constexpr size_t SMP_TSMATSMATMULT_USER_THRESHOLD = 19600UL;
 //*************************************************************************************************
 
 
@@ -1265,9 +1286,9 @@ constexpr size_t SMP_TSMATSMATMULT_USER_THRESHOLD = 140UL;
 // \ingroup config
 //
 // This threshold specifies when a column-major sparse matrix/column-major sparse matrix
-// multiplication can be executed in parallel. In case the number of rows/columns of the target
+// multiplication can be executed in parallel. In case the number of elements of the target
 // matrix is larger or equal to this threshold, the operation is executed in parallel. If the
-// number of rows/columns is below this threshold the operation is executed single-threaded.
+// number of elements is below this threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
 // shared memory parallelization technique. Therefore the default value cannot guarantee maximum
@@ -1276,10 +1297,11 @@ constexpr size_t SMP_TSMATSMATMULT_USER_THRESHOLD = 140UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 150. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 22500 (which corresponds to a matrix size of
+// \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 150UL;
+constexpr size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 22500UL;
 //*************************************************************************************************
 
 
@@ -1288,8 +1310,8 @@ constexpr size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 150UL;
 // \ingroup config
 //
 // This threshold specifies when a dense vector/dense vector outer product can be executed in
-// parallel. In case the number of rows/columns of the target matrix is larger or equal to this
-// threshold, the operation is executed in parallel. If the number of rows/columns is below this
+// parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 //
 // Please note that this threshold is highly sensitiv to the used system architecture and the
@@ -1299,10 +1321,11 @@ constexpr size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 150UL;
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
 // and Boost thread parallelization.
 //
-// The default setting for this threshold is 290. In case the threshold is set to 0, the operation
-// is unconditionally executed in parallel.
+// The default setting for this threshold is 84100 (which corresponds to a matrix size of
+// \f$ 290 \times 290 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
 */
-constexpr size_t SMP_DVECTDVECMULT_USER_THRESHOLD = 290UL;
+constexpr size_t SMP_DVECTDVECMULT_USER_THRESHOLD = 84100UL;
 //*************************************************************************************************
 
 } // namespace blaze
