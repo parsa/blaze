@@ -70,6 +70,7 @@ OperationTest::OperationTest()
    //=====================================================================================
 
    //testDotu< float >();
+   //testDotc< float >();
    //testTrsm< float >();
 
 
@@ -78,6 +79,7 @@ OperationTest::OperationTest()
    //=====================================================================================
 
    testDotu< double >();
+   testDotc< double >();
    testTrsm< double >();
 
 
@@ -86,6 +88,7 @@ OperationTest::OperationTest()
    //=====================================================================================
 
    //testDotu< complex<float> >();
+   //testDotc< complex<float> >();
    //testTrsm< complex<float> >();
 
 
@@ -94,6 +97,7 @@ OperationTest::OperationTest()
    //=====================================================================================
 
    testDotu< complex<double> >();
+   testDotc< complex<double> >();
    testTrsm< complex<double> >();
 }
 //*************************************************************************************************
