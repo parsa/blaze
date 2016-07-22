@@ -8883,7 +8883,7 @@
 // \n \section blas_level_1 BLAS Level 1
 // <hr>
 //
-// \subsection blas_level_1_dot Dot Product (dot)
+// \subsection blas_level_1_dot Dot Product (dotu)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
 // dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotu_sub(), and \c zdotu_sub()):
@@ -8891,18 +8891,43 @@
    \code
    namespace blaze {
 
-   float dot( const int n, const float* x, const int incX, const float* y, const int incY );
+   float dotu( const int n, const float* x, const int incX, const float* y, const int incY );
 
-   double dot( const int n, const double* x, const int incX, const double* y, const int incY );
+   double dotu( const int n, const double* x, const int incX, const double* y, const int incY );
 
-   complex<float> dot( const int n, const complex<float>* x, const int incX,
+   complex<float> dotu( const int n, const complex<float>* x, const int incX,
                        const complex<float>* y, const int incY );
 
-   complex<double> dot( const int n, const complex<double>* x, const int incX,
+   complex<double> dotu( const int n, const complex<double>* x, const int incX,
                         const complex<double>* y, const int incY );
 
    template< typename VT1, bool TF1, typename VT2, bool TF2 >
-   ElementType_<VT1> dot( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+   ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+
+   } // namespace blaze
+   \endcode
+
+// \subsection blas_level_1_dot Complex conjugate Dot Product (dotc)
+//
+// The following wrapper functions provide a generic interface for the BLAS functions for the
+// complex conjugate dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotc_sub(),
+// and \c zdotc_sub()):
+
+   \code
+   namespace blaze {
+
+   float dotc( const int n, const float* x, const int incX, const float* y, const int incY );
+
+   double dotc( const int n, const double* x, const int incX, const double* y, const int incY );
+
+   complex<float> dotc( const int n, const complex<float>* x, const int incX,
+                       const complex<float>* y, const int incY );
+
+   complex<double> dotc( const int n, const complex<double>* x, const int incX,
+                        const complex<double>* y, const int incY );
+
+   template< typename VT1, bool TF1, typename VT2, bool TF2 >
+   ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
 
    } // namespace blaze
    \endcode
