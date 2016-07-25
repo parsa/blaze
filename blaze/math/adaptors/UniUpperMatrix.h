@@ -55,7 +55,7 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/lapack/trtri.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -299,266 +299,16 @@ inline void swap( UniUpperMatrix<MT,SO,DF>& a, UniUpperMatrix<MT,SO,DF>& b ) noe
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given uniupper dense \f$ 2 \times 2 \f$ matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert2x2( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   A(0,1) = -A(0,1);
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given uniupper dense \f$ 3 \times 3 \f$ matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert3x3( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,3UL,3UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   B(0,1) = - A(0,1);
-   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
-   B(1,2) = - A(1,2);
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given uniupper dense \f$ 4 \times 4 \f$ matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert4x4( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,4UL,4UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   ET tmp( A(0,1)*A(1,2) - A(0,2) );
-
-   B(0,1) = - A(0,1);
-   B(0,2) =   tmp;
-   B(1,2) = - A(1,2);
-   B(0,3) =   A(0,1)*A(1,3) - A(0,3) - A(2,3)*tmp;
-   B(1,3) =   A(2,3)*A(1,2) - A(1,3);
-   B(2,3) = - A(2,3);
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given uniupper dense \f$ 5 \times 5 \f$ matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert5x5( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,5UL,5UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   const ET tmp2( A(0,1)*A(1,2) - A(0,2) );
-
-   const ET tmp8 ( A(2,3)*tmp2 - A(0,1)*A(1,3) + A(0,3) );
-   const ET tmp9 ( A(2,3)*A(1,2) - A(1,3) );
-   const ET tmp10( A(2,3) );
-
-   B(0,1) = - A(0,1);
-   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
-   B(1,2) = - A(1,2);
-   B(0,3) = - tmp8;
-   B(1,3) =   tmp9;
-   B(2,3) = - A(2,3);
-   B(0,4) =   A(3,4)*tmp8 - A(2,4)*tmp2 + A(0,1)*A(1,4) - A(0,4);
-   B(1,4) =   A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp9;
-   B(2,4) =   A(3,4)*A(2,3) - A(2,4);
-   B(3,4) = - A(3,4);
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given uniupper dense \f$ 6 \times 6 \f$ matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert6x6( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,6UL,6UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   const ET tmp1( A(0,1)*A(1,2) - A(0,2) );
-   const ET tmp2( A(2,3)*tmp1 - A(0,1)*A(1,3) + A(0,3) );
-   const ET tmp3( A(2,3)*A(1,2) - A(1,3) );
-   const ET tmp4( A(2,4)*tmp1 - A(0,1)*A(1,4) + A(0,4) - A(3,4)*tmp2 );
-   const ET tmp5( A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp3 );
-   const ET tmp6( A(2,4) - A(3,4)*A(2,3) );
-
-   B(0,1) = - A(0,1);
-   B(0,2) =   A(0,1)*A(1,2) - A(0,2);
-   B(1,2) = - A(1,2);
-   B(0,3) = - tmp2;
-   B(1,3) =   tmp3;
-   B(2,3) = - A(2,3);
-   B(0,4) = - tmp4;
-   B(1,4) =   tmp5;
-   B(2,4) = - tmp6;
-   B(3,4) = - A(3,4);
-   B(0,5) = - A(2,5)*tmp1 + A(0,1)*A(1,5) - A(0,5) + A(3,5)*tmp2 + A(4,5)*tmp4;
-   B(1,5) =   A(2,5)*A(1,2) - A(1,5) - A(3,5)*tmp3 - A(4,5)*tmp5;
-   B(2,5) = - A(2,5) + A(3,5)*A(2,3) + A(4,5)*tmp6;
-   B(3,5) = - A(3,5) + A(4,5)*A(3,4);
-   B(4,5) = - A(4,5);
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given uniupper dense matrix.
 // \ingroup uniupper_matrix
 //
 // \param m The uniupper dense matrix to be inverted.
 // \return void
+// \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given uniupper dense matrix by means of the most suited matrix
-// inversion algorithm.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-//
-// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
-// exception \a m may already have been modified.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
-{
-   invertByLU( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place LU-based inversion of the given uniupper dense matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense matrix by means of an LU decomposition.
+// This function inverts the given uniupper dense matrix by means of the specified matrix inversion
+// algorithm \c IF. The The inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -570,97 +320,25 @@ inline void invertByDefault( UniUpperMatrix<MT,SO,true>& m )
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an
 // exception \a m may already have been modified.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLU( UniUpperMatrix<MT,SO,true>& m )
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
+inline void invert( UniUpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   DerestrictTrait_<MT> A( derestrict( ~m ) );
+   if( IF == asLower || IF == asUniLower ) {
+      BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
+      return;
+   }
 
-   trtri( A, 'U', 'U' );
-}
-/*! \endcond */
-//*************************************************************************************************
+   constexpr InversionFlag flag( ( IF == byLU || IF == asGeneral || IF == asUpper || IF == asUniUpper)
+                                 ? ( asUniUpper )
+                                 : ( asDiagonal ) );
 
+   invert<flag>( derestrict( m ) );
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Bunch-Kaufman-based inversion of the given uniupper dense matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense matrix by means of a Bunch-Kaufman decomposition.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLDLT( UniUpperMatrix<MT,SO,true>& m )
-{
-   invertByLLH( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Bunch-Kaufman-based inversion of the given uniupper dense matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense matrix by means of a Bunch-Kaufman decomposition.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLDLH( UniUpperMatrix<MT,SO,true>& m )
-{
-   invertByLLH( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Cholesky-based inversion of the given uniupper dense matrix.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given uniupper dense matrix by means of a Cholesky decomposition.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLLH( UniUpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( isIdentity( ~m ), "Violation of preconditions detected" );
-
-   UNUSED_PARAMETER( m );
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

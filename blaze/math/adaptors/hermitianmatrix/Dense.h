@@ -59,6 +59,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/SIMD.h>
@@ -897,32 +898,9 @@ class HermitianMatrix<MT,SO,true>
    template< typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
 
-   template< typename MT2, bool SO2 >
-   friend void invert2x2( HermitianMatrix<MT2,SO2,true>& m );
 
-   template< typename MT2, bool SO2 >
-   friend void invert3x3( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invert4x4( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invert5x5( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invert6x6( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invertByLU( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invertByLDLT( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invertByLDLH( HermitianMatrix<MT2,SO2,true>& m );
-
-   template< typename MT2, bool SO2 >
-   friend void invertByLLH( HermitianMatrix<MT2,SO2,true>& m );
+   template< InversionFlag IF, typename MT2, bool SO2 >
+   friend void invert( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

@@ -58,7 +58,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InversionFlag.h>
-#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -265,303 +264,40 @@ inline void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) noe
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given diagonal dense \f$ 2 \times 2 \f$ matrix.
+/*!\brief In-place inversion of the given diagonal dense matrix.
 // \ingroup diagonal_matrix
 //
 // \param m The diagonal dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given diagonal dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert2x2( DiagonalMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET det( A(0,0) * A(1,1) );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-   const ET a11( A(0,0) * idet );
-
-   A(0,0) =  A(1,1) * idet;
-   A(1,1) =  a11;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given diagonal dense \f$ 3 \times 3 \f$ matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The diagonal dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given diagonal dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert3x3( DiagonalMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET tmp1( A(0,0)*A(1,1) );
-   const ET tmp2( A(0,0)*A(2,2) );
-
-   const ET det( tmp1*A(2,2) );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-
-   A(0,0) = A(1,1)*A(2,2)*idet;
-   A(1,1) = tmp2*idet;
-   A(2,2) = tmp1*idet;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given diagonal dense \f$ 4 \times 4 \f$ matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The diagonal dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given diagonal dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert4x4( DiagonalMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET tmp1( A(2,2)*A(3,3) );
-   const ET tmp2( A(0,0)*A(1,1) );
-   const ET tmp3( A(0,0)*tmp1 );
-   const ET tmp4( A(2,2)*tmp2 );
-
-   const ET det( tmp1 * tmp2 );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-
-   A(0,0) = A(1,1)*tmp1*idet;
-   A(1,1) = tmp3*idet;
-   A(2,2) = A(3,3)*tmp2*idet;
-   A(3,3) = tmp4*idet;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given diagonal dense \f$ 5 \times 5 \f$ matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The diagonal dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given diagonal dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert5x5( DiagonalMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET tmp1( A(0,0)*A(1,1) );
-   const ET tmp2( A(3,3)*A(4,4) );
-   const ET tmp3( A(0,0)*tmp2 );
-   const ET tmp4( tmp1*A(2,2) );
-   const ET tmp5( tmp4*A(3,3) );
-
-   const ET det( tmp2*tmp4 );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-
-   A(0,0) = A(1,1)*A(2,2)*tmp2*idet;
-   A(1,1) = A(2,2)*tmp3*idet;
-   A(2,2) = tmp1*tmp2*idet;
-   A(3,3) = tmp4*A(4,4)*idet;
-   A(4,4) = tmp5*idet;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given diagonal dense \f$ 6 \times 6 \f$ matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The diagonal dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given diagonal dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert6x6( DiagonalMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET tmp1( A(0,0)*A(1,1) );
-   const ET tmp2( A(3,3)*A(4,4) );
-   const ET tmp3( tmp1*A(2,2) );
-   const ET tmp4( tmp2*A(5,5) );
-   const ET tmp5( A(0,0)*tmp4 );
-   const ET tmp6( tmp3*A(3,3) );
-
-   const ET det( tmp3*tmp4 );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-
-   A(0,0) = A(1,1)*A(2,2)*tmp4*idet;
-   A(1,1) = tmp5*A(2,2)*idet;
-   A(2,2) = tmp1*tmp4*idet;
-   A(3,3) = tmp3*A(4,4)*A(5,5)*idet;
-   A(4,4) = tmp6*A(5,5)*idet;
-   A(5,5) = tmp2*tmp3*idet;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given dense diagonal matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The dense diagonal matrix to be inverted.
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given dense diagonal matrix. The matrix inversion fails if the
-// given diagonal matrix is singular and not invertible. In this case a \a std::invalid_argument
-// exception is thrown.
+// This function inverts the given diagonal dense matrix by means of the specified matrix inversion
+// algorithm \c IF. The The inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
+//
+// \note This function can only be used if the fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
 //
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an
 // exception \a m may already have been modified.
 */
 template< InversionFlag IF  // Inversion algorithm
-        , typename MT       // Type of the adapted matrix
-        , bool SO >         // Storage order of the adapted matrix
-inline void invertNxN( DiagonalMatrix<MT,SO,true>& m )
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
+inline void invert( DiagonalMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   MT& A( derestrict( m ) );
-
-   for( size_t i=0UL; i<A.rows(); ++i )
-   {
-      if( !isDivisor( A(i,i) ) ) {
-         BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-      }
-
-      invert( A(i,i) );
+   if( IF == asUniLower || IF == asUniUpper ) {
+      BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
+      return;
    }
+
+   invert<asDiagonal>( derestrict( m ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }

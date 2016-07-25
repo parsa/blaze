@@ -55,8 +55,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/lapack/trtri.h>
-#include <blaze/math/shims/Invert.h>
+#include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -259,324 +258,6 @@ inline void swap( UpperMatrix<MT,SO,DF>& a, UpperMatrix<MT,SO,DF>& b ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given upper dense \f$ 2 \times 2 \f$ matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given upper dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert2x2( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 2UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   DerestrictTrait_<MT> A( derestrict( m ) );
-
-   const ET det( A(0,0) * A(1,1) );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   const ET idet( ET(1) / det );
-   const ET a11( A(0,0) * idet );
-
-   A(0,0) =  A(1,1) * idet;
-   A(0,1) = -A(0,1) * idet;
-   A(1,1) =  a11;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given upper dense \f$ 3 \times 3 \f$ matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given upper dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert3x3( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 3UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,3UL,3UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   const ET tmp( A(1,1)*A(2,2) );
-   const ET det( A(0,0)*tmp );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   B(0,0) = tmp;
-   B(0,1) = - A(0,1)*A(2,2);
-   B(1,1) =   A(0,0)*A(2,2);
-   B(0,2) =   A(0,1)*A(1,2) - A(0,2)*A(1,1);
-   B(1,2) = - A(0,0)*A(1,2);
-   B(2,2) =   A(0,0)*A(1,1);
-
-   B /= det;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given upper dense \f$ 4 \times 4 \f$ matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given upper dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert4x4( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 4UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,4UL,4UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   ET tmp1( A(2,2)*A(3,3) );
-   ET tmp2( A(0,1)*A(1,2) - A(0,2)*A(1,1) );
-   ET tmp3( A(0,0)*A(1,2) );
-   ET tmp4( A(0,0)*A(1,1) );
-
-   const ET det( A(0,0)*A(1,1)*tmp1 );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   B(0,0) =   A(1,1)*tmp1;
-   B(0,1) = - A(0,1)*tmp1;
-   B(1,1) =   A(0,0)*tmp1;
-   B(0,2) =   A(3,3)*tmp2;
-   B(1,2) = - A(3,3)*tmp3;
-   B(2,2) =   A(3,3)*tmp4;
-   B(0,3) =   A(2,2)*( A(0,1)*A(1,3) - A(0,3)*A(1,1) ) - A(2,3)*tmp2;
-   B(1,3) =   A(2,3)*tmp3 - A(2,2)*A(0,0)*A(1,3);
-   B(2,3) = - A(2,3)*tmp4;
-   B(3,3) =   A(2,2)*tmp4;
-
-   B /= det;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given upper dense \f$ 5 \times 5 \f$ matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given upper dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert5x5( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 5UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,5UL,5UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   const ET tmp1( A(3,3)*A(4,4) );
-   const ET tmp2( A(0,1)*A(1,2) - A(0,2)*A(1,1) );
-   const ET tmp3( A(0,0)*A(1,2) );
-   const ET tmp4( A(0,0)*A(1,1) );
-
-   const ET tmp5 ( A(2,2)*tmp1 );
-   const ET tmp6 ( A(1,2)*tmp1 );
-   const ET tmp7 ( A(1,1)*tmp1 );
-   const ET tmp8 ( A(2,3)*tmp2 - A(2,2)*( A(0,1)*A(1,3) - A(0,3)*A(1,1) ) );
-   const ET tmp9 ( A(2,3)*tmp3 - A(2,2)*A(0,0)*A(1,3) );
-   const ET tmp10( A(2,3)*tmp4 );
-   const ET tmp11( A(2,2)*tmp4 );
-
-   B(0,0) =   A(1,1)*tmp5;
-   B(0,1) = - A(0,1)*tmp5;
-   B(1,1) =   A(0,0)*tmp5;
-   B(0,2) =   A(0,1)*tmp6 - A(0,2)*tmp7;
-   B(1,2) = - A(0,0)*tmp6;
-   B(2,2) =   A(0,0)*tmp7;
-   B(0,3) = - A(4,4)*tmp8;
-   B(1,3) =   A(4,4)*tmp9;
-   B(2,3) = - A(4,4)*tmp10;
-   B(3,3) =   A(4,4)*tmp11;
-   B(0,4) =   A(3,4)*tmp8 - A(3,3)*( A(2,4)*tmp2 - A(2,2)*( A(0,1)*A(1,4) - A(0,4)*A(1,1) ) );
-   B(1,4) =   A(3,3)*( A(2,4)*tmp3 - A(2,2)*A(0,0)*A(1,4) ) - A(3,4)*tmp9;
-   B(2,4) =   A(3,4)*tmp10 - A(3,3)*A(2,4)*tmp4;
-   B(3,4) = - A(3,4)*tmp11;
-   B(4,4) =   A(3,3)*tmp11;
-
-   const ET det( A(0,0) * B(0,0) );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   B /= det;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given upper dense \f$ 6 \times 6 \f$ matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-//
-// This function inverts the given upper dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invert6x6( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( m.rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( m.columns() == 6UL, "Invalid number of columns detected" );
-
-   typedef ElementType_<MT>  ET;
-
-   const StaticMatrix<ET,6UL,6UL,SO> A( m );
-   DerestrictTrait_<MT> B( derestrict( m ) );
-
-   const ET tmp1( A(0,1)*A(1,2) - A(0,2)*A(1,1) );
-   const ET tmp2( A(0,0)*A(1,2) );
-   const ET tmp3( A(0,0)*A(1,1) );
-
-   const ET tmp4( A(3,3)*A(4,4)*A(5,5)  );
-   const ET tmp5( A(2,3)*tmp1 - A(2,2)*( A(0,1)*A(1,3) - A(0,3)*A(1,1) ) );
-   const ET tmp6( A(2,3)*tmp2 - A(0,0)*A(1,3)*A(2,2) );
-   const ET tmp7( A(2,3)*tmp3 );
-   const ET tmp8( A(2,2)*tmp3 );
-
-   const ET tmp9 ( A(2,2)*tmp4 );
-   const ET tmp10( A(1,2)*tmp4 );
-   const ET tmp11( A(1,1)*tmp4 );
-   const ET tmp12( A(3,3)*( A(2,4)*tmp1 - A(2,2)*( A(0,1)*A(1,4) - A(0,4)*A(1,1) ) ) - A(3,4)*tmp5 );
-   const ET tmp13( A(3,3)*( A(2,4)*tmp2 - A(0,0)*A(1,4)*A(2,2) ) - A(3,4)*tmp6 );
-   const ET tmp14( A(3,3)*A(2,4)*tmp3 - A(3,4)*tmp7 );
-   const ET tmp15( - A(3,4)*tmp8 );
-   const ET tmp16( - A(3,3)*tmp8 );
-
-   B(0,0) =   A(1,1)*tmp9;
-   B(0,1) = - A(0,1)*tmp9;
-   B(1,1) =   A(0,0)*tmp9;
-   B(0,2) =   A(0,1)*tmp10 - A(0,2)*tmp11;
-   B(1,2) = - A(0,0)*tmp10;
-   B(2,2) =   A(0,0)*tmp11;
-   B(0,3) = - A(5,5)*A(4,4)*tmp5;
-   B(1,3) =   A(5,5)*A(4,4)*tmp6;
-   B(2,3) = - A(5,5)*A(4,4)*tmp7;
-   B(3,3) =   A(5,5)*A(4,4)*tmp8;
-   B(0,4) = - A(5,5)*tmp12;
-   B(1,4) =   A(5,5)*tmp13;
-   B(2,4) = - A(5,5)*tmp14;
-   B(3,4) =   A(5,5)*tmp15;
-   B(4,4) = - A(5,5)*tmp16;
-   B(0,5) = - A(4,4)*( A(3,3)*( A(2,5)*tmp1 - A(2,2)*( A(0,1)*A(1,5) - A(0,5)*A(1,1) ) ) - A(3,5)*tmp5 ) + A(4,5)*tmp12;
-   B(1,5) =   A(4,4)*( A(3,3)*( A(2,5)*tmp2 - A(0,0)*A(1,5)*A(2,2) ) - A(3,5)*tmp6 ) - A(4,5)*tmp13;
-   B(2,5) = - A(4,4)*( A(3,3)*A(2,5)*tmp3 - A(3,5)*tmp7 ) + A(4,5)*tmp14;
-   B(3,5) = - A(4,4)*A(3,5)*tmp8 - A(4,5)*tmp15;
-   B(4,5) =   A(4,5)*tmp16;
-   B(5,5) = - A(4,4)*tmp16;
-
-   const ET det( A(0,0)*B(0,0) );
-
-   if( !isDivisor( det ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-   }
-
-   B /= det;
-
-   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place inversion of the given upper dense matrix.
 // \ingroup upper_matrix
 //
@@ -584,9 +265,9 @@ inline void invert6x6( UpperMatrix<MT,SO,true>& m )
 // \return void
 // \exception std::invalid_argument Inversion of singular matrix failed.
 //
-// This function inverts the given upper dense matrix by means of the most suited matrix inversion
-// algorithm. The matrix inversion fails if the given matrix is singular and not invertible. In
-// this case a \a std::invalid_argument exception is thrown.
+// This function inverts the given upper dense matrix by means of the specified matrix inversion
+// algorithm \c IF. The The inversion fails if the given matrix is singular and not invertible.
+// In this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
@@ -598,157 +279,27 @@ inline void invert6x6( UpperMatrix<MT,SO,true>& m )
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an
 // exception \a m may already have been modified.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByDefault( UpperMatrix<MT,SO,true>& m )
-{
-   invertByLU( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place LU-based inversion of the given upper dense matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
-//
-// This function inverts the given upper dense matrix by means of an LU decomposition. The
-// matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-//
-// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
-// exception \a m may already have been modified.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLU( UpperMatrix<MT,SO,true>& m )
+template< InversionFlag IF  // Inversion algorithm
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order of the dense matrix
+inline void invert( UpperMatrix<MT,SO,true>& m )
 {
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   DerestrictTrait_<MT> A( derestrict( ~m ) );
-
-   trtri( A, 'U', 'N' );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Bunch-Kaufman-based inversion of the given upper dense matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
-//
-// This function inverts the given upper dense matrix by means of a Bunch-Kaufman decomposition.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-//
-// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
-// exception \a m may already have been modified.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLDLT( UpperMatrix<MT,SO,true>& m )
-{
-   invertByLLH( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Bunch-Kaufman-based inversion of the given upper dense matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
-//
-// This function inverts the given upper dense matrix by means of a Bunch-Kaufman decomposition.
-// The matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a linker error will be created.
-//
-// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
-// exception \a m may already have been modified.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLDLH( UpperMatrix<MT,SO,true>& m )
-{
-   invertByLLH( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place Cholesky-based inversion of the given upper dense matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper dense matrix to be inverted.
-// \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
-//
-// This function inverts the given upper dense matrix by means of a Cholesky decomposition. The
-// matrix inversion fails if the given matrix is singular and not invertible. In this case a
-// \a std::invalid_argument exception is thrown.
-//
-// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
-//
-// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
-// exception \a m may already have been modified.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order of the dense matrix
-inline void invertByLLH( UpperMatrix<MT,SO,true>& m )
-{
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-
-   BLAZE_INTERNAL_ASSERT( isDiagonal( ~m ), "Violation of preconditions detected" );
-
-   DerestrictTrait_<MT> A( derestrict( ~m ) );
-
-   for( size_t i=0UL; i<A.rows(); ++i )
-   {
-      if( !isDivisor( A(i,i) ) ) {
-         BLAZE_THROW_DIVISION_BY_ZERO( "Inversion of singular matrix failed" );
-      }
-
-      invert( A(i,i) );
+   if( IF == asUniLower ) {
+      BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
+      return;
    }
+
+   constexpr InversionFlag flag( ( IF == byLU || IF == asGeneral || IF == asUpper )
+                                 ? ( asUpper )
+                                 : ( ( IF == asUniUpper )
+                                     ?( asUniUpper )
+                                     :( asDiagonal ) ) );
+
+   invert<flag>( derestrict( m ) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( m ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************

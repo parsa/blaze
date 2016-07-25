@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -192,6 +193,25 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    Operand dm_;  //!< Dense matrix of the inversion expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Returns the proper inversion flag for the given matrix type \a MT.
+   //
+   // \return The proper inversion flag for the matrix type \a MT.
+   */
+   static constexpr InversionFlag getInversionFlag() noexcept {
+      if     ( IsDiagonal<MT>::value  ) return asDiagonal;
+      else if( IsUniUpper<MT>::value  ) return asUniUpper;
+      else if( IsUpper<MT>::value     ) return asUpper;
+      else if( IsUniLower<MT>::value  ) return asUniLower;
+      else if( IsLower<MT>::value     ) return asLower;
+      else if( IsHermitian<MT>::value ) return asHermitian;
+      else if( IsSymmetric<MT>::value ) return asSymmetric;
+      else                              return asGeneral;
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a dense matrix inversion expression to a dense matrix.
@@ -217,7 +237,7 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
          assign( ~lhs, rhs.dm_ );
       }
 
-      invert( ~lhs );
+      invert< DMatInvExpr::getInversionFlag() >( ~lhs );
    }
    /*! \endcond */
    //**********************************************************************************************
