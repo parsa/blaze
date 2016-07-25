@@ -64,7 +64,7 @@ struct Trans
    // \return The result of the trans() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( trans( a ) )
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
    {
       return trans( a );
    }

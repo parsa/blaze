@@ -68,7 +68,7 @@ struct Floor
    // \return The result of the floor() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( floor( a ) )
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
    {
       return floor( a );
    }
@@ -90,7 +90,7 @@ struct Floor
    // \return The result of the floor() function for the given SIMD vector.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( floor( a ) )
+   BLAZE_ALWAYS_INLINE auto load( const T& a ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return floor( a );

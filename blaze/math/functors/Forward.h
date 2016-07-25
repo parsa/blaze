@@ -53,6 +53,7 @@ struct Atan;
 struct Atanh;
 struct Cbrt;
 struct Ceil;
+struct Clip;
 struct Conj;
 struct Cos;
 struct Cosh;

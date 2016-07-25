@@ -64,7 +64,7 @@ struct Serial
    // \return The result of the serial() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( serial( a ) )
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
    {
       return serial( a );
    }

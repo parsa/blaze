@@ -90,7 +90,6 @@ struct Pow
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
-      -> decltype( pow( a, std::declval<ET>() ) )
    {
       return pow( a, exp_ );
    }
@@ -113,7 +112,6 @@ struct Pow
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE auto load( const T& a ) const
-      -> decltype( pow( a, std::declval<SIMDET>() ) )
    {
       BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
       return pow( a, simdExp_ );

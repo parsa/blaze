@@ -65,7 +65,7 @@ struct Real
    // \return The result of the real() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( real( a ) )
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
    {
       return real( a );
    }
