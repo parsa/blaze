@@ -3582,19 +3582,42 @@
 // inversion algorithm depending on the size and type of the given matrix. For small matrices of
 // up to 6x6, both functions use manually optimized kernels for maximum performance. For matrices
 // larger than 6x6 the inversion is performed by means of the most suited matrix decomposition
-// method: In case of a general or triangular matrix the LU decomposition is used, for symmetric
-// matrices the LDLT decomposition is applied and for Hermitian matrices the LDLH decomposition is
-// performed. However, via the \c invert() function it is possible to explicitly specify the matrix
-// inversion algorithm:
+// method: In case of a general matrix the LU decomposition is used, for symmetric matrices the
+// LDLT decomposition is applied, for Hermitian matrices the LDLH decomposition is performed, and
+// for triangular matrices the inverse is computed via a forward or back substitution.
+//
+// In case the type of the matrix does not provide additional compile time information about its
+// structure (symmetric, lower, upper, diagonal, ...), the information can be provided manually
+// when calling the \c invert() function:
+
+   \code
+   using blaze::asGeneral;
+   using blaze::asSymmetric;
+   using blaze::asHermitian;
+   using blaze::asLower;
+   using blaze::asUniLower;
+   using blaze::asUpper;
+   using blaze::asUniUpper;
+   using blaze::asDiagonal;
+
+   invert<asGeneral>  ( A );  // In-place inversion of a general matrix
+   invert<asSymmetric>( A );  // In-place inversion of a symmetric matrix
+   invert<asHermitian>( A );  // In-place inversion of a Hermitian matrix
+   invert<asLower>    ( A );  // In-place inversion of a lower triangular matrix
+   invert<asUniLower> ( A );  // In-place inversion of a lower unitriangular matrix
+   invert<asUpper>    ( A );  // In-place inversion of a upper triangular matrix
+   invert<asUniUpper> ( A );  // In-place inversion of a upper unitriangular matrix
+   invert<asDiagonal> ( A );  // In-place inversion of a diagonal matrix
+   \endcode
+
+// Alternatively, via the \c invert() function it is possible to explicitly specify the inversion
+// algorithm:
 
    \code
    using blaze::byLU;
    using blaze::byLDLT;
    using blaze::byLDLH;
    using blaze::byLLH;
-
-   // In-place inversion with automatic selection of the inversion algorithm
-   invert( A );
 
    // In-place inversion of a general matrix by means of an LU decomposition
    invert<byLU>( A );
@@ -8883,7 +8906,7 @@
 // \n \section blas_level_1 BLAS Level 1
 // <hr>
 //
-// \subsection blas_level_1_dot Dot Product (dotu)
+// \subsection blas_level_1_dotu Dot Product (dotu)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
 // dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotu_sub(), and \c zdotu_sub()):
@@ -8907,7 +8930,7 @@
    } // namespace blaze
    \endcode
 
-// \subsection blas_level_1_dot Complex conjugate Dot Product (dotc)
+// \subsection blas_level_1_dotc Complex Conjugate Dot Product (dotc)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
 // complex conjugate dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotc_sub(),
