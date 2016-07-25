@@ -92,220 +92,37 @@ DenseTest::DenseTest()
 
 
    //=====================================================================================
-   // Random 1x1 matrix tests
+   // Random matrix tests
    //=====================================================================================
 
-   testRandom1x1< DynamicMatrix<double ,rowMajor> >();
-   testRandom1x1< DynamicMatrix<cdouble,rowMajor> >();
+   for( size_t i=0UL; i<12UL; ++i )
+   {
+      testRandom< DynamicMatrix<double ,rowMajor> >( i );
+      testRandom< DynamicMatrix<cdouble,rowMajor> >( i );
 
-   testRandom1x1< DynamicMatrix<double ,columnMajor> >();
-   testRandom1x1< DynamicMatrix<cdouble,columnMajor> >();
+      testRandom< DynamicMatrix<double ,columnMajor> >( i );
+      testRandom< DynamicMatrix<cdouble,columnMajor> >( i );
 
-   testRandom1x1< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom1x1< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom1x1< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom1x1< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
+      testRandom< SymmetricMatrix< DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >( i );
+      testRandom< HermitianMatrix< DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >( i );
+      testRandom< LowerMatrix    < DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< UniLowerMatrix < DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< UpperMatrix    < DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< UniUpperMatrix < DynamicMatrix<double ,rowMajor> > >( i );
+      testRandom< DiagonalMatrix < DynamicMatrix<double ,rowMajor> > >( i );
 
-   testRandom1x1< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom1x1< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom1x1< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom1x1< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random 2x2 matrix tests
-   //=====================================================================================
-
-   testRandom2x2< DynamicMatrix<double ,rowMajor> >();
-   testRandom2x2< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandom2x2< DynamicMatrix<double ,columnMajor> >();
-   testRandom2x2< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandom2x2< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom2x2< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom2x2< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandom2x2< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom2x2< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom2x2< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom2x2< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random 3x3 matrix tests
-   //=====================================================================================
-
-   testRandom3x3< DynamicMatrix<double ,rowMajor> >();
-   testRandom3x3< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandom3x3< DynamicMatrix<double ,columnMajor> >();
-   testRandom3x3< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandom3x3< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom3x3< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom3x3< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandom3x3< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom3x3< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom3x3< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom3x3< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random 4x4 matrix tests
-   //=====================================================================================
-
-   testRandom4x4< DynamicMatrix<double ,rowMajor> >();
-   testRandom4x4< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandom4x4< DynamicMatrix<double ,columnMajor> >();
-   testRandom4x4< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandom4x4< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom4x4< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom4x4< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandom4x4< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom4x4< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom4x4< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom4x4< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random 5x5 matrix tests
-   //=====================================================================================
-
-   testRandom5x5< DynamicMatrix<double ,rowMajor> >();
-   testRandom5x5< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandom5x5< DynamicMatrix<double ,columnMajor> >();
-   testRandom5x5< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandom5x5< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom5x5< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom5x5< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandom5x5< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom5x5< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom5x5< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom5x5< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random 6x6 matrix tests
-   //=====================================================================================
-
-   testRandom6x6< DynamicMatrix<double ,rowMajor> >();
-   testRandom6x6< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandom6x6< DynamicMatrix<double ,columnMajor> >();
-   testRandom6x6< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandom6x6< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom6x6< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandom6x6< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandom6x6< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom6x6< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandom6x6< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandom6x6< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
-
-
-   //=====================================================================================
-   // Random NxN matrix tests
-   //=====================================================================================
-
-   testRandomNxN< DynamicMatrix<double ,rowMajor> >();
-   testRandomNxN< DynamicMatrix<cdouble,rowMajor> >();
-
-   testRandomNxN< DynamicMatrix<double ,columnMajor> >();
-   testRandomNxN< DynamicMatrix<cdouble,columnMajor> >();
-
-   testRandomNxN< SymmetricMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< SymmetricMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandomNxN< HermitianMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< HermitianMatrix< DynamicMatrix<cdouble,rowMajor> > >();
-   testRandomNxN< LowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< UniLowerMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< UpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< UniUpperMatrix< DynamicMatrix<double,rowMajor> > >();
-   testRandomNxN< DiagonalMatrix< DynamicMatrix<double,rowMajor> > >();
-
-   testRandomNxN< SymmetricMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandomNxN< HermitianMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >();
-   testRandomNxN< LowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< UniLowerMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< UpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< UniUpperMatrix< DynamicMatrix<double,columnMajor> > >();
-   testRandomNxN< DiagonalMatrix< DynamicMatrix<double,columnMajor> > >();
+      testRandom< SymmetricMatrix< DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< SymmetricMatrix< DynamicMatrix<cdouble,columnMajor> > >( i );
+      testRandom< HermitianMatrix< DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< HermitianMatrix< DynamicMatrix<cdouble,columnMajor> > >( i );
+      testRandom< LowerMatrix    < DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< UniLowerMatrix < DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< UpperMatrix    < DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< UniUpperMatrix < DynamicMatrix<double ,columnMajor> > >( i );
+      testRandom< DiagonalMatrix < DynamicMatrix<double ,columnMajor> > >( i );
+   }
 }
 //*************************************************************************************************
 

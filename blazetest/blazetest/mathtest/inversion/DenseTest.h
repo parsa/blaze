@@ -92,25 +92,7 @@ class DenseTest
    void testSpecific();
 
    template< typename Type >
-   void testRandom1x1();
-
-   template< typename Type >
-   void testRandom2x2();
-
-   template< typename Type >
-   void testRandom3x3();
-
-   template< typename Type >
-   void testRandom4x4();
-
-   template< typename Type >
-   void testRandom5x5();
-
-   template< typename Type >
-   void testRandom6x6();
-
-   template< typename Type >
-   void testRandomNxN();
+   void testRandom( size_t N );
    //@}
    //**********************************************************************************************
 
@@ -118,16 +100,16 @@ class DenseTest
    /*!\name Utility functions */
    //@{
    template< typename MT, bool SO >
-   void initializeForLU( blaze::DenseMatrix<MT,SO>& matrix );
+   void initializeForLU( blaze::DenseMatrix<MT,SO>& matrix, size_t N );
 
    template< typename MT, bool SO >
-   void initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix );
+   void initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix, size_t N );
 
    template< typename MT, bool SO >
-   void initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix );
+   void initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N );
 
    template< typename MT, bool SO >
-   void initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix );
+   void initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N );
    //@}
    //**********************************************************************************************
 
@@ -150,305 +132,9 @@ class DenseTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 1x1 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 1x1 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom1x1()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (1x1)";
-
-   Type A;
-   resize( A, 1UL, 1UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-
-   blaze::invert( A );
-   blaze::invertNxN<blaze::byLU>( B );
-
-   if( A != B ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invertNxN():\n" << B << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 2x2 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 2x2 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom2x2()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (2x2)";
-
-   Type A;
-   resize( A, 2UL, 2UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-   Type C( A );
-
-   blaze::invert( A );
-   blaze::invert2x2( B );
-   blaze::invertNxN<blaze::byLU>( C );
-
-   if( A != B || A != C ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invert2x2():\n" << B << "\n"
-          << "   Result invertNxN():\n" << C << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 3x3 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 3x3 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom3x3()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (3x3)";
-
-   Type A;
-   resize( A, 3UL, 3UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-   Type C( A );
-
-   blaze::invert( A );
-   blaze::invert3x3( B );
-   blaze::invertNxN<blaze::byLU>( C );
-
-   if( A != B || A != C ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invert3x3():\n" << B << "\n"
-          << "   Result invertNxN():\n" << C << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 4x4 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 4x4 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom4x4()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (4x4)";
-
-   Type A;
-   resize( A, 4UL, 4UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-   Type C( A );
-
-   blaze::invert( A );
-   blaze::invert4x4( B );
-   blaze::invertNxN<blaze::byLU>( C );
-
-   if( A != B || A != C ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invert4x4():\n" << B << "\n"
-          << "   Result invertNxN():\n" << C << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 5x5 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 5x5 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom5x5()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (5x5)";
-
-   Type A;
-   resize( A, 5UL, 5UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-   Type C( A );
-
-   blaze::invert( A );
-   blaze::invert5x5( B );
-   blaze::invertNxN<blaze::byLU>( C );
-
-   if( A != B || A != C ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invert5x5():\n" << B << "\n"
-          << "   Result invertNxN():\n" << C << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the inversion functionality with random 6x6 matrices.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function tests the dense matrix inversion for random 6x6 matrices. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void DenseTest::testRandom6x6()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   test_ = "Matrix inversion (6x6)";
-
-   Type A;
-   resize( A, 6UL, 6UL );
-
-   do {
-      randomize( A );
-   } while( det( A ) == blaze::ElementType_<Type>( 0 ) );
-
-   Type B( A );
-   Type C( A );
-
-   blaze::invert( A );
-   blaze::invert6x6( B );
-   blaze::invertNxN<blaze::byLU>( C );
-
-   if( A != B || A != C ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Matrix inversion failed\n"
-          << " Details:\n"
-          << "   Matrix type:\n"
-          << "     " << typeid( Type ).name() << "\n"
-          << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result invert   ():\n" << A << "\n"
-          << "   Result invert6x6():\n" << B << "\n"
-          << "   Result invertNxN():\n" << C << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the inversion functionality with random \f$ N \times N \f$ matrices.
 //
+// \param N The number of rows and columns of the matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
@@ -456,74 +142,17 @@ void DenseTest::testRandom6x6()
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseTest::testRandomNxN()
+void DenseTest::testRandom( size_t N )
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::invert;
-   using blaze::byDefault;
    using blaze::byLU;
    using blaze::byLDLT;
    using blaze::byLDLH;
    using blaze::byLLH;
 
    typedef blaze::ElementType_<Type>  ET;
-
-
-   //=====================================================================================
-   // Matrix default inversion
-   //=====================================================================================
-
-   {
-      test_ = "Matrix inversion (default)";
-
-      Type A;
-      initializeForLU( A );
-      Type B( A );
-
-      invert<byDefault>( B );
-
-      if( !isIdentity( A * B ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Matrix inversion failed\n"
-             << " Details:\n"
-             << "   Matrix type:\n"
-             << "     " << typeid( Type ).name() << "\n"
-             << "   Element type:\n"
-             << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix (A):\n" << A << "\n"
-             << "   Result (B):\n" << B << "\n"
-             << "   A * B =\n" << ( A * B ) << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Submatrix inversion (default)";
-
-      Type A;
-      initializeForLU( A );
-      Type B( A );
-
-      blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
-      invert<byDefault>( sub );
-
-      if( !isIdentity( A * sub ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Matrix inversion failed\n"
-             << " Details:\n"
-             << "   Matrix type:\n"
-             << "     " << typeid( Type ).name() << "\n"
-             << "   Element type:\n"
-             << "     " << typeid( ET ).name() << "\n"
-             << "   Initial matrix (A):\n" << A << "\n"
-             << "   Result (B):\n" << B << "\n"
-             << "   A * B =\n" << ( A * B ) << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
 
 
    //=====================================================================================
@@ -534,7 +163,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LU)";
 
       Type A;
-      initializeForLU( A );
+      initializeForLU( A, N );
       Type B( A );
 
       invert<byLU>( B );
@@ -559,7 +188,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LU)";
 
       Type A;
-      initializeForLU( A );
+      initializeForLU( A, N );
       Type B( A );
 
       blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -590,7 +219,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
-      initializeForLDLT( A );
+      initializeForLDLT( A, N );
       Type B( A );
 
       invert<byLDLT>( B );
@@ -615,7 +244,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LDLT/Bunch-Kaufman)";
 
       Type A;
-      initializeForLDLT( A );
+      initializeForLDLT( A, N );
       Type B( A );
 
       blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -646,7 +275,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LDLH/Bunch-Kaufman)";
 
       Type A;
-      initializeForLDLH( A );
+      initializeForLDLH( A, N );
       Type B( A );
 
       invert<byLDLH>( B );
@@ -671,7 +300,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LDLH/Bunch-Kaufman)";
 
       Type A;
-      initializeForLDLH( A );
+      initializeForLDLH( A, N );
       Type B( A );
 
       blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -702,7 +331,7 @@ void DenseTest::testRandomNxN()
       test_ = "Matrix inversion (LLH/Cholesky)";
 
       Type A;
-      initializeForLLH( A );
+      initializeForLLH( A, N );
       Type B( A );
 
       invert<byLLH>( B );
@@ -727,7 +356,7 @@ void DenseTest::testRandomNxN()
       test_ = "Submatrix inversion (LLH/Cholesky)";
 
       Type A;
-      initializeForLLH( A );
+      initializeForLLH( A, N );
       Type B( A );
 
       blaze::Submatrix<Type> sub( B, 0UL, 0UL, A.rows(), A.columns() );
@@ -765,14 +394,13 @@ void DenseTest::testRandomNxN()
 //*************************************************************************************************
 /*!\brief Initialization of the given dense matrix for a LU-based matrix inversion.
 //
+// \param N The number of rows and columns of the matrix.
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
-
-   resize( ~matrix, size, size );
+   resize( ~matrix, N, N );
    randomize( ~matrix );
 }
 //*************************************************************************************************
@@ -781,14 +409,13 @@ void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix )
 //*************************************************************************************************
 /*!\brief Initialization of the given dense matrix for a LDLT-based matrix inversion.
 //
+// \param N The number of rows and columns of the matrix.
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
-
-   resize( ~matrix, size, size );
+   resize( ~matrix, N, N );
    makeSymmetric( ~matrix );
 }
 //*************************************************************************************************
@@ -797,14 +424,13 @@ void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix )
 //*************************************************************************************************
 /*!\brief Initialization of the given dense matrix for a LDLH-based matrix inversion.
 //
+// \param N The number of rows and columns of the matrix.
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
-
-   resize( ~matrix, size, size );
+   resize( ~matrix, N, N );
    makeHermitian( ~matrix );
 }
 //*************************************************************************************************
@@ -813,14 +439,13 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix )
 //*************************************************************************************************
 /*!\brief Initialization of the given dense matrix for a LLH-based matrix inversion.
 //
+// \param N The number of rows and columns of the matrix.
 // \return void
 */
 template< typename MT, bool SO >
-void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix )
+void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   const size_t size( blaze::rand<size_t>( 7UL, 14UL ) );
-
-   resize( ~matrix, size, size );
+   resize( ~matrix, N, N );
    makePositiveDefinite( ~matrix );
 }
 //*************************************************************************************************
