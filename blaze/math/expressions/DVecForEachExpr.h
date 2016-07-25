@@ -1450,7 +1450,7 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 //
 // \param dv The input vector.
 // \param min The lower delimiter.
-// \param min The upper delimiter.
+// \param max The upper delimiter.
 // \return The vector with restricted elements.
 //
 // The \a clip() function restricts each element of the input vector \a dv to the range

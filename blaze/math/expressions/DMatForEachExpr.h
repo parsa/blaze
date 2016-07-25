@@ -1387,7 +1387,7 @@ inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& d
 //
 // \param dm The input matrix.
 // \param min The lower delimiter.
-// \param min The upper delimiter.
+// \param max The upper delimiter.
 // \return The matrix with restricted elements.
 //
 // The \a clip() function restricts each element of the input matrix \a dm to the range

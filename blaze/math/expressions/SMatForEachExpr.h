@@ -1254,7 +1254,7 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 //
 // \param sm The input matrix.
 // \param min The lower delimiter.
-// \param min The upper delimiter.
+// \param max The upper delimiter.
 // \return The matrix with restricted elements.
 //
 // The \a clip() function restricts each element of the input matrix \a sm to the range

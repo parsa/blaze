@@ -1205,7 +1205,7 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
 //
 // \param sv The input vector.
 // \param min The lower delimiter.
-// \param min The upper delimiter.
+// \param max The upper delimiter.
 // \return The vector with restricted elements.
 //
 // The \a clip() function resetricts each element of the input vector \a sv to the range
