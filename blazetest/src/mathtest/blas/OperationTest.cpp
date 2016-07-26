@@ -71,6 +71,7 @@ OperationTest::OperationTest()
 
    //testDotu< float >();
    //testDotc< float >();
+   //testAxpy< float >();
    //testTrsm< float >();
 
 
@@ -80,6 +81,7 @@ OperationTest::OperationTest()
 
    testDotu< double >();
    testDotc< double >();
+   testAxpy< double >();
    testTrsm< double >();
 
 
@@ -89,6 +91,7 @@ OperationTest::OperationTest()
 
    //testDotu< complex<float> >();
    //testDotc< complex<float> >();
+   //testAxpy< complex<float> >();
    //testTrsm< complex<float> >();
 
 
@@ -98,6 +101,7 @@ OperationTest::OperationTest()
 
    testDotu< complex<double> >();
    testDotc< complex<double> >();
+   testAxpy< complex<double> >();
    testTrsm< complex<double> >();
 }
 //*************************************************************************************************

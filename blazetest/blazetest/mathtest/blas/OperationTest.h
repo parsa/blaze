@@ -91,6 +91,7 @@ class OperationTest
    //@{
    template< typename Type > void testDotu();
    template< typename Type > void testDotc();
+   template< typename Type > void testAxpy();
    template< typename Type > void testTrsm();
    //@}
    //**********************************************************************************************
@@ -193,6 +194,55 @@ void OperationTest::testDotc()
           << "   Right-hand side operand (y):\n" << y << "\n"
           << "   dotc( x, y )  = " << result1 << "\n"
           << "   conj( x ) * y = " << result2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the dense vector axpy product functions (axpy).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the dense vector axpy product functions for various data types.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void OperationTest::testAxpy()
+{
+#if BLAZETEST_MATHTEST_BLAS_MODE
+
+   test_ = "Axpy product";
+
+   blaze::StaticVector<Type,7UL,blaze::rowVector> x;
+   randomize( x );
+
+   blaze::StaticVector<Type,7UL,blaze::rowVector> y, y1, y2;
+   randomize( y );
+   y1 = y;
+   y2 = y;
+
+   const Type alpha = blaze::rand<Type>();
+
+   axpy( y1, x, alpha );
+   y2 += alpha * x;
+
+   if( !blaze::equal( y1, y2 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Axpy product failed\n"
+          << " Details:\n"
+          << "   Element type:\n"
+          << "     " << typeid( Type ).name() << "\n"
+          << "   Right-hand side operand (x):\n" << x << "\n"
+          << "   Left-hand side operand (y):\n" << y << "\n"
+          << "   Scalar factor (alpha): " << alpha << "\n\n"
+          << "   axpy( x, y, alpha ):\n" << y1 << "\n"
+          << "   y += alpha * x:\n" << y2 << "\n";
       throw std::runtime_error( oss.str() );
    }
 
