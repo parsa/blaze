@@ -38,6 +38,7 @@
 //*************************************************************************************************
 
 #include <iostream>
+#include <blaze/math/blas/axpy.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blas/init/DynamicVector.h>
@@ -49,52 +50,6 @@
 namespace blazemark {
 
 namespace blas {
-
-//=================================================================================================
-//
-//  COMPUTE FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Kernel function for single precision vectors.
-//
-// \param N Size of the vectors.
-// \param alpha Scalar factor for \f$ \alpha op(x) \f$.
-// \param X Pointer to the first element of vector X.
-// \param incX Use every incX'th element of vector X.
-// \param Y Pointer to the first element of vector Y.
-// \param incY Use every incY'th element of vector Y.
-// \return void
-*/
-inline void daxpy( const int N, const float alpha,
-                   const float *X, const int incX, float *Y, const int incY )
-{
-   cblas_saxpy( N, alpha, X, incX, Y, incY );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Kernel function for double precision vectors.
-//
-// \param N Size of the vectors.
-// \param alpha Scalar factor for \f$ \alpha op(x) \f$.
-// \param X Pointer to the first element of vector X.
-// \param incX Use every incX'th element of vector X.
-// \param Y Pointer to the first element of vector Y.
-// \param incY Use every incY'th element of vector Y.
-// \return void
-*/
-inline void daxpy( const int N, const double alpha,
-                   const double *X, const int incX, double *Y, const int incY )
-{
-   cblas_daxpy( N, alpha, X, incX, Y, incY );
-}
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -114,6 +69,7 @@ inline void daxpy( const int N, const double alpha,
 double daxpy( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
+   using ::blaze::axpy;
    using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
@@ -127,7 +83,7 @@ double daxpy( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         daxpy( N, element_t(3), a.data(), 1, b.data(), 1 );
+         axpy( N, element_t(3), a.data(), 1, b.data(), 1 );
       }
       timer.end();
 

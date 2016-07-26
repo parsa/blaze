@@ -38,6 +38,7 @@
 //*************************************************************************************************
 
 #include <iostream>
+#include <blaze/math/blas/gemv.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/util/Timing.h>
@@ -58,68 +59,6 @@ namespace blas {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Kernel function for single precision vectors and matrices.
-//
-// \param Order Whether the matrix is row major order (C-Style) for column major order (Fortran-style).
-// \param TransA Whether to transpose matrix A.
-// \param M Rows in matrices A.
-// \param N Columns in matrix A.
-// \param alpha Scalar factor for \f$ \alpha op(A)x \f$.
-// \param A Pointer to the first element of matrix A.
-// \param lda The size of the first dimension of matrix A.
-// \param X Pointer to the first element of vector X.
-// \param incX Use every incX'th element of vector X.
-// \param beta Scalar factor for \f$ y \f$.
-// \param Y Pointer to the first element of vector Y.
-// \param incY Use every incY'th element of vector Y.
-// \return void
-*/
-inline void gemv( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
-                  const int M, const int N, const float alpha,
-                  const float *A, const int lda, const float *X, const int incX,
-                  const float beta, float *Y, const int incY )
-{
-   cblas_sgemv( Order, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Kernel function for double precision vectors and matrices.
-//
-// \param Order Whether the matrix is row major order (C-Style) for column major order (Fortran-style).
-// \param TransA Whether to transpose matrix A.
-// \param M Rows in matrices A.
-// \param N Columns in matrix A.
-// \param alpha Scalar factor for \f$ \alpha op(A)x \f$.
-// \param A Pointer to the first element of matrix A.
-// \param lda The size of the first dimension of matrix A.
-// \param X Pointer to the first element of vector X.
-// \param incX Use every incX'th element of vector X.
-// \param beta Scalar factor for \f$ y \f$.
-// \param Y Pointer to the first element of vector Y.
-// \param incY Use every incY'th element of vector Y.
-// \return void
-*/
-inline void gemv( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
-                  const int M, const int N, const double alpha,
-                  const double *A, const int lda, const double *X, const int incX,
-                  const double beta, double *Y, const int incY )
-{
-   cblas_dgemv( Order, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  KERNEL FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
 /*!\brief BLAS dense matrix/dense vector multiplication kernel.
 //
 // \param N The number of rows and columns of the matrix and the size of the vector.
@@ -132,6 +71,7 @@ inline void gemv( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
 double dmatdvecmult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
+   using ::blaze::gemv;
    using ::blaze::columnVector;
    using ::blaze::rowMajor;
 

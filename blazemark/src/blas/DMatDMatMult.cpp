@@ -38,6 +38,7 @@
 //*************************************************************************************************
 
 #include <iostream>
+#include <blaze/math/blas/gemm.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blas/init/DynamicMatrix.h>
@@ -49,72 +50,6 @@
 namespace blazemark {
 
 namespace blas {
-
-//=================================================================================================
-//
-//  KERNEL FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Kernel function for single precision matrices.
-//
-// \param Order Whether matrices are row major order (C-Style) for column major order (Fortran-style).
-// \param TransA Whether to transpose matrix A.
-// \param TransB Whether to transpose matrix B.
-// \param M Rows in matrices A and C.
-// \param N Columns in Matrices B and C.
-// \param K Columns in matrix A and Rows in matrix B.
-// \param alpha Scalar factor for \f$ op(A)op(B) \f$.
-// \param A Pointer to the first element of matrix A.
-// \param lda The size of the first dimension of matrix A.
-// \param B Pointer to the first element of matrix B.
-// \param ldb The size of the first dimension of matrix B.
-// \param beta Scalar factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix C.
-// \param ldc The size of the first dimension of matrix C.
-// \return void
-*/
-inline void gemm( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
-                  const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
-                  const float alpha, const float *A, const int lda, const float *B, const int ldb,
-                  const float beta, float *C, const int ldc )
-{
-   cblas_sgemm( Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Kernel function for double precision matrices.
-//
-// \param Order Whether matrices are row major order (C-Style) for column major order (Fortran-style).
-// \param TransA Whether to transpose matrix A.
-// \param TransB Whether to transpose matrix B.
-// \param M Rows in matrices A and C.
-// \param N Columns in Matrices B and C.
-// \param K Columns in matrix A and Rows in matrix B.
-// \param alpha Scalar factor for \f$ op(A)op(B) \f$.
-// \param A Pointer to the first element of matrix A.
-// \param lda The size of the first dimension of matrix A.
-// \param B Pointer to the first element of matrix B.
-// \param ldb The size of the first dimension of matrix B.
-// \param beta Scalar factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix C.
-// \param ldc The size of the first dimension of matrix C.
-// \return void
-*/
-inline void gemm( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
-                  const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
-                  const double alpha, const double *A, const int lda, const double *B, const int ldb,
-                  const double beta, double *C, const int ldc )
-{
-   cblas_dgemm( Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc );
-}
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -135,6 +70,7 @@ inline void gemm( const CBLAS_ORDER Order, const CBLAS_TRANSPOSE TransA,
 double dmatdmatmult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
+   using ::blaze::gemm;
    using ::blaze::rowMajor;
 
    ::blaze::setSeed( seed );
