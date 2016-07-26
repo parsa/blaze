@@ -65,18 +65,18 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-float dotu( const int n, const float* x, const int incX, const float* y, const int incY );
+BLAZE_ALWAYS_INLINE float dotu( int n, const float* x, int incX, const float* y, int incY );
 
-double dotu( const int n, const double* x, const int incX, const double* y, const int incY );
+BLAZE_ALWAYS_INLINE double dotu( int n, const double* x, int incX, const double* y, int incY );
 
-complex<float> dotu( const int n, const complex<float>* x, const int incX,
-                     const complex<float>* y, const int incY );
+BLAZE_ALWAYS_INLINE complex<float> dotu( int n, const complex<float>* x, int incX,
+                                         const complex<float>* y, int incY );
 
-complex<double> dotu( const int n, const complex<double>* x, const int incX,
-                      const complex<double>* y, const int incY );
+BLAZE_ALWAYS_INLINE complex<double> dotu( int n, const complex<double>* x, int incX,
+                                          const complex<double>* y, int incY );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+BLAZE_ALWAYS_INLINE ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
 
 #endif
 //@}
@@ -99,8 +99,7 @@ ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2
 // This function performs the dense vector dot product for single precision operands based on
 // the BLAS cblas_sdot() function.
 */
-BLAZE_ALWAYS_INLINE float dotu( const int n, const float* x, const int incX,
-                                const float* y, const int incY )
+BLAZE_ALWAYS_INLINE float dotu( int n, const float* x, int incX, const float* y, int incY )
 {
    return cblas_sdot( n, x, incX, y, incY );
 }
@@ -124,8 +123,7 @@ BLAZE_ALWAYS_INLINE float dotu( const int n, const float* x, const int incX,
 // This function performs the dense vector dot product for double precision operands based on
 // the BLAS cblas_ddot() function.
 */
-BLAZE_ALWAYS_INLINE double dotu( const int n, const double* x, const int incX,
-                                 const double* y, const int incY )
+BLAZE_ALWAYS_INLINE double dotu( int n, const double* x, int incX, const double* y, int incY )
 {
    return cblas_ddot( n, x, incX, y, incY );
 }
@@ -149,8 +147,8 @@ BLAZE_ALWAYS_INLINE double dotu( const int n, const double* x, const int incX,
 // This function performs the dense vector dot product for single precision complex operands
 // based on the BLAS cblas_cdotu_sub() function.
 */
-BLAZE_ALWAYS_INLINE complex<float> dotu( const int n, const complex<float>* x, const int incX,
-                                         const complex<float>* y, const int incY )
+BLAZE_ALWAYS_INLINE complex<float> dotu( int n, const complex<float>* x, int incX,
+                                         const complex<float>* y, int incY )
 {
    complex<float> tmp;
    cblas_cdotu_sub( n, x, incX, y, incY, &tmp );
@@ -176,8 +174,8 @@ BLAZE_ALWAYS_INLINE complex<float> dotu( const int n, const complex<float>* x, c
 // This function performs the dense vector dot product for double precision complex operands
 // based on the BLAS cblas_zdotu_sub() function.
 */
-BLAZE_ALWAYS_INLINE complex<double> dotu( const int n, const complex<double>* x, const int incX,
-                                          const complex<double>* y, const int incY )
+BLAZE_ALWAYS_INLINE complex<double> dotu( int n, const complex<double>* x, int incX,
+                                          const complex<double>* y, int incY )
 {
    complex<double> tmp;
    cblas_zdotu_sub( n, x, incX, y, incY, &tmp );
@@ -192,8 +190,8 @@ BLAZE_ALWAYS_INLINE complex<double> dotu( const int n, const complex<double>* x,
 /*!\brief BLAS kernel for a dense vector dot product (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
-// \param y The left-hand side dense vector operand.
-// \param x The right-hand side dense vector operand.
+// \param x The left-hand side dense vector operand.
+// \param y The right-hand side dense vector operand.
 // \return void
 //
 // This function performs the dense vector dot product based on the BLAS dotu() functions. Note
