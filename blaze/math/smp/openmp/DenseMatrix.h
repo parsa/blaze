@@ -113,52 +113,46 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const int threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~rhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-         if( simdEnabled && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
+      if( simdEnabled && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
 }
@@ -194,35 +188,29 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const size_t threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1       ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
 
-   const size_t addon2       ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~lhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      }
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
 /*! \endcond */
@@ -360,52 +348,46 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const int threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~rhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-         if( simdEnabled && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
+      if( simdEnabled && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
 }
@@ -441,35 +423,29 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const size_t threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1       ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
 
-   const size_t addon2       ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~lhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      }
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
 /*! \endcond */
@@ -607,52 +583,46 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const int threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~rhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-         if( simdEnabled && lhsAligned && rhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && lhsAligned ) {
-            AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
-         else if( simdEnabled && rhsAligned ) {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
-         }
-         else {
-            UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-            subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         }
+      if( simdEnabled && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
 }
@@ -689,35 +659,29 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
 
-   const ThreadMapping threads( createThreadMapping( omp_get_num_threads(), ~rhs ) );
+   const size_t threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
-   const size_t addon1       ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
 
-   const size_t addon2       ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<int(threads.first); ++i )
+   for( int i=0; i<threads; ++i )
    {
-      const size_t row( i*rowsPerThread );
+      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second) * colsPerThread );
 
-      if( row >= (~lhs).rows() )
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
 
-      for( int j=0; j<int(threads.second); ++j )
-      {
-         const size_t column( j*colsPerThread );
+      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-         if( column >= (~rhs).columns() )
-            continue;
-
-         const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      }
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
 /*! \endcond */
