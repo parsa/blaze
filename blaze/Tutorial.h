@@ -7803,21 +7803,18 @@
    int result = v1 * trans( v2 );  // Also results in the value 15
    \endcode
 
-// Alternatively, either the \c dot() function or the comma operator can be used for any combination
-// of vectors (row or column vectors) to perform an inner product:
-
-   \code
-   blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
-
-   int result = dot( v1, v2 );  // Inner product between two row vectors
-   \endcode
+// Alternatively, either the \c inner() function, the \c dot() function or the comma operator can
+// be used for any combination of vectors (row or column vectors) to perform an inner product:
 
    \code
    blaze::StaticVector<int,3UL,columnVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,columnVector> v2{ -1, 3, -2 };
+   blaze::StaticVector<int,3UL,rowVector>    v2{ -1, 3, -2 };
 
-   int result = (v1,v2);  // Inner product between two column vectors
+   // All alternatives for the inner product between a column vector and a row vector
+   int result1 = trans( v1 ) * trans( v2 );
+   int result2 = inner( v1, v2 );
+   int result3 = dot( v1, v2 );
+   int result4 = (v1,v2);
    \endcode
 
 // When using the comma operator, please note the brackets embracing the inner product expression.
