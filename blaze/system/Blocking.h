@@ -55,7 +55,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-constexpr size_t DEFAULT_BLOCK_SIZE = 16UL;
+constexpr size_t DEFAULT_BLOCK_SIZE = 128UL;
 
 constexpr size_t DMATDMATMULT_DEFAULT_IBLOCK_SIZE =  64UL;
 constexpr size_t DMATDMATMULT_DEFAULT_JBLOCK_SIZE = 128UL;
