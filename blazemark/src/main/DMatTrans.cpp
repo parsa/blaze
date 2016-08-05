@@ -56,6 +56,7 @@
 #include <blazemark/flens/DMatTrans.h>
 #include <blazemark/gmm/DMatTrans.h>
 #include <blazemark/mtl/DMatTrans.h>
+#include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/FLENS.h>
