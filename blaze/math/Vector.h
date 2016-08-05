@@ -61,35 +61,27 @@ namespace blaze {
 //@{
 template< typename T1, typename T2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+   inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+   inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+   inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+   inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
-template< typename T1, typename T2 >
+template< typename T1, bool TF1, typename T2, bool TF2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+   dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
-template< typename T1, typename T2 >
+template< typename T1, bool TF1, typename T2, bool TF2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
-
-template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
-
-template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+   operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, typename T2 >
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
@@ -114,7 +106,7 @@ inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -125,7 +117,7 @@ inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+   inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * (~rhs);
 }
@@ -133,7 +125,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -144,7 +136,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
+   inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
 }
@@ -152,7 +144,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -163,7 +155,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
+   inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * (~rhs);
 }
@@ -171,7 +163,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -182,7 +174,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
+   inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * trans(~rhs);
 }
@@ -190,7 +182,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -198,18 +190,20 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 // \param rhs The right-hand side vector for the scalar product.
 // \return The scalar product.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
+template< typename T1  // Type of the left-hand side vector
+        , bool TF1     // Transpose flag of the left-hand side vector
+        , typename T2  // Type of the right-hand side vector
+        , bool TF2 >   // Transpose flag of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+   dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
-   return trans(~lhs) * (~rhs);
+   return inner( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
+/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
 //        (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
@@ -217,50 +211,14 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 // \param rhs The right-hand side vector for the scalar product.
 // \return The scalar product.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
+template< typename T1  // Type of the left-hand side vector
+        , bool TF1     // Transpose flag of the left-hand side vector
+        , typename T2  // Type of the right-hand side vector
+        , bool TF2 >   // Transpose flag of the right-hand side vector
 inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
+   operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
-   return trans(~lhs) * trans(~rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
-//
-// \param lhs The left-hand side vector for the scalar product.
-// \param rhs The right-hand side vector for the scalar product.
-// \return The scalar product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
-{
-   return (~lhs) * (~rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
-//
-// \param lhs The left-hand side vector for the scalar product.
-// \param rhs The right-hand side vector for the scalar product.
-// \return The scalar product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
-{
-   return (~lhs) * trans(~rhs);
+   return inner( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
