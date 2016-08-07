@@ -46,8 +46,8 @@
 // for the compilation process.
 //
 // Possible settings for the BLAS switch:
-//  - Deactivated: \b 0
-//  - Activated  : \b 1
+//  - Disabled: \b 0
+//  - Enabled : \b 1
 //
 // Note that changing the setting of the BLAS mode requires a recompilation of all code using
 // the Blaze library.
@@ -62,16 +62,35 @@
 //
 // This compilation switch enables/disables the BLAS matrix/vector multiplication kernels. If the
 // switch is enabled, multiplications between dense matrices and dense vectors are computed by
-// BLAS kernels, if it is disabled the multiplications are handled by the defaultBlaze kernels.
+// BLAS kernels, if it is disabled the multiplications are handled by the default Blaze kernels.
 //
 // Possible settings for the switch:
-//  - Disabled: \b 0
+//  - Disabled: \b 0 (default)
 //  - Enabled : \b 1
 //
 // Note that changing the setting of this compilation switch requires a recompilation of all code
 // using the Blaze library.
 */
 #define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the BLAS matrix/matrix multiplication kernels (gemv).
+// \ingroup config
+//
+// This compilation switch enables/disables the BLAS matrix/matrix multiplication kernels. If the
+// switch is enabled, multiplications between dense matrices are computed by BLAS kernels, if it
+// is disabled the multiplications are handled by the default Blaze kernels.
+//
+// Possible settings for the switch:
+//  - Disabled: \b 0
+//  - Enabled : \b 1 (default)
+//
+// Note that changing the setting of this compilation switch requires a recompilation of all code
+// using the Blaze library.
+*/
+#define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
 //*************************************************************************************************
 
 
@@ -85,7 +104,7 @@
 // not parallelized Blaze will attempt to parallelize the execution of BLAS kernels.
 //
 // Possible settings for the switch:
-//  - BLAS library is not parallelized: \b 0
+//  - BLAS library is not parallelized: \b 0 (default)
 //  - BLAS library is parallelized    : \b 1
 //
 // Note that changing the setting of the BLAS mode requires a recompilation of all code using the

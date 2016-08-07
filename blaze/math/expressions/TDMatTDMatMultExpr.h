@@ -205,7 +205,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE &&
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -1467,7 +1467,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**********************************************************************************************
 
    //**BLAS-based assignment to dense matrices*****************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based assignment of a transpose dense matrix-transpose dense matrix
    //        multiplication (\f$ C=A*B \f$).
@@ -2565,7 +2565,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense matrices********************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based addition assignment of a transpose dense matrix-transpose dense matrix
    //        multiplication (\f$ C+=A*B \f$).
@@ -3631,7 +3631,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**********************************************************************************************
 
    //**BLAS-based subraction assignment to dense matrices******************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based subraction assignment of a transpose dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=A*B \f$).
@@ -4117,7 +4117,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE &&
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -5342,7 +5342,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based assignment to dense matrices*****************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*!\brief BLAS-based assignment of a scaled transpose dense matrix-transpose dense matrix
    //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
@@ -6368,7 +6368,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense matrices********************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*!\brief BLAS-based addition assignment of a scaled transpose dense matrix-transpose dense
    //        matrix multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
@@ -7365,7 +7365,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based subraction assignment to dense matrices******************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
    /*!\brief BLAS-based subraction assignment of a scaled transpose dense matrix-transpose dense
    //        matrix multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
