@@ -10383,11 +10383,18 @@
 // \n \section thresholds Thresholds
 // <hr>
 //
-// \b Blaze provides several thresholds that can be adapted to the characteristics of the target
-// platform. For instance, the \c DMATDVECMULT_THRESHOLD specifies the threshold between the
-// application of the custom \b Blaze kernels for small dense matrix/dense vector multiplications
-// and the BLAS kernels for large multiplications. All thresholds, including the thresholds for
-// the OpenMP-based parallelization, are contained within the configuration file
+// For many computations \b Blaze distinguishes between small and large vectors and matrices.
+// This separation is especially important for the parallel execution of computations, since
+// the use of several threads only pays off for sufficiently large vectors and matrices.
+// Additionally, it also enables \b Blaze to select kernels that are optimized for a specific
+// size.
+//
+// In order to distinguish between small and large data structures \b Blaze provides several
+// thresholds that can be adapted to the characteristics of the target platform. For instance,
+// the \c DMATDVECMULT_THRESHOLD specifies the threshold between the application of the custom
+// \b Blaze kernels for small dense matrix/dense vector multiplications and the BLAS kernels
+// for large multiplications. All thresholds, including the thresholds for the OpenMP- and
+// thread-based parallelization, are contained within the configuration file
 // <tt>./blaze/config/Thresholds.h</tt>.
 //
 //
