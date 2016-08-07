@@ -166,7 +166,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
        the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE &&
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -1007,7 +1007,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**BLAS-based assignment to dense vectors******************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based assignment of a transpose dense vector-transpose dense matrix multiplication
    //        (\f$ \vec{y}^T=\vec{x}^T*A \f$).
@@ -1690,7 +1690,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense vectors*********************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based addition assignment of a vector-matrix multiplication
    //        (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
@@ -2348,7 +2348,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    //**********************************************************************************************
 
    //**BLAS-based subtraction assignment to dense vectors******************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based subtraction assignment of a vector-matrix multiplication
    //        (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
@@ -2771,7 +2771,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
        for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE &&
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -3614,7 +3614,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based assignment to dense vectors******************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*!\brief BLAS-based assignment of a scaled transpose dense vector-transpose dense matrix
    //        multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
@@ -4299,7 +4299,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense vectors*********************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*!\brief BLAS-based addition assignment of a scaled transpose dense vector-transpose dense
    //        matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
@@ -4960,7 +4960,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**********************************************************************************************
 
    //**BLAS-based subtraction assignment to dense vectors******************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
    /*!\brief BLAS-based subtraction assignment of a scaled transpose dense vector-transpose dense
    //        matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector

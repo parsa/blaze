@@ -57,6 +57,25 @@
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the BLAS matrix/vector multiplication kernels (gemv).
+// \ingroup config
+//
+// This compilation switch enables/disables the BLAS matrix/vector multiplication kernels. If the
+// switch is enabled, multiplications between dense matrices and dense vectors are computed by
+// BLAS kernels, if it is disabled the multiplications are handled by the defaultBlaze kernels.
+//
+// Possible settings for the switch:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
+// Note that changing the setting of this compilation switch requires a recompilation of all code
+// using the Blaze library.
+*/
+#define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the parallel BLAS mode.
 // \ingroup config
 //
