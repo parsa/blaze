@@ -244,18 +244,19 @@ void complex3( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
-#if BLAZEMARK_BLITZ_MODE
-   if( benchmarks.runBlitz ) {
-      std::cout << "   Blitz++ [MFlop/s]:\n";
-      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
-         const size_t N    ( run->getSize()  );
-         const size_t steps( run->getSteps() );
-         run->setBlitzResult( blazemark::blitz::complex3( N, steps ) );
-         const double mflops( run->getFlops() * steps / run->getBlitzResult() / 1E6 );
-         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
-      }
-   }
-#endif
+   // Deactivated due to incorrect computation results
+//#if BLAZEMARK_BLITZ_MODE
+//   if( benchmarks.runBlitz ) {
+//      std::cout << "   Blitz++ [MFlop/s]:\n";
+//      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+//         const size_t N    ( run->getSize()  );
+//         const size_t steps( run->getSteps() );
+//         run->setBlitzResult( blazemark::blitz::complex3( N, steps ) );
+//         const double mflops( run->getFlops() * steps / run->getBlitzResult() / 1E6 );
+//         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
+//      }
+//   }
+//#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {
