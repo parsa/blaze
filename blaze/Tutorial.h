@@ -8127,7 +8127,7 @@
    struct Sqrt
    {
       template< typename T >
-      BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const -> decltype( sqrt( a ) )
+      BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
       {
          return sqrt( a );
       }
@@ -8136,7 +8136,7 @@
       static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
 
       template< typename T >
-      BLAZE_ALWAYS_INLINE auto load( const T& a ) const -> decltype( sqrt( a ) )
+      BLAZE_ALWAYS_INLINE auto load( const T& a ) const
       {
          BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
          return sqrt( a );
