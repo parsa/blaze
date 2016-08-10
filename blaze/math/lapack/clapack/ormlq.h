@@ -36,8 +36,6 @@
 #define _BLAZE_MATH_LAPACK_CLAPACK_ORMLQ_H_
 
 
-namespace blaze {
-
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -57,6 +55,8 @@ void dormlq_( char* side, char* trans, int* m, int* n, int* k, double* A, int* l
 
 
 
+
+namespace blaze {
 
 //=================================================================================================
 //

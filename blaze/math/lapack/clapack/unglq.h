@@ -44,8 +44,6 @@
 #include <blaze/util/StaticAssert.h>
 
 
-namespace blaze {
-
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -65,6 +63,8 @@ void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* 
 
 
 
+
+namespace blaze {
 
 //=================================================================================================
 //

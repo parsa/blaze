@@ -44,8 +44,6 @@
 #include <blaze/util/StaticAssert.h>
 
 
-namespace blaze {
-
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -65,6 +63,8 @@ void zunmqr_( char* side, char* trans, int* m, int* n, int* k, double* A, int* l
 
 
 
+
+namespace blaze {
 
 //=================================================================================================
 //

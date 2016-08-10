@@ -36,8 +36,6 @@
 #define _BLAZE_MATH_LAPACK_CLAPACK_GEQP3_H_
 
 
-namespace blaze {
-
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -57,6 +55,8 @@ void dgeqp3_( int* m, int* n, double* A, int* lda, int* jpvt, double* tau, doubl
 
 
 
+
+namespace blaze {
 
 //=================================================================================================
 //

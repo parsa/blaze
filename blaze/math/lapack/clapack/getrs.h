@@ -44,8 +44,6 @@
 #include <blaze/util/StaticAssert.h>
 
 
-namespace blaze {
-
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -67,6 +65,8 @@ void zgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv, do
 
 
 
+
+namespace blaze {
 
 //=================================================================================================
 //
