@@ -122,6 +122,7 @@
 //    <li> \ref blas_functions </li>
 //    <li> \ref lapack_functions </li>
 //    <li> \ref configuration_files </li>
+//    <li> \ref block_vectors_and_matrices </li>
 //    <li> \ref custom_data_types </li>
 //    <li> \ref error_reporting_customization </li>
 //    <li> \ref intra_statement_optimization </li>
@@ -10440,7 +10441,88 @@
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref custom_data_types \n
+// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref block_vectors_and_matrices \n
+*/
+//*************************************************************************************************
+
+
+//**Block Vectors and Matrices*********************************************************************
+/*!\page block_vectors_and_matrices Block Vectors and Matrices
+//
+// \tableofcontents
+//
+//
+// \n \section block_vectors_and_matrices_general General Concepts
+// <hr>
+//
+// In addition to fundamental element types, the \b Blaze library supports vectors and matrices
+// with non-fundamental element type. For instance, it is possible to define block matrices by
+// using a matrix type as the element type:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix< DynamicMatrix<double,rowMajor>, rowMajor > A;
+   DynamicVector< DynamicVector<double,columnVector >, columnVector > x, y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// The matrix/vector multiplication in this example runs fully parallel and uses vectorization
+// for every inner matrix/vector multiplication and vector addition.
+//
+//
+// \n \section block_vectors_and_matrices_pitfalls Pitfalls
+// <hr>
+//
+// The only thing to keep in mind when using non-fundamental element types is that all operations
+// between the elements have to be well defined. More specifically, the size of vector and matrix
+// elements has to match. The attempt to combine two non-matching elements results in either a
+// compilation error (in case of statically sized elements) or an exception (for dynamically sized
+// elements):
+
+   \code
+   DynamicVector< StaticVector<int,2UL> > a;
+   DynamicVector< StaticVector<int,3UL> > b;
+
+   DynamicVector< DynamicVector<int> > c( a + b );  // Compilation error: element size doesn't match
+   \endcode
+
+// Therefore please don't forget that dynamically sized elements (e.g. \c blaze::DynamicVector,
+// \c blaze::HybridVector, blaze::DynamicMatrix, blaze::HybridMatrix, ...) need to be sized
+// accordingly upfront.
+//
+//
+// \n \section block_vectors_and_matrices_example Example
+// <hr>
+//
+// The following example demonstrates a complete multiplication between a statically sized block
+// matrix and block vector:
+
+   \code
+   // ( ( 1 1 )  ( 2 2 ) )   ( ( 1 ) )   ( ( 10 ) )
+   // ( ( 1 1 )  ( 2 2 ) )   ( ( 1 ) )   ( ( 10 ) )
+   // (                  ) * (       ) = (        )
+   // ( ( 3 3 )  ( 4 4 ) )   ( ( 2 ) )   ( ( 22 ) )
+   // ( ( 3 3 )  ( 4 4 ) )   ( ( 2 ) )   ( ( 22 ) )
+
+   typedef StaticMatrix<int,2UL,2UL,rowMajor> M2x2;
+   typedef StaticVector<int,2UL,columnVector> V2;
+
+   DynamicMatrix<M2x2,rowMajor> A{ { M2x2(1), M2x2(2) }
+                                   { M2x2(3), M2x2(4) } };
+
+   DynamicVector<V2,columnVector> x{ V2(1), V2(2) };
+
+   DynamicVector<V2,columnVector> y( A * x );
+   \endcode
+
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_data_types \n
 */
 //*************************************************************************************************
 
@@ -10548,7 +10630,7 @@
 // cannot achieve maximum performance!
 //
 //
-// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref error_reporting_customization \n
+// \n Previous: \ref block_vectors_and_matrices &nbsp; &nbsp; Next: \ref error_reporting_customization \n
 */
 //*************************************************************************************************
 
