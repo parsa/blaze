@@ -40,6 +40,9 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
+#ifdef MKL
+#  include <boost/numeric/ublas/mkl_boost_ublas_matrix_prod.hpp>
+#endif
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/init/Matrix.h>
 #include <blazemark/boost/TDMatDMatMult.h>
