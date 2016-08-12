@@ -62,6 +62,8 @@ DenseComplexTest: DenseComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseRealTest: DenseRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowComplexTest: RowComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowRealTest: RowRealTest.o

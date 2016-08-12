@@ -4,6 +4,7 @@ ColumnComplexTest
 ColumnRealTest
 DenseComplexTest
 DenseRealTest
+IncludeTest
 RowComplexTest
 RowRealTest
 SparseComplexTest
