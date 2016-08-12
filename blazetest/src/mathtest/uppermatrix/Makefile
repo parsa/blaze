@@ -58,6 +58,8 @@ ColumnTest: ColumnTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseTest: DenseTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowTest: RowTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseTest: SparseTest.o
