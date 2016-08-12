@@ -168,7 +168,7 @@ class Row<MT,true,true,SF>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -424,7 +424,7 @@ class Row<MT,true,true,SF>
 */
 template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
-inline Row<MT,true,true,SF>::Row( MT& matrix, size_t index )
+inline Row<MT,true,true,SF>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -2466,7 +2466,7 @@ class Row<MT,false,true,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2625,7 +2625,7 @@ class Row<MT,false,true,false>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline Row<MT,false,true,false>::Row( MT& matrix, size_t index )
+inline Row<MT,false,true,false>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -3921,7 +3921,7 @@ class Row<MT,false,true,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4177,7 +4177,7 @@ class Row<MT,false,true,true>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline Row<MT,false,true,true>::Row( MT& matrix, size_t index )
+inline Row<MT,false,true,true>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {

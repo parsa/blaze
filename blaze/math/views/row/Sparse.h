@@ -149,7 +149,7 @@ class Row<MT,true,false,SF>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -317,7 +317,7 @@ class Row<MT,true,false,SF>
 */
 template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
-inline Row<MT,true,false,SF>::Row( MT& matrix, size_t index )
+inline Row<MT,true,false,SF>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -2225,7 +2225,7 @@ class Row<MT,false,false,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2380,7 +2380,7 @@ class Row<MT,false,false,false>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the sparse matrix
-inline Row<MT,false,false,false>::Row( MT& matrix, size_t index )
+inline Row<MT,false,false,false>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -3687,7 +3687,7 @@ class Row<MT,false,false,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix, size_t index );
+   explicit inline Row( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3855,7 +3855,7 @@ class Row<MT,false,false,true>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the sparse matrix
-inline Row<MT,false,false,true>::Row( MT& matrix, size_t index )
+inline Row<MT,false,false,true>::Row( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {

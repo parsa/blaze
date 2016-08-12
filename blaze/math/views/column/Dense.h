@@ -169,7 +169,7 @@ class Column<MT,true,true,SF>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -425,7 +425,7 @@ class Column<MT,true,true,SF>
 */
 template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
-inline Column<MT,true,true,SF>::Column( MT& matrix, size_t index )
+inline Column<MT,true,true,SF>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -2466,7 +2466,7 @@ class Column<MT,false,true,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2625,7 +2625,7 @@ class Column<MT,false,true,false>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline Column<MT,false,true,false>::Column( MT& matrix, size_t index )
+inline Column<MT,false,true,false>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -3933,7 +3933,7 @@ class Column<MT,false,true,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4189,7 +4189,7 @@ class Column<MT,false,true,true>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the dense matrix
-inline Column<MT,false,true,true>::Column( MT& matrix, size_t index )
+inline Column<MT,false,true,true>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {

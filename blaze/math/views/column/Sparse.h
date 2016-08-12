@@ -148,7 +148,7 @@ class Column<MT,true,false,SF>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -316,7 +316,7 @@ class Column<MT,true,false,SF>
 */
 template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
-inline Column<MT,true,false,SF>::Column( MT& matrix, size_t index )
+inline Column<MT,true,false,SF>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -2230,7 +2230,7 @@ class Column<MT,false,false,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2385,7 +2385,7 @@ class Column<MT,false,false,false>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the sparse matrix
-inline Column<MT,false,false,false>::Column( MT& matrix, size_t index )
+inline Column<MT,false,false,false>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
@@ -3703,7 +3703,7 @@ class Column<MT,false,false,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( Operand matrix, size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3871,7 +3871,7 @@ class Column<MT,false,false,true>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT >  // Type of the sparse matrix
-inline Column<MT,false,false,true>::Column( MT& matrix, size_t index )
+inline Column<MT,false,false,true>::Column( Operand matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
