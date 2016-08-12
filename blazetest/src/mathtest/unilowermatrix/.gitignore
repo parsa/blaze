@@ -2,6 +2,7 @@
 *.o
 ColumnTest
 DenseTest
+IncludeTest
 RowTest
 SparseTest
 SubmatrixTest
