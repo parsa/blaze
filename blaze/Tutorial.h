@@ -4348,17 +4348,17 @@
    G *= A * E;    // Multiplication assignment
    \endcode
 
-// \n \section adaptors_symmetric_matrices_block_structured Block-Structured Symmetric Matrices
+// \n \section adaptors_symmetric_matrices_block_matrices Symmetric Block Matrices
 // <hr>
 //
-// It is also possible to use block-structured symmetric matrices:
+// It is also possible to use symmetric block matrices:
 
    \code
    using blaze::CompressedMatrix;
    using blaze::StaticMatrix;
    using blaze::SymmetricMatrix;
 
-   // Definition of a 3x3 block-structured symmetric matrix based on CompressedMatrix
+   // Definition of a 3x3 symmetric block matrix based on CompressedMatrix
    SymmetricMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > A( 3 );
    \endcode
 
@@ -4376,6 +4376,9 @@
    A(2,4)(1,1) = -5;
    \endcode
 
+// For more information on block matrices, see the tutorial on \ref block_vectors_and_matrices.
+//
+//
 // \n \section adaptors_symmetric_matrices_performance Performance Considerations
 // <hr>
 //
@@ -4604,7 +4607,7 @@
 //
 // From an implementation point of view, \b Blaze restricts Hermitian matrices to numeric data
 // types (i.e. all integral types except \c bool, floating point and complex types), whereas
-// symmetric matrices can also be block structured (i.e. can have vector or matrix elements).
+// symmetric matrices can also be block matrices (i.e. can have vector or matrix elements).
 // For built-in element types, the HermitianMatrix adaptor behaves exactly like the according
 // SymmetricMatrix implementation. For complex element types, however, the Hermitian property
 // is enforced (see also \ref adaptors_hermitian_matrices_hermitian).
@@ -4623,9 +4626,9 @@
 	HermitianMatrix< DynamicMatrix< complex<double> > > C;  // Only Hermitian
 	SymmetricMatrix< DynamicMatrix< complex<double> > > D;  // Only symmetric
 
-	// Block-structured Hermitian matrices are not allowed
+	// Hermitian block matrices are not allowed
 	HermitianMatrix< DynamicMatrix< DynamicVector<double> > > E;  // Compilation error!
-	SymmetricMatrix< DynamicMatrix< DynamicVector<double> > > F;  // Block-structured symmetric matrix
+	SymmetricMatrix< DynamicMatrix< DynamicVector<double> > > F;  // Symmetric block matrix
 	\endcode
 
 // \n \section adaptors_hermitian_matrices_special_properties Special Properties of Hermitian Matrices
@@ -5888,10 +5891,10 @@
 // way, but may pose some additional restrictions (see the according class documentations).
 //
 //
-// \n \section adaptors_triangular_matrices_block_structured Block-Structured Triangular Matrices
+// \n \section adaptors_triangular_matrices_block_matrices Triangular Block Matrices
 // <hr>
 //
-// It is also possible to use block-structured triangular matrices:
+// It is also possible to use triangular block matrices:
 
    \code
    using blaze::CompressedMatrix;
@@ -5900,10 +5903,10 @@
    using blaze::LowerMatrix;
    using blaze::UpperMatrix;
 
-   // Definition of a 5x5 block-structured lower matrix based on DynamicMatrix
+   // Definition of a 5x5 lower block matrix based on DynamicMatrix
    LowerMatrix< DynamicMatrix< StaticMatrix<int,3UL,3UL> > > A( 5 );
 
-   // Definition of a 7x7 block-structured upper matrix based on CompressedMatrix
+   // Definition of a 7x7 upper block matrix based on CompressedMatrix
    UpperMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > B( 7 );
    \endcode
 
@@ -5921,7 +5924,7 @@
    \endcode
 
 // Note that unitriangular matrices are restricted to numeric element types and therefore cannot
-// be used for block-structured matrices:
+// be used for block matrices:
 
    \code
    using blaze::CompressedMatrix;
@@ -5937,6 +5940,9 @@
    UniUpperMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > B( 7 );
    \endcode
 
+// For more information on block matrices, see the tutorial on \ref block_vectors_and_matrices.
+//
+//
 // \n \section adaptors_triangular_matrices_performance Performance Considerations
 // <hr>
 //
@@ -10494,7 +10500,7 @@
    \endcode
 
 // Therefore please don't forget that dynamically sized elements (e.g. \c blaze::DynamicVector,
-// \c blaze::HybridVector, blaze::DynamicMatrix, blaze::HybridMatrix, ...) need to be sized
+// \c blaze::HybridVector, \c blaze::DynamicMatrix, \c blaze::HybridMatrix, ...) need to be sized
 // accordingly upfront.
 //
 //
