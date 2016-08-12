@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
