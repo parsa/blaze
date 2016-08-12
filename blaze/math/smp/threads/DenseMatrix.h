@@ -51,11 +51,11 @@
 #include <blaze/math/smp/ThreadMapping.h>
 #include <blaze/math/smp/threads/ThreadBackend.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/Submatrix.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/views/Submatrix.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>

@@ -42,6 +42,7 @@
 
 #include <omp.h>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -51,11 +52,11 @@
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/ThreadMapping.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/Submatrix.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/views/Submatrix.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
