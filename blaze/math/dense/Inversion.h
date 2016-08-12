@@ -62,6 +62,7 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/shims/Real.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
