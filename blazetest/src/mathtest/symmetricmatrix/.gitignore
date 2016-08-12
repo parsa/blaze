@@ -4,6 +4,7 @@ ColumnNonNumericTest
 ColumnNumericTest
 DenseNonNumericTest
 DenseNumericTest
+IncludeTest
 RowNonNumericTest
 RowNumericTest
 SparseNonNumericTest
