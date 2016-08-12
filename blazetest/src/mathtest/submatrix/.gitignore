@@ -2,6 +2,6 @@
 *.o
 DenseAlignedTest
 DenseUnalignedTest
-SparseTest
+IncludeTest
 SparseTest
 
