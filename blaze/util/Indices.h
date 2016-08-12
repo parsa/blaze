@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <numeric>
 #include <stdexcept>
 #include <vector>
 #include <blaze/util/Exception.h>
