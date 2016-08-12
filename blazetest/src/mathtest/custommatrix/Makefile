@@ -58,6 +58,8 @@ AlignedPaddedTest: AlignedPaddedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 AlignedUnpaddedTest: AlignedUnpaddedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UnalignedPaddedTest: UnalignedPaddedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UnalignedUnpaddedTest: UnalignedUnpaddedTest.o
