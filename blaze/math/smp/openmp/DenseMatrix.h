@@ -130,8 +130,8 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
@@ -201,8 +201,8 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
@@ -365,8 +365,8 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
@@ -436,8 +436,8 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
@@ -600,8 +600,8 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
@@ -672,8 +672,8 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 #pragma omp for schedule(dynamic,1) nowait
    for( int i=0; i<threads; ++i )
    {
-      const size_t row   ( ( i / threadmap.first ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second) * colsPerThread );
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
 
       if( row >= (~rhs).rows() || column >= (~rhs).columns() )
          continue;
