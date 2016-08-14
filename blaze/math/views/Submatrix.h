@@ -174,10 +174,10 @@ inline SubmatrixExprTrait_<MT,unaligned>
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific submatrix of the given matrix.
+/*!\brief Creating a view on a specific submatrix of the given constant matrix.
 // \ingroup views
 //
-// \param matrix The matrix containing the submatrix.
+// \param matrix The constant matrix containing the submatrix.
 // \param row The index of the first row of the submatrix.
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
@@ -185,8 +185,8 @@ inline SubmatrixExprTrait_<MT,unaligned>
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// This function returns an expression representing the specified submatrix of the given matrix.
-// The following example demonstrates the creation of a dense and sparse submatrix:
+// This function returns an expression representing the specified submatrix of the given constant
+// matrix. The following example demonstrates the creation of a dense and sparse submatrix:
 
    \code
    using blaze::rowMajor;
@@ -195,15 +195,14 @@ inline SubmatrixExprTrait_<MT,unaligned>
    typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
    typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
 
-   DenseMatrix  D;
-   SparseMatrix S;
-   // ... Resizing and initialization
+   const DenseMatrix  D( ... );
+   const SparseMatrix S( ... );
 
    // Creating a dense submatrix of size 8x4, starting in row 0 and column 16
-   blaze::Submatrix<DenseMatrix> dsm = submatrix( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix> dsm = submatrix( D, 0UL, 16UL, 8UL, 4UL );
 
    // Creating a sparse submatrix of size 7x3, starting in row 2 and column 4
-   blaze::Submatrix<SparseMatrix> ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL );
+   blaze::Submatrix<const SparseMatrix> ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
 // In case the submatrix is not properly specified (i.e. if the specified row or column is larger
@@ -215,9 +214,9 @@ inline SubmatrixExprTrait_<MT,unaligned>
 // the creation of the dense submatrix is equivalent to the following three function calls:
 
    \code
-   blaze::Submatrix<DenseMatrix>           dsm = submatrix<unaligned>( D, 0UL, 16UL, 8UL, 4UL );
-   blaze::Submatrix<DenseMatrix,unaligned> dsm = submatrix           ( D, 0UL, 16UL, 8UL, 4UL );
-   blaze::Submatrix<DenseMatrix,unaligned> dsm = submatrix<unaligned>( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix>           dsm = submatrix<unaligned>( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix,unaligned> dsm = submatrix           ( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix,unaligned> dsm = submatrix<unaligned>( D, 0UL, 16UL, 8UL, 4UL );
    \endcode
 
 // In contrast to unaligned submatrices, which provide full flexibility, aligned submatrices pose
@@ -226,7 +225,7 @@ inline SubmatrixExprTrait_<MT,unaligned>
 // following function call has to be used:
 
    \code
-   blaze::Submatrix<DenseMatrix,aligned> dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix,aligned> dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL );
    \endcode
 
 // Note however that in this case the given arguments \a row, \a columns, \a m, and \a n are
@@ -234,8 +233,38 @@ inline SubmatrixExprTrait_<MT,unaligned>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline SubmatrixExprTrait_<const MT,unaligned>
+inline const SubmatrixExprTrait_<const MT,unaligned>
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return submatrix<unaligned>( ~matrix, row, column, m, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific submatrix of the given temporary matrix.
+// \ingroup views
+//
+// \param matrix The temporary matrix containing the submatrix.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specific submatrix of the matrix.
+// \exception std::invalid_argument Invalid submatrix specification.
+//
+// This function returns an expression representing the specified submatrix of the given
+// temporary matrix. In case the submatrix is not properly specified (i.e. if the specified
+// row or column is greater than the total number of rows or columns of the given matrix or
+// the submatrix is specified beyond the number of rows or columns of the matrix) a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline SubmatrixExprTrait_<MT,unaligned>
+   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -332,10 +361,10 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific submatrix of the given matrix.
+/*!\brief Creating a view on a specific submatrix of the given constant matrix.
 // \ingroup views
 //
-// \param matrix The matrix containing the submatrix.
+// \param matrix The constant matrix containing the submatrix.
 // \param row The index of the first row of the submatrix.
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
@@ -354,15 +383,14 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
    typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
    typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
 
-   DenseMatrix  D;
-   SparseMatrix S;
-   // ... Resizing and initialization
+   const DenseMatrix  D( ... );
+   const SparseMatrix S( ... );
 
    // Creating an aligned dense submatrix of size 8x4, starting in row 0 and column 16
-   blaze::Submatrix<DenseMatrix,aligned> dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL );
+   blaze::Submatrix<const DenseMatrix,aligned> dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL );
 
    // Creating an unaligned sparse submatrix of size 7x3, starting in row 2 and column 4
-   blaze::Submatrix<SparseMatrix,unaligned> ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL );
+   blaze::Submatrix<const SparseMatrix,unaligned> ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
 // In case the submatrix is not properly specified (i.e. if the specified row or column is larger
@@ -385,10 +413,9 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
    using blaze::rowMajor;
 
    typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType,aligned>   SubmatrixType;
+   typedef blaze::Submatrix<const MatrixType,aligned>   SubmatrixType;
 
-   MatrixType D( 13UL, 17UL );
-   // ... Resizing and initialization
+   const MatrixType D( ... );
 
    // OK: Starts at position (0,0), i.e. the first element of each row is aligned (due to padding)
    SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 11UL );
@@ -408,12 +435,44 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<const MT,AF> >
+inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<const MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
    return SubmatrixExprTrait_<const MT,AF>( ~matrix, row, column, m, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific submatrix of the given temporary matrix.
+// \ingroup views
+//
+// \param matrix The temporary matrix containing the submatrix.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specific submatrix of the matrix.
+// \exception std::invalid_argument Invalid submatrix specification.
+//
+// This function returns an expression representing an aligned or unaligned submatrix of the
+// given temporary dense or sparse matrix, based on the specified alignment flag \a AF. In
+// case the submatrix is not properly specified (i.e. if the specified row or column is larger
+// than the total number of rows or columns of the given matrix or the submatrix is specified
+// beyond the number of rows or columns of the matrix) or any alignment restrictions are
+// violated, a \a std::invalid_argument exception is thrown.
+*/
+template< bool AF      // Alignment flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<MT,AF> >
+   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SubmatrixExprTrait_<MT,AF>( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -442,7 +501,7 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
+inline const EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -485,7 +544,7 @@ inline EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
+inline const EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -530,7 +589,7 @@ inline EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatMatAddExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatMatAddExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -560,7 +619,7 @@ inline EnableIf_< IsMatMatAddExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatMatSubExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatMatSubExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -590,7 +649,7 @@ inline EnableIf_< IsMatMatSubExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -641,7 +700,7 @@ inline EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsVecTVecMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsVecTVecMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -671,7 +730,7 @@ inline EnableIf_< IsVecTVecMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatScalarMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatScalarMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -700,7 +759,7 @@ inline EnableIf_< IsMatScalarMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -729,7 +788,7 @@ inline EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatForEachExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatForEachExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -758,7 +817,7 @@ inline EnableIf_< IsMatForEachExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatEvalExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatEvalExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -787,7 +846,7 @@ inline EnableIf_< IsMatEvalExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -816,7 +875,7 @@ inline EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsMatTransExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatTransExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
