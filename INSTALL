@@ -1,10 +1,9 @@
 Installation instructions
 *************************
 
-Setting up the Blaze library on a particular system is a fairly easy two step process. Since
-Blaze is a template library and therefore mainly consists of header files no compilation is
-required. In the following, this two step process is explained in detail, preceded only by
-a short summary of the requirements.
+Since Blaze is a header-only library, setting up the Blaze library on a particular system is
+a fairly easy two step process. In the following, this two step process is explained in detail,
+preceded only by a short summary of the requirements.
 
 
 Requirements
@@ -12,13 +11,13 @@ Requirements
 
 In order for Blaze to work properly, the Boost library must be installed on the system. It is
 recommended to use the newest Boost library available, but Blaze requires at minimum the Boost
-version 1.54. If you don't have Boost installed on your system, you can download it for free
+version 1.54.0. If you don't have Boost installed on your system, you can download it for free
 from 'www.boost.org'.
 
 Additionally, for maximum performance Blaze expects you to have a BLAS library installed (Intel
 MKL, ACML, Atlas, Goto, ...). If you don't have a BLAS library installed on your system, Blaze
-will still work and will not be reduced in functionality, but performance may be severely limited.
-Thus it is strongly recommended to install a BLAS library.
+will still work and will not be reduced in functionality, but performance may be limited. Thus
+it is strongly recommended to install a BLAS library.
 
 Furthermore, for computing the determinant of a dense matrix and for the dense matrix inversion
 Blaze requires LAPACK. When either of these features is used it is necessary to link the LAPACK
@@ -26,68 +25,31 @@ library to the final executable. If no LAPACK library is available the use of th
 result in a linker error.
 
 
-Step 1: Configuration
-*********************
-
-Linux/MacOSX Users
-------------------
-
-The first step is to adapt the 'Configfile' in the Blaze home directory to the local configuration.
-Any text editor can be used for this task:
-
-vi ./Configfile
-
-In the 'Configfile', the kind of installation (debug or release), the library types (static and/or
-dynamic), the compiler including compiler flags, and several include paths have to be specified.
-Afterwards, the 'configure' script can be run, which uses the 'Configfile' to update and create
-several files (including header files):
-
-./configure
-
-This step can also be omitted, but results in a default configuration that does not guarantee
-the highest performance for all operations. For instance, without running the 'configure' script,
-Blaze assumes that no BLAS library is installed on the system and cannot use BLAS functionality
-for instance for the matrix/matrix multiplication.
-
-In order to further customize the Blaze library the header files in the './blaze/config/'
-subdirectory can be adapted. For instance, in the header file './blaze/config/StorageOrder.h'
-the default matrix storage order (i.e. row-major or column-major) can be specified.
-
-
-Windows Users
--------------
-
-Unfortunately, for Windows users there is no 'configure' script available (yet). Therefore Windows
-users have to manually configure the Blaze library. Most configuration headers are located in the
-'./blaze/config/' subdirectory. The one exception is the 'BLAS.h' header in the './blaze/system/'
-subdirectory that contains the configuration of the BLAS functionality. Note that in case the
-'BLAZE_BLAS_MODE' symbol is set to 1, the correct BLAS header file has to be specified!
-
-
-Step 2: Installation
+Step 1: Installation
 ********************
 
 Linux/MacOSX Users
 ------------------
 
-The second step is the installation of the header files. Since Blaze mainly consists of header
-files, the './blaze' subdirectory can be simply copied to a standard include directory:
+The first step is the installation of the header files. Since Blaze only consists of header
+files, the './blaze' subdirectory can be simply copied to a standard include directory (note
+that this requires root privileges):
 
 cp -r ./blaze /usr/local/include
 
 Alternatively, on Unix-based machines (which includes Linux and Mac OS X) the 'CPLUS_INCLUDE_PATH'
 environment variable can be set. The specified directory will be searched after any directories
-specified on the command line with the option '-I' and before the standard default directories
-(such as '/usr/local/include' and '/usr/include'). Assuming a user misterX, the environment
+specified on the command line with the option \c -I and before the standard default directories
+(such as '/usr/local/include' and ‘/usr/include'). Assuming a user named 'Jon', the environment
 variable can be set as follows:
 
-CPLUS_INCLUDE_PATH=/usr/home/misterX/blaze
+CPLUS_INCLUDE_PATH=/usr/home/jon/blaze
 export CPLUS_INCLUDE_PATH
 
 Last but not least, the './blaze' subdirectory can be explicitly specified on the command line.
 The following example demonstrates this by means of the GNU C++ compiler:
 
-g++ -I/usr/home/misterX/blaze -o BlazeTest BlazeTest.cpp
+g++ -I/usr/home/jon/blaze -o BlazeTest BlazeTest.cpp
 
 
 Windows Users
@@ -97,31 +59,29 @@ Windows doesn't have a standard include directory. Therefore the Blaze header fi
 to any other directory or simply left in the default Blaze directory. However, the chosen include
 directory has to be explicitly specified as include path. In Visual Studio, this is done via the
 project property pages, configuration properties, C/C++, General settings. Here the additional
-include directories can be specified. Note that there are small differences between VS2008 and
-VS2010: 'http://blogs.msdn.com/b/vsproject/archive/2009/07/07/vc-directories.aspx'
+include directories can be specified.
 
 
-Step 3 (Optional): Compilation
-******************************
+Step 2: Configuration
+*********************
 
-Linux/MacOSX Users
-------------------
+The second step is the configuration and customization of the Blaze library. Many aspects of
+Blaze can be adapted to specific requirements, environments and architectures by customizing
+the header files in the './blaze/config/' subdirectory. Since the default settings are
+reasonable for most systems this step can also be skipped. However, in order to achieve maximum
+performance a customization of at least the following configuration files is required:
 
-Next to the math library, Blaze also contains a small number of additional (sub-)libraries. If
-these libraries, such as blaze::ThreadPool or the blaze::logging functionality, are required
-it is necessary to create the Blaze library files. For that purpose, the 'configure' script has
-created a 'Makefile' that can be used for the compilation process:
+ - './blaze/config/BLAS.h': Via this configuration file Blaze can be enabled to use a third-party
+   BLAS library for several basic linear algebra functions (such as for instance dense matrix
+   multiplications). In case no BLAS library is used, all linear algebra functions use the default
+   implementations of the \b Blaze library and therefore BLAS is not a requirement for the
+   compilation process. However, please note that performance may be limited.
+ - './blaze/config/CacheSize.h': This file contains the hardware specific cache settings. Blaze
+   uses this information to optimize its cache usage. For maximum performance it is recommended
+   to adapt these setting to a specific target architecture.
+ - './blaze/config/Thresholds.h': This file contains all thresholds for the customization of the
+   Blaze compute kernels. In order to tune the kernels for a specific architecture and to maximize
+   performance it can be necessary to adjust the thresholds, especially for a parallel execution.
 
-make
-
-Afterwards, the 'libblaze.so' and/or 'libblaze.a' libraries are contained in the 'lib' subdirectory
-and can be copied to a standard library directory. However, note that this step is purely optional
-and can be omitted if only the Blaze math library is required.
-
-cp ./lib/* /usr/local/lib
-
-
-Windows Users
--------------
-
-For Windows users, a comfortable compilation of the extended Blaze features is not (yet) supported.
+For an overview of other customization options and more details, please see the Blaze wiki at
+https://bitbucket.org/blaze-lib/blaze/wiki/Home.
