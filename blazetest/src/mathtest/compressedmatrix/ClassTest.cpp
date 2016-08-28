@@ -5947,88 +5947,102 @@ void ClassTest::testReset()
    {
       test_ = "Row-major CompressedMatrix::reset()";
 
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(1,1) = 2;
-      mat(1,2) = 3;
-      mat(3,1) = 4;
-      mat(3,2) = 5;
+      // Resetting a default constructed matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 2UL );
+         reset( mat );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 5 )\n";
-         throw std::runtime_error( oss.str() );
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
 
-      // Resetting a single element
-      reset( mat(3,1) );
+      // Resetting an initialized matrix
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 5UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(1,2) = 3;
+         mat(3,1) = 4;
+         mat(3,2) = 5;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 1UL );
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 2UL );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Reset operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
-         throw std::runtime_error( oss.str() );
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting a single element
+         reset( mat(3,1) );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 1UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting row 1
+         reset( mat, 1UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 1UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 0 || mat(1,2) != 0 || mat(3,1) != 0 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 0 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting the entire matrix
+         reset( mat );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
       }
-
-      // Resetting row 1
-      reset( mat, 1UL );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 1UL );
-
-      if( mat(0,0) != 1 || mat(1,1) != 0 || mat(1,2) != 0 || mat(3,1) != 0 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Reset operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 0 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resetting the entire matrix
-      reset( mat );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 0UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 0UL );
    }
 
 
@@ -6039,84 +6053,98 @@ void ClassTest::testReset()
    {
       test_ = "Column-major CompressedMatrix::reset()";
 
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(1,1) = 2;
-      mat(1,2) = 3;
-      mat(3,1) = 4;
-      mat(3,2) = 5;
+      // Resetting a default constructed matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 2UL );
+         reset( mat );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 5 )\n";
-         throw std::runtime_error( oss.str() );
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
 
-      // Resetting a single element
-      reset( mat(3,1) );
+      // Resetting an initialized matrix
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 5UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(1,2) = 3;
+         mat(3,1) = 4;
+         mat(3,2) = 5;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Reset operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
-         throw std::runtime_error( oss.str() );
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting a single element
+         reset( mat(3,1) );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting column 1
+         reset( mat, 1UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 0 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 0 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Resetting the entire matrix
+         reset( mat );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
       }
-
-      // Resetting column 1
-      reset( mat, 1UL );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(1,1) != 0 || mat(1,2) != 3 || mat(3,1) != 0 || mat(3,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Reset operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 0 3 )\n( 0 0 0 )\n( 0 0 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resetting the entire matrix
-      reset( mat );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
-      checkNonZeros( mat, 0UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 0UL );
    }
 }
 //*************************************************************************************************
@@ -6140,60 +6168,74 @@ void ClassTest::testClear()
    {
       test_ = "Row-major CompressedMatrix::clear()";
 
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 4UL );
-      mat(0,0) = 1;
-      mat(1,1) = 2;
-      mat(1,2) = 3;
-      mat(3,1) = 4;
+      // Clearing a default constructed matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 1UL );
+         clear( mat );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
 
-      // Clearing a single element
-      clear( mat(1,2) );
+      // Clearing an initialized matrix
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 4UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(1,2) = 3;
+         mat(3,1) = 4;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 1UL );
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 1UL );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 0 || mat(3,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Clear operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 0 )\n( 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Clearing a single element
+         clear( mat(1,2) );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 1UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 0 || mat(3,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 0 )\n( 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Clearing the matrix
+         clear( mat );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
-
-      // Clearing the matrix
-      clear( mat );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
    }
 
 
@@ -6204,58 +6246,72 @@ void ClassTest::testClear()
    {
       test_ = "Column-major CompressedMatrix::clear()";
 
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 4UL );
-      mat(0,0) = 1;
-      mat(1,1) = 2;
-      mat(1,2) = 3;
-      mat(3,1) = 4;
+      // Clearing a default constructed matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 1UL );
+         clear( mat );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Clear operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
 
-      // Clearing a single element
-      clear( mat(1,2) );
+      // Clearing an initialized matrix
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 4UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(1,2) = 3;
+         mat(3,1) = 4;
 
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 2UL );
-      checkNonZeros( mat, 2UL, 0UL );
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
-      if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 0 || mat(3,1) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 0 )\n( 0 4 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 3 || mat(3,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 3 )\n( 0 0 0 )\n( 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Clearing a single element
+         clear( mat(1,2) );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( mat(0,0) != 1 || mat(1,1) != 2 || mat(1,2) != 0 || mat(3,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 0 )\n( 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Clearing the matrix
+         clear( mat );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
       }
-
-      // Clearing the matrix
-      clear( mat );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
    }
 }
 //*************************************************************************************************
