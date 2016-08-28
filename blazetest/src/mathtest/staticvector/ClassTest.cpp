@@ -2274,55 +2274,79 @@ void ClassTest::testReset()
 
    test_ = "StaticVector::reset()";
 
-   // Initialization check
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec{ 1, 2, 3, 4 };
+   // Resetting a default constructed vector
+   {
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
 
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 4UL );
+      reset( vec );
 
-   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 3 4 )\n";
-      throw std::runtime_error( oss.str() );
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
+
+      if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Resetting a single element
-   reset( vec[2] );
+   // Resetting an initialized vector
+   {
+      // Initialization check
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec{ 1, 2, 3, 4 };
 
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 3UL );
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
 
-   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Reset operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 0 4 )\n";
-      throw std::runtime_error( oss.str() );
-   }
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
-   // Resetting the vector
-   reset( vec );
+      // Resetting a single element
+      reset( vec[2] );
 
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 0UL );
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 3UL );
 
-   if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Reset operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 0 0 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resetting the vector
+      reset( vec );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
+
+      if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
@@ -2343,38 +2367,79 @@ void ClassTest::testClear()
 
    test_ = "clear() function";
 
-   // Initialization check
-   blaze::StaticVector<int,4UL,blaze::rowVector> vec{ 1, 2, 3, 4 };
+   // Clearing a default constructed vector
+   {
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec;
 
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 4UL );
+      clear( vec );
 
-   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 3 4 )\n";
-      throw std::runtime_error( oss.str() );
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
+
+      if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Clearing a single element
-   clear( vec[2] );
+   // Clearing an initialized vector
+   {
+      // Initialization check
+      blaze::StaticVector<int,4UL,blaze::rowVector> vec{ 1, 2, 3, 4 };
 
-   checkSize    ( vec, 4UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 3UL );
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
 
-   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Clear operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 2 0 4 )\n";
-      throw std::runtime_error( oss.str() );
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Clearing a single element
+      clear( vec[2] );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Clearing the vector
+      clear( vec );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 0UL );
+
+      if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
