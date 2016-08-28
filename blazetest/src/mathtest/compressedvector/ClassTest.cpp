@@ -1593,50 +1593,63 @@ void ClassTest::testReset()
 {
    test_ = "CompressedVector::reset()";
 
-   // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 11UL, 4UL );
-   vec[1] = 1;
-   vec[3] = 2;
-   vec[7] = 3;
-   vec[9] = 4;
+   // Resetting a default constructed vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
 
-   checkSize    ( vec, 11UL );
-   checkCapacity( vec,  4UL );
-   checkNonZeros( vec,  4UL );
+      reset( vec );
 
-   if( vec[1] != 1 || vec[3] != 2 || vec[7] != 3 || vec[9] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 1 0 2 0 0 0 3 0 4 0 )\n";
-      throw std::runtime_error( oss.str() );
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
    }
 
-   // Resetting a single element
-   reset( vec[7] );
+   // Resetting an initialized vector
+   {
+      // Initialization check
+      blaze::CompressedVector<int,blaze::rowVector> vec( 11UL, 4UL );
+      vec[1] = 1;
+      vec[3] = 2;
+      vec[7] = 3;
+      vec[9] = 4;
 
-   checkSize    ( vec, 11UL );
-   checkCapacity( vec,  4UL );
-   checkNonZeros( vec,  3UL );
+      checkSize    ( vec, 11UL );
+      checkCapacity( vec,  4UL );
+      checkNonZeros( vec,  4UL );
 
-   if( vec[1] != 1 || vec[3] != 2 || vec[7] != 0 || vec[9] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Reset operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 1 0 2 0 0 0 0 0 4 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( vec[1] != 1 || vec[3] != 2 || vec[7] != 3 || vec[9] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 1 0 2 0 0 0 3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resetting a single element
+      reset( vec[7] );
+
+      checkSize    ( vec, 11UL );
+      checkCapacity( vec,  4UL );
+      checkNonZeros( vec,  3UL );
+
+      if( vec[1] != 1 || vec[3] != 2 || vec[7] != 0 || vec[9] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 1 0 2 0 0 0 0 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resetting the vector
+      reset( vec );
+
+      checkSize    ( vec, 11UL );
+      checkCapacity( vec,  4UL );
+      checkNonZeros( vec,  0UL );
    }
-
-   // Resetting the vector
-   reset( vec );
-
-   checkSize    ( vec, 11UL );
-   checkCapacity( vec,  4UL );
-   checkNonZeros( vec,  0UL );
 }
 //*************************************************************************************************
 
@@ -1654,48 +1667,61 @@ void ClassTest::testClear()
 {
    test_ = "CompressedVector::clear()";
 
-   // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 3UL );
-   vec[0] = 1;
-   vec[7] = 2;
-   vec[8] = 3;
+   // Clearing a default constructed vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 3UL );
+      clear( vec );
 
-   if( vec[0] != 1 || vec[7] != 2 || vec[8] != 3 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 0 0 0 0 0 0 2 3 )\n";
-      throw std::runtime_error( oss.str() );
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
    }
 
-   // Clearing a single element
-   clear( vec[7] );
+   // Clearing an initialized vector
+   {
+      // Initialization check
+      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 3UL );
+      vec[0] = 1;
+      vec[7] = 2;
+      vec[8] = 3;
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 2UL );
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
 
-   if( vec[0] != 1 || vec[7] != 0 || vec[8] != 3 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Clear operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 0 0 0 0 0 0 0 3 )\n";
-      throw std::runtime_error( oss.str() );
+      if( vec[0] != 1 || vec[7] != 2 || vec[8] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 0 0 0 0 0 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Clearing a single element
+      clear( vec[7] );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 1 || vec[7] != 0 || vec[8] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 0 0 0 0 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Clearing the vector
+      clear( vec );
+
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
    }
-
-   // Clearing the vector
-   clear( vec );
-
-   checkSize    ( vec, 0UL );
-   checkNonZeros( vec, 0UL );
 }
 //*************************************************************************************************
 
