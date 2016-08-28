@@ -1389,7 +1389,8 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline void CompressedMatrix<Type,SO>::clear()
 {
-   end_[0UL] = end_[m_];
+   if( end_ != nullptr )
+      end_[0UL] = end_[m_];
    m_ = 0UL;
    n_ = 0UL;
 }
@@ -3782,7 +3783,8 @@ inline void CompressedMatrix<Type,true>::reset( size_t j )
 template< typename Type >  // Data type of the sparse matrix
 inline void CompressedMatrix<Type,true>::clear()
 {
-   end_[0UL] = end_[n_];
+   if( end_ != nullptr )
+      end_[0UL] = end_[n_];
    m_ = 0UL;
    n_ = 0UL;
 }
