@@ -1624,6 +1624,37 @@ inline const DVecForEachExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the binary logarithm for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
+// \return The binary logarithm of each single element of \a dv.
+//
+// The \a log2() function computes binary logarithm for each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log2() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = log2( a );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Log2,TF>( ~dv, Log2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the common logarithm for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //

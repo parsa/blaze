@@ -70,6 +70,7 @@ struct Inv;
 struct InvCbrt;
 struct InvSqrt;
 struct Log;
+struct Log2;
 struct Log10;
 template< typename > struct Pow;
 struct Real;

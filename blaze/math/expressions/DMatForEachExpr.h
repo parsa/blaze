@@ -1561,6 +1561,37 @@ inline const DMatForEachExpr<MT,Log,SO> log( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Computes the binary logarithm for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix; all elements must be in the range \f$[0..\infty)\f$.
+// \return The binary logarithm of each single element of \a dm.
+//
+// The \a log2() function computes binary logarithm for each element of the input matrix \a dm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log2() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = log2( A );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Log2,SO> log2( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Log2,SO>( ~dm, Log2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the common logarithm for each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
@@ -2299,7 +2330,22 @@ struct IsSymmetric< DMatForEachExpr<MT,Exp,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Exp2,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Exp10,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsSymmetric< DMatForEachExpr<MT,Log,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Log2,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
@@ -2452,7 +2498,22 @@ struct IsHermitian< DMatForEachExpr<MT,Exp,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Exp2,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Exp10,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsHermitian< DMatForEachExpr<MT,Log,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Log2,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
