@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/shims/Exp2.h
+//  \brief Header file for the exp2 shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,53 +32,31 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_SHIMS_EXP2_H_
+#define _BLAZE_MATH_SHIMS_EXP2_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <cmath>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  EXP2 SHIM
 //
 //=================================================================================================
 
-struct Abs;
-struct Acos;
-struct Acosh;
-struct Asin;
-struct Asinh;
-struct Atan;
-struct Atanh;
-struct Cbrt;
-struct Ceil;
-template< typename > struct Clip;
-struct Conj;
-struct Cos;
-struct Cosh;
-struct CTrans;
-struct Erf;
-struct Erfc;
-struct Eval;
-struct Exp;
-struct Exp2;
-struct Floor;
-struct Imag;
-struct Inv;
-struct InvCbrt;
-struct InvSqrt;
-struct Log;
-struct Log10;
-template< typename > struct Pow;
-struct Real;
-struct Serial;
-struct Sin;
-struct Sinh;
-struct Sqrt;
-struct Tan;
-struct Tanh;
-struct Trans;
+//*************************************************************************************************
+/*!\brief Import of the std::exp2() function into the Blaze namespace.
+// \ingroup math_shims
+*/
+using std::exp2;
+//*************************************************************************************************
 
 } // namespace blaze
 

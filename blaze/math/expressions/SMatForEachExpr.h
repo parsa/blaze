@@ -1341,6 +1341,34 @@ inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Computes \f$ 2^x \f$ for each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// The \a exp2() function computes \f$ e^x \f$ for each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a exp2() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = exp2( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Exp2,SO>( ~sm, Exp2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the natural logarithm for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //

@@ -58,6 +58,7 @@
 #include <blaze/math/functors/Erfc.h>
 #include <blaze/math/functors/Eval.h>
 #include <blaze/math/functors/Exp.h>
+#include <blaze/math/functors/Exp2.h>
 #include <blaze/math/functors/Floor.h>
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/Inv.h>

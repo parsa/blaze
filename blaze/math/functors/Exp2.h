@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Exp.h
-//  \brief Header file for the SIMD exp functionality
+//  \file blaze/math/functors/Exp2.h
+//  \brief Header file for the Exp2 functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,90 +32,71 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_EXP_H_
-#define _BLAZE_MATH_SIMD_EXP_H_
+#ifndef _BLAZE_MATH_FUNCTORS_EXP2_H_
+#define _BLAZE_MATH_FUNCTORS_EXP2_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/simd/BasicTypes.h>
+#include <blaze/math/constraints/SIMDPack.h>
+#include <blaze/math/shims/Exp2.h>
+#include <blaze/math/simd/Exp2.h>
+#include <blaze/math/typetraits/HasSIMDExp2.h>
 #include <blaze/system/Inline.h>
-#include <blaze/system/Vectorization.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  32-BIT FLOATING POINT SIMD TYPES
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes \f$ e^x \f$ for a vector of single precision floating point values.
-// \ingroup simd
-//
-// \param a The vector of single precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML for SSE, AVX, and AVX-512.
+/*!\brief Generic wrapper for the exp2() function.
+// \ingroup functors
 */
-template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDfloat exp( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+struct Exp2
 {
-   return _mm512_exp_ps( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_exp_ps( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-{
-   return _mm_exp_ps( (~a).eval().value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
+   //**********************************************************************************************
+   /*!\brief Returns the result of the exp2() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the exp2() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
+   {
+      return exp2( a );
+   }
+   //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*!\brief Returns whether SIMD is enabled for the specified data type \a T.
+   //
+   // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
+   */
+   template< typename T >
+   static constexpr bool simdEnabled() { return HasSIMDExp2<T>::value; }
+   //**********************************************************************************************
 
-
-
-//=================================================================================================
-//
-//  64-BIT FLOATING POINT SIMD TYPES
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Computes \f$ e^x \f$ for a vector of double precision floating point values.
-// \ingroup simd
-//
-// \param a The vector of double precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML for SSE, AVX, and AVX-512.
-*/
-template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDdouble exp( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
-{
-   return _mm512_exp_pd( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_exp_pd( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-{
-   return _mm_exp_pd( (~a).eval().value );
-}
-#else
-= delete;
-#endif
+   //**********************************************************************************************
+   /*!\brief Returns the result of the exp2() function for the given SIMD vector.
+   //
+   // \param a The given SIMD vector.
+   // \return The result of the exp2() function for the given SIMD vector.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto load( const T& a ) const
+   {
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
+      return exp2( a );
+   }
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 } // namespace blaze

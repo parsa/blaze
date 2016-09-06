@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/HasSIMDExp.h
-//  \brief Header file for the HasSIMDExp type trait
+//  \file blaze/math/typetraits/HasSIMDExp2.h
+//  \brief Header file for the HasSIMDExp2 type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDEXP_H_
-#define _BLAZE_MATH_TYPETRAITS_HASSIMDEXP_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDEXP2_H_
+#define _BLAZE_MATH_TYPETRAITS_HASSIMDEXP2_H_
 
 
 //*************************************************************************************************
@@ -61,7 +61,7 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 template< typename T         // Type of the operand
         , typename = void >  // Restricting condition
-struct HasSIMDExpHelper
+struct HasSIMDExp2Helper
 {
    enum : bool { value = false };
 };
@@ -73,7 +73,7 @@ struct HasSIMDExpHelper
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_SVML_MODE
 template< typename T >
-struct HasSIMDExpHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
+struct HasSIMDExp2Helper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 {
    enum : bool { value = bool( BLAZE_SSE_MODE ) ||
                          bool( BLAZE_AVX_MODE ) ||
@@ -85,11 +85,11 @@ struct HasSIMDExpHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 
 
 //*************************************************************************************************
-/*!\brief Availability of a SIMD \c exp() operation for the given data type.
+/*!\brief Availability of a SIMD \c exp2() operation for the given data type.
 // \ingroup math_type_traits
 //
 // Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
-// the used compiler, this type trait provides the information whether a SIMD \c exp() operation
+// the used compiler, this type trait provides the information whether a SIMD \c exp2() operation
 // exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD operation
 // is available, the \a value member constant is set to \a true, the nested type definition
 // \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
@@ -97,16 +97,16 @@ struct HasSIMDExpHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 // example assumes that the Intel SVML is available:
 
    \code
-   blaze::HasSIMDExp< float >::value         // Evaluates to 1
-   blaze::HasSIMDExp< double >::Type         // Results in TrueType
-   blaze::HasSIMDExp< const double >         // Is derived from TrueType
-   blaze::HasSIMDExp< unsigned int >::value  // Evaluates to 0
-   blaze::HasSIMDExp< long double >::Type    // Results in FalseType
-   blaze::HasSIMDExp< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDExp2< float >::value         // Evaluates to 1
+   blaze::HasSIMDExp2< double >::Type         // Results in TrueType
+   blaze::HasSIMDExp2< const double >         // Is derived from TrueType
+   blaze::HasSIMDExp2< unsigned int >::value  // Evaluates to 0
+   blaze::HasSIMDExp2< long double >::Type    // Results in FalseType
+   blaze::HasSIMDExp2< complex<double> >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDExp : public BoolConstant< HasSIMDExpHelper< Decay_<T> >::value >
+struct HasSIMDExp2 : public BoolConstant< HasSIMDExp2Helper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 

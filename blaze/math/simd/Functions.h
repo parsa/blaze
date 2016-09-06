@@ -57,6 +57,7 @@
 #include <blaze/math/simd/Erf.h>
 #include <blaze/math/simd/Erfc.h>
 #include <blaze/math/simd/Exp.h>
+#include <blaze/math/simd/Exp2.h>
 #include <blaze/math/simd/Floor.h>
 #include <blaze/math/simd/FMA.h>
 #include <blaze/math/simd/InvCbrt.h>

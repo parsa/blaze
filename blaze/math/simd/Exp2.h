@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/HasSIMDExp.h
-//  \brief Header file for the HasSIMDExp type trait
+//  \file blaze/math/simd/Exp2.h
+//  \brief Header file for the SIMD exp2 functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,82 +32,90 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDEXP_H_
-#define _BLAZE_MATH_TYPETRAITS_HASSIMDEXP_H_
+#ifndef _BLAZE_MATH_SIMD_EXP2_H_
+#define _BLAZE_MATH_SIMD_EXP2_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/simd/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsDouble.h>
-#include <blaze/util/typetraits/IsFloat.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  32-BIT FLOATING POINT SIMD TYPES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
-        , typename = void >  // Restricting condition
-struct HasSIMDExpHelper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if BLAZE_SVML_MODE
-template< typename T >
-struct HasSIMDExpHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
-};
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Availability of a SIMD \c exp() operation for the given data type.
-// \ingroup math_type_traits
+/*!\brief Computes \f$ 2^x \f$ for a vector of single precision floating point values.
+// \ingroup simd
 //
-// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
-// the used compiler, this type trait provides the information whether a SIMD \c exp() operation
-// exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD operation
-// is available, the \a value member constant is set to \a true, the nested type definition
-// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
-// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The following
-// example assumes that the Intel SVML is available:
-
-   \code
-   blaze::HasSIMDExp< float >::value         // Evaluates to 1
-   blaze::HasSIMDExp< double >::Type         // Results in TrueType
-   blaze::HasSIMDExp< const double >         // Is derived from TrueType
-   blaze::HasSIMDExp< unsigned int >::value  // Evaluates to 0
-   blaze::HasSIMDExp< long double >::Type    // Results in FalseType
-   blaze::HasSIMDExp< complex<double> >      // Is derived from FalseType
-   \endcode
+// \param a The vector of single precision floating point values.
+// \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
 */
 template< typename T >  // Type of the operand
-struct HasSIMDExp : public BoolConstant< HasSIMDExpHelper< Decay_<T> >::value >
-{};
+BLAZE_ALWAYS_INLINE const SIMDfloat exp2( const SIMDf32<T>& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+{
+   return _mm512_exp2_ps( (~a).eval().value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+{
+   return _mm256_exp2_ps( (~a).eval().value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+{
+   return _mm_exp2_ps( (~a).eval().value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Computes \f$ 2^x \f$ for a vector of double precision floating point values.
+// \ingroup simd
+//
+// \param a The vector of double precision floating point values.
+// \return The resulting vector.
+//
+// This operation is only available via the SVML for SSE, AVX, and AVX-512.
+*/
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const SIMDdouble exp2( const SIMDf64<T>& a ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+{
+   return _mm512_exp2_pd( (~a).eval().value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+{
+   return _mm256_exp2_pd( (~a).eval().value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+{
+   return _mm_exp2_pd( (~a).eval().value );
+}
+#else
+= delete;
+#endif
 //*************************************************************************************************
 
 } // namespace blaze
