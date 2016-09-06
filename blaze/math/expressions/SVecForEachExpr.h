@@ -1270,8 +1270,8 @@ inline const SVecForEachExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, 
 // \param sv The input vector.
 // \return The resulting sparse vector.
 //
-// The \a exp() function computes \f$ e^x \f$ for each non-zero element of the input vector \a sv.
-// The function returns an expression representing this operation.\n
+// The \a exp() function computes \f$ e^x \f$ for each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a exp() function:
 
    \code
@@ -1298,8 +1298,8 @@ inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 // \param sv The input vector.
 // \return The resulting sparse vector.
 //
-// The \a exp2() function computes \f$ e^x \f$ for each non-zero element of the input vector \a sv.
-// The function returns an expression representing this operation.\n
+// The \a exp2() function computes \f$ 2^x \f$ for each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a exp2() function:
 
    \code
@@ -1315,6 +1315,34 @@ inline const SVecForEachExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    return SVecForEachExpr<VT,Exp2,TF>( ~sv, Exp2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes \f$ 10^x \f$ of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// The \a exp10() function computes \f$ 10^x \f$ for each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a exp10() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = exp10( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Exp10,TF>( ~sv, Exp10() );
 }
 //*************************************************************************************************
 

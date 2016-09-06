@@ -1502,6 +1502,34 @@ inline const DMatForEachExpr<MT,Exp2,SO> exp2( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Computes \f$ 10^x \f$ for each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// The \a exp10() function computes \f$ 10^x \f$ for each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a exp10() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = exp10( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Exp10,SO> exp10( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Exp10,SO>( ~dm, Exp10() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the natural logarithm for each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //

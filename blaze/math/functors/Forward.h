@@ -63,6 +63,7 @@ struct Erfc;
 struct Eval;
 struct Exp;
 struct Exp2;
+struct Exp10;
 struct Floor;
 struct Imag;
 struct Inv;

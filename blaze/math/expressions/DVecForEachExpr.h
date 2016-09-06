@@ -1543,7 +1543,7 @@ inline const DVecForEachExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The resulting dense vector.
 //
-// The \a exp2() function computes \f$ e^x \f$ for each element of the input vector \a dv. The
+// The \a exp2() function computes \f$ 2^x \f$ for each element of the input vector \a dv. The
 // function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a exp2() function:
 
@@ -1560,6 +1560,34 @@ inline const DVecForEachExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return DVecForEachExpr<VT,Exp2,TF>( ~dv, Exp2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes \f$ 10^x \f$ for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// The \a exp10() function computes \f$ 10^x \f$ for each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a exp10() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = exp10( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Exp10,TF>( ~dv, Exp10() );
 }
 //*************************************************************************************************
 
