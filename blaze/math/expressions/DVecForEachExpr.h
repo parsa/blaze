@@ -1228,6 +1228,34 @@ inline const DVecForEachExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a round() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a round() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a round() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = round( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Round,TF>( ~dv, Round() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a vector containing the complex conjugate of each single element of \a dv.
 // \ingroup dense_vector
 //
@@ -2222,6 +2250,29 @@ inline const DVecForEachExpr<VT,Trunc,TF>& trunc( const DVecForEachExpr<VT,Trunc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a round() function to a dense vector \a round() expressions.
+// \ingroup dense_vector
+//
+// \param dv The dense vector \a round expression.
+// \return The resulting dense vector.
+//
+// This function implements a performance optimized treatment of the \a round() operation on
+// a dense vector \a round() expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Round,TF>& round( const DVecForEachExpr<VT,Round,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense vector expressions.
 // \ingroup dense_vector
 //
@@ -2485,6 +2536,38 @@ struct TDVecForEachExprTrait< DVecForEachExpr<VT,Trunc,true>, Trunc >
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecForEachExpr<VT,Trunc,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Round,false>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Round,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Round,true>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

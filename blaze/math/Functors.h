@@ -70,6 +70,7 @@
 #include <blaze/math/functors/Log10.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
+#include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/Serial.h>
 #include <blaze/math/functors/Sin.h>
 #include <blaze/math/functors/Sinh.h>

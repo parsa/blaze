@@ -983,6 +983,34 @@ inline const SVecForEachExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a round() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a round() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a round() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = round( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Round,TF>( ~sv, Round() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a vector containing the complex conjugate of each single element of \a sv.
 // \ingroup sparse_vector
 //
@@ -1977,6 +2005,29 @@ inline const SVecForEachExpr<VT,Trunc,TF>& trunc( const SVecForEachExpr<VT,Trunc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a round() function to a sparse vector \a round() expressions.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector \a round expression.
+// \return The resulting sparse vector.
+//
+// This function implements a performance optimized treatment of the \a round() operation on
+// a sparse vector \a round() expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Round,TF>& round( const SVecForEachExpr<VT,Round,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate sparse vector expressions.
 // \ingroup sparse_vector
 //
@@ -2204,6 +2255,38 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Trunc,true>, Trunc >
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
                    , SVecForEachExpr<VT,Trunc,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecForEachExprTrait< SVecForEachExpr<VT,Round,false>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecForEachExpr<VT,Round,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecForEachExprTrait< SVecForEachExpr<VT,Round,true>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecForEachExpr<VT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

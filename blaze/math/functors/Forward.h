@@ -74,6 +74,7 @@ struct Log2;
 struct Log10;
 template< typename > struct Pow;
 struct Real;
+struct Round;
 struct Serial;
 struct Sin;
 struct Sinh;

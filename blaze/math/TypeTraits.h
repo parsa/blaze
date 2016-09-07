@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/HasSIMDLog10.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
+#include <blaze/math/typetraits/HasSIMDRound.h>
 #include <blaze/math/typetraits/HasSIMDSin.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>

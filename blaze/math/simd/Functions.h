@@ -71,6 +71,7 @@
 #include <blaze/math/simd/Multiplication.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Reduction.h>
+#include <blaze/math/simd/Round.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
 #include <blaze/math/simd/Sin.h>

@@ -1165,6 +1165,34 @@ inline const DMatForEachExpr<MT,Trunc,SO> trunc( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a round() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a round() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a round() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = round( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Round,SO> round( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Round,SO>( ~dm, Round() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a matrix containing the complex conjugate of each single element of \a dm.
 // \ingroup dense_matrix
 //
@@ -2159,6 +2187,29 @@ inline const DMatForEachExpr<MT,Trunc,SO>& trunc( const DMatForEachExpr<MT,Trunc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a round() function to a dense matrix \a round() expressions.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix \a round() expression.
+// \return The resulting dense matrix.
+//
+// This function implements a performance optimized treatment of the \a round() operation on
+// a dense matrix \a round() expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Round,SO>& round( const DMatForEachExpr<MT,Round,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense matrix expressions.
 // \ingroup dense_matrix
 //
@@ -2341,6 +2392,11 @@ struct IsSymmetric< DMatForEachExpr<MT,Trunc,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsSymmetric< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
@@ -2510,6 +2566,11 @@ struct IsHermitian< DMatForEachExpr<MT,Ceil,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Round,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
@@ -2687,6 +2748,11 @@ struct IsLower< DMatForEachExpr<MT,Trunc,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsLower< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsLower<MT>::value >
 {};
@@ -2763,42 +2829,27 @@ template< typename MT, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Abs,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Floor,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Ceil,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
+template< typename MT, bool SO >
+struct IsUniLower< DMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ET, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
@@ -2834,6 +2885,11 @@ struct IsStrictlyLower< DMatForEachExpr<MT,Ceil,SO> >
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Round,SO> >
    : public BoolConstant< IsStrictlyLower<MT>::value >
 {};
 
@@ -2931,6 +2987,11 @@ struct IsUpper< DMatForEachExpr<MT,Trunc,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsUpper< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsUpper<MT>::value >
 {};
@@ -3007,42 +3068,27 @@ template< typename MT, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Abs,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Floor,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Ceil,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
+template< typename MT, bool SO >
+struct IsUniUpper< DMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ET, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
@@ -3078,6 +3124,11 @@ struct IsStrictlyUpper< DMatForEachExpr<MT,Ceil,SO> >
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Round,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 
@@ -3273,6 +3324,38 @@ struct TDMatForEachExprTrait< DMatForEachExpr<MT,Trunc,true>, Trunc >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatForEachExpr<MT,Trunc,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Round,false>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Round,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Round,true>, Round >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
