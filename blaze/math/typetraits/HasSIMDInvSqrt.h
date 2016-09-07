@@ -71,15 +71,26 @@ struct HasSIMDInvSqrtHelper
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if BLAZE_SVML_MODE
-template< typename T >
-struct HasSIMDInvSqrtHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
+template<>
+struct HasSIMDInvSqrtHelper< float >
 {
    enum : bool { value = bool( BLAZE_SSE_MODE ) ||
                          bool( BLAZE_AVX_MODE ) ||
                          bool( BLAZE_MIC_MODE ) };
 };
-#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template<>
+struct HasSIMDInvSqrtHelper< double >
+{
+   enum : bool { value = ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_SSE_MODE ) ) ||
+                         ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_AVX_MODE ) ) ||
+                         ( bool( BLAZE_MIC_MODE ) ) };
+};
 /*! \endcond */
 //*************************************************************************************************
 
