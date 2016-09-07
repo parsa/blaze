@@ -2539,6 +2539,46 @@ struct IsLower< SMatForEachExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ET, bool SO >
 struct IsUniLower< SMatForEachExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
@@ -2590,6 +2630,46 @@ struct IsUpper< SMatForEachExpr<MT,OP,SO> >
 //  ISUNIUPPER SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Abs,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Floor,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
