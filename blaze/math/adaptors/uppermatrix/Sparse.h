@@ -45,6 +45,7 @@
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/UpperProxy.h>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
