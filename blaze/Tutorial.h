@@ -1523,16 +1523,18 @@
                           3 \\
                           \end{array}\right)\f$
 
-// \n \subsection vector_operators_floor_ceil floor() / ceil()
+// \n \subsection vector_operations_rounding_functions floor() / ceil() / trunc() / round()
 //
-// The \c floor() and \c ceil() functions can be used to round down/up each element of a vector,
-// respectively:
+// The \c floor() \c ceil(), \c trunc(), and \c round() functions can be used to round down/up
+// each element of a vector, respectively:
 
    \code
    blaze::StaticVector<double,3UL,rowVector> a, b;
 
    b = floor( a );  // Rounding down each element of the vector
-   b = ceil( a );   // Rounding up each element of the vector
+   b = ceil ( a );  // Rounding up each element of the vector
+   b = trunc( a );  // Truncating each element of the vector
+   b = round( a );  // Rounding each element of the vector
    \endcode
 
 // \n \subsection vector_operators_conj conj()
@@ -1663,28 +1665,32 @@
    b = pow( a, 1.2 );  // Computes the exponential value of each element
    \endcode
 
-// \n \subsection vector_operations_exp exp()
+// \n \subsection vector_operations_exp exp() / exp2() / exp10()
 //
-// \c exp() computes the base e exponential of each element of a vector:
+// \c exp(), \c exp2() and \c exp10() compute the base e/2/10 exponential of each element of a
+// vector, respectively:
 
    \code
    blaze::DynamicVector<double> a, b;
 
-   b = exp( a );  // Computes the base e exponential of each element
+   b = exp( a );    // Computes the base e exponential of each element
+   b = exp2( a );   // Computes the base 2 exponential of each element
+   b = exp10( a );  // Computes the base 10 exponential of each element
    \endcode
 
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
-// \n \subsection vector_operations_log log() / log10()
+// \n \subsection vector_operations_log log() / log2() / log10()
 //
-// The \c log() and \c log10() functions can be used to compute the natural and common logarithm
-// of each element of a vector:
+// The \c log(), \c log2() and \c log10() functions can be used to compute the natural, binary
+// and common logarithm of each element of a vector:
 
    \code
    blaze::StaticVector<double,3UL> a, b;
 
    b = log( a );    // Computes the natural logarithm of each element
+   b = log2( a );   // Computes the binary logarithm of each element
    b = log10( a );  // Computes the common logarithm of each element
    \endcode
 
@@ -3222,16 +3228,18 @@
                           4 & 5 & 6 \\
                           \end{array}\right)\f$
 
-// \n \subsection matrix_operators_floor_ceil floor() / ceil()
+// \n \subsection matrix_operators_rounding_functions floor() / ceil() / trunc() / round()
 //
-// The \c floor() and \c ceil() functions can be used to round down/up each element of a matrix,
-// respectively:
+// The \c floor(), \c ceil(), \c trunc(), and \c round() functions can be used to round down/up
+// each element of a matrix, respectively:
 
    \code
    blaze::StaticMatrix<double,3UL,3UL> A, B;
 
    B = floor( A );  // Rounding down each element of the matrix
-   B = ceil( A );   // Rounding up each element of the matrix
+   B = ceil ( A );  // Rounding up each element of the matrix
+   B = trunc( A );  // Truncating each element of the matrix
+   B = round( A );  // Rounding each element of the matrix
    \endcode
 
 // \n \subsection matrix_operators_conj conj()
@@ -3367,26 +3375,30 @@
 
 // \n \subsection matrix_operators_exp exp()
 //
-// \c exp() computes the base e exponential of each element of a matrix:
+// \c exp(), \c exp2() and \c exp10() compute the base e/2/10 exponential of each element of a
+// matrix, respectively:
 
    \code
    blaze::HybridMatrix<double,3UL,3UL> A, B;
 
-   B = exp( A );  // Computes the base e exponential of each element
+   B = exp( A );    // Computes the base e exponential of each element
+   B = exp2( A );   // Computes the base 2 exponential of each element
+   B = exp10( A );  // Computes the base 10 exponential of each element
    \endcode
 
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
 //
 //
-// \n \subsection matrix_operators_log log() / log10()
+// \n \subsection matrix_operators_log log() / log2() / log10()
 //
-// The \c log() and \c log10() functions can be used to compute the natural and common logarithm
-// of each element of a matrix:
+// The \c log(), \c log2() and \c log10() functions can be used to compute the natural, binary
+// and common logarithm of each element of a matrix:
 
    \code
    blaze::StaticMatrix<double,3UL,3UL> A, B;
 
    B = log( A );    // Computes the natural logarithm of each element
+   B = log2( A );   // Computes the binary logarithm of each element
    B = log10( A );  // Computes the common logarithm of each element
    \endcode
 
