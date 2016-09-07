@@ -82,5 +82,6 @@
 #include <blaze/math/simd/Subtraction.h>
 #include <blaze/math/simd/Tan.h>
 #include <blaze/math/simd/Tanh.h>
+#include <blaze/math/simd/Trunc.h>
 
 #endif

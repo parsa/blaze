@@ -81,6 +81,7 @@ struct Sqrt;
 struct Tan;
 struct Tanh;
 struct Trans;
+struct Trunc;
 
 } // namespace blaze
 

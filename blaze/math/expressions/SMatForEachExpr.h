@@ -1004,6 +1004,34 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a trunc() function to each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the trunc() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a trunc() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = trunc( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatForEachExpr<MT,Trunc,SO>( ~sm, Trunc() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a matrix containing the complex conjugate of each single element of \a sm.
 // \ingroup sparse_matrix
 //
@@ -1976,6 +2004,29 @@ inline const SMatForEachExpr<MT,Ceil,SO>& ceil( const SMatForEachExpr<MT,Ceil,SO
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a trunc() function to a sparse matrix \a trunc() expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix \a trunc() expression.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the \a trunc() operation on
+// a sparse matrix \a trunc() expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatForEachExpr<MT,Trunc,SO>& trunc( const SMatForEachExpr<MT,Trunc,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate sparse matrix expressions.
 // \ingroup sparse_matrix
 //
@@ -2136,6 +2187,11 @@ struct IsSymmetric< SMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsSymmetric< SMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsSymmetric< SMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
@@ -2304,6 +2360,11 @@ struct IsHermitian< SMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< SMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< SMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
@@ -2591,6 +2652,102 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Abs,true>, Abs >
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , SMatForEachExpr<MT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Floor,false>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Floor,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Floor,true>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Floor,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Ceil,false>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Ceil,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Ceil,true>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Ceil,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatForEachExprTrait< SMatForEachExpr<MT,Trunc,false>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Trunc,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatForEachExprTrait< SMatForEachExpr<MT,Trunc,true>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , SMatForEachExpr<MT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

@@ -1137,6 +1137,34 @@ inline const DMatForEachExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a trunc() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a trunc() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a trunc() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = trunc( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Trunc,SO> trunc( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatForEachExpr<MT,Trunc,SO>( ~dm, Trunc() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a matrix containing the complex conjugate of each single element of \a dm.
 // \ingroup dense_matrix
 //
@@ -2108,6 +2136,29 @@ inline const DMatForEachExpr<MT,Ceil,SO>& ceil( const DMatForEachExpr<MT,Ceil,SO
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a trunc() function to a dense matrix \a trunc() expressions.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix \a trunc() expression.
+// \return The resulting dense matrix.
+//
+// This function implements a performance optimized treatment of the \a trunc() operation on
+// a dense matrix \a trunc() expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatForEachExpr<MT,Trunc,SO>& trunc( const DMatForEachExpr<MT,Trunc,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense matrix expressions.
 // \ingroup dense_matrix
 //
@@ -2285,6 +2336,11 @@ struct IsSymmetric< DMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsSymmetric< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsSymmetric<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsSymmetric< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
@@ -2449,6 +2505,11 @@ struct IsHermitian< DMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsHermitian<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
@@ -2621,6 +2682,11 @@ struct IsLower< DMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsLower< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsLower< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsLower<MT>::value >
 {};
@@ -2727,6 +2793,11 @@ struct IsStrictlyLower< DMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsStrictlyLower< DMatForEachExpr<MT,Trunc,SO> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsStrictlyLower< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsStrictlyLower<MT>::value >
 {};
@@ -2811,6 +2882,11 @@ struct IsUpper< DMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsUpper< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUpper<MT>::value >
 {};
 
@@ -2917,6 +2993,11 @@ struct IsStrictlyUpper< DMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 
@@ -3080,6 +3161,38 @@ struct TDMatForEachExprTrait< DMatForEachExpr<MT,Ceil,true>, Ceil >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatForEachExpr<MT,Ceil,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatForEachExprTrait< DMatForEachExpr<MT,Trunc,false>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Trunc,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatForEachExprTrait< DMatForEachExpr<MT,Trunc,true>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , DMatForEachExpr<MT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

@@ -955,6 +955,34 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a trunc() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a trunc() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a trunc() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = trunc( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecForEachExpr<VT,Trunc,TF>( ~sv, Trunc() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a vector containing the complex conjugate of each single element of \a sv.
 // \ingroup sparse_vector
 //
@@ -1926,6 +1954,29 @@ inline const SVecForEachExpr<VT,Ceil,TF>& ceil( const SVecForEachExpr<VT,Ceil,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a trunc() function to a sparse vector \a trunc() expressions.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector \a trunc expression.
+// \return The resulting sparse vector.
+//
+// This function implements a performance optimized treatment of the \a trunc() operation on
+// a sparse vector \a trunc() expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecForEachExpr<VT,Trunc,TF>& trunc( const SVecForEachExpr<VT,Trunc,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate sparse vector expressions.
 // \ingroup sparse_vector
 //
@@ -2057,6 +2108,102 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Abs,true>, Abs >
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
                    , SVecForEachExpr<VT,Abs,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecForEachExprTrait< SVecForEachExpr<VT,Floor,false>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecForEachExpr<VT,Floor,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecForEachExprTrait< SVecForEachExpr<VT,Floor,true>, Floor >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecForEachExpr<VT,Floor,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecForEachExprTrait< SVecForEachExpr<VT,Ceil,false>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecForEachExpr<VT,Ceil,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecForEachExprTrait< SVecForEachExpr<VT,Ceil,true>, Ceil >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecForEachExpr<VT,Ceil,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecForEachExprTrait< SVecForEachExpr<VT,Trunc,false>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
+                   , SVecForEachExpr<VT,Trunc,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecForEachExprTrait< SVecForEachExpr<VT,Trunc,true>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
+                   , SVecForEachExpr<VT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

@@ -1200,6 +1200,34 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a trunc() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a trunc() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a trunc() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = trunc( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecForEachExpr<VT,Trunc,TF>( ~dv, Trunc() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns a vector containing the complex conjugate of each single element of \a dv.
 // \ingroup dense_vector
 //
@@ -2171,6 +2199,29 @@ inline const DVecForEachExpr<VT,Ceil,TF>& ceil( const DVecForEachExpr<VT,Ceil,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a trunc() function to a dense vector \a trunc() expressions.
+// \ingroup dense_vector
+//
+// \param dv The dense vector \a trunc expression.
+// \return The resulting dense vector.
+//
+// This function implements a performance optimized treatment of the \a trunc() operation on
+// a dense vector \a trunc() expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecForEachExpr<VT,Trunc,TF>& trunc( const DVecForEachExpr<VT,Trunc,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Complex conjugate function for complex conjugate dense vector expressions.
 // \ingroup dense_vector
 //
@@ -2402,6 +2453,38 @@ struct TDVecForEachExprTrait< DVecForEachExpr<VT,Ceil,true>, Ceil >
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecForEachExpr<VT,Ceil,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecForEachExprTrait< DVecForEachExpr<VT,Trunc,false>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
+                   , DVecForEachExpr<VT,Trunc,false>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecForEachExprTrait< DVecForEachExpr<VT,Trunc,true>, Trunc >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
+                   , DVecForEachExpr<VT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

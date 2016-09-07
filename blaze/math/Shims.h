@@ -84,5 +84,6 @@
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/shims/Tanh.h>
+#include <blaze/math/shims/Trunc.h>
 
 #endif
