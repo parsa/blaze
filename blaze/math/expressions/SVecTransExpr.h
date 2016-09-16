@@ -861,7 +861,7 @@ struct SVecTransExprTrait< SVecTransExpr<VT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , Operand_< SVecTransExpr<VT,false> >
+                   , TransposeType_< SVecTransExpr<VT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -877,7 +877,7 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , Operand_< SVecTransExpr<VT,true> >
+                   , TransposeType_< SVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
