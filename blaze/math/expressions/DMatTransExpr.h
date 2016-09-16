@@ -1226,7 +1226,7 @@ struct DMatTransExprTrait< DMatTransExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , Operand_< DMatTransExpr<MT,false> >
+                   , TransposeType_< DMatTransExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1242,7 +1242,7 @@ struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , Operand_< DMatTransExpr<MT,true> >
+                   , TransposeType_< DMatTransExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
