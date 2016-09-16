@@ -1040,7 +1040,7 @@ struct SMatTransExprTrait< SMatTransExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , Operand_< SMatTransExpr<MT,false> >
+                   , TransposeType_< SMatTransExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1056,7 +1056,7 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , Operand_< SMatTransExpr<MT,true> >
+                   , TransposeType_< SMatTransExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
