@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/dense/MMM.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -982,11 +983,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -1016,14 +1017,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 );
@@ -1067,10 +1068,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 );
@@ -1101,8 +1102,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 );
@@ -1134,10 +1135,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 );
@@ -1168,8 +1169,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 );
@@ -1194,7 +1195,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) = sum( xmm1 );
@@ -1229,11 +1230,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -1263,14 +1264,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 );
@@ -1309,10 +1310,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 );
@@ -1353,10 +1354,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 );
@@ -1387,8 +1388,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 );
@@ -1420,8 +1421,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 );
@@ -1446,7 +1447,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) = sum( xmm1 );
@@ -1485,7 +1486,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to row-major dense matrices (large matrices)******************
+   //**Vectorized default assignment to dense matrices (large matrices)****************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized default assignment of a large dense matrix-transpose dense matrix
    //        multiplication (\f$ C=A*B \f$).
@@ -1496,50 +1497,22 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function implements the vectorized default assignment of a dense matrix-transpose dense
-   // matrix multiplication expression to a row-major dense matrix. This kernel is optimized for
+   // This function implements the vectorized default assignment of a dense matrix-transpose
+   // dense matrix multiplication expression to a dense matrix. This kernel is optimized for
    // large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B );
+      mmm( C, A, B, ElementType(1), ElementType(0) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to column-major dense matrices (large matrices)***************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default assignment of a large dense matrix-transpose dense matrix
-   //        multiplication (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function implements the vectorized default assignment of a dense matrix-transpose dense
-   // matrix multiplication expression to a column-major dense matrix. This kernel is optimized for
-   // large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default assignment to dense matrices********************************************************
+   //**BLAS-based assignment to dense matrices (default)*******************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a dense matrix-transpose dense matrix multiplication
    //        (\f$ C=A*B \f$).
@@ -1550,8 +1523,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function relays to the default implementation of the assignment of a large dense matrix-
-   // dense matrix multiplication expression to a dense matrix.
+   // This function relays to the default implementation of the assignment of a large dense
+   // matrix-transpose dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -2135,11 +2108,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -2169,14 +2142,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 );
@@ -2220,10 +2193,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 );
@@ -2254,8 +2227,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 );
@@ -2286,10 +2259,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 );
@@ -2320,8 +2293,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 );
@@ -2346,7 +2319,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) += sum( xmm1 );
@@ -2381,11 +2354,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -2415,14 +2388,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 );
@@ -2461,10 +2434,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 );
@@ -2505,10 +2478,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 );
@@ -2539,8 +2512,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 );
@@ -2572,8 +2545,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 );
@@ -2598,7 +2571,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) += sum( xmm1 );
@@ -2637,7 +2610,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to row-major dense matrices (large matrices)*********
+   //**Vectorized default addition assignment to dense matrices (large matrices)*******************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized default addition assignment of a large dense matrix-transpose dense matrix
    //        multiplication (\f$ C+=A*B \f$).
@@ -2649,49 +2622,21 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the vectorized default addition assignment of a dense matrix-
-   // transpose dense matrix multiplication expression to a row-major dense matrix. This
-   // kernel is optimized for large matrices.
+   // transpose dense matrix multiplication expression to a dense matrix. This kernel is
+   // optimized for large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B );
+      mmm( C, A, B, ElementType(1), ElementType(1) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to column-major dense matrices (large matrices)******
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default addition assignment of a large dense matrix-transpose dense matrix
-   //        multiplication (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function implements the vectorized default addition assignment of a dense matrix-
-   // transpose dense matrix multiplication expression to a column-major dense matrix. This
-   // kernel is optimized for large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default addition assignment to dense matrices***********************************************
+   //**BLAS-based addition assignment to dense matrices (default)**********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a dense matrix-transpose dense matrix multiplication
    //        (\f$ C+=A*B \f$).
@@ -2703,7 +2648,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function relays to the default implementation of the addition assignment of a large
-   // dense matrix-dense matrix multiplication expression to a dense matrix.
+   // dense matrix-transpose dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3256,11 +3201,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -3290,14 +3235,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 );
@@ -3341,10 +3286,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 );
@@ -3375,8 +3320,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 );
@@ -3408,10 +3353,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 );
@@ -3442,8 +3387,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 );
@@ -3468,7 +3413,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) -= sum( xmm1 );
@@ -3503,11 +3448,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -3537,14 +3482,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 );
@@ -3583,10 +3528,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 );
@@ -3627,10 +3572,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 );
@@ -3661,8 +3606,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 );
@@ -3693,8 +3638,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 );
@@ -3719,7 +3664,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) -= sum( xmm1 );
@@ -3758,7 +3703,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to row-major dense matrices (large matrices)*****************
+   //**Default subtraction assignment to dense matrices (large matrices)***************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a large dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=A*B \f$).
@@ -3770,25 +3715,24 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the default subtraction assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a row-major dense matrix. This kernel is
-   // optimized for large matrices.
+   // dense matrix multiplication expression to a dense matrix. This kernel is optimized for
+   // large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B );
+      mmm( C, A, B, ElementType(-1), ElementType(1) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to column-major dense matrices (large matrices)**************
+   //**BLAS-based subtraction assignment to dense matrices (default)*******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a large dense matrix-transpose dense matrix
-   //        multiplication (\f$ C-=A*B \f$).
+   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix multiplication
+   //        (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -3796,35 +3740,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function implements the default subtraction assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a column-major dense matrix. This kernel is
-   // optimized for large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default subtraction assignment to dense matrices********************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix
-   //        multiplication (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \return void
-   //
-   // This function relays to the default implementation of the assignment of a large dense
-   // matrix-dense matrix multiplication expression to a dense matrix.
+   // This function relays to the default implementation of the subtraction assignment of a large
+   // dense matrix-transpose dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -4923,11 +4840,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -4957,14 +4874,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
@@ -5008,10 +4925,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
@@ -5042,8 +4959,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
@@ -5075,10 +4992,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
@@ -5109,8 +5026,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
@@ -5135,7 +5052,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) = sum( xmm1 ) * scalar;
@@ -5170,11 +5087,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -5204,14 +5121,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
@@ -5250,10 +5167,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
@@ -5294,10 +5211,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
@@ -5328,8 +5245,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) = sum( xmm1 ) * scalar;
@@ -5361,8 +5278,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) = sum( xmm1 ) * scalar;
@@ -5387,7 +5304,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) = sum( xmm1 ) * scalar;
@@ -5425,7 +5342,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default assignment to row-major dense matrices (large matrices)******************
+   //**Vectorized default assignment to dense matrices (large matrices)****************************
    /*!\brief Vectorized default assignment of a large scaled dense matrix-transpose dense matrix
    //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
@@ -5437,45 +5354,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function implements the vectorized default assignment of a scaled dense matrix-
-   // transpose dense matrix multiplication expression to a row-major dense matrix. This
-   // kernel is optimized for large matrices.
+   // transpose dense matrix multiplication expression to a dense matrix. This kernel is
+   // optimized for large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B, scalar );
-   }
-   //**********************************************************************************************
-
-   //**Vectorized default assignment to column-major dense matrices (large matrices)***************
-   /*!\brief Vectorized default assignment of a large scaled dense matrix-transpose dense matrix
-   //        multiplication (\f$ C=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function implements the vectorized default assignment of a scaled dense matrix-
-   // transpose dense matrix multiplication expression to a column-major dense matrix. This
-   // kernel is optimized for large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B, scalar );
+      mmm( C, A, B, scalar, ST2(0) );
    }
    //**********************************************************************************************
 
@@ -5937,11 +5826,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -5971,14 +5860,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
@@ -6022,10 +5911,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
@@ -6056,8 +5945,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
@@ -6089,10 +5978,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
@@ -6123,8 +6012,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
@@ -6149,7 +6038,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) += sum( xmm1 ) * scalar;
@@ -6184,11 +6073,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -6218,14 +6107,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
@@ -6264,10 +6153,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
@@ -6308,10 +6197,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
@@ -6342,8 +6231,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) += sum( xmm1 ) * scalar;
@@ -6375,8 +6264,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) += sum( xmm1 ) * scalar;
@@ -6401,7 +6290,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) += sum( xmm1 ) * scalar;
@@ -6439,7 +6328,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to row-major dense matrices (large matrices)*********
+   //**Vectorized default addition assignment to dense matrices (large matrices)*******************
    /*!\brief Vectorized default addition assignment of a large scaled dense matrix-transpose dense
    //        matrix multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
@@ -6451,45 +6340,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function implements the vectorized default addition assignment of a scaled dense
-   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix.
-   // This kernel is optimized for large matrices.
+   // matrix-transpose dense matrix multiplication expression to a dense matrix. This kernel
+   // is optimized for large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B, scalar );
-   }
-   //**********************************************************************************************
-
-   //**Vectorized default addition assignment to column-major dense matrices (large matrices)******
-   /*!\brief Vectorized default addition assignment of a large scaled dense matrix-transpose dense
-   //        matrix multiplication (\f$ C+=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function implements the vectorized default addition assignment of a scaled dense
-   // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
-   // This kernel is optimized for large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B, scalar );
+      mmm( C, A, B, scalar, ST2(1) );
    }
    //**********************************************************************************************
 
@@ -6924,11 +6785,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -6958,14 +6819,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType b2( B.load(k,j+1UL) );
                const SIMDType b3( B.load(k,j+2UL) );
                const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a1 * b3;
-               xmm4 = xmm4 + a1 * b4;
-               xmm5 = xmm5 + a2 * b1;
-               xmm6 = xmm6 + a2 * b2;
-               xmm7 = xmm7 + a2 * b3;
-               xmm8 = xmm8 + a2 * b4;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a1 * b3;
+               xmm4 += a1 * b4;
+               xmm5 += a2 * b1;
+               xmm6 += a2 * b2;
+               xmm7 += a2 * b3;
+               xmm8 += a2 * b4;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
@@ -7009,10 +6870,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
@@ -7043,8 +6904,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
@@ -7076,10 +6937,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
-               xmm3 = xmm3 + a1 * B.load(k,j+2UL);
-               xmm4 = xmm4 + a1 * B.load(k,j+3UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
+               xmm3 += a1 * B.load(k,j+2UL);
+               xmm4 += a1 * B.load(k,j+3UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
@@ -7110,8 +6971,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
@@ -7136,7 +6997,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) -= sum( xmm1 ) * scalar;
@@ -7171,11 +7032,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
-
-      const bool remainder( !IsPadded<MT4>::value || !IsPadded<MT5>::value );
 
       size_t i( 0UL );
 
@@ -7206,14 +7067,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a4( A.load(i+3UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
-               xmm5 = xmm5 + a3 * b1;
-               xmm6 = xmm6 + a3 * b2;
-               xmm7 = xmm7 + a4 * b1;
-               xmm8 = xmm8 + a4 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
+               xmm5 += a3 * b1;
+               xmm6 += a3 * b2;
+               xmm7 += a4 * b1;
+               xmm8 += a4 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
@@ -7252,10 +7113,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
-               xmm3 = xmm3 + A.load(i+2UL,k) * b1;
-               xmm4 = xmm4 + A.load(i+3UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
+               xmm3 += A.load(i+2UL,k) * b1;
+               xmm4 += A.load(i+3UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
@@ -7296,10 +7157,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                const SIMDType a2( A.load(i+1UL,k) );
                const SIMDType b1( B.load(k,j    ) );
                const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 = xmm1 + a1 * b1;
-               xmm2 = xmm2 + a1 * b2;
-               xmm3 = xmm3 + a2 * b1;
-               xmm4 = xmm4 + a2 * b2;
+               xmm1 += a1 * b1;
+               xmm2 += a1 * b2;
+               xmm3 += a2 * b1;
+               xmm4 += a2 * b2;
             }
 
             (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
@@ -7330,8 +7191,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType b1( B.load(k,j) );
-               xmm1 = xmm1 + A.load(i    ,k) * b1;
-               xmm2 = xmm2 + A.load(i+1UL,k) * b1;
+               xmm1 += A.load(i    ,k) * b1;
+               xmm2 += A.load(i+1UL,k) * b1;
             }
 
             (~C)(i    ,j) -= sum( xmm1 ) * scalar;
@@ -7363,8 +7224,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
             for( ; k<kpos; k+=SIMDSIZE ) {
                const SIMDType a1( A.load(i,k) );
-               xmm1 = xmm1 + a1 * B.load(k,j    );
-               xmm2 = xmm2 + a1 * B.load(k,j+1UL);
+               xmm1 += a1 * B.load(k,j    );
+               xmm2 += a1 * B.load(k,j+1UL);
             }
 
             (~C)(i,j    ) -= sum( xmm1 ) * scalar;
@@ -7389,7 +7250,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
             size_t k( kbegin );
 
             for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 = xmm1 + A.load(i,k) * B.load(k,j);
+               xmm1 += A.load(i,k) * B.load(k,j);
             }
 
             (~C)(i,j) -= sum( xmm1 ) * scalar;
@@ -7427,7 +7288,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to row-major dense matrices (large matrices)******
+   //**Vectorized default subtraction assignment to dense matrices (large matrices)****************
    /*!\brief Vectorized default subtraction assignment of a large scaled dense matrix-transpose
    //        dense matrix multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
@@ -7439,45 +7300,17 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function implements the vectorized default subtraction assignment of a scaled dense
-   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix. This
-   // kernel is optimized for large matrices.
+   // matrix-transpose dense matrix multiplication expression to a dense matrix. This kernel
+   // is optimized for large matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B, scalar );
-   }
-   //**********************************************************************************************
-
-   //**Vectorized default subtraction assignment to column-major dense matrices (large matrices)***
-   /*!\brief Vectorized default subtraction assignment of a large scaled dense matrix-transpose
-   //        dense matrix multiplication (\f$ C-=s*A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side multiplication operand.
-   // \param B The right-hand side multiplication operand.
-   // \param scalar The scaling factor.
-   // \return void
-   //
-   // This function implements the vectorized default subtraction assignment of a scaled dense
-   // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
-   // This kernel is optimized for large matrices.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5    // Type of the right-hand side matrix operand
-           , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
-   {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B, scalar );
+      mmm( C, A, B, -scalar, ST2(1) );
    }
    //**********************************************************************************************
 
