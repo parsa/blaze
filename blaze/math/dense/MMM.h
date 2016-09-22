@@ -1081,6 +1081,1075 @@ inline void mmm( MT1& C, const MT2& A, const MT3& B )
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  SYMMETRIC DENSE MATRIX MULTIPLICATION KERNELS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a symmetric dense matrix/dense matrix multiplication
+//        (\f$ C=\alpha*A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side row-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \param alpha The scaling factor for \f$ A*B \f$.
+// \return void
+//
+// This function implements the compute kernel for a symmetric dense matrix/dense matrix
+// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix type.
+// The element types of all three matrices must be SIMD combinable, i.e. must provide a common
+// SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3, typename ST >
+void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+   using SIMDType = SIMDTrait_<ET1>;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT1 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
+
+   BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( JBLOCK >= SIMDSIZE && JBLOCK % SIMDSIZE == 0UL );
+
+   const size_t M( A.rows()    );
+   const size_t N( B.columns() );
+   const size_t K( A.columns() );
+
+   BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
+
+   DynamicMatrix<ET2,false> A2( M, KBLOCK );
+   DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
+
+   reset( ~C );
+
+   size_t kk( 0UL );
+   size_t kblock( 0UL );
+
+   while( kk + ( remainder ? SIMDSIZE-1UL : 0UL ) < K )
+   {
+      if( remainder ) {
+         kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( ( K - kk ) & size_t(-SIMDSIZE) ) );
+      }
+      else {
+         kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
+      }
+
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
+      const size_t isize ( iend - ibegin );
+
+      A2 = submatrix<!remainder>( A, ibegin, kk, isize, kblock );
+
+      size_t jj( 0UL );
+      size_t jblock( 0UL );
+
+      while( jj < N )
+      {
+         jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
+
+         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
+             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
+            jj += jblock;
+            continue;
+         }
+
+         B2 = submatrix<!remainder>( B, kk, jj, kblock, jblock );
+
+         size_t i( jj );
+
+         if( IsFloatingPoint<ET1>::value )
+         {
+            for( ; (i+5UL) <= isize; i+=5UL )
+            {
+               const size_t jend( min( i-jj+5UL, jblock ) );
+               size_t j( 0UL );
+
+               for( ; (j+2UL) <= jend; j+=2UL )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+                     const SIMDType a3( A2.load(i+2UL,k) );
+                     const SIMDType a4( A2.load(i+3UL,k) );
+                     const SIMDType a5( A2.load(i+4UL,k) );
+
+                     const SIMDType b1( B2.load(k,j    ) );
+                     const SIMDType b2( B2.load(k,j+1UL) );
+
+                     xmm1  += a1 * b1;
+                     xmm2  += a1 * b2;
+                     xmm3  += a2 * b1;
+                     xmm4  += a2 * b2;
+                     xmm5  += a3 * b1;
+                     xmm6  += a3 * b2;
+                     xmm7  += a4 * b1;
+                     xmm8  += a4 * b2;
+                     xmm9  += a5 * b1;
+                     xmm10 += a5 * b2;
+                  }
+
+                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1  ) * alpha;
+                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2  ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3  ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4  ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5  ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6  ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7  ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8  ) * alpha;
+                  (~C)(ibegin+i+4UL,jj+j    ) += sum( xmm9  ) * alpha;
+                  (~C)(ibegin+i+4UL,jj+j+1UL) += sum( xmm10 ) * alpha;
+               }
+
+               if( j<jend )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+                     const SIMDType a3( A2.load(i+2UL,k) );
+                     const SIMDType a4( A2.load(i+3UL,k) );
+                     const SIMDType a5( A2.load(i+4UL,k) );
+
+                     const SIMDType b1( B2.load(k,j) );
+
+                     xmm1 += a1 * b1;
+                     xmm2 += a2 * b1;
+                     xmm3 += a3 * b1;
+                     xmm4 += a4 * b1;
+                     xmm5 += a5 * b1;
+                  }
+
+                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+                  (~C)(ibegin+i+4UL,jj+j) += sum( xmm5 ) * alpha;
+               }
+            }
+         }
+         else
+         {
+            for( ; (i+4UL) <= isize; i+=4UL )
+            {
+               const size_t jend( min( i-jj+4UL, jblock ) );
+               size_t j( 0UL );
+
+               for( ; (j+2UL) <= jend; j+=2UL )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+                     const SIMDType a3( A2.load(i+2UL,k) );
+                     const SIMDType a4( A2.load(i+3UL,k) );
+
+                     const SIMDType b1( B2.load(k,j    ) );
+                     const SIMDType b2( B2.load(k,j+1UL) );
+
+                     xmm1 += a1 * b1;
+                     xmm2 += a1 * b2;
+                     xmm3 += a2 * b1;
+                     xmm4 += a2 * b2;
+                     xmm5 += a3 * b1;
+                     xmm6 += a3 * b2;
+                     xmm7 += a4 * b1;
+                     xmm8 += a4 * b2;
+                  }
+
+                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5 ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7 ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8 ) * alpha;
+               }
+
+               if( j<jend )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+                     const SIMDType a3( A2.load(i+2UL,k) );
+                     const SIMDType a4( A2.load(i+3UL,k) );
+
+                     const SIMDType b1( B2.load(k,j) );
+
+                     xmm1 += a1 * b1;
+                     xmm2 += a2 * b1;
+                     xmm3 += a3 * b1;
+                     xmm4 += a4 * b1;
+                  }
+
+                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+               }
+            }
+         }
+
+         for( ; (i+2UL) <= isize; i+=2UL )
+         {
+            const size_t jend( min( i-jj+2UL, jblock ) );
+            size_t j( 0UL );
+
+            for( ; (j+4UL) <= jend; j+=4UL )
+            {
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i    ,k) );
+                  const SIMDType a2( A2.load(i+1UL,k) );
+
+                  const SIMDType b1( B2.load(k,j    ) );
+                  const SIMDType b2( B2.load(k,j+1UL) );
+                  const SIMDType b3( B2.load(k,j+2UL) );
+                  const SIMDType b4( B2.load(k,j+3UL) );
+
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               (~C)(ibegin+i    ,jj+j+2UL) += sum( xmm3 ) * alpha;
+               (~C)(ibegin+i    ,jj+j+3UL) += sum( xmm4 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm5 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j+2UL) += sum( xmm7 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j+3UL) += sum( xmm8 ) * alpha;
+            }
+
+            for( ; (j+2UL) <= jend; j+=2UL )
+            {
+               SIMDType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i    ,k) );
+                  const SIMDType a2( A2.load(i+1UL,k) );
+
+                  const SIMDType b1( B2.load(k,j    ) );
+                  const SIMDType b2( B2.load(k,j+1UL) );
+
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+            }
+
+            if( j<jend )
+            {
+               SIMDType xmm1, xmm2;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i    ,k) );
+                  const SIMDType a2( A2.load(i+1UL,k) );
+
+                  const SIMDType b1( B2.load(k,j) );
+
+                  xmm1 += a1 * b1;
+                  xmm2 += a2 * b1;
+               }
+
+               (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+               (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+            }
+         }
+
+         //if( i<isize )
+         for( ; i<isize; ++i )
+         {
+            const size_t jend( min( i-jj+2UL, jblock ) );
+            size_t j( 0UL );
+
+            for( ; (j+2UL) <= jend; j+=2UL )
+            {
+               SIMDType xmm1, xmm2;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i,k) );
+
+                  xmm1 += a1 * B2.load(k,j    );
+                  xmm2 += a1 * B2.load(k,j+1UL);
+               }
+
+               (~C)(ibegin+i,jj+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ibegin+i,jj+j+1UL) += sum( xmm2 ) * alpha;
+            }
+
+            if( j<jend )
+            {
+               SIMDType xmm1;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i,k) );
+
+                  xmm1 += a1 * B2.load(k,j);
+               }
+
+               (~C)(ibegin+i,jj+j) += sum( xmm1 ) * alpha;
+            }
+         }
+
+         jj += jblock;
+      }
+
+      kk += kblock;
+   }
+
+   if( remainder && kk < K )
+   {
+      const size_t ksize( K - kk );
+
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t isize ( M - ibegin );
+
+      A2 = submatrix( A, ibegin, kk, isize, ksize );
+
+      size_t jj( 0UL );
+      size_t jblock( 0UL );
+
+      while( jj < N )
+      {
+         jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
+
+         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
+            jj += jblock;
+            continue;
+         }
+
+         B2 = submatrix( B, kk, jj, ksize, jblock );
+
+         size_t i( jj );
+
+         if( IsFloatingPoint<ET1>::value )
+         {
+            for( ; (i+5UL) <= isize; i+=5UL )
+            {
+               const size_t jend( min( i-jj+5UL, jblock ) );
+               size_t j( 0UL );
+
+               for( ; (j+2UL) <= jend; j+=2UL ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+4UL,jj+j    ) += A2(i+4UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+4UL,jj+j+1UL) += A2(i+4UL,k) * B2(k,j+1UL) * alpha;
+                  }
+               }
+
+               if( j<jend ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+4UL,jj+j) += A2(i+4UL,k) * B2(k,j) * alpha;
+                  }
+               }
+            }
+         }
+         else
+         {
+            for( ; (i+4UL) <= isize; i+=4UL )
+            {
+               const size_t jend( min( i-jj+4UL, jblock ) );
+               size_t j( 0UL );
+
+               for( ; (j+2UL) <= jend; j+=2UL ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                  }
+               }
+
+               if( j<jend ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                  }
+               }
+            }
+         }
+
+         for( ; (i+2UL) <= isize; i+=2UL )
+         {
+            const size_t jend( min( i-jj+2UL, jblock ) );
+            size_t j( 0UL );
+
+            for( ; (j+2UL) <= jend; j+=2UL ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+               }
+            }
+
+            if( j<jend ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+               }
+            }
+         }
+
+         if( i<isize )
+         {
+            const size_t jend( min( i-jj+5UL, jblock ) );
+            size_t j( 0UL );
+
+            for( ; (j+2UL) <= jend; j+=2UL ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ibegin+i,jj+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  (~C)(ibegin+i,jj+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+               }
+            }
+
+            if( j<jend ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ibegin+i,jj+j) += A2(i,k) * B2(k,j) * alpha;
+               }
+            }
+         }
+
+         jj += jblock;
+      }
+   }
+
+   for( size_t ii=0UL; ii<M; ii+=BLOCK_SIZE )
+   {
+      const size_t iend( min( M, ii+BLOCK_SIZE ) );
+
+      for( size_t i=ii; i<iend; ++i ) {
+         for( size_t j=i+1UL; j<iend; ++j ) {
+            (~C)(i,j) = (~C)(j,i);
+         }
+      }
+
+      for( size_t jj=ii+BLOCK_SIZE; jj<N; jj+=BLOCK_SIZE ) {
+         const size_t jend( min( N, jj+BLOCK_SIZE ) );
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               (~C)(i,j) = (~C)(j,i);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a symmetric dense matrix/dense matrix multiplication
+//        (\f$ C=\alpha*A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side column-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \param alpha The scaling factor for \f$ A*B \f$.
+// \return void
+//
+// This function implements the compute kernel for a symmetric dense matrix/dense matrix
+// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, column-major dense matrix
+// type. The element types of all three matrices must be SIMD combinable, i.e. must provide
+// a common SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3, typename ST >
+void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+   using SIMDType = SIMDTrait_<ET1>;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE        ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT1 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
+
+   BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( IBLOCK >= SIMDSIZE && IBLOCK % SIMDSIZE == 0UL );
+
+   const size_t M( A.rows()    );
+   const size_t N( B.columns() );
+   const size_t K( A.columns() );
+
+   BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
+
+   DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
+   DynamicMatrix<ET3,true>  B2( KBLOCK, N );
+
+   reset( ~C );
+
+   size_t kk( 0UL );
+   size_t kblock( 0UL );
+
+   while( kk + ( remainder ? SIMDSIZE-1UL : 0UL ) < K )
+   {
+      if( remainder ) {
+         kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( ( K - kk ) & size_t(-SIMDSIZE) ) );
+      }
+      else {
+         kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
+      }
+
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
+      const size_t jsize ( jend - jbegin );
+
+      B2 = submatrix<!remainder>( B, kk, jbegin, kblock, jsize );
+
+      size_t ii( 0UL );
+      size_t iblock( 0UL );
+
+      while( ii < M )
+      {
+         iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
+
+         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
+             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
+            ii += iblock;
+            continue;
+         }
+
+         A2 = submatrix<!remainder>( A, ii, kk, iblock, kblock );
+
+         size_t j( ii );
+
+         if( IsFloatingPoint<ET3>::value )
+         {
+            for( ; (j+5UL) <= jsize; j+=5UL )
+            {
+               const size_t iend( min( j-ii+5UL, iblock ) );
+               size_t i( 0UL );
+
+               for( ; (i+2UL) <= iend; i+=2UL )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+
+                     const SIMDType b1( B2.load(k,j    ) );
+                     const SIMDType b2( B2.load(k,j+1UL) );
+                     const SIMDType b3( B2.load(k,j+2UL) );
+                     const SIMDType b4( B2.load(k,j+3UL) );
+                     const SIMDType b5( B2.load(k,j+4UL) );
+
+                     xmm1  += a1 * b1;
+                     xmm2  += a1 * b2;
+                     xmm3  += a1 * b3;
+                     xmm4  += a1 * b4;
+                     xmm5  += a1 * b5;
+                     xmm6  += a2 * b1;
+                     xmm7  += a2 * b2;
+                     xmm8  += a2 * b3;
+                     xmm9  += a2 * b4;
+                     xmm10 += a2 * b5;
+                  }
+
+                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1  ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2  ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3  ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4  ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+4UL) += sum( xmm5  ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm6  ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm7  ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm8  ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm9  ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+4UL) += sum( xmm10 ) * alpha;
+               }
+
+               if( i<iend )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i,k) );
+
+                     xmm1 += a1 * B2.load(k,j    );
+                     xmm2 += a1 * B2.load(k,j+1UL);
+                     xmm3 += a1 * B2.load(k,j+2UL);
+                     xmm4 += a1 * B2.load(k,j+3UL);
+                     xmm5 += a1 * B2.load(k,j+4UL);
+                  }
+
+                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  (~C)(ii+i,jbegin+j+4UL) += sum( xmm5 ) * alpha;
+               }
+            }
+         }
+         else
+         {
+            for( ; (j+4UL) <= jsize; j+=4UL )
+            {
+               const size_t iend( min( j-ii+4UL, iblock ) );
+               size_t i( 0UL );
+
+               for( ; (i+2UL) <= iend; i+=2UL )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i    ,k) );
+                     const SIMDType a2( A2.load(i+1UL,k) );
+
+                     const SIMDType b1( B2.load(k,j    ) );
+                     const SIMDType b2( B2.load(k,j+1UL) );
+                     const SIMDType b3( B2.load(k,j+2UL) );
+                     const SIMDType b4( B2.load(k,j+3UL) );
+
+                     xmm1 += a1 * b1;
+                     xmm2 += a1 * b2;
+                     xmm3 += a1 * b3;
+                     xmm4 += a1 * b4;
+                     xmm5 += a2 * b1;
+                     xmm6 += a2 * b2;
+                     xmm7 += a2 * b3;
+                     xmm8 += a2 * b4;
+                  }
+
+                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm7 ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm8 ) * alpha;
+               }
+
+               if( i<iend )
+               {
+                  SIMDType xmm1, xmm2, xmm3, xmm4;
+
+                  for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+                  {
+                     const SIMDType a1( A2.load(i,k) );
+
+                     xmm1 += a1 * B2.load(k,j    );
+                     xmm2 += a1 * B2.load(k,j+1UL);
+                     xmm3 += a1 * B2.load(k,j+2UL);
+                     xmm4 += a1 * B2.load(k,j+3UL);
+                  }
+
+                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= jsize; j+=2UL )
+         {
+            const size_t iend( min( j-ii+2UL, iblock ) );
+            size_t i( 0UL );
+
+            for( ; (i+4UL) <= iend; i+=4UL )
+            {
+               SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i    ,k) );
+                  const SIMDType a2( A2.load(i+1UL,k) );
+                  const SIMDType a3( A2.load(i+2UL,k) );
+                  const SIMDType a4( A2.load(i+3UL,k) );
+
+                  const SIMDType b1( B2.load(k,j    ) );
+                  const SIMDType b2( B2.load(k,j+1UL) );
+
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+               (~C)(ii+i+2UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+               (~C)(ii+i+2UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+               (~C)(ii+i+3UL,jbegin+j    ) += sum( xmm7 ) * alpha;
+               (~C)(ii+i+3UL,jbegin+j+1UL) += sum( xmm8 ) * alpha;
+            }
+
+            for( ; (i+2UL) <= iend; i+=2UL )
+            {
+               SIMDType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i    ,k) );
+                  const SIMDType a2( A2.load(i+1UL,k) );
+
+                  const SIMDType b1( B2.load(k,j    ) );
+                  const SIMDType b2( B2.load(k,j+1UL) );
+
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+            }
+
+            if( i<iend )
+            {
+               SIMDType xmm1, xmm2;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType a1( A2.load(i,k) );
+
+                  xmm1 += a1 * B2.load(k,j    );
+                  xmm2 += a1 * B2.load(k,j+1UL);
+               }
+
+               (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+               (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+            }
+         }
+
+         if( j<jsize )
+         {
+            const size_t iend( min( j-ii+2UL, iblock ) );
+            size_t i( 0UL );
+
+            for( ; (i+2UL) <= iend; i+=2UL )
+            {
+               SIMDType xmm1, xmm2;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  const SIMDType b1( B2.load(k,j) );
+
+                  xmm1 += A2.load(i    ,k) * b1;
+                  xmm2 += A2.load(i+1UL,k) * b1;
+               }
+
+               (~C)(ii+i    ,jbegin+j) += sum( xmm1 ) * alpha;
+               (~C)(ii+i+1UL,jbegin+j) += sum( xmm2 ) * alpha;
+            }
+
+            if( i<iend )
+            {
+               SIMDType xmm1;
+
+               for( size_t k=0UL; k<kblock; k+=SIMDSIZE )
+               {
+                  xmm1 += A2.load(i,k) * B2.load(k,j);
+               }
+
+               (~C)(ii+i,jbegin+j) += sum( xmm1 ) * alpha;
+            }
+         }
+
+         ii += iblock;
+      }
+
+      kk += kblock;
+   }
+
+   if( remainder && kk < K )
+   {
+      const size_t ksize( K - kk );
+
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jsize ( N - jbegin );
+
+      B2 = submatrix( B, kk, jbegin, ksize, jsize );
+
+      size_t ii( 0UL );
+      size_t iblock( 0UL );
+
+      while( ii < M )
+      {
+         iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
+
+         if( IsLower<MT2>::value && ii+iblock <= kk ) {
+            ii += iblock;
+            continue;
+         }
+
+         A2 = submatrix( A, ii, kk, iblock, ksize );
+
+         size_t j( ii );
+
+         if( IsFloatingPoint<ET1>::value )
+         {
+            for( ; (j+5UL) <= jsize; j+=5UL )
+            {
+               const size_t iend( min( j-ii+5UL, iblock ) );
+               size_t i( 0UL );
+
+               for( ; (i+2UL) <= iend; i+=2UL ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     (~C)(ii+i    ,jbegin+j+4UL) += A2(i    ,k) * B2(k,j+4UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+4UL) += A2(i+1UL,k) * B2(k,j+4UL) * alpha;
+                  }
+               }
+
+               if( i<iend ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                     (~C)(ii+i,jbegin+j+4UL) += A2(i,k) * B2(k,j+4UL) * alpha;
+                  }
+               }
+            }
+         }
+         else
+         {
+            for( ; (j+4UL) <= jsize; j+=4UL )
+            {
+               const size_t iend( min( j-ii+4UL, iblock ) );
+               size_t i( 0UL );
+
+               for( ; (i+2UL) <= iend; i+=2UL ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                  }
+               }
+
+               if( i<iend ) {
+                  for( size_t k=0UL; k<ksize; ++k ) {
+                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                  }
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= jsize; j+=2UL )
+         {
+            const size_t iend( min( j-ii+2UL, iblock ) );
+            size_t i( 0UL );
+
+            for( ; (i+2UL) <= iend; i+=2UL ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+               }
+            }
+
+            if( i<iend ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+               }
+            }
+         }
+
+         if( j<jsize )
+         {
+            const size_t iend( min( j-ii+2UL, iblock ) );
+            size_t i( 0UL );
+
+            for( ; (i+2UL) <= iend; i+=2UL ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ii+i    ,jbegin+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  (~C)(ii+i+1UL,jbegin+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+               }
+            }
+
+            if( i<iend ) {
+               for( size_t k=0UL; k<ksize; ++k ) {
+                  (~C)(ii+i,jbegin+j) += A2(i,k) * B2(k,j) * alpha;
+               }
+            }
+         }
+
+         ii += iblock;
+      }
+   }
+
+   for( size_t jj=0UL; jj<N; jj+=BLOCK_SIZE )
+   {
+      const size_t jend( min( N, jj+BLOCK_SIZE ) );
+
+      for( size_t j=jj; j<jend; ++j ) {
+         for( size_t i=jj+1UL; i<jend; ++i ) {
+            (~C)(i,j) = (~C)(j,i);
+         }
+      }
+
+      for( size_t ii=jj+BLOCK_SIZE; ii<M; ii+=BLOCK_SIZE ) {
+         const size_t iend( min( M, ii+BLOCK_SIZE ) );
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               (~C)(i,j) = (~C)(j,i);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a symmetric dense matrix/dense matrix multiplication (\f$ C=A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side column-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \return void
+//
+// This function implements the compute kernel for a symmetric dense matrix/dense matrix
+// multiplication of the form \f$ C=A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix
+// type. The element types of all three matrices must be SIMD combinable, i.e. must
+// provide a common SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3 >
+inline void smmm( MT1& C, const MT2& A, const MT3& B )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   smmm( C, A, B, ET1(1) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
