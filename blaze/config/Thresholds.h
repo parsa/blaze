@@ -123,11 +123,11 @@ constexpr size_t TDVECTDMATMULT_USER_THRESHOLD = 4000000UL;
 // BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
-// The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// The default setting for this threshold is 4900 (which for instance corresponds to a matrix
+// size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATDMATMULT_DEBUG_THRESHOLD value.
 */
-constexpr size_t DMATDMATMULT_USER_THRESHOLD = 10000UL;
+constexpr size_t DMATDMATMULT_USER_THRESHOLD = 4900UL;
 //*************************************************************************************************
 
 
@@ -141,11 +141,11 @@ constexpr size_t DMATDMATMULT_USER_THRESHOLD = 10000UL;
 // BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
-// The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// The default setting for this threshold is 4900 (which for instance corresponds to a matrix
+// size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATTDMATMULT_DEBUG_THRESHOLD value.
 */
-constexpr size_t DMATTDMATMULT_USER_THRESHOLD = 10000UL;
+constexpr size_t DMATTDMATMULT_USER_THRESHOLD = 4900UL;
 //*************************************************************************************************
 
 
@@ -159,11 +159,11 @@ constexpr size_t DMATTDMATMULT_USER_THRESHOLD = 10000UL;
 // BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
-// The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// The default setting for this threshold is 4900 (which for instance corresponds to a matrix
+// size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATDMATMULT_DEBUG_THRESHOLD value.
 */
-constexpr size_t TDMATDMATMULT_USER_THRESHOLD = 10000UL;
+constexpr size_t TDMATDMATMULT_USER_THRESHOLD = 4900UL;
 //*************************************************************************************************
 
 
@@ -177,11 +177,11 @@ constexpr size_t TDMATDMATMULT_USER_THRESHOLD = 10000UL;
 // BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
-// The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// The default setting for this threshold is 4900 (which for instance corresponds to a matrix
+// size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATTDMATMULT_DEBUG_THRESHOLD value.
 */
-constexpr size_t TDMATTDMATMULT_USER_THRESHOLD = 10000UL;
+constexpr size_t TDMATTDMATMULT_USER_THRESHOLD = 4900UL;
 //*************************************************************************************************
 
 
