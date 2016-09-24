@@ -76,7 +76,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsNumeric : public BoolConstant< IsBuiltin<T>::value && !IsBoolean<T>::value && !IsVoid<T>::value >
+struct IsNumeric : public BoolConstant< IsBuiltin_<T> && !IsBoolean_<T> && !IsVoid<T>::value >
 {};
 //*************************************************************************************************
 
@@ -118,6 +118,24 @@ template< typename T >
 struct IsNumeric< const volatile complex<T> > : public IsNumeric<T>::Type
 {};
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsNumeric type trait.
+// \ingroup type_traits
+//
+// The IsNumeric_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsNumeric class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNumeric<T>::value;
+   constexpr bool value2 = IsNumeric_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNumeric_ = IsNumeric<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
