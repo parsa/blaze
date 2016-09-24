@@ -117,6 +117,24 @@ struct IsComplexDouble< const volatile complex<double> > : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsComplexDouble type trait.
+// \ingroup type_traits
+//
+// The IsComplexDouble_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsComplexDouble class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsComplexDouble<T>::value;
+   constexpr bool value2 = IsComplexDouble_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsComplexDouble_ = IsComplexDouble<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
