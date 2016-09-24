@@ -431,7 +431,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
-                               IsNumeric<ET>::value &&
+                               IsNumeric_<ET> &&
                                ( HasSIMDDiv<ET,ST>::value ||
                                  HasSIMDDiv<UnderlyingElement_<ET>,ST>::value ) };
 

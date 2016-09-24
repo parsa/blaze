@@ -139,8 +139,8 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
        a numeric data type, \a useAssign will be set to \a true and the multiplication expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be set to
        \a false and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric<ET1>::value ||
-                               IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
+   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric_<ET1> ||
+                               IsComputation<VT2>::value || !IsNumeric_<ET2> ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.

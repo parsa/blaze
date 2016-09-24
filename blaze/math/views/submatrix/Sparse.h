@@ -1326,7 +1326,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
+   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<rows(); ++i ) {
          const Iterator last( end(i) );
@@ -3748,7 +3748,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
+   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<columns(); ++i ) {
          const Iterator last( end(i) );

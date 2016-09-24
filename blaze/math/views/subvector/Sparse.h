@@ -1258,7 +1258,7 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
+   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=last; ++element )
          element->value() *= tmp;

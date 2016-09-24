@@ -446,7 +446,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT::simdEnabled &&
-                               IsNumeric<ET>::value &&
+                               IsNumeric_<ET> &&
                                ( HasSIMDMult<ET,ST>::value ||
                                  HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
 

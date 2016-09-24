@@ -1602,7 +1602,7 @@ inline bool DynamicVector<Type,TF>::isIntact() const noexcept
    if( size_ > capacity_ )
       return false;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=size_; i<capacity_; ++i ) {
          if( v_[i] != Type() )
             return false;

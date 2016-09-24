@@ -1208,7 +1208,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
+   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<m_; ++i ) {
          const Iterator last( end(i) );
@@ -3605,7 +3605,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
+   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t j=0UL; j<n_; ++j ) {
          const Iterator last( end(j) );

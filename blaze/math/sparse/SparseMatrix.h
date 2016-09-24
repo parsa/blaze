@@ -514,7 +514,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    if( IsHermitian<MT>::value )
       return true;
 
-   if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
+   if( !IsNumeric_<ET> || !isSquare( ~sm ) )
       return false;
 
    if( (~sm).rows() < 2UL )

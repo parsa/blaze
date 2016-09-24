@@ -526,7 +526,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -654,13 +654,13 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_<Type> ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=m; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -2135,7 +2135,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool StaticMatrix<Type,M,N,SO>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j ) {
             if( v_[i*NN+j] != Type() )
@@ -3232,7 +3232,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix()
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3322,7 +3322,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_
 
    BLAZE_INTERNAL_ASSERT( i == M, "Invalid number of elements detected" );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( ; i<MM; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
             v_[i+j*MM] = Type();
@@ -3380,13 +3380,13 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_<Type> ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t j=n; j<N; ++j ) {
          for( size_t i=0UL; i<M; ++i )
             v_[i+j*MM] = Type();
@@ -4875,7 +4875,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline bool StaticMatrix<Type,M,N,true>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=M; i<MM; ++i ) {
             if( v_[i+j*MM] != Type() )

@@ -502,7 +502,7 @@ inline HybridVector<Type,N,TF>::HybridVector()
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -535,7 +535,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -572,7 +572,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = init;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -660,7 +660,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -703,7 +703,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=M; i<NN; ++i )
          v_[i] = Type();
    }
@@ -732,7 +732,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=size_; i<NN; ++i )
          v_[i] = Type();
    }
@@ -769,7 +769,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
    }
 
    for( size_t i=( IsSparseVector<VT>::value ? 0UL : size_ );
-               i<( IsNumeric<Type>::value    ? NN  : size_ ); ++i ) {
+               i<( IsNumeric_<Type>          ? NN  : size_ ); ++i ) {
       v_[i] = Type();
    }
 
@@ -1782,7 +1782,7 @@ inline bool HybridVector<Type,N,TF>::isIntact() const noexcept
    if( size_ > N )
       return false;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=size_; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;

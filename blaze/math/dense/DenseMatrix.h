@@ -764,7 +764,7 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
    if( IsHermitian<MT>::value )
       return true;
 
-   if( !IsNumeric<ET>::value || !isSquare( ~dm ) )
+   if( !IsNumeric_<ET> || !isSquare( ~dm ) )
       return false;
 
    if( (~dm).rows() < 2UL )

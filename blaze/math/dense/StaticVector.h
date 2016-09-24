@@ -503,7 +503,7 @@ inline StaticVector<Type,N,TF>::StaticVector()
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -611,7 +611,7 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -1648,7 +1648,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool StaticVector<Type,N,TF>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_<Type> ) {
       for( size_t i=N; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;

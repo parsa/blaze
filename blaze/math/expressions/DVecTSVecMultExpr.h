@@ -140,8 +140,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
        multiplication expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to \a false and the expression will be evaluated via the
        subscript operator. */
-   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric<ET1>::value ||
-                               IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
+   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric_<ET1> ||
+                               IsComputation<VT2>::value || !IsNumeric_<ET2> ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
