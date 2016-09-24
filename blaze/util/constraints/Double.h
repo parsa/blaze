@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE(T) \
-   static_assert( ::blaze::IsDouble<T>::value, "Non-double type detected" )
+   static_assert( ::blaze::IsDouble_<T>, "Non-double type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DOUBLE_TYPE(T) \
-   static_assert( !::blaze::IsDouble<T>::value, "Double type detected" )
+   static_assert( !::blaze::IsDouble_<T>, "Double type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
