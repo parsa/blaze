@@ -60,7 +60,7 @@ namespace blaze {
 // not of type \a complex<float> a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COMPLEX_FLOAT_TYPE(T) \
-   static_assert( ::blaze::IsComplexFloat<T>::value, "Non-single precision complex type detected" )
+   static_assert( ::blaze::IsComplexFloat_<T>, "Non-single precision complex type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // type \a complex<float> a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_FLOAT_TYPE(T) \
-   static_assert( !::blaze::IsComplexFloat<T>::value, "Single precision complex type detected" )
+   static_assert( !::blaze::IsComplexFloat_<T>, "Single precision complex type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
