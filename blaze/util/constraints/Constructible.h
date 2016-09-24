@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DEFAULT_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsDefaultConstructible<T>::value, "Non-default constructible type detected" )
+   static_assert( ::blaze::IsDefaultConstructible_<T>, "Non-default constructible type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DEFAULT_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsDefaultConstructible<T>::value, "Default constructible type detected" )
+   static_assert( !::blaze::IsDefaultConstructible_<T>, "Default constructible type detected" )
 //*************************************************************************************************
 
 
@@ -99,7 +99,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_DEFAULT_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowDefaultConstructible<T>::value, "Non-noexcept default constructible type detected" )
+   static_assert( ::blaze::IsNothrowDefaultConstructible_<T>, "Non-noexcept default constructible type detected" )
 //*************************************************************************************************
 
 
@@ -119,7 +119,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_DEFAULT_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowDefaultConstructible<T>::value, "Noexcept default constructible type detected" )
+   static_assert( !::blaze::IsNothrowDefaultConstructible_<T>, "Noexcept default constructible type detected" )
 //*************************************************************************************************
 
 
@@ -139,7 +139,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COPY_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsCopyConstructible<T>::value, "Non-copy constructible type detected" )
+   static_assert( ::blaze::IsCopyConstructible_<T>, "Non-copy constructible type detected" )
 //*************************************************************************************************
 
 
@@ -159,7 +159,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COPY_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsCopyConstructible<T>::value, "Copy constructible type detected" )
+   static_assert( !::blaze::IsCopyConstructible_<T>, "Copy constructible type detected" )
 //*************************************************************************************************
 
 
@@ -179,7 +179,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_COPY_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowCopyConstructible<T>::value, "Non-noexcept copy constructible type detected" )
+   static_assert( ::blaze::IsNothrowCopyConstructible_<T>, "Non-noexcept copy constructible type detected" )
 //*************************************************************************************************
 
 
@@ -199,7 +199,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_COPY_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowCopyConstructible<T>::value, "Noexcept copy constructible type detected" )
+   static_assert( !::blaze::IsNothrowCopyConstructible_<T>, "Noexcept copy constructible type detected" )
 //*************************************************************************************************
 
 
@@ -219,7 +219,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MOVE_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsMoveConstructible<T>::value, "Non-move constructible type detected" )
+   static_assert( ::blaze::IsMoveConstructible_<T>, "Non-move constructible type detected" )
 //*************************************************************************************************
 
 
@@ -239,7 +239,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MOVE_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsMoveConstructible<T>::value, "Move constructible type detected" )
+   static_assert( !::blaze::IsMoveConstructible_<T>, "Move constructible type detected" )
 //*************************************************************************************************
 
 
@@ -259,7 +259,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_MOVE_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowMoveConstructible<T>::value, "Non-noexcept move constructible type detected" )
+   static_assert( ::blaze::IsNothrowMoveConstructible_<T>, "Non-noexcept move constructible type detected" )
 //*************************************************************************************************
 
 
@@ -279,7 +279,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_MOVE_CONSTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowMoveConstructible<T>::value, "Noexcept move constructible type detected" )
+   static_assert( !::blaze::IsNothrowMoveConstructible_<T>, "Noexcept move constructible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
