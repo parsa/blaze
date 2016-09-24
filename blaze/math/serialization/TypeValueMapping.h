@@ -168,7 +168,7 @@ struct TypeValueMapping
    enum { value = TypeValueMappingHelper< IsIntegral<T>::value && IsSigned<T>::value
                                         , IsIntegral<T>::value && IsUnsigned<T>::value
                                         , IsFloatingPoint<T>::value
-                                        , IsComplex<T>::value
+                                        , IsComplex_<T>
                                         >::value };
    /*! \endcond */
    //**********************************************************************************************

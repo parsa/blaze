@@ -1614,7 +1614,7 @@ inline typename HermitianMatrix<MT,SO,false>::Iterator
 {
    const bool isDiagonal( i == j );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex_<ElementType> && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
    }
 
@@ -1649,7 +1649,7 @@ inline typename HermitianMatrix<MT,SO,false>::Iterator
 {
    const bool isDiagonal( i == j );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex_<ElementType> && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
    }
 
@@ -1898,7 +1898,7 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline HermitianMatrix<MT,SO,false>& HermitianMatrix<MT,SO,false>::transpose()
 {
-   if( IsComplex<ElementType>::value )
+   if( IsComplex_<ElementType> )
       matrix_.transpose();
    return *this;
 }
@@ -2224,7 +2224,7 @@ inline void HermitianMatrix<MT,SO,false>::append( size_t i, size_t j, const Elem
 {
    const bool isDiagonal( i == j );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex_<ElementType> && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
    }
 

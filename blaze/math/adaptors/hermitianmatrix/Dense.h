@@ -2532,7 +2532,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline HermitianMatrix<MT,SO,true>& HermitianMatrix<MT,SO,true>::transpose()
 {
-   if( IsComplex<ElementType>::value )
+   if( IsComplex_<ElementType> )
       matrix_.transpose();
    return *this;
 }
