@@ -244,6 +244,24 @@ struct AlignmentOf< const volatile T > : IntegralConstant<size_t,AlignmentOfHelp
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AlignmentOf type trait.
+// \ingroup type_traits
+//
+// The AlignmentOf_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the AlignmentOf class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr size_t value1 = AlignmentOf<T>::value;
+   constexpr size_t value2 = AlignmentOf_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr size_t AlignmentOf_ = AlignmentOf<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
