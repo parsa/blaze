@@ -1891,7 +1891,7 @@ class Row<MT,false,false,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum : bool { returnConst = IsConst<MatrixType>::value };
+      enum : bool { returnConst = IsConst_<MatrixType> };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
