@@ -76,6 +76,24 @@ struct IsBuiltin : public BoolConstant< std::is_fundamental<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsBuiltin type trait.
+// \ingroup type_traits
+//
+// The IsBuiltin_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsBuiltin class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsBuiltin<T>::value;
+   constexpr bool value2 = IsBuiltin_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBuiltin_ = IsBuiltin<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
