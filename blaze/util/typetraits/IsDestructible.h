@@ -48,7 +48,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITIONS
+//  CLASS ISDESTRUCTIBLE
 //
 //=================================================================================================
 
@@ -76,6 +76,32 @@ struct IsDestructible
 
 
 //*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsDestructible type trait.
+// \ingroup type_traits
+//
+// The IsDestructible_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsDestructible class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDestructible<T>::value;
+   constexpr bool value2 = IsDestructible_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDestructible_ = IsDestructible<T>::value;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS ISNOTHROWDESTRUCTIBLE
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief Compile time type check.
 // \ingroup type_traits
 //
@@ -95,6 +121,24 @@ template< typename T >
 struct IsNothrowDestructible
    : public BoolConstant< std::is_nothrow_destructible<T>::value >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsNothrowDestructible type trait.
+// \ingroup type_traits
+//
+// The IsNothrowDestructible_ alias declaration provides a convenient shortcut to access the
+// nested \a value of the IsNothrowDestructible class template. For instance, given the type
+// \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNothrowDestructible<T>::value;
+   constexpr bool value2 = IsNothrowDestructible_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNothrowDestructible_ = IsNothrowDestructible<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
