@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is no array type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ARRAY_TYPE(T) \
-   static_assert( ::blaze::IsArray<T>::value, "Non-array type detected" )
+   static_assert( ::blaze::IsArray_<T>, "Non-array type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is an array type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE(T) \
-   static_assert( !::blaze::IsArray<T>::value, "Array type detected" )
+   static_assert( !::blaze::IsArray_<T>, "Array type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
