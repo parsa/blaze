@@ -58,7 +58,7 @@ namespace blaze {
 // In case \a D is not derived from \a B, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM(D,B) \
-   static_assert( ( ::blaze::IsBaseOf<B,D>::value ), "Broken inheritance relationship detected" )
+   static_assert( ( ::blaze::IsBaseOf_<B,D> ), "Broken inheritance relationship detected" )
 //*************************************************************************************************
 
 
@@ -78,7 +78,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DERIVED_FROM(D,B) \
-   static_assert( ( !::blaze::IsBaseOf<B,D>::value ), "Unexpected inheritance relationship detected" )
+   static_assert( ( !::blaze::IsBaseOf_<B,D> ), "Unexpected inheritance relationship detected" )
 //*************************************************************************************************
 
 
@@ -99,7 +99,7 @@ namespace blaze {
 // case \a D and \a B are the same type.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_STRICTLY_DERIVED_FROM(D,B) \
-   static_assert( ( ::blaze::IsBaseOf<B,D>::value && !::blaze::IsBaseOf<D,B>::value ), "Broken inheritance relationship detected" )
+   static_assert( ( ::blaze::IsBaseOf_<B,D> && !::blaze::IsBaseOf_<D,B> ), "Broken inheritance relationship detected" )
 //*************************************************************************************************
 
 
@@ -120,7 +120,7 @@ namespace blaze {
 // in case \a D and \a B are the same type.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_DERIVED_FROM(D,B) \
-   static_assert( ( !::blaze::IsBaseOf<B,D>::value || ::blaze::IsBaseOf<D,B>::value ), "Unexpected inheritance relationship detected" )
+   static_assert( ( !::blaze::IsBaseOf_<B,D> || ::blaze::IsBaseOf_<D,B> ), "Unexpected inheritance relationship detected" )
 //*************************************************************************************************
 
 } // namespace blaze
