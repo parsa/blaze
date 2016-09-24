@@ -813,7 +813,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )
@@ -1766,7 +1766,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )
@@ -2733,7 +2733,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )
@@ -4376,7 +4376,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )
@@ -5301,7 +5301,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )
@@ -6196,7 +6196,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       size_t j( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_<ElementType> )
       {
          for( ; (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
             for( size_t i=0UL; i<M; ++i )

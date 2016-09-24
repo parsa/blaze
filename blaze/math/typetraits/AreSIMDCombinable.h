@@ -89,8 +89,8 @@ struct AreSIMDCombinableHelper<T,T>
 template< typename T1, typename T2 >
 struct AreSIMDCombinableHelper<T1,T2>
 {
-   enum : bool { value = IsNumeric<T1>::value && IsIntegral<T1>::value &&
-                         IsNumeric<T2>::value && IsIntegral<T2>::value &&
+   enum : bool { value = IsNumeric<T1>::value && IsIntegral_<T1> &&
+                         IsNumeric<T2>::value && IsIntegral_<T2> &&
                          sizeof(T1) == sizeof(T2) };
 };
 /*! \endcond */
