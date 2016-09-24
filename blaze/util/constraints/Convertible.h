@@ -58,7 +58,7 @@ namespace blaze {
 // In case \a FROM is not convertible to \a TO, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CONVERTIBLE(FROM,TO) \
-   static_assert( ::blaze::IsConvertible<FROM,TO>::value, "Inconvertible type detected" )
+   static_assert( ::blaze::IsConvertible_<FROM,TO>, "Inconvertible type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case \a FROM is convertible to \a TO, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CONVERTIBLE(FROM,TO) \
-   static_assert( !::blaze::IsConvertible<FROM,TO>::value, "Convertible type detected" )
+   static_assert( !::blaze::IsConvertible_<FROM,TO>, "Convertible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
