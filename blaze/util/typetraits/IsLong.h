@@ -157,6 +157,24 @@ struct IsLong<const volatile unsigned long> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsLong type trait.
+// \ingroup type_traits
+//
+// The IsLong_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsLong class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsLong<T>::value;
+   constexpr bool value2 = IsLong_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsLong_ = IsLong<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
