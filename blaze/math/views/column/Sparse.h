@@ -1122,7 +1122,7 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,true,false,SF> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;
@@ -2982,7 +2982,7 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;
@@ -4668,7 +4668,7 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,true> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint_<DT> ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;

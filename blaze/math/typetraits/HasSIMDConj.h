@@ -75,7 +75,7 @@ template< typename T >
 struct HasSIMDConjHelper< complex<T> >
 {
    enum : bool { value = IsNumeric<T>::value && IsSigned<T>::value && HasSIMDMult<T,T>::value &&
-                         ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) };
+                         ( IsFloatingPoint_<T> || sizeof(T) <= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************
