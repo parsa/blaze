@@ -161,6 +161,24 @@ struct IsInteger<const volatile unsigned int> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsInteger type trait.
+// \ingroup type_traits
+//
+// The IsInteger_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsInteger class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsInteger<T>::value;
+   constexpr bool value2 = IsInteger_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsInteger_ = IsInteger<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
