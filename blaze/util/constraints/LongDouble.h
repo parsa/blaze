@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_LONGDOUBLE_TYPE(T) \
-   static_assert( ::blaze::IsLongDouble<T>::value, "Non-long double type detected" )
+   static_assert( ::blaze::IsLongDouble_<T>, "Non-long double type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_LONGDOUBLE_TYPE(T) \
-   static_assert( !::blaze::IsLongDouble<T>::value, "Long double type detected" )
+   static_assert( !::blaze::IsLongDouble_<T>, "Long double type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
