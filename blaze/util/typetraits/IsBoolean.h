@@ -116,6 +116,24 @@ struct IsBoolean<const volatile bool> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsBoolean type trait.
+// \ingroup type_traits
+//
+// The IsBoolean_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsBoolean class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsBoolean<T>::value;
+   constexpr bool value2 = IsBoolean_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBoolean_ = IsBoolean<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
