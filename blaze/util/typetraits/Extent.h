@@ -62,14 +62,14 @@ namespace blaze {
 // incomplete, \a value is set to 0.
 
    \code
-   blaze::Extent< int[4], 0 >::value            // Evaluates to 4
-   blaze::Extent< int[2][3][4], 0 >::value      // Evaluates to 2
-   blaze::Extent< int[2][3][4], 1 >::value      // Evaluates to 3
-   blaze::Extent< int[2][3][4], 2 >::value      // Evaluates to 4
-   blaze::Extent< int[][2], 0 >::value          // Evaluates to 0
-   blaze::Extent< int[][2], 1 >::value          // Evaluates to 2
-   blaze::Extent< int*, 0 >::value              // Evaluates to 0
-   blaze::Extent< std::vector<int>, 0 >::value  // Evaluates to 0 (std::vector is NOT an array type)
+   blaze::Extent< int[4], 0U >::value            // Evaluates to 4
+   blaze::Extent< int[2][3][4], 0U >::value      // Evaluates to 2
+   blaze::Extent< int[2][3][4], 1U >::value      // Evaluates to 3
+   blaze::Extent< int[2][3][4], 2U >::value      // Evaluates to 4
+   blaze::Extent< int[][2], 0U >::value          // Evaluates to 0
+   blaze::Extent< int[][2], 1U >::value          // Evaluates to 2
+   blaze::Extent< int*, 0U >::value              // Evaluates to 0
+   blaze::Extent< std::vector<int>, 0U >::value  // Evaluates to 0 (std::vector is NOT an array type)
    \endcode
 */
 template< typename T, unsigned int N >
@@ -120,6 +120,24 @@ struct Extent<T[E],0U>
    : public IntegralConstant<unsigned int,E>
 {};
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Extent type trait.
+// \ingroup type_traits
+//
+// The Extent_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the Extent class template. For instance, given the type \a T and the index \a N the
+// following two statements are identical:
+
+   \code
+   constexpr unsigned int value1 = Extent< T[2][3][4], N >::value;
+   constexpr unsigned int value2 = Extent_< T[2][3][4], N >;
+   \endcode
+*/
+template< typename T, unsigned int N >
+constexpr unsigned int Extent_ = Extent<T,N>::value;
 //*************************************************************************************************
 
 } // namespace blaze
