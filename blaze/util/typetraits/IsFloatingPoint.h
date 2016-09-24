@@ -76,6 +76,24 @@ struct IsFloatingPoint : public BoolConstant< std::is_floating_point<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsFloatingPoint type trait.
+// \ingroup type_traits
+//
+// The IsFloatingPoint_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsFloatingPoint class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsFloatingPoint<T>::value;
+   constexpr bool value2 = IsFloatingPoint_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsFloatingPoint_ = IsFloatingPoint<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
