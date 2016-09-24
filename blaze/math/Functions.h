@@ -92,7 +92,7 @@ BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool lessThan( T1 a, T2 b )
-   noexcept( IsBuiltin< CommonType_<T1,T2> >::value );
+   noexcept( IsBuiltin_< CommonType_<T1,T2> > );
 //@}
 //*************************************************************************************************
 
@@ -279,7 +279,7 @@ BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept
 */
 template< typename T >
 BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( const T& a, const T& b )
-   noexcept( IsBuiltin<T>::value )
+   noexcept( IsBuiltin_<T> )
 {
    return a < b;
 }
@@ -367,7 +367,7 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( long double a, long double 
 */
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool lessThan( const T1& a, const T2& b )
-   noexcept( IsBuiltin< CommonType_<T1,T2> >::value )
+   noexcept( IsBuiltin_< CommonType_<T1,T2> > )
 {
    return lessThan_backend< CommonType_<T1,T2> >( a, b );
 }

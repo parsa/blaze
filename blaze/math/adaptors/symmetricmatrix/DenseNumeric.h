@@ -2535,7 +2535,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,true>& SymmetricMatrix<MT,SO,true,true>::ctranspose()
 {
-   if( !IsBuiltin<ElementType>::value )
+   if( !IsBuiltin_<ElementType> )
       conjugate( matrix_ );
 
    return *this;

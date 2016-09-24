@@ -76,7 +76,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_<Type> )
 {
    return v == Type();
 }
@@ -156,7 +156,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 // parts are zero or close to zero the function returns \a true, otherwise it returns \a false.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>::value )
+BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin_<T> )
 {
    return isDefault( real( v ) ) && isDefault( imag( v ) );
 }

@@ -4088,7 +4088,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                             IsBLASCompatible< ElementType_<T3> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
+                            !( IsBuiltin_< ElementType_<T1> > && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 

@@ -338,7 +338,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    typedef ElementType_< HermitianMatrix<MT,SO,DF> >  ET;
 
-   return ( IsBuiltin<ET>::value ||
+   return ( IsBuiltin_<ET> ||
             column < row ||
             (~rhs).size() <= column - row ||
             isReal( (~rhs)[column-row] ) );
@@ -382,7 +382,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    typedef ElementType_< HermitianMatrix<MT,SO,DF> >  ET;
 
-   return ( IsBuiltin<ET>::value ||
+   return ( IsBuiltin_<ET> ||
             row < column ||
             (~rhs).size() <= row - column ||
             isReal( (~rhs)[row-column] ) );
@@ -693,7 +693,7 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
+   : public BoolConstant< IsBuiltin_< ElementType_<MT> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
