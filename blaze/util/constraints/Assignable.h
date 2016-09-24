@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COPY_ASSIGNABLE_TYPE(T) \
-   static_assert( ::blaze::IsCopyAssignable<T>::value, "Non-copy assignable type detected" )
+   static_assert( ::blaze::IsCopyAssignable_<T>, "Non-copy assignable type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COPY_ASSIGNABLE_TYPE(T) \
-   static_assert( !::blaze::IsCopyAssignable<T>::value, "Copy assignable type detected" )
+   static_assert( !::blaze::IsCopyAssignable_<T>, "Copy assignable type detected" )
 //*************************************************************************************************
 
 
@@ -99,7 +99,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_COPY_ASSIGNABLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowCopyAssignable<T>::value, "Non-noexcept copy assignable type detected" )
+   static_assert( ::blaze::IsNothrowCopyAssignable_<T>, "Non-noexcept copy assignable type detected" )
 //*************************************************************************************************
 
 
@@ -119,7 +119,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_COPY_ASSIGNABLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowCopyAssignable<T>::value, "Noexcept copy assignable type detected" )
+   static_assert( !::blaze::IsNothrowCopyAssignable_<T>, "Noexcept copy assignable type detected" )
 //*************************************************************************************************
 
 
@@ -139,7 +139,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MOVE_ASSIGNABLE_TYPE(T) \
-   static_assert( ::blaze::IsMoveAssignable<T>::value, "Non-move assignable type detected" )
+   static_assert( ::blaze::IsMoveAssignable_<T>, "Non-move assignable type detected" )
 //*************************************************************************************************
 
 
@@ -159,7 +159,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MOVE_ASSIGNABLE_TYPE(T) \
-   static_assert( !::blaze::IsMoveAssignable<T>::value, "Move assignable type detected" )
+   static_assert( !::blaze::IsMoveAssignable_<T>, "Move assignable type detected" )
 //*************************************************************************************************
 
 
@@ -179,7 +179,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_MOVE_ASSIGNABLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowMoveAssignable<T>::value, "Non-noexcept move assignable type detected" )
+   static_assert( ::blaze::IsNothrowMoveAssignable_<T>, "Non-noexcept move assignable type detected" )
 //*************************************************************************************************
 
 
@@ -199,7 +199,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_MOVE_ASSIGNABLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowMoveAssignable<T>::value, "Noexcept move assignable type detected" )
+   static_assert( !::blaze::IsNothrowMoveAssignable_<T>, "Noexcept move assignable type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
