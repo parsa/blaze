@@ -67,7 +67,7 @@ namespace blaze {
 template< typename T >
 BLAZE_ALWAYS_INLINE size_t misalignment( const T* address )
 {
-   return ( reinterpret_cast<size_t>( address ) % AlignmentOf<T>::value );
+   return ( reinterpret_cast<size_t>( address ) % AlignmentOf_<T> );
 }
 //*************************************************************************************************
 

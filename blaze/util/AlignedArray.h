@@ -91,9 +91,9 @@ namespace blaze {
    blaze::AlignedArray<int,3UL> array3( 1, 2, 3 );  // Same effect as above
    \endcode
 */
-template< typename Type                                  // Data type of the elements
-        , size_t N                                       // Number of elements
-        , size_t Alignment = AlignmentOf<Type>::value >  // Array alignment
+template< typename Type                            // Data type of the elements
+        , size_t N                                 // Number of elements
+        , size_t Alignment = AlignmentOf_<Type> >  // Array alignment
 class AlignedArray
 {
  public:
