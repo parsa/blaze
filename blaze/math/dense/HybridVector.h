@@ -208,7 +208,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -500,7 +500,7 @@ inline HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
@@ -529,7 +529,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
@@ -563,7 +563,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
@@ -607,7 +607,7 @@ inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
    : v_   ()               // The statically allocated vector elements
    , size_( list.size() )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( size_ > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
@@ -651,7 +651,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
@@ -698,7 +698,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
    , size_( M )  // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( M <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i )
       v_[i] = array[i];
@@ -727,7 +727,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    : v_   ()           // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
@@ -762,7 +762,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( (~v).size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
@@ -1516,7 +1516,7 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
 
-   if( IsVectorizable<Type>::value && n < size_ ) {
+   if( IsVectorizable_<Type> && n < size_ ) {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
    }

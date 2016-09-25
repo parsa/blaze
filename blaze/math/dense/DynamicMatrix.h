@@ -238,7 +238,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -527,7 +527,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n )
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j ) {
             v_[i*nn_+j] = Type();
@@ -562,7 +562,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& in
       for( size_t j=0UL; j<n_; ++j )
          v_[i*nn_+j] = init;
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -651,7 +651,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
       for( size_t j=0UL; j<n; ++j )
          v_[i*nn_+j] = array[i*n+j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t j=n; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -699,7 +699,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[M][N] )
       for( size_t j=0UL; j<N; ++j )
          v_[i*nn_+j] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t j=N; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
@@ -777,8 +777,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value   ? 0UL : n_ );
-                  j<( IsVectorizable<Type>::value ? nn_ : n_ ); ++j ) {
+      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : n_ );
+                  j<( IsVectorizable_<Type>     ? nn_ : n_ ); ++j ) {
          v_[i*nn_+j] = Type();
       }
    }
@@ -1741,7 +1741,7 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
       capacity_ = m*nn;
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<nn; ++j )
             v_[i*nn+j] = Type();
@@ -1798,7 +1798,7 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
       // Initializing the new array
       transfer( v_, v_+capacity_, tmp );
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t i=capacity_; i<elements; ++i )
             tmp[i] = Type();
       }
@@ -1941,7 +1941,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
 {
-   if( usePadding && IsVectorizable<Type>::value )
+   if( usePadding && IsVectorizable_<Type> )
       return nextMultiple<size_t>( minColumns, SIMDSIZE );
    else return minColumns;
 }
@@ -1972,7 +1972,7 @@ inline bool DynamicMatrix<Type,SO>::isIntact() const noexcept
    if( m_ * n_ > capacity_ )
       return false;
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j ) {
             if( v_[i*nn_+j] != Type() )
@@ -2988,7 +2988,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3263,7 +3263,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
@@ -3299,7 +3299,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
       for( size_t i=0UL; i<m_; ++i )
          v_[i+j*mm_] = init;
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t i=m_; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -3356,7 +3356,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( initializer_list< initializer_li
 
    BLAZE_INTERNAL_ASSERT( i == m_, "Invalid number of elements detected" );
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( ; i<mm_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
             v_[i+j*mm_] = Type();
@@ -3407,7 +3407,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*mm_] = array[i+j*m];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t i=m; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -3456,7 +3456,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[M][N] )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*mm_] = array[i][j];
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t i=M; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
@@ -3537,8 +3537,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value   ? 0UL : m_ );
-                  i<( IsVectorizable<Type>::value ? mm_ : m_ ); ++i ) {
+      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : m_ );
+                  i<( IsVectorizable_<Type>     ? mm_ : m_ ); ++i ) {
          v_[i+j*mm_] = Type();
       }
    }
@@ -4501,7 +4501,7 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
       capacity_ = mm*n;
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<mm; ++i )
             v_[i+j*mm] = Type();
@@ -4560,7 +4560,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
       // Initializing the new array
       transfer( v_, v_+capacity_, tmp );
 
-      if( IsVectorizable<Type>::value ) {
+      if( IsVectorizable_<Type> ) {
          for( size_t i=capacity_; i<elements; ++i )
             tmp[i] = Type();
       }
@@ -4708,7 +4708,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
 {
-   if( usePadding && IsVectorizable<Type>::value )
+   if( usePadding && IsVectorizable_<Type> )
       return nextMultiple<size_t>( minRows, SIMDSIZE );
    else return minRows;
 }
@@ -4740,7 +4740,7 @@ inline bool DynamicMatrix<Type,true>::isIntact() const noexcept
    if( m_ * n_ > capacity_ )
       return false;
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
             if( v_[i+j*mm_] != Type() )

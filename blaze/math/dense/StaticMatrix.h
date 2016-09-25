@@ -246,7 +246,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -524,7 +524,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
@@ -548,7 +548,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -592,7 +592,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -644,7 +644,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -700,7 +700,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -729,7 +729,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
@@ -753,7 +753,7 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -789,7 +789,7 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -2971,7 +2971,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3230,7 +3230,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
@@ -3255,7 +3255,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3300,7 +3300,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -3370,7 +3370,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -3427,7 +3427,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3457,7 +3457,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t i=0UL; i<MM*N; ++i )
       v_[i] = m.v_[i];
@@ -3482,7 +3482,7 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,SO>& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3519,7 +3519,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );

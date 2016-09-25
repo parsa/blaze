@@ -470,7 +470,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -818,13 +818,13 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_<Type> && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    v_.reset( ptr, NoDelete() );
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
@@ -921,13 +921,13 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_<Type> && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    v_.reset( ptr, d );
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
@@ -3239,7 +3239,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3575,13 +3575,13 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_<Type> && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    v_.reset( ptr, NoDelete() );
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_<Type> ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
@@ -3680,13 +3680,13 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_<Type> && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
    v_.reset( ptr, d );
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_<Type> ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();

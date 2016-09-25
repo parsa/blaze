@@ -248,7 +248,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -523,7 +523,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
@@ -557,7 +557,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -600,7 +600,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -664,7 +664,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_li
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -729,7 +729,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -795,7 +795,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[M2][N2] )
 {
    BLAZE_STATIC_ASSERT( M2 <= M );
    BLAZE_STATIC_ASSERT( N2 <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<M2; ++i ) {
       for( size_t j=0UL; j<N2; ++j )
@@ -835,7 +835,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j )
@@ -877,7 +877,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
@@ -1905,13 +1905,13 @@ void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsVectorizable<Type>::value && n < n_ ) {
+   if( IsVectorizable_<Type> && n < n_ ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<n_; ++j )
             v_[i*NN+j] = Type();
    }
 
-   if( IsVectorizable<Type>::value && m < m_ ) {
+   if( IsVectorizable_<Type> && m < m_ ) {
       for( size_t i=m; i<m_; ++i )
          for( size_t j=0UL; j<n_; ++j )
             v_[i*NN+j] = Type();
@@ -1980,7 +1980,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ < n_ ) {
+   if( IsVectorizable_<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -1988,7 +1988,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ > n_ ) {
+   if( IsVectorizable_<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2036,7 +2036,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
       conjugate( v_[i*NN+i] );
    }
 
-   if( IsVectorizable<Type>::value && m_ < n_ ) {
+   if( IsVectorizable_<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2044,7 +2044,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ > n_ ) {
+   if( IsVectorizable_<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -3156,7 +3156,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3417,7 +3417,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( IsNumeric_<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
@@ -3452,7 +3452,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3496,7 +3496,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3561,7 +3561,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3640,7 +3640,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3707,7 +3707,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[M2][N2] )
 {
    BLAZE_STATIC_ASSERT( M2 <= M );
    BLAZE_STATIC_ASSERT( N2 <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t j=0UL; j<N2; ++j ) {
       for( size_t i=0UL; i<M2; ++i )
@@ -3748,7 +3748,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i )
@@ -3791,7 +3791,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || MM == M );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
@@ -4820,13 +4820,13 @@ void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsVectorizable<Type>::value && m < m_ ) {
+   if( IsVectorizable_<Type> && m < m_ ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<m_; ++i )
             v_[i+j*MM] = Type();
    }
 
-   if( IsVectorizable<Type>::value && n < n_ ) {
+   if( IsVectorizable_<Type> && n < n_ ) {
       for( size_t j=n; j<n_; ++j )
          for( size_t i=0UL; i<m_; ++i )
             v_[i+j*MM] = Type();
@@ -4897,7 +4897,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ < m_ ) {
+   if( IsVectorizable_<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -4905,7 +4905,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ > m_ ) {
+   if( IsVectorizable_<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -4954,7 +4954,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
       conjugate( v_[j+j*MM] );
    }
 
-   if( IsVectorizable<Type>::value && n_ < m_ ) {
+   if( IsVectorizable_<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -4962,7 +4962,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ > m_ ) {
+   if( IsVectorizable_<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
