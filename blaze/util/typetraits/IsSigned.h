@@ -78,6 +78,24 @@ struct IsSigned : public BoolConstant< std::is_signed<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSigned type trait.
+// \ingroup type_traits
+//
+// The IsSigned_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsSigned class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsSigned<T>::value;
+   constexpr bool value2 = IsSigned_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSigned_ = IsSigned<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
