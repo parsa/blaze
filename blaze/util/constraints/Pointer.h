@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a pointer type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_POINTER_TYPE(T) \
-   static_assert( ::blaze::IsPointer<T>::value, "Non-pointer type detected" )
+   static_assert( ::blaze::IsPointer_<T>, "Non-pointer type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is not a pointer type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE(T) \
-   static_assert( !::blaze::IsPointer<T>::value, "Pointer type detected" )
+   static_assert( !::blaze::IsPointer_<T>, "Pointer type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
