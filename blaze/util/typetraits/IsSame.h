@@ -89,6 +89,24 @@ struct IsStrictlySame<T,T> : public TrueType
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsStrictlySame type trait.
+// \ingroup type_traits
+//
+// The IsStrictlySame_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsStrictlySame class template. For instance, given the types \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsStrictlySame<T1,T2>::value;
+   constexpr bool value2 = IsStrictlySame_<T1,T2>;
+   \endcode
+*/
+template< typename A, typename B >
+constexpr bool IsStrictlySame_ = IsStrictlySame<A,B>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -137,6 +155,24 @@ struct IsSameHelper
 template< typename A, typename B >
 struct IsSame : public BoolConstant< IsSameHelper<A,B>::value >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSame type trait.
+// \ingroup type_traits
+//
+// The IsSame_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsSame class template. For instance, given the types \a T1 and \a T2 the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSame<T1,T2>::value;
+   constexpr bool value2 = IsSame_<T1,T2>;
+   \endcode
+*/
+template< typename A, typename B >
+constexpr bool IsSame_ = IsSame<A,B>::value;
 //*************************************************************************************************
 
 } // namespace blaze
