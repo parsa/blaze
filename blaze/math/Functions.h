@@ -112,7 +112,7 @@ inline constexpr int sign( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( T );
 
-   return ( IsSigned<T>::value || IsFloatingPoint_<T> )
+   return ( IsSigned_<T> || IsFloatingPoint_<T> )
           ?( T(0) < a ) - ( a < T(0) )
           :( T(0) < a );
 }
