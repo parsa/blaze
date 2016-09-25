@@ -85,7 +85,7 @@ struct IsPowerOf : public BoolConstant< IsPowerOf<B,N/B>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for any value \a N to
 // the base 2. In case \a N is a power of 2, the \a value member enumeration is set to 1, the
@@ -102,7 +102,7 @@ struct IsPowerOf<2,N> : public BoolConstant< ( N & (N-1) ) == 0UL >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for the value 0 to the
 // base 2. Since 0 is no power of 2, this specialization sets the \a value member enumeration
@@ -118,7 +118,7 @@ struct IsPowerOf<2,0> : public FalseType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for the value 1 to any
 // given base \a B larger than 1. According to the equation \f$ B^0 = 1 \f$ this specialization
@@ -135,7 +135,7 @@ struct IsPowerOf<B,1> : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for any value \a N larger
 // than 1 to the base 1. Since N is no power of 1, this specialization always sets the \a value
@@ -152,7 +152,7 @@ struct IsPowerOf<1,N> : public FalseType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for the value 1 to
 // the base 1. Since 1 is a power of 1, this specialization always sets the \a value member
@@ -169,7 +169,7 @@ struct IsPowerOf<1,1> : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for the value 0 to the
 // base \a B. Since 0 is no power of \a B, this specialization always sets the \a value member
@@ -186,7 +186,7 @@ struct IsPowerOf<B,0> : public FalseType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for any value \a N to
 // the base 0. Since N is no power of 0, this specialization always sets the \a value member
@@ -203,7 +203,7 @@ struct IsPowerOf<0,N> : public FalseType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Partial specialization of the IsPowerOf value trait.
-// \ingroup type_traits
+// \ingroup value_traits
 //
 // This class ia a partial specialization of the IsPowerOf value trait for the value 0 to
 // the base 0. Since 0 is a power of 0 (\f$ 0^x = 0 \f$), this specialization always sets
@@ -214,6 +214,24 @@ template<>
 struct IsPowerOf<0,0> : public TrueType
 {};
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsPowerOf value trait.
+// \ingroup value_traits
+//
+// The IsPowerOf_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsPowerOf class template. For instance, given the compile time constant values \a B and
+// \a N the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsPowerOf<B,N>::value;
+   constexpr bool value2 = IsPowerOf_<B,N>;
+   \endcode
+*/
+template< size_t B, size_t N >
+constexpr bool IsPowerOf_ = IsPowerOf<B,N>::value;
 //*************************************************************************************************
 
 } // namespace blaze
