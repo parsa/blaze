@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not a valid type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VALID_TYPE(T) \
-   static_assert( blaze::IsValid<T>::value, "Invalid type detected" )
+   static_assert( blaze::IsValid_<T>, "Invalid type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is a valid type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VALID_TYPE(T) \
-   static_assert( !blaze::IsValid<T>::value, "Valid type detected" )
+   static_assert( !blaze::IsValid_<T>, "Valid type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
