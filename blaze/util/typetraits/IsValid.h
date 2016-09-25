@@ -117,6 +117,24 @@ struct IsValid<const volatile INVALID_TYPE> : public FalseType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsValid type trait.
+// \ingroup type_traits
+//
+// The IsValid_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the IsValid class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsValid<T>::value;
+   constexpr bool value2 = IsValid_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsValid_ = IsValid<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
