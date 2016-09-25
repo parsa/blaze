@@ -166,7 +166,7 @@ struct TypeValueMapping
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    enum { value = TypeValueMappingHelper< IsIntegral_<T> && IsSigned_<T>
-                                        , IsIntegral_<T> && IsUnsigned<T>::value
+                                        , IsIntegral_<T> && IsUnsigned_<T>
                                         , IsFloatingPoint_<T>
                                         , IsComplex_<T>
                                         >::value };
