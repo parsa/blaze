@@ -968,7 +968,7 @@ inline Subvector<VT,AF,TF,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
+   if( IsReference_<Right> || right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       reset();
       assign( left, tmp );

@@ -641,7 +641,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator=( const Dens
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -697,7 +697,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator=( const Spar
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -4189,7 +4189,7 @@ inline Column<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4245,7 +4245,7 @@ inline Column<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right);
       left.reset();
       left.reserve( tmp.nonZeros() );

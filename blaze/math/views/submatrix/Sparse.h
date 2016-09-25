@@ -1077,7 +1077,7 @@ inline Submatrix<MT,AF,false,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -3499,7 +3499,7 @@ inline Submatrix<MT,AF,true,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );

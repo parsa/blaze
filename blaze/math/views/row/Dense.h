@@ -830,7 +830,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Vector<VT,tr
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -883,7 +883,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator+=( const Vector<VT,t
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -934,7 +934,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator-=( const Vector<VT,t
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -984,7 +984,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const DenseVector
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1077,7 +1077,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator/=( const DenseVector
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3020,7 +3020,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Vect
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType tmp( right );
       smpAssign( left, tmp );
    }
@@ -3072,7 +3072,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator+=( const Vec
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3122,7 +3122,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator-=( const Vec
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3171,7 +3171,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const Den
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3262,7 +3262,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator/=( const Den
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -4567,7 +4567,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Vector
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4619,7 +4619,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator+=( const Vecto
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -4669,7 +4669,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator-=( const Vecto
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -4718,7 +4718,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const Dense
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -4809,7 +4809,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator/=( const Dense
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       smpDivAssign( left, tmp );
    }

@@ -639,7 +639,7 @@ inline Row<MT,true,false,SF>& Row<MT,true,false,SF>::operator=( const DenseVecto
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -695,7 +695,7 @@ inline Row<MT,true,false,SF>& Row<MT,true,false,SF>::operator=( const SparseVect
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -4169,7 +4169,7 @@ inline Row<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4225,7 +4225,7 @@ inline Row<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
