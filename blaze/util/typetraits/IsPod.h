@@ -88,6 +88,24 @@ struct IsPod : public BoolConstant< std::is_pod<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsPod type trait.
+// \ingroup type_traits
+//
+// The IsPod_ alias declaration provides a convenient shortcut to access the nested \a value of
+// the IsPod class template. For instance, given the type \a T the following two statements are
+// identical:
+
+   \code
+   constexpr bool value1 = IsPod<T>::value;
+   constexpr bool value2 = IsPod_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsPod_ = IsPod<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
