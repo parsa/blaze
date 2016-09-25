@@ -70,11 +70,11 @@ struct AlignmentOfHelper
  public:
    //**********************************************************************************************
 #if BLAZE_MIC_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 64UL ):( defaultAlignment );
+   static constexpr size_t value = ( IsVectorizable_<T> )?( 64UL ):( defaultAlignment );
 #elif BLAZE_AVX2_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 32UL ):( defaultAlignment );
+   static constexpr size_t value = ( IsVectorizable_<T> )?( 32UL ):( defaultAlignment );
 #elif BLAZE_SSE2_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 16UL ):( defaultAlignment );
+   static constexpr size_t value = ( IsVectorizable_<T> )?( 16UL ):( defaultAlignment );
 #else
    static constexpr size_t value = defaultAlignment;
 #endif
