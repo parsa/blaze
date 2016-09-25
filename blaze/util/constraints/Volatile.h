@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not a volatile-qualified type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VOLATILE(T) \
-   static_assert( ::blaze::IsVolatile<T>::value, "Non-volatile-qualified type detected" )
+   static_assert( ::blaze::IsVolatile_<T>, "Non-volatile-qualified type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is a volatile-qualified type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE(T) \
-   static_assert( !::blaze::IsVolatile<T>::value, "Volatile-qualified type detected" )
+   static_assert( !::blaze::IsVolatile_<T>, "Volatile-qualified type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
