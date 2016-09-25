@@ -58,7 +58,7 @@ namespace blaze {
 // In case the type \a T doesn't have a rank of \a N, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_RANK(T,N) \
-   static_assert( ::blaze::Rank<T>::value == N, "Invalid rank detected" )
+   static_assert( ::blaze::Rank_<T> == N, "Invalid rank detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the type \a T has a rank of \a N, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_RANK(T,N) \
-   static_assert( ::blaze::Rank<T>::value != N, "Invalid rank detected" )
+   static_assert( ::blaze::Rank_<T> != N, "Invalid rank detected" )
 //*************************************************************************************************
 
 } // namespace blaze
