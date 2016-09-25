@@ -104,6 +104,24 @@ struct IsMultipleOf<0,0> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsMultipleOf value trait.
+// \ingroup value_traits
+//
+// The IsMultipleOf_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsMultipleOf class template. For instance, given the compile time constant
+// values \a M and \a N the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMultipleOf<M,N>::value;
+   constexpr bool value2 = IsMultipleOf_<M,N>;
+   \endcode
+*/
+template< size_t M, size_t N >
+constexpr bool IsMultipleOf_ = IsMultipleOf<M,N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
