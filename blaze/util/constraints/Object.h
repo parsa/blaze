@@ -59,7 +59,7 @@ namespace blaze {
 // \a void, and function types), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_OBJECT_TYPE(T) \
-   static_assert( ::blaze::IsObject<T>::value, "Non-object type detected" )
+   static_assert( ::blaze::IsObject_<T>, "Non-object type detected" )
 //*************************************************************************************************
 
 
@@ -78,7 +78,7 @@ namespace blaze {
 // In case the given data type \a T is not a object type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_OBJECT_TYPE(T) \
-   static_assert( !::blaze::IsObject<T>::value, "Object type detected" )
+   static_assert( !::blaze::IsObject_<T>, "Object type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
