@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a reference type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE(T) \
-   static_assert( ::blaze::IsReference<T>::value, "Non-reference type detected" )
+   static_assert( ::blaze::IsReference_<T>, "Non-reference type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is not a reference type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE(T) \
-   static_assert( !::blaze::IsReference<T>::value, "Reference type detected" )
+   static_assert( !::blaze::IsReference_<T>, "Reference type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
