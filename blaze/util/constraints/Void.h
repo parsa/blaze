@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not \a void, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VOID(T) \
-   static_assert( ::blaze::IsVoid<T>::value, "Non-void type detected" )
+   static_assert( ::blaze::IsVoid_<T>, "Non-void type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is \a void, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VOID(T) \
-   static_assert( !::blaze::IsVoid<T>::value, "Void type detected" )
+   static_assert( !::blaze::IsVoid_<T>, "Void type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
