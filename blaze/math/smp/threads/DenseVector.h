@@ -106,7 +106,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame_<ET1,ET2> );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
@@ -325,7 +325,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame_<ET1,ET2> );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
@@ -545,7 +545,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame_<ET1,ET2> );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
@@ -766,7 +766,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame_<ET1,ET2> );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
@@ -987,7 +987,7 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
+   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame_<ET1,ET2> );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 

@@ -198,8 +198,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
                             IsBLASCompatible< ElementType_<T1> >::value &&
                             IsBLASCompatible< ElementType_<T2> >::value &&
                             IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
+                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
+                            IsSame_< ElementType_<T1>, ElementType_<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -4086,8 +4086,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
                             IsBLASCompatible< ElementType_<T1> >::value &&
                             IsBLASCompatible< ElementType_<T2> >::value &&
                             IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
+                            IsSame_< ElementType_<T1>, ElementType_<T3> > &&
                             !( IsBuiltin_< ElementType_<T1> > && IsComplex_<T4> ) };
    };
    //**********************************************************************************************

@@ -86,7 +86,7 @@ struct TDVecDVecMultExprHelper
    enum : bool { value = useOptimizedKernels &&
                          CT1::simdEnabled &&
                          CT2::simdEnabled &&
-                         IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
+                         IsSame_< ElementType_<CT1>, ElementType_<CT2> > &&
                          HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
                          HasSIMDMult< ElementType_<CT1>, ElementType_<CT1> >::value };
    //**********************************************************************************************

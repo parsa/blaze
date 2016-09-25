@@ -425,7 +425,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
 BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept
 {
-   return ( IsSame<VT1,VT2>::value &&
+   return ( IsSame_<VT1,VT2> &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
 //*************************************************************************************************

@@ -1348,13 +1348,13 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_<MT,IT> && (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
@@ -4076,13 +4076,13 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_<MT,IT> && (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
