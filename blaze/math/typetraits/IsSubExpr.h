@@ -73,6 +73,24 @@ struct IsSubExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSubExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsSubExpr_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsSubExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSubExpr<T>::value;
+   constexpr bool value2 = IsSubExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSubExpr_ = IsSubExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

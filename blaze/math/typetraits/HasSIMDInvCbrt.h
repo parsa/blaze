@@ -108,6 +108,24 @@ struct HasSIMDInvCbrt : public BoolConstant< HasSIMDInvCbrtHelper< Decay_<T> >::
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDInvCbrt type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDInvCbrt_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDInvCbrt class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDInvCbrt<T>::value;
+   constexpr bool value2 = HasSIMDInvCbrt_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDInvCbrt_ = HasSIMDInvCbrt<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

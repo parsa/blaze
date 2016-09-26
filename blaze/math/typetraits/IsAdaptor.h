@@ -125,6 +125,24 @@ struct IsAdaptor< const volatile T > : public IsAdaptor<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsAdaptor type trait.
+// \ingroup math_type_traits
+//
+// The IsAdaptor_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsAdaptor class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsAdaptor<T>::value;
+   constexpr bool value2 = IsAdaptor_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsAdaptor_ = IsAdaptor<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

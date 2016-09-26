@@ -122,6 +122,24 @@ struct IsHermitian< const volatile T > : public IsHermitian<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsHermitian type trait.
+// \ingroup math_type_traits
+//
+// The IsHermitian_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsHermitian class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsHermitian<T>::value;
+   constexpr bool value2 = IsHermitian_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsHermitian_ = IsHermitian<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -116,6 +116,24 @@ struct IsSIMDPack
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSIMDPack type trait.
+// \ingroup math_type_traits
+//
+// The IsSIMDPack_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsSIMDPack class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSIMDPack<T>::value;
+   constexpr bool value2 = IsSIMDPack_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSIMDPack_ = IsSIMDPack<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

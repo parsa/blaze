@@ -123,6 +123,24 @@ struct IsStrictlyLower< const volatile T > : public IsStrictlyLower<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsStrictlyLower type trait.
+// \ingroup math_type_traits
+//
+// The IsStrictlyLower_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsStrictlyLower class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsStrictlyLower<T>::value;
+   constexpr bool value2 = IsStrictlyLower_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsStrictlyLower_ = IsStrictlyLower<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

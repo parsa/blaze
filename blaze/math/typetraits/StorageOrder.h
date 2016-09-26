@@ -78,6 +78,24 @@ struct StorageOrder : public BoolConstant< ( IsRowMajorMatrix<T>::value ? rowMaj
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the StorageOrder type trait.
+// \ingroup math_type_traits
+//
+// The StorageOrder_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the StorageOrder class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = StorageOrder<T>::value;
+   constexpr bool value2 = StorageOrder<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool StorageOrder_ = StorageOrder<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

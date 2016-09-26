@@ -110,6 +110,24 @@ struct HasSIMDAtan : public BoolConstant< HasSIMDAtanHelper< Decay_<T> >::value 
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDAtan type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDAtan_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAtan class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAtan<T>::value;
+   constexpr bool value2 = HasSIMDAtan_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDAtan_ = HasSIMDAtan<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -107,6 +107,24 @@ struct HasSIMDConj : public BoolConstant< HasSIMDConjHelper< Decay_<T> >::value 
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDConj type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDConj_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDConj class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDConj<T>::value;
+   constexpr bool value2 = HasSIMDConj_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDConj_ = HasSIMDConj<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

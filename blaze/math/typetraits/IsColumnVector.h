@@ -82,6 +82,24 @@ struct IsColumnVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsColumnVector type trait.
+// \ingroup math_type_traits
+//
+// The IsColumnVector_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsColumnVector class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsColumnVector<T>::value;
+   constexpr bool value2 = IsColumnVector_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsColumnVector_ = IsColumnVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

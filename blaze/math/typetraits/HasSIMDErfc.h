@@ -111,6 +111,24 @@ struct HasSIMDErfc : public BoolConstant< HasSIMDErfcHelper< Decay_<T> >::value 
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDErfc type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDErfc_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDErfc class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDErfc<T>::value;
+   constexpr bool value2 = HasSIMDErfc_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDErfc_ = HasSIMDErfc<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

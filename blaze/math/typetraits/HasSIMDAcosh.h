@@ -110,6 +110,24 @@ struct HasSIMDAcosh : public BoolConstant< HasSIMDAcoshHelper< Decay_<T> >::valu
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDAcosh type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDAcosh_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAcosh class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAcosh<T>::value;
+   constexpr bool value2 = HasSIMDAcosh_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDAcosh_ = HasSIMDAcosh<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

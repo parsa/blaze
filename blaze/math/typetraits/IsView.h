@@ -88,6 +88,24 @@ struct IsView : public BoolConstant< And< IsBaseOf<View,T>, Not< IsBaseOf<T,View
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsView type trait.
+// \ingroup math_type_traits
+//
+// The IsView_ alias declaration provides a convenient shortcut to access the nested \a value of
+// the IsView class template. For instance, given the type \a T the following two statements are
+// identical:
+
+   \code
+   constexpr bool value1 = IsView<T>::value;
+   constexpr bool value2 = IsView_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsView_ = IsView<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

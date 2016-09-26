@@ -134,6 +134,24 @@ struct IsSubvector< const volatile Subvector<VT,AF,TF,DF> > : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSubvector type trait.
+// \ingroup math_type_traits
+//
+// The IsSubvector_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsSubvector class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSubvector<T>::value;
+   constexpr bool value2 = IsSubvector_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSubvector_ = IsSubvector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

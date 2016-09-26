@@ -75,6 +75,24 @@ struct IsMatScalarMultExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsMatScalarMultExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsMatScalarMultExpr_ alias declaration provides a convenient shortcut to access the
+// nested \a value of the IsMatScalarMultExpr class template. For instance, given the type
+// \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatScalarMultExpr<T>::value;
+   constexpr bool value2 = IsMatScalarMultExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatScalarMultExpr_ = IsMatScalarMultExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

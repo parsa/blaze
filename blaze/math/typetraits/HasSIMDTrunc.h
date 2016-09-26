@@ -110,6 +110,24 @@ struct HasSIMDTrunc : public BoolConstant< HasSIMDTruncHelper< Decay_<T> >::valu
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDTrunc type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDTrunc_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDTrunc class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDTrunc<T>::value;
+   constexpr bool value2 = HasSIMDTrunc_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDTrunc_ = HasSIMDTrunc<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

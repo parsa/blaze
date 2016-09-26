@@ -121,6 +121,24 @@ struct IsCustom< const volatile T > : public IsCustom<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsCustom type trait.
+// \ingroup math_type_traits
+//
+// The IsCustom_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsCustom class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsCustom<T>::value;
+   constexpr bool value2 = IsCustom_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsCustom_ = IsCustom<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -113,6 +113,24 @@ struct Columns< const volatile T > : public SizeT< Columns<T>::value >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Columns type trait.
+// \ingroup math_type_traits
+//
+// The Columns_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the Columns class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr size_t value1 = Columns<T>::value;
+   constexpr size_t value2 = Columns<T>;
+   \endcode
+*/
+template< typename T >
+constexpr size_t Columns_ = Columns<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

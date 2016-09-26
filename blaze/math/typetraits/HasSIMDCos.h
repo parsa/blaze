@@ -110,6 +110,24 @@ struct HasSIMDCos : public BoolConstant< HasSIMDCosHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDCos type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDCos_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDCos class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDCos<T>::value;
+   constexpr bool value2 = HasSIMDCos_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDCos_ = HasSIMDCos<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

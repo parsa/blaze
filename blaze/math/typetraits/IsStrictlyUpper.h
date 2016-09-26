@@ -123,6 +123,24 @@ struct IsStrictlyUpper< const volatile T > : public IsStrictlyUpper<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsStrictlyUpper type trait.
+// \ingroup math_type_traits
+//
+// The IsStrictlyUpper_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsStrictlyUpper class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsStrictlyUpper<T>::value;
+   constexpr bool value2 = IsStrictlyUpper_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsStrictlyUpper_ = IsStrictlyUpper<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

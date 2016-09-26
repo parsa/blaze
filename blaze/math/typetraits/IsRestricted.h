@@ -119,6 +119,24 @@ struct IsRestricted< const volatile T > : public IsRestricted<T>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsRestricted type trait.
+// \ingroup math_type_traits
+//
+// The IsRestricted_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsRestricted class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsRestricted<T>::value;
+   constexpr bool value2 = IsRestricted_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsRestricted_ = IsRestricted<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

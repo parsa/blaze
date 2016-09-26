@@ -73,6 +73,24 @@ struct IsAddExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsAddExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsAddExpr_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsAddExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsAddExpr<T>::value;
+   constexpr bool value2 = IsAddExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsAddExpr_ = IsAddExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

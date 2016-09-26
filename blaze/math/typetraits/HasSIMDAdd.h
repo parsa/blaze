@@ -157,10 +157,30 @@ struct HasSIMDAddHelper< complex<double>, complex<double> >
    blaze::HasSIMDAdd< float, double >       // Is derived from FalseType
    \endcode
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
+        , typename = void >  // Restricting condition
 struct HasSIMDAdd : public BoolConstant< HasSIMDAddHelper< Decay_<T1>, Decay_<T2> >::value >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDAdd type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDAdd_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAdd class template. For instance, given the types \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAdd<T1,T2>::value;
+   constexpr bool value2 = HasSIMDAdd_<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+constexpr bool HasSIMDAdd_ = HasSIMDAdd<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze

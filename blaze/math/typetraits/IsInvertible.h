@@ -91,6 +91,24 @@ struct IsInvertible
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsInvertible type trait.
+// \ingroup math_type_traits
+//
+// The IsInvertible_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsInvertible class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsInvertible<T>::value;
+   constexpr bool value2 = IsInvertible_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsInvertible_ = IsInvertible<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

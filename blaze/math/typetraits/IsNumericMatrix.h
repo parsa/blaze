@@ -88,6 +88,24 @@ struct IsNumericMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsNumericMatrix type trait.
+// \ingroup math_type_traits
+//
+// The IsNumericMatrix_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsNumericMatrix class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNumericMatrix<T>::value;
+   constexpr bool value2 = IsNumericMatrix_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNumericMatrix_ = IsNumericMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -74,6 +74,24 @@ struct IsMatMatSubExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsMatMatSubExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsMatMatSubExpr_ alias declaration provides a convenient shortcut to access the
+// nested \a value of the IsMatMatSubExpr class template. For instance, given the type
+// \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatMatSubExpr<T>::value;
+   constexpr bool value2 = IsMatMatSubExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatMatSubExpr_ = IsMatMatSubExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

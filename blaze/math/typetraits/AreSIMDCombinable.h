@@ -61,11 +61,11 @@ namespace blaze {
 */
 template< typename T1
         , typename T2
-        , typename... Args >
+        , typename... Ts >
 struct AreSIMDCombinableHelper
 {
    enum : bool { value = AreSIMDCombinableHelper<T1,T2>::value &&
-                         AreSIMDCombinableHelper<T2,Args...>::value };
+                         AreSIMDCombinableHelper<T2,Ts...>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -117,10 +117,28 @@ struct AreSIMDCombinableHelper<T1,T2>
    blaze::AreSIMDCombinable< complex<int>, complex<float> >    // Is derived from FalseType
    \endcode
 */
-template< typename T1, typename T2, typename... Args >
+template< typename T1, typename T2, typename... Ts >
 struct AreSIMDCombinable
-   : public BoolConstant< AreSIMDCombinableHelper< T1, T2, Decay_<Args>... >::value >
+   : public BoolConstant< AreSIMDCombinableHelper< T1, T2, Decay_<Ts>... >::value >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the AreSIMDCombinable type trait.
+// \ingroup math_type_traits
+//
+// The AreSIMDCombinable_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the AreSIMDCombinable class template. For instance, given the types \a T1, \a T2
+// and \a T3 the following two statements are identical:
+
+   \code
+   constexpr bool value1 = AreSIMDCombinable<T1,T2,T3>::value;
+   constexpr bool value2 = AreSIMDCombinable_<T1,T2,T3>;
+   \endcode
+*/
+template< typename T1, typename T2, typename... Ts >
+constexpr bool AreSIMDCombinable_ = AreSIMDCombinable<T1,T2,Ts...>::value;
 //*************************************************************************************************
 
 } // namespace blaze

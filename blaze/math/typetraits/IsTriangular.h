@@ -88,6 +88,24 @@ struct IsTriangular : public BoolConstant< Or< IsLower<T>, IsUpper<T> >::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsTriangular type trait.
+// \ingroup math_type_traits
+//
+// The IsTriangular_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsTriangular class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsTriangular<T>::value;
+   constexpr bool value2 = IsTriangular_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTriangular_ = IsTriangular<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

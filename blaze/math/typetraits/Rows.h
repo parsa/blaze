@@ -113,6 +113,24 @@ struct Rows< const volatile T > : public SizeT< Rows<T>::value >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Rows type trait.
+// \ingroup math_type_traits
+//
+// The Rows_ alias declaration provides a convenient shortcut to access the nested \a value
+// of the Rows class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr size_t value1 = Rows<T>::value;
+   constexpr size_t value2 = Rows<T>;
+   \endcode
+*/
+template< typename T >
+constexpr size_t Rows_ = Rows<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

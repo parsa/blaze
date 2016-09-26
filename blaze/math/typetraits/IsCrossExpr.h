@@ -73,6 +73,24 @@ struct IsCrossExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsCrossExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsCrossExpr_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsCrossExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsCrossExpr<T>::value;
+   constexpr bool value2 = IsCrossExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsCrossExpr_ = IsCrossExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

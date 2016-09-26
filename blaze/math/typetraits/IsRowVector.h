@@ -82,6 +82,24 @@ struct IsRowVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsRowVector type trait.
+// \ingroup math_type_traits
+//
+// The IsRowVector_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsRowVector class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsRowVector<T>::value;
+   constexpr bool value2 = IsRowVector_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsRowVector_ = IsRowVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

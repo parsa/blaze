@@ -73,6 +73,24 @@ struct IsVecEvalExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsVecEvalExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsVecEvalExpr_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsVecEvalExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVecEvalExpr<T>::value;
+   constexpr bool value2 = IsVecEvalExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVecEvalExpr_ = IsVecEvalExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

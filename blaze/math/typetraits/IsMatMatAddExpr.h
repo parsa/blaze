@@ -73,6 +73,24 @@ struct IsMatMatAddExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsMatMatAddExpr type trait.
+// \ingroup math_type_traits
+//
+// The IsMatMatAddExpr_ alias declaration provides a convenient shortcut to access the
+// nested \a value of the IsMatMatAddExpr class template. For instance, given the type
+// \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatMatAddExpr<T>::value;
+   constexpr bool value2 = IsMatMatAddExpr_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatMatAddExpr_ = IsMatMatAddExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -120,6 +120,24 @@ struct IsSMPAssignable : public BoolConstant< IsSMPAssignableHelper<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSMPAssignable type trait.
+// \ingroup math_type_traits
+//
+// The IsSMPAssignable_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsSMPAssignable class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSMPAssignable<T>::value;
+   constexpr bool value2 = IsSMPAssignable_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSMPAssignable_ = IsSMPAssignable<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -117,6 +117,24 @@ struct HasSIMDSqrt : public BoolConstant< HasSIMDSqrtHelper< Decay_<T> >::value 
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDSqrt type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDSqrt_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDSqrt class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDSqrt<T>::value;
+   constexpr bool value2 = HasSIMDSqrt_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDSqrt_ = HasSIMDSqrt<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

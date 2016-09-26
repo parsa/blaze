@@ -101,6 +101,24 @@ struct IsSIMDEnabled : public BoolConstant< IsSIMDEnabledHelper<T>::value >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsSIMDEnabled type trait.
+// \ingroup math_type_traits
+//
+// The IsSIMDEnabled_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsSIMDEnabled class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSIMDEnabled<T>::value;
+   constexpr bool value2 = IsSIMDEnabled_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSIMDEnabled_ = IsSIMDEnabled<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

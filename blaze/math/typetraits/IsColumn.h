@@ -134,6 +134,24 @@ struct IsColumn< const volatile Column<MT,SO,DF,SF> > : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsColumn type trait.
+// \ingroup math_type_traits
+//
+// The IsColumn_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsColumn class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsColumn<T>::value;
+   constexpr bool value2 = IsColumn_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsColumn_ = IsColumn<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -81,6 +81,24 @@ struct IsDenseMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IsDenseMatrix type trait.
+// \ingroup math_type_traits
+//
+// The IsDenseMatrix_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the IsDenseMatrix class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDenseMatrix<T>::value;
+   constexpr bool value2 = IsDenseMatrix_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDenseMatrix_ = IsDenseMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -103,6 +103,24 @@ struct HasSIMDRound : public BoolConstant< HasSIMDRoundHelper< Decay_<T> >::valu
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the HasSIMDRound type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDRound_ alias declaration provides a convenient shortcut to access the nested
+// \a value of the HasSIMDRound class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDRound<T>::value;
+   constexpr bool value2 = HasSIMDRound_<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasSIMDRound_ = HasSIMDRound<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
