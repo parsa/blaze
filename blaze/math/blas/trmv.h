@@ -53,6 +53,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -181,7 +182,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
                                CBLAS_DIAG diag, int n, const complex<float>* A, int lda,
                                complex<float>* x, int incX )
 {
-   cblas_ctrmv( order, uplo, transA, diag, n, A, lda, x, incX );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cblas_ctrmv( order, uplo, transA, diag, n, reinterpret_cast<const float*>( A ),
+                lda, reinterpret_cast<float*>( x ), incX );
 }
 #endif
 //*************************************************************************************************
@@ -211,7 +215,10 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
                                CBLAS_DIAG diag, int n, const complex<double>* A, int lda,
                                complex<double>* x, int incX )
 {
-   cblas_ztrmv( order, uplo, transA, diag, n, A, lda, x, incX );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   cblas_ztrmv( order, uplo, transA, diag, n, reinterpret_cast<const double*>( A ),
+                lda, reinterpret_cast<double*>( x ), incX );
 }
 #endif
 //*************************************************************************************************

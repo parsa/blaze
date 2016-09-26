@@ -50,6 +50,7 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -155,7 +156,10 @@ BLAZE_ALWAYS_INLINE void axpy( int n, double alpha, const double* x,
 BLAZE_ALWAYS_INLINE void axpy( int n, complex<float> alpha, const complex<float>* x,
                                int incX, complex<float>* y, int incY )
 {
-   cblas_caxpy( n, &alpha, x, incX, y, incY );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cblas_caxpy( n, reinterpret_cast<const float*>( &alpha ),
+                reinterpret_cast<const float*>( x ), incX, reinterpret_cast<float*>( y ), incY );
 }
 #endif
 //*************************************************************************************************
@@ -181,7 +185,10 @@ BLAZE_ALWAYS_INLINE void axpy( int n, complex<float> alpha, const complex<float>
 BLAZE_ALWAYS_INLINE void axpy( int n, complex<double> alpha, const complex<double>* x,
                                int incX, complex<double>* y, int incY )
 {
-   cblas_zaxpy( n, &alpha, x, incX, y, incY );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   cblas_zaxpy( n, reinterpret_cast<const double*>( &alpha ),
+                reinterpret_cast<const double*>( x ), incX, reinterpret_cast<double*>( y ), incY );
 }
 #endif
 //*************************************************************************************************

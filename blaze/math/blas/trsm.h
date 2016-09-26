@@ -53,6 +53,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -196,7 +197,10 @@ BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
                                complex<float> alpha, const complex<float>* A, int lda,
                                complex<float>* B, int ldb )
 {
-   cblas_ctrsm( order, side, uplo, transA, diag, m, n, &alpha, A, lda, B, ldb );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cblas_ctrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const float*>( &alpha ),
+                reinterpret_cast<const float*>( A ), lda, reinterpret_cast<float*>( B ), ldb );
 }
 #endif
 //*************************************************************************************************
@@ -231,7 +235,10 @@ BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
                                complex<double> alpha, const complex<double>* A, int lda,
                                complex<double>* B, int ldb )
 {
-   cblas_ztrsm( order, side, uplo, transA, diag, m, n, &alpha, A, lda, B, ldb );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   cblas_ztrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const double*>( &alpha ),
+                reinterpret_cast<const double*>( A ), lda, reinterpret_cast<double*>( B ), ldb );
 }
 #endif
 //*************************************************************************************************

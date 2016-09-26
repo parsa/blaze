@@ -50,6 +50,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -150,8 +151,19 @@ BLAZE_ALWAYS_INLINE double dotu( int n, const double* x, int incX, const double*
 BLAZE_ALWAYS_INLINE complex<float> dotu( int n, const complex<float>* x, int incX,
                                          const complex<float>* y, int incY )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
    complex<float> tmp;
-   cblas_cdotu_sub( n, x, incX, y, incY, &tmp );
+
+#ifdef OPENBLAS_VERSION
+   cblas_cdotu_sub( n, reinterpret_cast<const float*>( x ), incX,
+                    reinterpret_cast<const float*>( y ), incY,
+                    reinterpret_cast<openblas_complex_float*>( &tmp ) );
+#else
+   cblas_cdotu_sub( n, reinterpret_cast<const float*>( x ), incX,
+                    reinterpret_cast<const float*>( y ), incY, &tmp );
+#endif
+
    return tmp;
 }
 #endif
@@ -177,8 +189,19 @@ BLAZE_ALWAYS_INLINE complex<float> dotu( int n, const complex<float>* x, int inc
 BLAZE_ALWAYS_INLINE complex<double> dotu( int n, const complex<double>* x, int incX,
                                           const complex<double>* y, int incY )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
    complex<double> tmp;
-   cblas_zdotu_sub( n, x, incX, y, incY, &tmp );
+
+#ifdef OPENBLAS_VERSION
+   cblas_zdotu_sub( n, reinterpret_cast<const double*>( x ), incX,
+                    reinterpret_cast<const double*>( y ), incY,
+                    reinterpret_cast<openblas_complex_double*>( &tmp ) );
+#else
+   cblas_zdotu_sub( n, reinterpret_cast<const double*>( x ), incX,
+                    reinterpret_cast<const double*>( y ), incY, &tmp );
+#endif
+
    return tmp;
 }
 #endif

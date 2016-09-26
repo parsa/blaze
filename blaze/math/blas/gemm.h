@@ -53,6 +53,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -195,7 +196,11 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
                                int lda, const complex<float>* B, int ldb, complex<float> beta,
                                complex<float>* C, int ldc )
 {
-   cblas_cgemm( order, transA, transB, m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc );
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+   cblas_cgemm( order, transA, transB, m, n, k, reinterpret_cast<const float*>( &alpha ),
+                reinterpret_cast<const float*>( A ), lda, reinterpret_cast<const float*>( B ),
+                ldb, reinterpret_cast<const float*>( &beta ), reinterpret_cast<float*>( C ), ldc );
 }
 #endif
 //*************************************************************************************************
@@ -231,7 +236,11 @@ BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_
                                int lda, const complex<double>* B, int ldb, complex<double> beta,
                                complex<double>* C, int ldc )
 {
-   cblas_zgemm( order, transA, transB, m, n, k, &alpha, A, lda, B, ldb, &beta, C, ldc );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+   cblas_zgemm( order, transA, transB, m, n, k, reinterpret_cast<const double*>( &alpha ),
+                reinterpret_cast<const double*>( A ), lda, reinterpret_cast<const double*>( B ),
+                ldb, reinterpret_cast<const double*>( &beta ), reinterpret_cast<double*>( C ), ldc );
 }
 #endif
 //*************************************************************************************************
