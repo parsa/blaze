@@ -1078,7 +1078,7 @@ struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
+struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1095,7 +1095,7 @@ struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
+struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1112,7 +1112,7 @@ struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>:
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
+struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsResizable_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

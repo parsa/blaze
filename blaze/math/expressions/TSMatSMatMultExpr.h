@@ -134,12 +134,12 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateLeft = RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = RequiresEvaluation_<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateRight = RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = RequiresEvaluation_<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -153,8 +153,8 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
        the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T2>::value ) ||
-                            ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T3>::value ) };
+      enum : bool { value = ( IsRowMajorMatrix_<T1>    && IsSymmetric_<T2> ) ||
+                            ( IsColumnMajorMatrix_<T1> && IsSymmetric_<T3> ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -222,28 +222,28 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal<MT1>::value ) {
+      if( IsDiagonal_<MT1> ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal<MT2>::value ) {
+      else if( IsDiagonal_<MT2> ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
-         const size_t begin( ( IsUpper<MT1>::value )
-                             ?( ( IsLower<MT2>::value )
-                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                             :( ( IsLower<MT2>::value )
-                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+      else if( IsTriangular_<MT1> || IsTriangular_<MT2> ) {
+         const size_t begin( ( IsUpper_<MT1> )
+                             ?( ( IsLower_<MT2> )
+                                ?( max( ( IsStrictlyUpper_<MT1> ? i+1UL : i )
+                                      , ( IsStrictlyLower_<MT2> ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper_<MT1> ? i+1UL : i ) )
+                             :( ( IsLower_<MT2> )
+                                ?( IsStrictlyLower_<MT2> ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower<MT1>::value )
-                           ?( ( IsUpper<MT2>::value )
-                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                           :( ( IsUpper<MT2>::value )
-                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+         const size_t end( ( IsLower_<MT1> )
+                           ?( ( IsUpper_<MT2> )
+                              ?( min( ( IsStrictlyLower_<MT1> ? i : i+1UL )
+                                    , ( IsStrictlyUpper_<MT2> ? j : j+1UL ) ) )
+                              :( IsStrictlyLower_<MT1> ? i : i+1UL ) )
+                           :( ( IsUpper_<MT2> )
+                              ?( IsStrictlyUpper_<MT2> ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -445,7 +445,7 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
             const RightIterator rend( B.end(j) );
             for( RightIterator relem=B.begin(j); relem!=rend; ++relem )
             {
-               if( IsResizable< ElementType_<MT3> >::value &&
+               if( IsResizable_< ElementType_<MT3> > &&
                    isDefault( C(lelem->index(),relem->index()) ) ) {
                   C(lelem->index(),relem->index()) = lelem->value() * relem->value();
                }

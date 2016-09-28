@@ -73,7 +73,7 @@ namespace blaze {
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
-class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
+class DenseVectorProxy : public DenseVector< PT, IsRowVector_<VT> >
 {
  public:
    //**Type definitions****************************************************************************

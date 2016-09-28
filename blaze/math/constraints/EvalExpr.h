@@ -59,7 +59,7 @@ namespace blaze {
 // the EvalExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_EVALEXPR_TYPE(T) \
-   static_assert( ::blaze::IsEvalExpr<T>::value, "Non-evaluation expression type detected" )
+   static_assert( ::blaze::IsEvalExpr_<T>, "Non-evaluation expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // EvalExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_EVALEXPR_TYPE(T) \
-   static_assert( !::blaze::IsEvalExpr<T>::value, "Evaluation expression type detected" )
+   static_assert( !::blaze::IsEvalExpr_<T>, "Evaluation expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

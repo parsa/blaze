@@ -110,12 +110,12 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = RequiresEvaluation_<MT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse vector expression.
-   enum : bool { evaluateVector = RequiresEvaluation<VT>::value || IsComputation<VT>::value };
+   enum : bool { evaluateVector = RequiresEvaluation_<VT> || IsComputation_<VT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -184,18 +184,18 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_<MT> )
       {
          return mat_(index,index) * vec_[index];
       }
-      else if( IsLower<MT>::value )
+      else if( IsLower_<MT> )
       {
-         const size_t n( IsStrictlyLower<MT>::value ? index : index+1UL );
+         const size_t n( IsStrictlyLower_<MT> ? index : index+1UL );
          return subvector( row( mat_, index ), 0UL, n ) * subvector( vec_, 0UL, n );
       }
-      else if( IsUpper<MT>::value )
+      else if( IsUpper_<MT> )
       {
-         const size_t begin( IsStrictlyUpper<MT>::value ? index+1UL : index );
+         const size_t begin( IsStrictlyUpper_<MT> ? index+1UL : index );
          const size_t n    ( mat_.columns() - begin );
          return subvector( row( mat_, index ), begin, n ) * subvector( vec_, begin, n );
       }
@@ -374,7 +374,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
          MatrixIterator       melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
-            if( IsResizable< ElementType_<VT1> >::value &&
+            if( IsResizable_< ElementType_<VT1> > &&
                 isDefault( y[melem->index()] ) )
                y[melem->index()] = melem->value() * velem->value();
             else

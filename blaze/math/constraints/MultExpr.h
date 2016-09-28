@@ -59,7 +59,7 @@ namespace blaze {
 // the MultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MULTEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMultExpr<T>::value, "Non-multiplication expression detected" )
+   static_assert( ::blaze::IsMultExpr_<T>, "Non-multiplication expression detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // MultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MULTEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMultExpr<T>::value, "Multiplication expression detected" )
+   static_assert( !::blaze::IsMultExpr_<T>, "Multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

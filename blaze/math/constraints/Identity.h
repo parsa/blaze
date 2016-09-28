@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not an identity matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsIdentity<T>::value, "Non-identity matrix type detected" )
+   static_assert( ::blaze::IsIdentity_<T>, "Non-identity matrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is an identity matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsIdentity<T>::value, "Identity matrix type detected" )
+   static_assert( !::blaze::IsIdentity_<T>, "Identity matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

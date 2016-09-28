@@ -123,7 +123,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
    MultType sp{};
 
-   if( IsOpposedView<T1>::value && IsOpposedView<T2>::value )
+   if( IsOpposedView_<T1> && IsOpposedView_<T2> )
    {
       if( left.size() == 0UL ) return sp;
 
@@ -132,7 +132,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
          sp += left[i] * right[i];
       }
    }
-   else if( IsOpposedView<T1>::value )
+   else if( IsOpposedView_<T1> )
    {
       const RightIterator rend( right.end() );
       RightIterator r( right.begin() );
@@ -145,7 +145,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
          sp += left[r->index()] * r->value();
       }
    }
-   else if( IsOpposedView<T2>::value )
+   else if( IsOpposedView_<T2> )
    {
       const LeftIterator lend( left.end()  );
       LeftIterator l( left.begin()  );

@@ -1221,7 +1221,7 @@ inline DerestrictTrait_< Subvector<VT,AF,TF,DF> > derestrict( Subvector<VT,AF,TF
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF, bool DF >
 struct IsRestricted< Subvector<VT,AF,TF,DF> >
-   : public BoolConstant< IsRestricted<VT>::value >
+   : public BoolConstant< IsRestricted_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1258,7 +1258,7 @@ struct DerestrictTrait< Subvector<VT,AF,TF,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
 struct HasConstDataAccess< Subvector<VT,AF,TF,true> >
-   : public BoolConstant< HasConstDataAccess<VT>::value >
+   : public BoolConstant< HasConstDataAccess_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1276,7 +1276,7 @@ struct HasConstDataAccess< Subvector<VT,AF,TF,true> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool AF, bool TF >
 struct HasMutableDataAccess< Subvector<VT,AF,TF,true> >
-   : public BoolConstant< HasMutableDataAccess<VT>::value >
+   : public BoolConstant< HasMutableDataAccess_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

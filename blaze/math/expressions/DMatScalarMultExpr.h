@@ -139,7 +139,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_<RN> };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN,ST>  ExprReturnType;
@@ -153,7 +153,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
        evaluation, \a useAssign will be set to 1 and the multiplication expression will be
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0
        and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = IsComputation<MT>::value && RequiresEvaluation<MT>::value };
+   enum : bool { useAssign = IsComputation_<MT> && RequiresEvaluation_<MT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -447,8 +447,8 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT::simdEnabled &&
                                IsNumeric_<ET> &&
-                               ( HasSIMDMult<ET,ST>::value ||
-                                 HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
+                               ( HasSIMDMult_<ET,ST> ||
+                                 HasSIMDMult_<UnderlyingElement_<ET>,ST> ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -590,7 +590,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<MT>::value && matrix_.canAlias( alias );
+      return IsComputation_<MT> && matrix_.canAlias( alias );
    }
    //**********************************************************************************************
 
@@ -1679,7 +1679,7 @@ struct Columns< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsAligned< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public BoolConstant< IsAligned_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1697,7 +1697,7 @@ struct IsAligned< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsPadded< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public BoolConstant< IsPadded_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1715,7 +1715,7 @@ struct IsPadded< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsSymmetric< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public BoolConstant< IsSymmetric_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1733,7 +1733,7 @@ struct IsSymmetric< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsHermitian< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public BoolConstant< IsHermitian_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1751,7 +1751,7 @@ struct IsHermitian< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsLower< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public BoolConstant< IsLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1769,7 +1769,7 @@ struct IsLower< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsStrictlyLower< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public BoolConstant< IsStrictlyLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1787,7 +1787,7 @@ struct IsStrictlyLower< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsUpper< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public BoolConstant< IsUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1805,7 +1805,7 @@ struct IsUpper< DMatScalarMultExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsStrictlyUpper< DMatScalarMultExpr<MT,ST,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public BoolConstant< IsStrictlyUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

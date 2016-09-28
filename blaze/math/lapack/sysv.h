@@ -170,7 +170,7 @@ inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
@@ -292,7 +292,7 @@ inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, i
       return;
    }
 
-   if( IsRowMajorMatrix<MT1>::value ) {
+   if( IsRowMajorMatrix_<MT1> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

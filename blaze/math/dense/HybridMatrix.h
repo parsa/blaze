@@ -368,8 +368,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            IsRowMajorMatrix_<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -381,10 +381,10 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            HasSIMDAdd_< Type, ElementType_<MT> > &&
+                            IsRowMajorMatrix_<MT> &&
+                            !IsDiagonal_<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -396,10 +396,10 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            HasSIMDSub_< Type, ElementType_<MT> > &&
+                            IsRowMajorMatrix_<MT> &&
+                            !IsDiagonal_<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -884,8 +884,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
    }
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : n_ );
-                  j<( IsNumeric_<Type>          ? NN  : n_ );
+      for( size_t j=( IsSparseMatrix_<MT> ? 0UL : n_ );
+                  j<( IsNumeric_<Type>    ? NN  : n_ );
                   ++j ) {
          v_[i*NN+j] = Type();
       }
@@ -1456,7 +1456,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -2707,7 +2707,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAs
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
@@ -2807,17 +2807,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedA
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_<MT> )
       {
          v_[i*NN+i] += (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_<MT> )
+                              ?( IsStrictlyUpper_<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_<MT> )
+                              ?( IsStrictlyLower_<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2855,15 +2855,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAd
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_<MT> )
+                           ?( ( IsStrictlyUpper_<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_<MT> )
+                           ?( IsStrictlyLower_<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2963,17 +2963,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedS
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_<MT> )
       {
          v_[i*NN+i] -= (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_<MT> )
+                              ?( IsStrictlyUpper_<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_<MT> )
+                              ?( IsStrictlyLower_<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3011,15 +3011,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSu
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_<MT> )
+                           ?( ( IsStrictlyUpper_<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_<MT> )
+                           ?( IsStrictlyLower_<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3275,8 +3275,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            IsColumnMajorMatrix_<MT> };
    };
    //**********************************************************************************************
 
@@ -3286,10 +3286,10 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            HasSIMDAdd_< Type, ElementType_<MT> > &&
+                            IsColumnMajorMatrix_<MT> &&
+                            !IsDiagonal_<MT> };
    };
    //**********************************************************************************************
 
@@ -3299,10 +3299,10 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            AreSIMDCombinable_< Type, ElementType_<MT> > &&
+                            HasSIMDSub_< Type, ElementType_<MT> > &&
+                            IsColumnMajorMatrix_<MT> &&
+                            !IsDiagonal_<MT> };
    };
    //**********************************************************************************************
 
@@ -3798,8 +3798,8 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
    }
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : m_ );
-                  i<( IsNumeric_<Type>          ? MM  : m_ );
+      for( size_t i=( IsSparseMatrix_<MT> ? 0UL : m_ );
+                  i<( IsNumeric_<Type>    ? MM  : m_ );
                   ++i ) {
          v_[i+j*MM] = Type();
       }
@@ -4367,7 +4367,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -5642,7 +5642,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -5745,17 +5745,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_<MT> )
       {
          v_[j+j*MM] += (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_<MT> )
+                              ?( IsStrictlyLower_<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_<MT> )
+                              ?( IsStrictlyUpper_<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5794,15 +5794,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_<MT> )
+                           ?( ( IsStrictlyLower_<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_<MT> )
+                           ?( IsStrictlyUpper_<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5905,17 +5905,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_<MT> )
       {
          v_[j+j*MM] -= (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_<MT> )
+                              ?( IsStrictlyLower_<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_<MT> )
+                              ?( IsStrictlyUpper_<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5954,15 +5954,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   const bool remainder( !usePadding || !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded_<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_<MT> )
+                           ?( ( IsStrictlyLower_<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_<MT> )
+                           ?( IsStrictlyUpper_<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 

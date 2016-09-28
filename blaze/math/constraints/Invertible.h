@@ -60,7 +60,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsInvertible<T>::value, "Non-invertible type detected" )
+   static_assert( ::blaze::IsInvertible_<T>, "Non-invertible type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE(T) \
-   static_assert( !blaze::IsInvertible<T>::value, "Invertible type detected" )
+   static_assert( !blaze::IsInvertible_<T>, "Invertible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

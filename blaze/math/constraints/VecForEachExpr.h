@@ -59,7 +59,7 @@ namespace blaze {
 // from the VecForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECFOREACHEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecForEachExpr<T>::value, "Non-vector for-each expression type detected" )
+   static_assert( ::blaze::IsVecForEachExpr_<T>, "Non-vector for-each expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the VecForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECFOREACHEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecForEachExpr<T>::value, "Vector for-each expression type detected" )
+   static_assert( !::blaze::IsVecForEachExpr_<T>, "Vector for-each expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -804,7 +804,7 @@ struct Columns< DMatSerialExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsAligned< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public BoolConstant< IsAligned_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -822,7 +822,7 @@ struct IsAligned< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public BoolConstant< IsSymmetric_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -840,7 +840,7 @@ struct IsSymmetric< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public BoolConstant< IsHermitian_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -858,7 +858,7 @@ struct IsHermitian< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public BoolConstant< IsLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -876,7 +876,7 @@ struct IsLower< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public BoolConstant< IsUniLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -894,7 +894,7 @@ struct IsUniLower< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public BoolConstant< IsStrictlyLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -912,7 +912,7 @@ struct IsStrictlyLower< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public BoolConstant< IsUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -930,7 +930,7 @@ struct IsUpper< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public BoolConstant< IsUniUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -948,7 +948,7 @@ struct IsUniUpper< DMatSerialExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatSerialExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public BoolConstant< IsStrictlyUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

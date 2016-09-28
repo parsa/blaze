@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsSparseMatrix<T>::value, "Non-sparse matrix type detected" )
+   static_assert( ::blaze::IsSparseMatrix_<T>, "Non-sparse matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SPARSE_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsSparseMatrix<T>::value, "Sparse matrix type detected" )
+   static_assert( !::blaze::IsSparseMatrix_<T>, "Sparse matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

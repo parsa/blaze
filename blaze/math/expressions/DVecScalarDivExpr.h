@@ -125,7 +125,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_<RN> };
 
    //! Expression return type for the subscript operator.
    typedef DivExprTrait_<RN,ST>  ExprReturnType;
@@ -139,7 +139,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
        evaluation, \a useAssign will be set to 1 and the division expression will be evaluated
        via the \a assign function family. Otherwise \a useAssign will be set to 0 and the
        expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = IsComputation_<VT> && RequiresEvaluation_<VT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -432,8 +432,8 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
                                IsNumeric_<ET> &&
-                               ( HasSIMDDiv<ET,ST>::value ||
-                                 HasSIMDDiv<UnderlyingElement_<ET>,ST>::value ) };
+                               ( HasSIMDDiv_<ET,ST> ||
+                                 HasSIMDDiv_<UnderlyingElement_<ET>,ST> ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -554,7 +554,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<VT>::value && vector_.canAlias( alias );
+      return IsComputation_<VT> && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 
@@ -1055,7 +1055,7 @@ inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
    typedef DivExprTrait_<T1,T2>       ReturnType;
    typedef RightOperand_<ReturnType>  ScalarType;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_<ReturnType> ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
    }
    else {
@@ -1160,7 +1160,7 @@ inline const EnableIf_< IsNumeric<ST2>
    typedef DivExprTrait_<VT,MultType>  ReturnType;
    typedef RightOperand_<ReturnType>   ScalarType;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_<ReturnType> ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
    }
    else {
@@ -1200,7 +1200,7 @@ struct Size< DVecScalarDivExpr<VT,ST,TF> > : public Size<VT>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsAligned< DVecScalarDivExpr<VT,ST,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public BoolConstant< IsAligned_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1218,7 +1218,7 @@ struct IsAligned< DVecScalarDivExpr<VT,ST,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsPadded< DVecScalarDivExpr<VT,ST,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public BoolConstant< IsPadded_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

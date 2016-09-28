@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the MatScalarMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATSCALARMULTEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatScalarMultExpr<T>::value, "Non-matrix/scalar multiplication expression type detected" )
+   static_assert( ::blaze::IsMatScalarMultExpr_<T>, "Non-matrix/scalar multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // derived from the MatScalarMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATSCALARMULTEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatScalarMultExpr<T>::value, "Matrix/scalar multiplication expression type detected" )
+   static_assert( !::blaze::IsMatScalarMultExpr_<T>, "Matrix/scalar multiplication expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

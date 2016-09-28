@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatMatSubExpr<T>::value, "Non-matrix/matrix subtraction expression type detected" )
+   static_assert( ::blaze::IsMatMatSubExpr_<T>, "Non-matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatMatSubExpr<T>::value, "Matrix/matrix subtraction expression type detected" )
+   static_assert( !::blaze::IsMatMatSubExpr_<T>, "Matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 

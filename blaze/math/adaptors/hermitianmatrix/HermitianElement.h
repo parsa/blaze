@@ -402,8 +402,8 @@ inline void HermitianElement<MT>::sync()
    if( pos_->index() == index_ || isDefault( pos_->value() ) )
       return;
 
-   const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
-   const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+   const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
+   const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
 
    matrix_->set( row, column, conj( pos_->value() ) );
 }
@@ -418,8 +418,8 @@ inline void HermitianElement<MT>::sync()
 template< typename MT >  // Type of the adapted matrix
 inline bool HermitianElement<MT>::isSynced() const
 {
-   const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
-   const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+   const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
+   const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
 
    const IteratorType pos2( matrix_->find( row, column ) );
    const IteratorType end( matrix_->end( pos_->index() ) );

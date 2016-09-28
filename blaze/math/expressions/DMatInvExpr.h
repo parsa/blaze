@@ -200,14 +200,14 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // \return The proper inversion flag for the matrix type \a MT.
    */
    static constexpr InversionFlag getInversionFlag() noexcept {
-      if     ( IsDiagonal<MT>::value  ) return asDiagonal;
-      else if( IsUniUpper<MT>::value  ) return asUniUpper;
-      else if( IsUpper<MT>::value     ) return asUpper;
-      else if( IsUniLower<MT>::value  ) return asUniLower;
-      else if( IsLower<MT>::value     ) return asLower;
-      else if( IsHermitian<MT>::value ) return asHermitian;
-      else if( IsSymmetric<MT>::value ) return asSymmetric;
-      else                              return asGeneral;
+      if     ( IsDiagonal_<MT>  ) return asDiagonal;
+      else if( IsUniUpper_<MT>  ) return asUniUpper;
+      else if( IsUpper_<MT>     ) return asUpper;
+      else if( IsUniLower_<MT>  ) return asUniLower;
+      else if( IsLower_<MT>     ) return asLower;
+      else if( IsHermitian_<MT> ) return asHermitian;
+      else if( IsSymmetric_<MT> ) return asSymmetric;
+      else                        return asGeneral;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -497,7 +497,7 @@ struct Columns< DMatInvExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public BoolConstant< IsSymmetric_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -515,7 +515,7 @@ struct IsSymmetric< DMatInvExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public BoolConstant< IsHermitian_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -533,7 +533,7 @@ struct IsHermitian< DMatInvExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public BoolConstant< IsLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -551,7 +551,7 @@ struct IsLower< DMatInvExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public BoolConstant< IsUniLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -569,7 +569,7 @@ struct IsUniLower< DMatInvExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public BoolConstant< IsUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -587,7 +587,7 @@ struct IsUpper< DMatInvExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatInvExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public BoolConstant< IsUniUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -199,7 +199,7 @@ inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
@@ -347,7 +347,7 @@ inline void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       return;
    }
 
-   if( IsRowMajorMatrix<MT1>::value ) {
+   if( IsRowMajorMatrix_<MT1> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

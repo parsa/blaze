@@ -59,7 +59,7 @@ namespace blaze {
 // the TransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_TRANSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsTransExpr<T>::value, "Non-transposition expression type detected" )
+   static_assert( ::blaze::IsTransExpr_<T>, "Non-transposition expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // TransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsTransExpr<T>::value, "Transposition expression type detected" )
+   static_assert( !::blaze::IsTransExpr_<T>, "Transposition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -786,7 +786,7 @@ inline void reset( DVecTransposer<VT,TF>& v )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecTransposer<VT,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public BoolConstant< IsAligned_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -804,7 +804,7 @@ struct IsAligned< DVecTransposer<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsPadded< DVecTransposer<VT,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public BoolConstant< IsPadded_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

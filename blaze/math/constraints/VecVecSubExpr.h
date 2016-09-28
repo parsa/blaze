@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the VecVecSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecVecSubExpr<T>::value, "Non-vector/vector subtraction expression type detected" )
+   static_assert( ::blaze::IsVecVecSubExpr_<T>, "Non-vector/vector subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // from the VecVecSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECSUBEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecVecSubExpr<T>::value, "Vector/vector subtraction expression type detected" )
+   static_assert( !::blaze::IsVecVecSubExpr_<T>, "Vector/vector subtraction expression type detected" )
 //*************************************************************************************************
 
 

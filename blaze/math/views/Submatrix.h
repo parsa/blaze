@@ -511,15 +511,15 @@ inline const EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    LeftOperand_<VT>  left ( (~vector).leftOperand()  );
    RightOperand_<VT> right( (~vector).rightOperand() );
 
-   const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( index + 1UL ):( index ) )
+   const size_t column( ( IsUpper_<MT> )
+                        ?( ( !AF && IsStrictlyUpper_<MT> )?( index + 1UL ):( index ) )
                         :( 0UL ) );
-   const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( size )
-                                            :( ( IsStrictlyLower<MT>::value && size > 0UL )
+   const size_t n( ( IsLower_<MT> )
+                   ?( ( IsUpper_<MT> )?( size )
+                                            :( ( IsStrictlyLower_<MT> && size > 0UL )
                                                ?( index + size - 1UL )
                                                :( index + size ) ) )
-                   :( ( IsUpper<MT>::value )?( left.columns() - column )
+                   :( ( IsUpper_<MT> )?( left.columns() - column )
                                             :( left.columns() ) ) );
 
    return submatrix<AF>( left, index, column, size, n ) * subvector<AF>( right, column, n );
@@ -554,15 +554,15 @@ inline const EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
    LeftOperand_<VT>  left ( (~vector).leftOperand()  );
    RightOperand_<VT> right( (~vector).rightOperand() );
 
-   const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( index + 1UL ):( index ) )
+   const size_t row( ( IsLower_<MT> )
+                     ?( ( !AF && IsStrictlyLower_<MT> )?( index + 1UL ):( index ) )
                      :( 0UL ) );
-   const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( size )
-                                            :( ( IsStrictlyUpper<MT>::value && size > 0UL )
+   const size_t m( ( IsUpper_<MT> )
+                   ?( ( IsLower_<MT> )?( size )
+                                            :( ( IsStrictlyUpper_<MT> && size > 0UL )
                                                ?( index + size - 1UL )
                                                :( index + size ) ) )
-                   :( ( IsLower<MT>::value )?( right.rows() - row )
+                   :( ( IsLower_<MT> )?( right.rows() - row )
                                             :( right.rows() ) ) );
 
    return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, index, m, size );
@@ -660,17 +660,17 @@ inline const EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    LeftOperand_<MT>  left ( (~matrix).leftOperand()  );
    RightOperand_<MT> right( (~matrix).rightOperand() );
 
-   const size_t begin( max( ( IsUpper<MT1>::value )
-                            ?( ( !AF && IsStrictlyUpper<MT1>::value )?( row + 1UL ):( row ) )
+   const size_t begin( max( ( IsUpper_<MT1> )
+                            ?( ( !AF && IsStrictlyUpper_<MT1> )?( row + 1UL ):( row ) )
                             :( 0UL )
-                          , ( IsLower<MT2>::value )
-                            ?( ( !AF && IsStrictlyLower<MT2>::value )?( column + 1UL ):( column ) )
+                          , ( IsLower_<MT2> )
+                            ?( ( !AF && IsStrictlyLower_<MT2> )?( column + 1UL ):( column ) )
                             :( 0UL ) ) );
-   const size_t end( min( ( IsLower<MT1>::value )
-                          ?( ( IsStrictlyLower<MT1>::value && m > 0UL )?( row + m - 1UL ):( row + m ) )
+   const size_t end( min( ( IsLower_<MT1> )
+                          ?( ( IsStrictlyLower_<MT1> && m > 0UL )?( row + m - 1UL ):( row + m ) )
                           :( left.columns() )
-                        , ( IsUpper<MT2>::value )
-                          ?( ( IsStrictlyUpper<MT2>::value && n > 0UL )?( column + n - 1UL ):( column + n ) )
+                        , ( IsUpper_<MT2> )
+                          ?( ( IsStrictlyUpper_<MT2> && n > 0UL )?( column + n - 1UL ):( column + n ) )
                           :( left.columns() ) ) );
 
    const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
@@ -1190,7 +1190,7 @@ inline bool isSymmetric( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsSymmetric_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isSymmetric( static_cast<const BaseType&>( sm ) );
 }
@@ -1227,7 +1227,7 @@ inline bool isHermitian( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsHermitian_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isHermitian( static_cast<const BaseType&>( sm ) );
 }
@@ -1274,7 +1274,7 @@ inline bool isLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsLower_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isLower( static_cast<const BaseType&>( sm ) );
 }
@@ -1320,7 +1320,7 @@ inline bool isUniLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUniLower_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUniLower( static_cast<const BaseType&>( sm ) );
 }
@@ -1366,7 +1366,7 @@ inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsStrictlyLower_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
 }
@@ -1413,7 +1413,7 @@ inline bool isUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUpper_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -1459,7 +1459,7 @@ inline bool isUniUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUniUpper_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUniUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -1505,7 +1505,7 @@ inline bool isStrictlyUpper( const Submatrix<MT,AF,SO,DF>& sm )
 {
    using BaseType = BaseType_< Submatrix<MT,AF,SO,DF> >;
 
-   if( IsStrictlyUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsStrictlyUpper_<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -1927,7 +1927,7 @@ inline DerestrictTrait_< Submatrix<MT,AF,SO,DF> > derestrict( Submatrix<MT,AF,SO
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO, bool DF >
 struct IsRestricted< Submatrix<MT,AF,SO,DF> >
-   : public BoolConstant< IsRestricted<MT>::value >
+   : public BoolConstant< IsRestricted_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1964,7 +1964,7 @@ struct DerestrictTrait< Submatrix<MT,AF,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasConstDataAccess< Submatrix<MT,AF,SO,true> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
+   : public BoolConstant< HasConstDataAccess_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1982,7 +1982,7 @@ struct HasConstDataAccess< Submatrix<MT,AF,SO,true> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasMutableDataAccess< Submatrix<MT,AF,SO,true> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

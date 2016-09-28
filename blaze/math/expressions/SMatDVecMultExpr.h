@@ -109,12 +109,12 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = RequiresEvaluation_<MT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   enum : bool { evaluateVector = IsComputation_<VT> || RequiresEvaluation_<VT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -916,7 +916,7 @@ struct Size< SMatDVecMultExpr<MT,VT> > : public Rows<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
 struct IsAligned< SMatDVecMultExpr<MT,VT> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public BoolConstant< IsAligned_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

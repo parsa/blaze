@@ -323,7 +323,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< Type, ElementType_<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -335,8 +335,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
+                            HasSIMDAdd_< Type, ElementType_<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -348,8 +348,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
+                            HasSIMDSub_< Type, ElementType_<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -361,8 +361,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
+                            HasSIMDMult_< Type, ElementType_<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -374,8 +374,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
+                            HasSIMDDiv_< Type, ElementType_<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -730,7 +730,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
 
-   for( size_t i=( IsSparseVector<VT>::value ? 0UL : N ); i<NN; ++i ) {
+   for( size_t i=( IsSparseVector_<VT> ? 0UL : N ); i<NN; ++i ) {
       v_[i] = Type();
    }
 
@@ -1127,7 +1127,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Vector
       swap( tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_<VT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -1236,7 +1236,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector_<VT> || (~rhs).canAlias( this ) ) {
       const StaticVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
@@ -1986,7 +1986,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssi
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded_<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2076,7 +2076,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded_<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2166,7 +2166,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded_<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2256,7 +2256,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMult
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded_<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );

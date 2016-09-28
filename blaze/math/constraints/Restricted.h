@@ -59,7 +59,7 @@ namespace blaze {
 // specific operations on its data, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_RESTRICTED(T) \
-   static_assert( ::blaze::IsRestricted<T>::value, "Unrestricted type detected" )
+   static_assert( ::blaze::IsRestricted_<T>, "Unrestricted type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // any operation on its data, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED(T) \
-   static_assert( !::blaze::IsRestricted<T>::value, "Restricted type detected" )
+   static_assert( !::blaze::IsRestricted_<T>, "Restricted type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

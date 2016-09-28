@@ -1903,7 +1903,7 @@ inline bool isIntact( const DMatTransposer<MT,SO>& m ) noexcept
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct HasMutableDataAccess< DMatTransposer<MT,SO> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1921,7 +1921,7 @@ struct HasMutableDataAccess< DMatTransposer<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsAligned< DMatTransposer<MT,SO> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public BoolConstant< IsAligned_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1939,7 +1939,7 @@ struct IsAligned< DMatTransposer<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsPadded< DMatTransposer<MT,SO> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public BoolConstant< IsPadded_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

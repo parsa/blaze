@@ -843,7 +843,7 @@ inline DerestrictTrait_< Row<MT,SO,DF,SF> > derestrict( Row<MT,SO,DF,SF>& row )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool SF >
 struct IsRestricted< Row<MT,SO,DF,SF> >
-   : public BoolConstant< IsRestricted<MT>::value >
+   : public BoolConstant< IsRestricted_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -880,7 +880,7 @@ struct DerestrictTrait< Row<MT,SO,DF,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct HasConstDataAccess< Row<MT,SO,true,SF> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
+   : public BoolConstant< HasConstDataAccess_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -898,7 +898,7 @@ struct HasConstDataAccess< Row<MT,SO,true,SF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
 struct HasMutableDataAccess< Row<MT,SO,true,SF> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public BoolConstant< HasMutableDataAccess_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

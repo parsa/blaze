@@ -261,7 +261,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2373,11 +2373,11 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
    {
       begin_[i] = end_[i] = begin_[0UL]+nonzeros;
 
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+      const size_t jbegin( ( IsUpper_<MT> )
+                           ?( IsStrictlyUpper_<MT> ? i+1UL : i )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_<MT> )
+                           ?( IsStrictlyLower_<MT> ? i : i+1UL )
                            :( n_ ) );
 
       for( size_t j=jbegin; j<jend; ++j )
@@ -2662,7 +2662,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4775,11 +4775,11 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
    {
       begin_[j] = end_[j] = begin_[0UL]+nonzeros;
 
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+      const size_t ibegin( ( IsLower_<MT> )
+                           ?( IsStrictlyLower_<MT> ? j+1UL : j )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_<MT> )
+                           ?( IsStrictlyUpper_<MT> ? j : j+1UL )
                            :( m_ ) );
 
       for( size_t i=ibegin; i<iend; ++i )

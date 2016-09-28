@@ -124,12 +124,12 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense vector expression.
-   enum : bool { evaluateLeft = IsComputation<VT1>::value || RequiresEvaluation<VT1>::value };
+   enum : bool { evaluateLeft = IsComputation_<VT1> || RequiresEvaluation_<VT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateRight = IsComputation<VT2>::value || RequiresEvaluation<VT2>::value };
+   enum : bool { evaluateRight = IsComputation_<VT2> || RequiresEvaluation_<VT2> };
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -139,7 +139,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
@@ -186,10 +186,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            AreSIMDCombinable< ElementType_<T1>
-                                             , ElementType_<T2>
-                                             , ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            AreSIMDCombinable_< ElementType_<T1>
+                                              , ElementType_<T2>
+                                              , ElementType_<T3> > &&
+                            HasSIMDMult_< ElementType_<T2>, ElementType_<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -483,7 +483,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
-                               HasSIMDMult<ET1,ET2>::value };
+                               HasSIMDMult_<ET1,ET2> };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && !evaluateRight };
@@ -767,7 +767,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT4> );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -886,7 +886,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1043,7 +1043,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT4> );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1163,7 +1163,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1288,7 +1288,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT4> );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1408,7 +1408,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1731,7 +1731,7 @@ struct IsAligned< DVecTDVecMultExpr<VT1,VT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct IsPadded< DVecTDVecMultExpr<VT1,VT2> >
-   : public BoolConstant< IsPadded<VT2>::value >
+   : public BoolConstant< IsPadded_<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

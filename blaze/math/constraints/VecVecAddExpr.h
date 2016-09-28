@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the VecVecAddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECADDEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecVecAddExpr<T>::value, "Non-vector/vector addition expression type detected" )
+   static_assert( ::blaze::IsVecVecAddExpr_<T>, "Non-vector/vector addition expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // from the VecVecAddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECADDEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecVecAddExpr<T>::value, "Vector/vector addition expression type detected" )
+   static_assert( !::blaze::IsVecVecAddExpr_<T>, "Vector/vector addition expression type detected" )
 //*************************************************************************************************
 
 

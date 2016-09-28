@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE(T) \
-   static_assert( ::blaze::IsRow<T>::value, "Non-row type detected" )
+   static_assert( ::blaze::IsRow_<T>, "Non-row type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_TYPE(T) \
-   static_assert( !::blaze::IsRow<T>::value, "Row type detected" )
+   static_assert( !::blaze::IsRow_<T>, "Row type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

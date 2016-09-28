@@ -102,7 +102,7 @@ class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> 
  private:
    //**Enumerations********************************************************************************
    //! Compile time flag indicating whether the given matrix type is a row-major matrix.
-   enum : bool { rmm = IsRowMajorMatrix<MT>::value };
+   enum : bool { rmm = IsRowMajorMatrix_<MT> };
    //**********************************************************************************************
 
  public:

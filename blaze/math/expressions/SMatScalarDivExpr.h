@@ -129,7 +129,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_<RN> };
 
    //! Expression return type for the subscript operator.
    typedef DivExprTrait_<RN,ST>  ExprReturnType;
@@ -143,7 +143,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
        be set to 1 and the division expression will be evaluated via the \a assign function
        family. Otherwise Otherwise \a useAssign will be set to 0 and the expression will be
        evaluated via the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation<MT>::value };
+   enum : bool { useAssign = RequiresEvaluation_<MT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -809,7 +809,7 @@ inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
    typedef DivExprTrait_<T1,T2>       ReturnType;
    typedef RightOperand_<ReturnType>  ScalarType;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_<ReturnType> ) {
       return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
    }
    else {
@@ -914,7 +914,7 @@ inline const EnableIf_< IsNumeric<ST2>
    typedef DivExprTrait_<MT,MultType>  ReturnType;
    typedef RightOperand_<ReturnType>   ScalarType;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_<ReturnType> ) {
       return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );
    }
    else {
@@ -971,7 +971,7 @@ struct Columns< SMatScalarDivExpr<MT,ST,SO> > : public Rows<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsSymmetric< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public BoolConstant< IsSymmetric_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -989,7 +989,7 @@ struct IsSymmetric< SMatScalarDivExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsHermitian< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public BoolConstant< IsHermitian_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1007,7 +1007,7 @@ struct IsHermitian< SMatScalarDivExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsLower< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public BoolConstant< IsLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1025,7 +1025,7 @@ struct IsLower< SMatScalarDivExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsStrictlyLower< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public BoolConstant< IsStrictlyLower_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1043,7 +1043,7 @@ struct IsStrictlyLower< SMatScalarDivExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsUpper< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public BoolConstant< IsUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1061,7 +1061,7 @@ struct IsUpper< SMatScalarDivExpr<MT,ST,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsStrictlyUpper< SMatScalarDivExpr<MT,ST,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public BoolConstant< IsStrictlyUpper_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

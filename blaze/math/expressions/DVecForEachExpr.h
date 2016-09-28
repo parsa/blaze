@@ -122,7 +122,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
        be set to 1 and the for-each expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = RequiresEvaluation_<VT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -545,7 +545,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<VT>::value && dv_.canAlias( alias );
+      return IsComputation_<VT> && dv_.canAlias( alias );
    }
    //**********************************************************************************************
 
@@ -2383,7 +2383,7 @@ struct Size< DVecForEachExpr<VT,OP,TF> > : public Size<VT>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
 struct IsAligned< DVecForEachExpr<VT,OP,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public BoolConstant< IsAligned_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2401,7 +2401,7 @@ struct IsAligned< DVecForEachExpr<VT,OP,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
 struct IsPadded< DVecForEachExpr<VT,OP,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public BoolConstant< IsPadded_<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

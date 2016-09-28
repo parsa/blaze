@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a symmetric matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsSymmetric<T>::value, "Non-symmetric matrix type detected" )
+   static_assert( ::blaze::IsSymmetric_<T>, "Non-symmetric matrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a symmetric matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsSymmetric<T>::value, "Symmetric matrix type detected" )
+   static_assert( !::blaze::IsSymmetric_<T>, "Symmetric matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

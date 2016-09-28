@@ -63,7 +63,7 @@ namespace blaze {
 // the VecTVecMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTVECMULTEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecTVecMultExpr<T>::value, "Non-outer product expression type detected" )
+   static_assert( ::blaze::IsVecTVecMultExpr_<T>, "Non-outer product expression type detected" )
 //*************************************************************************************************
 
 
@@ -83,7 +83,7 @@ namespace blaze {
 // VecTVecMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECTVECMULTEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecTVecMultExpr<T>::value, "Outer product expression type detected" )
+   static_assert( !::blaze::IsVecTVecMultExpr_<T>, "Outer product expression type detected" )
 //*************************************************************************************************
 
 

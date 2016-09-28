@@ -117,8 +117,8 @@ struct TDVecSVecMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum : bool { valid = IsDenseVector<VT1>::value  && IsRowVector<VT1>::value &&
-                         IsSparseVector<VT2>::value && IsColumnVector<VT2>::value };
+   enum : bool { valid = IsDenseVector_<VT1>  && IsRowVector_<VT1> &&
+                         IsSparseVector_<VT2> && IsColumnVector_<VT2> };
    /*! \endcond */
    //**********************************************************************************************
 

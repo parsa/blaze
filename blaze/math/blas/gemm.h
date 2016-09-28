@@ -294,7 +294,7 @@ BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
    const int ldc( numeric_cast<int>( (~C).spacing() ) );
 
-   gemm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
+   gemm( ( IsRowMajorMatrix_<MT1> )?( CblasRowMajor ):( CblasColMajor ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
          ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
          m, n, k, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );

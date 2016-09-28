@@ -235,7 +235,7 @@ class Row<MT,true,true,SF>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -245,8 +245,8 @@ class Row<MT,true,true,SF>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDAdd_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -256,8 +256,8 @@ class Row<MT,true,true,SF>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDSub_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -267,8 +267,8 @@ class Row<MT,true,true,SF>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDMult_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -278,8 +278,8 @@ class Row<MT,true,true,SF>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDDiv_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -704,13 +704,13 @@ template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
 inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const ElementType& rhs )
 {
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_<MT> )
+                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_<MT> )
+                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -835,7 +835,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Vector<VT,tr
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -1240,13 +1240,13 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_<MT> )
+                        ?( ( IsStrictlyUpper_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_<MT> )
+                        ?( ( IsStrictlyLower_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -1628,7 +1628,7 @@ inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -1747,7 +1747,7 @@ inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAss
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -1854,7 +1854,7 @@ inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAss
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -1961,7 +1961,7 @@ inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAs
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -2895,13 +2895,13 @@ inline typename Row<MT,false,true,false>::ConstIterator Row<MT,false,true,false>
 template< typename MT >  // Type of the dense matrix
 inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const ElementType& rhs )
 {
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_<MT> )
+                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_<MT> )
+                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -3025,7 +3025,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Vect
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -3404,13 +3404,13 @@ inline void Row<MT,false,true,false>::reset()
 {
    using blaze::clear;
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_<MT> )
+                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_<MT> )
+                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -3439,13 +3439,13 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::scale( const Other& s
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_<MT> )
+                        ?( ( IsStrictlyUpper_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_<MT> )
+                        ?( ( IsStrictlyLower_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -3988,7 +3988,7 @@ class Row<MT,false,true,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -3998,8 +3998,8 @@ class Row<MT,false,true,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDAdd_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -4009,8 +4009,8 @@ class Row<MT,false,true,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDSub_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -4020,8 +4020,8 @@ class Row<MT,false,true,true>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDMult_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -4031,8 +4031,8 @@ class Row<MT,false,true,true>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+                            AreSIMDCombinable_< ElementType, ElementType_<VT> > &&
+                            HasSIMDDiv_< ElementType, ElementType_<VT> > };
    };
    //**********************************************************************************************
 
@@ -4443,13 +4443,13 @@ inline typename Row<MT,false,true,true>::ConstIterator Row<MT,false,true,true>::
 template< typename MT >  // Type of the dense matrix
 inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const ElementType& rhs )
 {
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_<MT> )
+                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_<MT> )
+                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -4572,7 +4572,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Vector
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -4965,13 +4965,13 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::scale( const Other& sca
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_<MT> )
+                        ?( ( IsStrictlyLower_<MT> )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_<MT> )
+                        ?( ( IsStrictlyUpper_<MT> )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );
@@ -5338,7 +5338,7 @@ inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAss
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -5454,7 +5454,7 @@ inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAdd
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -5558,7 +5558,7 @@ inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSub
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -5662,7 +5662,7 @@ inline EnableIf_< typename Row<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMul
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   const bool remainder( !IsPadded_<MT> || !IsPadded_<VT> );
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );

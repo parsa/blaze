@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsUniUpper<T>::value, "Non-upper unitriangular matrix type detected" )
+   static_assert( ::blaze::IsUniUpper_<T>, "Non-upper unitriangular matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsUniUpper<T>::value, "Upper unitriangular matrix type detected" )
+   static_assert( !::blaze::IsUniUpper_<T>, "Upper unitriangular matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

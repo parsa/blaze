@@ -135,7 +135,7 @@ inline void potri( DenseMatrix<MT,SO>& A, char uplo )
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

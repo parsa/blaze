@@ -59,7 +59,7 @@ namespace blaze {
 // SparseElement base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SPARSE_ELEMENT_TYPE(T) \
-   static_assert( ::blaze::IsSparseElement<T>::value, "Non-sparse element type detected" )
+   static_assert( ::blaze::IsSparseElement_<T>, "Non-sparse element type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // SparseElement base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SPARSE_ELEMENT_TYPE(T) \
-   static_assert( !::blaze::IsSparseElement<T>::value, "Sparse element type detected" )
+   static_assert( !::blaze::IsSparseElement_<T>, "Sparse element type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

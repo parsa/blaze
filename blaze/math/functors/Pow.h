@@ -101,7 +101,7 @@ struct Pow
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return IsSame_<T,ET> && HasSIMDPow<T>::value; }
+   static constexpr bool simdEnabled() { return IsSame_<T,ET> && HasSIMDPow_<T>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

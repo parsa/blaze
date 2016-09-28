@@ -347,10 +347,10 @@ namespace blaze {
 // Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
 // using a column-major storage order for matrix A would result in a more efficient evaluation.
 */
-template< typename MT                               // Type of the matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value        // Density flag
-        , bool SF = IsSymmetric<MT>::value >        // Symmetry flag
+template< typename MT                         // Type of the matrix
+        , bool SO = IsColumnMajorMatrix_<MT>  // Storage order
+        , bool DF = IsDenseMatrix_<MT>        // Density flag
+        , bool SF = IsSymmetric_<MT> >        // Symmetry flag
 class Column
 {};
 //*************************************************************************************************

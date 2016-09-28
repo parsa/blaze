@@ -59,7 +59,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE(T) \
-   static_assert( ::blaze::IsSubvector<T>::value, "Non-subvector type detected" )
+   static_assert( ::blaze::IsSubvector_<T>, "Non-subvector type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SUBVECTOR_TYPE(T) \
-   static_assert( !::blaze::IsSubvector<T>::value, "Subvector type detected" )
+   static_assert( !::blaze::IsSubvector_<T>, "Subvector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

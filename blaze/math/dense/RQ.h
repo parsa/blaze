@@ -199,12 +199,12 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
    const size_t n( (~A).columns() );
    const size_t mindim( min( m, n ) );
 
-   if( ( !IsResizable<MT2>::value && ( (~R).rows() != m || (~R).columns() != mindim ) ) ||
-       ( !IsResizable<MT3>::value && ( (~Q).rows() != mindim || (~Q).columns() != n ) ) ) {
+   if( ( !IsResizable_<MT2> && ( (~R).rows() != m || (~R).columns() != mindim ) ) ||
+       ( !IsResizable_<MT3> && ( (~Q).rows() != mindim || (~Q).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
-   if( IsSquare<MT2>::value && m != mindim ) {
+   if( IsSquare_<MT2> && m != mindim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-min(m,n)" );
    }
 

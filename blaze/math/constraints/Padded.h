@@ -59,7 +59,7 @@ namespace blaze {
 // of remainder elements is necessary) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE(T) \
-   static_assert( ::blaze::IsPadded<T>::value, "Non-padded type detected" )
+   static_assert( ::blaze::IsPadded_<T>, "Non-padded type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // of remainder elements is necessary) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_PADDED_TYPE(T) \
-   static_assert( !::blaze::IsPadded<T>::value, "Padded type detected" )
+   static_assert( !::blaze::IsPadded_<T>, "Padded type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

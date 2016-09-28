@@ -88,7 +88,7 @@ struct SubmatrixExprTrait
    //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct Result { using Type = Submatrix<T,AF,IsColumnMajorMatrix<T>::value,IsDenseMatrix<T>::value>; };
+   struct Result { using Type = Submatrix< T, AF, IsColumnMajorMatrix_<T>, IsDenseMatrix_<T> >; };
    /*! \endcond */
    //**********************************************************************************************
 

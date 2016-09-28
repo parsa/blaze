@@ -59,7 +59,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SUBMATRIX_TYPE(T) \
-   static_assert( ::blaze::IsSubmatrix<T>::value, "Non-submatrix type detected" )
+   static_assert( ::blaze::IsSubmatrix_<T>, "Non-submatrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE(T) \
-   static_assert( !::blaze::IsSubmatrix<T>::value, "Submatrix type detected" )
+   static_assert( !::blaze::IsSubmatrix_<T>, "Submatrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

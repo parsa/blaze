@@ -282,7 +282,7 @@ BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO
    const int lda( numeric_cast<int>( (~A).spacing() ) );
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
 
-   trmm( ( IsRowMajorMatrix<MT1>::value )?( CblasRowMajor ):( CblasColMajor ),
+   trmm( ( IsRowMajorMatrix_<MT1> )?( CblasRowMajor ):( CblasColMajor ),
          side,
          ( SO1 == SO2 )?( uplo ):( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),

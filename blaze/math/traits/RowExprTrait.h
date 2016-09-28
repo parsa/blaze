@@ -89,7 +89,7 @@ struct RowExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct Result {
-      using Type = Row<T,IsRowMajorMatrix<T>::value,IsDenseMatrix<T>::value,IsSymmetric<T>::value>;
+      using Type = Row< T, IsRowMajorMatrix_<T>, IsDenseMatrix_<T>, IsSymmetric_<T> >;
    };
    /*! \endcond */
    //**********************************************************************************************

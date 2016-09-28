@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a numeric matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NUMERIC_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsNumericMatrix<T>::value, "Non-numeric matrix type detected" )
+   static_assert( ::blaze::IsNumericMatrix_<T>, "Non-numeric matrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a numeric matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsNumericMatrix<T>::value, "Numeric matrix type detected" )
+   static_assert( !::blaze::IsNumericMatrix_<T>, "Numeric matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

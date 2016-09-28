@@ -197,7 +197,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

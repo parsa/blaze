@@ -427,10 +427,10 @@ namespace blaze {
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 */
-template< typename VT                           // Type of the vector
-        , bool AF = unaligned                   // Alignment flag
-        , bool TF = IsRowVector<VT>::value      // Transpose flag
-        , bool DF = IsDenseVector<VT>::value >  // Density flag
+template< typename VT                     // Type of the vector
+        , bool AF = unaligned             // Alignment flag
+        , bool TF = IsRowVector_<VT>      // Transpose flag
+        , bool DF = IsDenseVector_<VT> >  // Density flag
 class Subvector
 {};
 //*************************************************************************************************

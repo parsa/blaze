@@ -124,7 +124,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
 
    //! Expression return type for the subscript operator.
    typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
@@ -138,7 +138,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
        return by value, \a useAssign will be set to 1 and the subtraction expression will be
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0
        and the expression will be evaluated via the function call operator. */
-   enum : bool { useAssign = RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value || !returnExpr };
+   enum : bool { useAssign = RequiresEvaluation_<MT1> || RequiresEvaluation_<MT2> || !returnExpr };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -289,8 +289,8 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression_<MT1> && ( RequiresEvaluation_<MT1> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression_<MT2> && ( RequiresEvaluation_<MT2> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -400,7 +400,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsExpression_<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -637,7 +637,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsExpression_<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSubAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -1075,7 +1075,7 @@ struct IsAligned< DMatTDMatSubExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsSymmetric< DMatTDMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+   : public BoolConstant< IsSymmetric_<MT1> && IsSymmetric_<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1093,7 +1093,7 @@ struct IsSymmetric< DMatTDMatSubExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsHermitian< DMatTDMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
+   : public BoolConstant< IsHermitian_<MT1> && IsHermitian_<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

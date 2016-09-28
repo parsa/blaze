@@ -59,7 +59,7 @@ namespace blaze {
 // ...), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VIEW_TYPE(T) \
-   static_assert( ::blaze::IsView<T>::value, "Non-view type detected" )
+   static_assert( ::blaze::IsView_<T>, "Non-view type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // ...), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE(T) \
-   static_assert( !::blaze::IsView<T>::value, "View type detected" )
+   static_assert( !::blaze::IsView_<T>, "View type detected" )
 //*************************************************************************************************
 
 } // namespace blaze
