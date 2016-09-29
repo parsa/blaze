@@ -77,7 +77,7 @@ class NegativeEpsilon
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline NegativeEpsilon();
+   explicit inline constexpr NegativeEpsilon();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -90,8 +90,8 @@ class NegativeEpsilon
    //**Unary plus/minus operators******************************************************************
    /*!\name Unary plus/minus operators */
    //@{
-   inline const NegativeEpsilon& operator+() const;
-   inline const PositiveType     operator-() const;
+   inline constexpr const NegativeEpsilon& operator+() const;
+   inline constexpr const PositiveType     operator-() const;
    //@}
    //**********************************************************************************************
 
@@ -99,7 +99,7 @@ class NegativeEpsilon
    /*!\name Conversion operator */
    //@{
    template< typename T >
-   inline operator const T() const;
+   inline constexpr operator const T() const;
    //@}
    //**********************************************************************************************
 
@@ -133,7 +133,7 @@ class NegativeEpsilon
 /*!\brief The default constructor of the NegativeEpsilon class.
 */
 template< typename E >  // Positive epsilon type
-inline NegativeEpsilon<E>::NegativeEpsilon()
+inline constexpr NegativeEpsilon<E>::NegativeEpsilon()
 {}
 //*************************************************************************************************
 
@@ -152,7 +152,7 @@ inline NegativeEpsilon<E>::NegativeEpsilon()
 // \return The negative epsilon value.
 */
 template< typename E >  // Positive epsilon type
-inline const NegativeEpsilon<E>& NegativeEpsilon<E>::operator+() const
+inline constexpr const NegativeEpsilon<E>& NegativeEpsilon<E>::operator+() const
 {
    return *this;
 }
@@ -165,7 +165,7 @@ inline const NegativeEpsilon<E>& NegativeEpsilon<E>::operator+() const
 // \return The positive epsilon value.
 */
 template< typename E >  // Positive epsilon type
-inline const typename NegativeEpsilon<E>::PositiveType NegativeEpsilon<E>::operator-() const
+inline constexpr const typename NegativeEpsilon<E>::PositiveType NegativeEpsilon<E>::operator-() const
 {
    return PositiveType();
 }
@@ -188,7 +188,7 @@ inline const typename NegativeEpsilon<E>::PositiveType NegativeEpsilon<E>::opera
 */
 template< typename E >  // Positive epsilon type
 template< typename T >  // Floating point data type
-inline NegativeEpsilon<E>::operator const T() const
+inline constexpr NegativeEpsilon<E>::operator const T() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon();
@@ -208,28 +208,28 @@ inline NegativeEpsilon<E>::operator const T() const
 /*!\name NegativeEpsilon operators */
 //@{
 template< typename E, typename T >
-inline bool operator==( const NegativeEpsilon<E>& lhs, const T& rhs );
+inline constexpr bool operator==( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline bool operator==( const T& lhs, const NegativeEpsilon<E>& rhs );
+inline constexpr bool operator==( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline bool operator!=( const NegativeEpsilon<E>& lhs, const T& rhs );
+inline constexpr bool operator!=( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline bool operator!=( const T& lhs, const NegativeEpsilon<E>& rhs );
+inline constexpr bool operator!=( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline bool operator<( const NegativeEpsilon<E>& lhs, const T& rhs );
+inline constexpr bool operator<( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline bool operator<( const T& lhs, const NegativeEpsilon<E>& rhs );
+inline constexpr bool operator<( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline bool operator>( const NegativeEpsilon<E>& lhs, const T& rhs );
+inline constexpr bool operator>( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline bool operator>( const T& lhs, const NegativeEpsilon<E>& rhs );
+inline constexpr bool operator>( const T& lhs, const NegativeEpsilon<E>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -246,7 +246,7 @@ inline bool operator>( const T& lhs, const NegativeEpsilon<E>& rhs );
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator==( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator==( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() == rhs;
@@ -266,7 +266,7 @@ inline bool operator==( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator==( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator==( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs == -Limits<T>::epsilon();
@@ -286,7 +286,7 @@ inline bool operator==( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator!=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator!=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() != rhs;
@@ -306,7 +306,7 @@ inline bool operator!=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator!=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator!=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs != -Limits<T>::epsilon();
@@ -325,7 +325,7 @@ inline bool operator!=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator<( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator<( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() < rhs;
@@ -344,7 +344,7 @@ inline bool operator<( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator<( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator<( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs < -Limits<T>::epsilon();
@@ -363,7 +363,7 @@ inline bool operator<( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator>( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator>( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() > rhs;
@@ -382,7 +382,7 @@ inline bool operator>( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator>( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator>( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs > -Limits<T>::epsilon();
@@ -401,7 +401,7 @@ inline bool operator>( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator<=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator<=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() <= rhs;
@@ -420,7 +420,7 @@ inline bool operator<=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator<=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator<=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs <= -Limits<T>::epsilon();
@@ -439,7 +439,7 @@ inline bool operator<=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator>=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
+inline constexpr bool operator>=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::epsilon() >= rhs;
@@ -458,7 +458,7 @@ inline bool operator>=( const NegativeEpsilon<E>& /*lhs*/, const T& rhs )
 */
 template< typename E    // Positive epsilon type
         , typename T >  // Floating point data type
-inline bool operator>=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
+inline constexpr bool operator>=( const T& lhs, const NegativeEpsilon<E>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs >= -Limits<T>::epsilon();
@@ -504,7 +504,7 @@ class Epsilon
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline Epsilon();
+   explicit inline constexpr Epsilon();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -516,8 +516,8 @@ class Epsilon
    //**Unary plus/minus operators******************************************************************
    /*!\name Unary plus/minus operators */
    //@{
-   inline const Epsilon&     operator+() const;
-   inline const NegativeType operator-() const;
+   inline constexpr const Epsilon&     operator+() const;
+   inline constexpr const NegativeType operator-() const;
    //@}
    //**********************************************************************************************
 
@@ -525,7 +525,7 @@ class Epsilon
    /*!\name Conversion operators */
    //@{
    template< typename T >
-   inline operator const T() const;
+   inline constexpr operator const T() const;
    //@}
    //**********************************************************************************************
 
@@ -552,7 +552,7 @@ class Epsilon
 //*************************************************************************************************
 /*!\brief The default constructor of the Epsilon class.
 */
-inline Epsilon::Epsilon()
+inline constexpr Epsilon::Epsilon()
 {}
 //*************************************************************************************************
 
@@ -570,7 +570,7 @@ inline Epsilon::Epsilon()
 //
 // \return The positive epsilon value.
 */
-inline const Epsilon& Epsilon::operator+() const
+inline constexpr const Epsilon& Epsilon::operator+() const
 {
    return *this;
 }
@@ -582,7 +582,7 @@ inline const Epsilon& Epsilon::operator+() const
 //
 // \return The negative epsilon value.
 */
-inline const Epsilon::NegativeType Epsilon::operator-() const
+inline constexpr const Epsilon::NegativeType Epsilon::operator-() const
 {
    return NegativeType();
 }
@@ -604,7 +604,7 @@ inline const Epsilon::NegativeType Epsilon::operator-() const
 // floating point data type \a T.
 */
 template< typename T >
-inline Epsilon::operator const T() const
+inline constexpr Epsilon::operator const T() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon();
@@ -624,40 +624,40 @@ inline Epsilon::operator const T() const
 /*!\name Epsilon operators */
 //@{
 template< typename T >
-inline bool operator==( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator==( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator==( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator==( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline bool operator!=( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator!=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator!=( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator!=( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline bool operator<( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator<( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator<( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator<( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline bool operator>( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator>( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator>( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator>( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline bool operator<=( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator<=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator<=( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator<=( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline bool operator>=( const Epsilon& lhs, const T& rhs );
+inline constexpr bool operator>=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline bool operator>=( const T& lhs, const Epsilon& rhs );
+inline constexpr bool operator>=( const T& lhs, const Epsilon& rhs );
 //@}
 //*************************************************************************************************
 
@@ -673,7 +673,7 @@ inline bool operator>=( const T& lhs, const Epsilon& rhs );
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator==( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator==( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() == rhs;
@@ -692,7 +692,7 @@ inline bool operator==( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator==( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator==( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs == Limits<T>::epsilon();
@@ -711,7 +711,7 @@ inline bool operator==( const T& lhs, const Epsilon& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator!=( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator!=( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() != rhs;
@@ -730,7 +730,7 @@ inline bool operator!=( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator!=( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator!=( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs != Limits<T>::epsilon();
@@ -748,7 +748,7 @@ inline bool operator!=( const T& lhs, const Epsilon& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator<( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator<( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() < rhs;
@@ -766,7 +766,7 @@ inline bool operator<( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator<( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator<( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs < Limits<T>::epsilon();
@@ -784,7 +784,7 @@ inline bool operator<( const T& lhs, const Epsilon& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator>( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator>( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() > rhs;
@@ -802,7 +802,7 @@ inline bool operator>( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator>( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator>( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs > Limits<T>::epsilon();
@@ -820,7 +820,7 @@ inline bool operator>( const T& lhs, const Epsilon& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator<=( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator<=( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() <= rhs;
@@ -838,7 +838,7 @@ inline bool operator<=( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator<=( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator<=( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs <= Limits<T>::epsilon();
@@ -856,7 +856,7 @@ inline bool operator<=( const T& lhs, const Epsilon& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator>=( const Epsilon& /*lhs*/, const T& rhs )
+inline constexpr bool operator>=( const Epsilon& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::epsilon() >= rhs;
@@ -874,7 +874,7 @@ inline bool operator>=( const Epsilon& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >
-inline bool operator>=( const T& lhs, const Epsilon& /*rhs*/ )
+inline constexpr bool operator>=( const T& lhs, const Epsilon& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs >= Limits<T>::epsilon();
@@ -898,7 +898,7 @@ inline bool operator>=( const T& lhs, const Epsilon& /*rhs*/ )
 // It is implicitly converted to the corresponding floating point data type and represents
 // the smallest possible difference between two values of the according data type.
 */
-const Epsilon epsilon;
+constexpr Epsilon epsilon;
 //*************************************************************************************************
 
 } // namespace blaze
