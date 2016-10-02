@@ -70,7 +70,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side value/object
         , typename T2 >  // Type of the right-hand side value/object
-inline bool equal( const T1& a, const T2& b )
+inline constexpr bool equal( const T1& a, const T2& b )
 {
    return a == b;
 }
