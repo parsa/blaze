@@ -91,7 +91,7 @@ template< typename T >
 BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
 
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr bool lessThan( T1 a, T2 b )
+BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
    noexcept( IsBuiltin_< CommonType_<T1,T2> > );
 //@}
 //*************************************************************************************************
@@ -102,7 +102,7 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan( T1 a, T2 b )
 // \ingroup math
 //
 // \param a The given value.
-// \return 1 if the value is greater than zero, 0 if it is zero, and -1 if it is smaller than zero.
+// \return 1 if the value is greater than zero, 0 if it is zero, and -1 if it is less than zero.
 //
 // The sign function only works for built-in data types. The attempt to use any user-defined class
 // type will result in a compile time error.
@@ -273,12 +273,12 @@ BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept
 //
 // \param a First value.
 // \param b Second value.
-// \return \a true if the first value is smaller than the second, \a false if not.
+// \return \a true if the first value is less than the second, \a false if not.
 //
 // Default implementation of a less-than comparison of two data values.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( const T& a, const T& b )
+BLAZE_ALWAYS_INLINE constexpr bool less_backend( const T& a, const T& b )
    noexcept( IsBuiltin_<T> )
 {
    return a < b;
@@ -294,14 +294,14 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( const T& a, const T& b )
 //
 // \param a First value.
 // \param b Second value.
-// \return \a true if the first value is smaller than the second, \a false if not.
+// \return \a true if the first value is less than the second, \a false if not.
 //
 // Less-than function for the comparison of two single precision floating point numbers. Due
 // to the limited machine accuracy, a direct comparison of two floating point numbers should
 // be avoided. This functions offers the possibility to compare two floating-point values with
 // a certain accuracy margin.
 */
-BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( float a, float b ) noexcept
+BLAZE_ALWAYS_INLINE constexpr bool less_backend( float a, float b ) noexcept
 {
    return ( b - a ) > 1E-8F;
 }
@@ -316,14 +316,14 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( float a, float b ) noexcept
 //
 // \param a First value.
 // \param b Second value.
-// \return \a true if the first value is smaller than the second, \a false if not.
+// \return \a true if the first value is less than the second, \a false if not.
 //
 // Less-than function for the comparison of two double precision floating point numbers. Due
 // to the limited machine accuracy, a direct comparison of two floating point numbers should
 // be avoided. This functions offers the possibility to compare two floating-point values with
 // a certain accuracy margin.
 */
-BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( double a, double b ) noexcept
+BLAZE_ALWAYS_INLINE constexpr bool less_backend( double a, double b ) noexcept
 {
    return ( b - a ) > 1E-8;
 }
@@ -338,14 +338,14 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( double a, double b ) noexce
 //
 // \param a First value.
 // \param b Second value.
-// \return \a true if the first value is smaller than the second, \a false if not.
+// \return \a true if the first value is less than the second, \a false if not.
 //
 // Less-than function for the comparison of two long double precision floating point numbers. Due
 // to the limited machine accuracy, a direct comparison of two floating point numbers should be
 // avoided. This functions offers the possibility to compare two floating-point values with a
 // certain accuracy margin.
 */
-BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( long double a, long double b ) noexcept
+BLAZE_ALWAYS_INLINE constexpr bool less_backend( long double a, long double b ) noexcept
 {
    return ( b - a ) > 1E-10;
 }
@@ -359,17 +359,17 @@ BLAZE_ALWAYS_INLINE constexpr bool lessThan_backend( long double a, long double 
 //
 // \param a First value.
 // \param b Second value.
-// \return \a true if the first value is smaller than the second, \a false if not.
+// \return \a true if the first value is less than the second, \a false if not.
 //
 // Generic less-than comparison between to numeric values. Depending on the types of the
 // two arguments, a special comparison for floating point values is selected that takes
 // the limited machine accuracy into account.
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr bool lessThan( const T1& a, const T2& b )
+BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
    noexcept( IsBuiltin_< CommonType_<T1,T2> > )
 {
-   return lessThan_backend< CommonType_<T1,T2> >( a, b );
+   return less_backend< CommonType_<T1,T2> >( a, b );
 }
 //*************************************************************************************************
 
