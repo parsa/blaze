@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -87,8 +88,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/NextMultiple.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -453,7 +452,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
  private:
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
+   enum : size_t { NN = ( usePadding )?( nextMultiple( N, SIMDSIZE ) ):( N ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

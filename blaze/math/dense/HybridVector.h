@@ -79,8 +79,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/NextMultiple.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -450,7 +448,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
  private:
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
+   enum : size_t { NN = ( usePadding )?( nextMultiple( N, SIMDSIZE ) ):( N ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

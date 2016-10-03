@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -102,8 +103,6 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/NextMultiple.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -471,7 +470,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
+   enum : size_t { NN = ( usePadding )?( nextMultiple( N, SIMDSIZE ) ):( N ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -3185,7 +3184,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<SIMDSIZE> >::value ):( M ) };
+   enum : size_t { MM = ( usePadding )?( nextMultiple( M, SIMDSIZE ) ):( M ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

@@ -100,8 +100,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/NextMultiple.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -466,7 +464,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
  private:
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<SIMDSIZE> >::value ):( N ) };
+   enum : size_t { NN = ( usePadding )?( nextMultiple( N, SIMDSIZE ) ):( N ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -3368,7 +3366,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
  private:
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<SIMDSIZE> >::value ):( M ) };
+   enum : size_t { MM = ( usePadding )?( nextMultiple( M, SIMDSIZE ) ):( M ) };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
