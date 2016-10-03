@@ -97,6 +97,7 @@ OperationTest::OperationTest()
    testIsConvertible();
    testIsDouble();
    testIsEmpty();
+   testIsEnum();
    testIsFloat();
    testIsFloatingPoint();
    testIsInteger();
@@ -863,6 +864,34 @@ void OperationTest::testIsEmpty()
    BLAZE_STATIC_ASSERT( IsEmpty<int>::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEmpty<std::string>::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsEmpty<B>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsEnum type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsEnum type trait. In case an error is
+// detected, a compilation error is created.
+*/
+void OperationTest::testIsEnum()
+{
+   using blaze::IsEnum;
+
+   enum A {};
+   enum B : int {};
+   enum class C {};
+   class D {};
+
+   BLAZE_STATIC_ASSERT( IsEnum<A>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEnum<const B>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsEnum<volatile C>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsEnum<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsEnum<double>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsEnum<D>, blaze::FalseType );
 }
 //*************************************************************************************************
 

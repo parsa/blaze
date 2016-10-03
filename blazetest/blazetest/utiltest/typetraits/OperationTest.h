@@ -109,6 +109,7 @@ class OperationTest
    void testIsConvertible();
    void testIsDouble();
    void testIsEmpty();
+   void testIsEnum();
    void testIsFloat();
    void testIsFloatingPoint();
    void testIsInteger();
