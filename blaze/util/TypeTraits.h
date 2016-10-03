@@ -72,6 +72,7 @@
 #include <blaze/util/typetraits/IsDestructible.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsEmpty.h>
+#include <blaze/util/typetraits/IsEnum.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsInteger.h>

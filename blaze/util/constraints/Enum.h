@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Constraints.h
-//  \brief Header file for compile time constraints
+//  \file blaze/util/constraints/Enum.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,55 +32,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_CONSTRAINTS_H_
-#define _BLAZE_UTIL_CONSTRAINTS_H_
+#ifndef _BLAZE_UTIL_CONSTRAINTS_ENUM_H_
+#define _BLAZE_UTIL_CONSTRAINTS_ENUM_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Arithmetic.h>
-#include <blaze/util/constraints/Array.h>
-#include <blaze/util/constraints/Assignable.h>
-#include <blaze/util/constraints/BaseOf.h>
-#include <blaze/util/constraints/Boolean.h>
-#include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/constraints/Class.h>
-#include <blaze/util/constraints/Comparable.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/ComplexDouble.h>
-#include <blaze/util/constraints/ComplexFloat.h>
-#include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Constructible.h>
-#include <blaze/util/constraints/Convertible.h>
-#include <blaze/util/constraints/DerivedFrom.h>
-#include <blaze/util/constraints/Destructible.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Empty.h>
-#include <blaze/util/constraints/Enum.h>
-#include <blaze/util/constraints/Float.h>
-#include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Integer.h>
-#include <blaze/util/constraints/Integral.h>
-#include <blaze/util/constraints/LongDouble.h>
-#include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/constraints/Object.h>
-#include <blaze/util/constraints/Pod.h>
-#include <blaze/util/constraints/Pointer.h>
-#include <blaze/util/constraints/Rank.h>
-#include <blaze/util/constraints/Reference.h>
-#include <blaze/util/constraints/SameSize.h>
-#include <blaze/util/constraints/SameType.h>
-#include <blaze/util/constraints/Signed.h>
-#include <blaze/util/constraints/Size.h>
-#include <blaze/util/constraints/Subscriptable.h>
-#include <blaze/util/constraints/TypeRestriction.h>
-#include <blaze/util/constraints/Union.h>
-#include <blaze/util/constraints/Unsigned.h>
-#include <blaze/util/constraints/Valid.h>
-#include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/constraints/Void.h>
-#include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/typetraits/IsEnum.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_ENUM_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup constraints
+//
+// In case the given data type \a T is not an enumeration type, a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_ENUM_TYPE(T) \
+   static_assert( ::blaze::IsEnum_<T>, "Non-enum type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_ENUM_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup constraints
+//
+// In case the given data type \a T is an enumeration type, a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ENUM_TYPE(T) \
+   static_assert( !::blaze::IsEnum_<T>, "Enum type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
