@@ -53,7 +53,6 @@
 #include <blaze/util/mpl/Min.h>
 #include <blaze/util/mpl/Minus.h>
 #include <blaze/util/mpl/Modulus.h>
-#include <blaze/util/mpl/NextMultiple.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/mpl/Plus.h>
