@@ -58,19 +58,38 @@ namespace blaze {
 //
 // The Min class template selects the smaller of the two given template arguments \a T1 and \a T2.
 // In order for Min to be able to determine the smaller type, both arguments are required to have
-// a nested member \a value. In case \a T1::value is smaller than \a T2::value, the nested type
-// definition \a Type is set to \a T1, otherwise it is set to \a T2.
+// a nested member \a value. The result of the minimum operation can be accessed via the nested
+// member \a value, the resulting type is available via the nested type \a ValueType.
 
    \code
-   blaze::Min< Int<3> , Int<2>  >::Type  // Results in Int<2>
-   blaze::Min< Long<3>, Int<2>  >::Type  // Results in Int<2>
-   blaze::Min< Int<3> , Long<2> >::Type  // Results in Long<2>
+   blaze::Min< Int<3> , Int<2>  >::value      // Results in 2
+   blaze::Min< Long<3>, Int<2>  >::ValueType  // Results in int
+   blaze::Min< Int<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
 struct Min : public If_< Less<T1,T2>, T1, T2 >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Min class template.
+// \ingroup mpl
+//
+// The Min_ alias declaration provides a convenient shortcut to access the nested \a value of
+// the Min class template. For instance, given the types \a T1 and \a T2 the following two
+// statements are identical:
+
+   \code
+   constexpr bool value1 = Min<T1,T2>::value;
+   constexpr bool value2 = Min_<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the first compile time value
+        , typename T2 >  // Type of the second compile time value
+constexpr auto Min_ = Min<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze

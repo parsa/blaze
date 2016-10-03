@@ -75,6 +75,25 @@ struct Greater : public Bool< ( T1::value > T2::value ) >
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Greater class template.
+// \ingroup mpl
+//
+// The Greater_ alias declaration provides a convenient shortcut to access the nested \a value of
+// the Greater class template. For instance, given the types \a T1 and \a T2 the following two
+// statements are identical:
+
+   \code
+   constexpr bool value1 = Greater<T1,T2>::value;
+   constexpr bool value2 = Greater_<T1,T2>;
+   \endcode
+*/
+template< typename T1    // The type of the left-hand side operand
+        , typename T2 >  // The type of the right-hand side operand
+constexpr bool Greater_ = Greater<T1,T2>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
