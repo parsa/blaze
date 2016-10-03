@@ -87,8 +87,8 @@ template< typename T1, typename T2, typename... Ts >
 BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
    max( const T1& a, const T2& b, const Ts&... args ) noexcept( All_<IsNumeric,T1,T2,Ts...> );
 
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept;
+template< typename T1, typename T2 >
+BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
@@ -252,20 +252,15 @@ BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
 // \param factor The factor of the multiple \f$[1..\infty)\f$.
 // \return The multiple of the given factor.
 //
-// This function rounds up the given integral value to the next multiple of the given factor.
-// In case the integral value is already a multiple of the given factor, the value itself is
-// returned. Note that both \a value and \a factor are expected to be positive integrals. In
-// case any of them is negative, the function returns 0. Note that the attempt to use the
-// function with non-integral types results in a compilation error!
+// This function rounds up the given integral value to the next multiple of the given integral
+// factor. In case the integral value is already a multiple of the given factor, the value itself
+// is returned. Note that the attempt to use the function with non-integral types results in a
+// compilation error!
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr T nextMultiple( T value, T factor ) noexcept
+template< typename T1, typename T2 >
+BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept
 {
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-
-   return ( value > T(0) && factor > T(0) )
-          ?( value + ( factor - ( value % factor ) ) % factor )
-          :( T(0) );
+   return ( value + ( factor - ( value % factor ) ) % factor );
 }
 //*************************************************************************************************
 
