@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <cmath>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -71,7 +70,6 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Reference.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -279,7 +277,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side evaluatin expression to be assigned.
+   // \param rhs The right-hand side evaluation expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized assignment of a dense matrix evaluation
@@ -487,7 +485,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side evaluatin expression to be assigned.
+   // \param rhs The right-hand side evaluation expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a dense matrix
@@ -692,7 +690,7 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
 //
 // The \a eval function forces the evaluation of the given dense matrix expression \a dm.
 // The function returns an expression representing the operation.\n
-// The following example demonstrates the use of the \a eval function
+// The following example demonstrates the use of the \a eval function:
 
    \code
    blaze::DynamicMatrix<double> A, B;

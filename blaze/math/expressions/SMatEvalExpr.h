@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <cmath>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -70,7 +69,6 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Reference.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -286,7 +284,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side evaluatin expression to be assigned.
+   // \param rhs The right-hand side evaluation expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized assignment of a sparse matrix evaluation
@@ -494,7 +492,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side evaluatin expression to be assigned.
+   // \param rhs The right-hand side evaluation expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix
@@ -699,7 +697,7 @@ class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
 //
 // The \a eval function forces the evaluation of the given sparse matrix expression \a sm.
 // The function returns an expression representing the operation.\n
-// The following example demonstrates the use of the \a eval function
+// The following example demonstrates the use of the \a eval function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
