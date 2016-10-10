@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatTransExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -1226,7 +1227,7 @@ struct DMatTransExprTrait< DMatTransExpr<MT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , TransposeType_< DMatTransExpr<MT,false> >
+                   , Operand_< DMatTransExpr<MT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1242,7 +1243,7 @@ struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , TransposeType_< DMatTransExpr<MT,true> >
+                   , Operand_< DMatTransExpr<MT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
