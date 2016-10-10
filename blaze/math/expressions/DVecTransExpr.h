@@ -1078,7 +1078,7 @@ struct DVecTransExprTrait< DVecTransExpr<VT,false> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , TransposeType_< DVecTransExpr<VT,false> >
+                   , Operand_< DVecTransExpr<VT,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1094,7 +1094,7 @@ struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , TransposeType_< DVecTransExpr<VT,true> >
+                   , Operand_< DVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
