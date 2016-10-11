@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/SMatDeclSymExpr.h
-//  \brief Header file for the sparse matrix symmetry declaration expression
+//  \file blaze/math/expressions/SMatDeclHermExpr.h
+//  \brief Header file for the sparse matrix Hermitian declaration expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SMATDECLSYMEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_SMATDECLSYMEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SMATDECLHERMEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SMATDECLHERMEXPR_H_
 
 
 //*************************************************************************************************
@@ -44,10 +44,10 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
-#include <blaze/math/expressions/DeclSymExpr.h>
+#include <blaze/math/expressions/DeclHermExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -85,26 +85,26 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS SMATDECLSYMEXPR
+//  CLASS SMATDECLHERMEXPR
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the explicit symmetry declaration of sparse matrices.
+/*!\brief Expression object for the explicit Hermitian declaration of sparse matrices.
 // \ingroup sparse_matrix_expression
 //
-// The SMatDeclSymExpr class represents the compile time expression for the explicit symmetry
+// The SMatDeclHermExpr class represents the compile time expression for the explicit Hermitian
 // declaration of a sparse matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
-                      , private DeclSymExpr
+class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
+                      , private DeclHermExpr
                       , private If< IsComputation<MT>, Computation, EmptyType >::Type
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDeclSymExpr<MT,SO>  This;           //!< Type of this SMatDeclSymExpr instance.
+   typedef SMatDeclHermExpr<MT,SO>  This;           //!< Type of this SMatDeclHermExpr instance.
    typedef ResultType_<MT>         ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<MT>       OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<MT>      TransposeType;  //!< Transpose type for expression template evaluations.
@@ -112,7 +112,7 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    typedef ReturnType_<MT>         ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclSymExpr& >  CompositeType;
+   typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclHermExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
    typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
@@ -247,12 +247,12 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the SMatDeclSymExpr class.
+   /*!\brief Constructor for the SMatDeclHermExpr class.
    //
-   // \param sm The sparse matrix operand of the declsym expression.
+   // \param sm The sparse matrix operand of the declherm expression.
    */
-   explicit inline SMatDeclSymExpr( const MT& sm ) noexcept
-      : sm_( sm )  // Sparse matrix of the declsym expression
+   explicit inline SMatDeclHermExpr( const MT& sm ) noexcept
+      : sm_( sm )  // Sparse matrix of the declherm expression
    {}
    //**********************************************************************************************
 
@@ -386,24 +386,24 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
  private:
    //**Member variables****************************************************************************
-   Operand sm_;  //!< Sparse matrix of the declsym expression.
+   Operand sm_;  //!< Sparse matrix of the declherm expression.
    //**********************************************************************************************
 
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief Assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be assigned.
+   // \param rhs The right-hand side declherm expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix declsym
+   // This function implements the performance optimized assignment of a sparse matrix declherm
    // expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void assign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void assign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -417,19 +417,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief Assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be assigned.
+   // \param rhs The right-hand side declherm expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix declsym
+   // This function implements the performance optimized assignment of a sparse matrix declherm
    // expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -443,19 +443,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Addition assignment to dense matrices*******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief Addition assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be added.
+   // \param rhs The right-hand side declherm expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a sparse matrix
-   // declsym expression to a dense matrix.
+   // declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -469,19 +469,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Addition assignment to sparse matrices******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief Addition assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be added.
+   // \param rhs The right-hand side declherm expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a sparse matrix
-   // declsym expression to a sparse matrix.
+   // declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void addAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void addAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -495,19 +495,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Subtraction assignment to dense matrices****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief Subtraction assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be subtracted.
+   // \param rhs The right-hand side declherm expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a sparse
-   // matrix declsym expression to a dense matrix.
+   // matrix declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -521,19 +521,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Subtraction assignment to sparse matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief Subtraction assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be subtracted.
+   // \param rhs The right-hand side declherm expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a sparse
-   // matrix declsym expression to a sparse matrix.
+   // matrix declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void subAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void subAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -547,19 +547,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Multiplication assignment to dense matrices*************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief Multiplication assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be multiplied.
+   // \param rhs The right-hand side declherm expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a sparse
-   // matrix declsym expression to a dense matrix.
+   // matrix declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void multAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void multAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -573,19 +573,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**Multiplication assignment to sparse matrices************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief Multiplication assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be multiplied.
+   // \param rhs The right-hand side declherm expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a sparse
-   // matrix declsym expression to a sparse matrix.
+   // matrix declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void multAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void multAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -599,19 +599,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP assignment to dense matrices************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief SMP assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be assigned.
+   // \param rhs The right-hand side declherm expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix
-   // declsym expression to a dense matrix.
+   // declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -625,19 +625,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP assignment to sparse matrices***********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief SMP assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be assigned.
+   // \param rhs The right-hand side declherm expression to be assigned.
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix
-   // declsym expression to a sparse matrix.
+   // declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -651,19 +651,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP addition assignment to dense matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief SMP addition assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be added.
+   // \param rhs The right-hand side declherm expression to be added.
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // matrix declsym expression to a dense matrix.
+   // matrix declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -677,19 +677,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP addition assignment to sparse matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief SMP addition assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be added.
+   // \param rhs The right-hand side declherm expression to be added.
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // matrix declsym expression to a sparse matrix.
+   // matrix declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void smpAddAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpAddAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -703,19 +703,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP subtraction assignment to dense matrices************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a sparse matrix declsym expression to a dense matrix.
+   /*!\brief SMP subtraction assignment of a sparse matrix declherm expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be subtracted.
+   // \param rhs The right-hand side declherm expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // matrix declsym expression to a dense matrix.
+   // matrix declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -729,19 +729,19 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP subtraction assignment to sparse matrices***********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a sparse matrix declsym expression to a sparse matrix.
+   /*!\brief SMP subtraction assignment of a sparse matrix declherm expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be subtracted.
+   // \param rhs The right-hand side declherm expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // matrix declsym expression to a sparse matrix.
+   // matrix declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void smpSubAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpSubAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -755,20 +755,20 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP multiplication assignment to dense matrices*********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a sparse matrix declsym expression to a dense
+   /*!\brief SMP multiplication assignment of a sparse matrix declherm expression to a dense
    //        matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side declsym expression to be multiplied.
+   // \param rhs The right-hand side declherm expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // sparse matrix declsym expression to a dense matrix.
+   // sparse matrix declherm expression to a dense matrix.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline void smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -782,20 +782,20 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 
    //**SMP multiplication assignment to sparse matrices********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a sparse matrix declsym expression to a sparse
+   /*!\brief SMP multiplication assignment of a sparse matrix declherm expression to a sparse
    //        matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side declsym expression to be multiplied.
+   // \param rhs The right-hand side declherm expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // sparse matrix declsym expression to a sparse matrix.
+   // sparse matrix declherm expression to a sparse matrix.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline void smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclSymExpr& rhs )
+   friend inline void smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -811,7 +811,7 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -827,48 +827,48 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Declares the given non-symmetric sparse matrix expression \a sm as symmetric.
+/*!\brief Declares the given non-Hermitian sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 //
-// The \a declsym function declares the given non-symmetric sparse matrix expression \a sm as
-// symmetric. The function returns an expression representing the operation.\n
-// The following example demonstrates the use of the \a declsym function:
+// The \a declherm function declares the given non-Hermitian sparse matrix expression \a sm as
+// Hermitian. The function returns an expression representing the operation.\n
+// The following example demonstrates the use of the \a declherm function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
    // ... Resizing and initialization
-   B = declsym( A );
+   B = declherm( A );
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline DisableIf_< IsSymmetric<MT>, const SMatDeclSymExpr<MT,SO> >
-   declsym( const SparseMatrix<MT,SO>& sm )
+inline DisableIf_< IsHermitian<MT>, const SMatDeclHermExpr<MT,SO> >
+   declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatDeclSymExpr<MT,SO>( ~sm );
+   return SMatDeclHermExpr<MT,SO>( ~sm );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Redeclares the given symmetric sparse matrix expression \a sm as symmetric.
+/*!\brief Redeclares the given Hermitian sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 //
-// The \a declsym function redeclares the given symmetric sparse matrix expression \a sm as
-// symmetric. The function returns a reference to the already symmetric matrix expression.
+// The \a declherm function redeclares the given Hermitian sparse matrix expression \a sm as
+// Hermitian. The function returns a reference to the already Hermitian matrix expression.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsSymmetric<MT>, const MT& >
-   declsym( const SparseMatrix<MT,SO>& sm )
+inline EnableIf_< IsHermitian<MT>, const MT& >
+   declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -888,7 +888,7 @@ inline EnableIf_< IsSymmetric<MT>, const MT& >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< SMatDeclSymExpr<MT,SO> > : public Rows<MT>
+struct Rows< SMatDeclHermExpr<MT,SO> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -905,7 +905,7 @@ struct Rows< SMatDeclSymExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatDeclSymExpr<MT,SO> > : public Columns<MT>
+struct Columns< SMatDeclHermExpr<MT,SO> > : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -922,8 +922,8 @@ struct Columns< SMatDeclSymExpr<MT,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsSymmetric< SMatDeclSymExpr<MT,SO> >
-   : public TrueType
+struct IsSymmetric< SMatDeclHermExpr<MT,SO> >
+   : public BoolConstant< IsSymmetric_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -940,8 +940,8 @@ struct IsSymmetric< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsHermitian< SMatDeclSymExpr<MT,SO> >
-   : public BoolConstant< IsHermitian_<MT> >
+struct IsHermitian< SMatDeclHermExpr<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -958,7 +958,7 @@ struct IsHermitian< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsLower< SMatDeclSymExpr<MT,SO> >
+struct IsLower< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsLower_<MT> >
 {};
 /*! \endcond */
@@ -976,7 +976,7 @@ struct IsLower< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniLower< SMatDeclSymExpr<MT,SO> >
+struct IsUniLower< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsUniLower_<MT> >
 {};
 /*! \endcond */
@@ -994,7 +994,7 @@ struct IsUniLower< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsStrictlyLower< SMatDeclSymExpr<MT,SO> >
+struct IsStrictlyLower< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsStrictlyLower_<MT> >
 {};
 /*! \endcond */
@@ -1012,7 +1012,7 @@ struct IsStrictlyLower< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUpper< SMatDeclSymExpr<MT,SO> >
+struct IsUpper< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsUpper_<MT> >
 {};
 /*! \endcond */
@@ -1030,7 +1030,7 @@ struct IsUpper< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniUpper< SMatDeclSymExpr<MT,SO> >
+struct IsUniUpper< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsUniUpper_<MT> >
 {};
 /*! \endcond */
@@ -1048,7 +1048,7 @@ struct IsUniUpper< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsStrictlyUpper< SMatDeclSymExpr<MT,SO> >
+struct IsStrictlyUpper< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsStrictlyUpper_<MT> >
 {};
 /*! \endcond */
@@ -1066,7 +1066,7 @@ struct IsStrictlyUpper< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool AF >
-struct SubmatrixExprTrait< SMatDeclSymExpr<MT,SO>, AF >
+struct SubmatrixExprTrait< SMatDeclHermExpr<MT,SO>, AF >
 {
  public:
    //**********************************************************************************************
@@ -1080,7 +1080,7 @@ struct SubmatrixExprTrait< SMatDeclSymExpr<MT,SO>, AF >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct RowExprTrait< SMatDeclSymExpr<MT,SO> >
+struct RowExprTrait< SMatDeclHermExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
@@ -1094,7 +1094,7 @@ struct RowExprTrait< SMatDeclSymExpr<MT,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct ColumnExprTrait< SMatDeclSymExpr<MT,SO> >
+struct ColumnExprTrait< SMatDeclHermExpr<MT,SO> >
 {
  public:
    //**********************************************************************************************
