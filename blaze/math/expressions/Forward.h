@@ -47,6 +47,7 @@ namespace blaze {
 template< typename, bool > struct DenseMatrix;
 template< typename, bool > struct DenseVector;
 template< typename, bool > class DMatDeclHermExpr;
+template< typename, bool > class DMatDeclLowExpr;
 template< typename, bool > class DMatDeclSymExpr;
 template< typename, typename, bool > class DMatDMatAddExpr;
 template< typename, typename > class DMatDMatMultExpr;
@@ -90,6 +91,7 @@ template< typename, bool > class DVecTransposer;
 template< typename, typename > class DVecTSVecMultExpr;
 template< typename, bool > struct Matrix;
 template< typename, bool > class SMatDeclHermExpr;
+template< typename, bool > class SMatDeclLowExpr;
 template< typename, bool > class SMatDeclSymExpr;
 template< typename, typename > class SMatDMatMultExpr;
 template< typename, typename, bool > class SMatDMatSubExpr;
