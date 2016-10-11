@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDeclExpr.h>
+#include <blaze/math/typetraits/IsDeclHermExpr.h>
 #include <blaze/math/typetraits/IsDeclSymExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
@@ -454,6 +455,31 @@ inline const EnableIf_< IsMatSerialExpr<MT>, RowExprTrait_<MT> >
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline const EnableIf_< IsDeclSymExpr<MT>, RowExprTrait_<MT> >
+   row( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( (~matrix).operand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix declherm operation.
+// \ingroup views
+//
+// \param matrix The constant matrix declherm operation.
+// \param index The index of the row.
+// \return View on the specified row of the declherm operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// declherm operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const EnableIf_< IsDeclHermExpr<MT>, RowExprTrait_<MT> >
    row( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
