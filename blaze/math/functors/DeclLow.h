@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Functors.h
-//  \brief Header file for all functors
+//  \file blaze/math/functors/DeclLow.h
+//  \brief Header file for the DeclLow functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,55 +32,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_H_
-#define _BLAZE_MATH_FUNCTORS_H_
+#ifndef _BLAZE_MATH_FUNCTORS_DECLLOW_H_
+#define _BLAZE_MATH_FUNCTORS_DECLLOW_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/functors/Abs.h>
-#include <blaze/math/functors/Acos.h>
-#include <blaze/math/functors/Acosh.h>
-#include <blaze/math/functors/Asin.h>
-#include <blaze/math/functors/Asinh.h>
-#include <blaze/math/functors/Atan.h>
-#include <blaze/math/functors/Atanh.h>
-#include <blaze/math/functors/Cbrt.h>
-#include <blaze/math/functors/Ceil.h>
-#include <blaze/math/functors/Clip.h>
-#include <blaze/math/functors/Conj.h>
-#include <blaze/math/functors/Cos.h>
-#include <blaze/math/functors/Cosh.h>
-#include <blaze/math/functors/CTrans.h>
-#include <blaze/math/functors/DeclHerm.h>
-#include <blaze/math/functors/DeclLow.h>
-#include <blaze/math/functors/DeclSym.h>
-#include <blaze/math/functors/Erf.h>
-#include <blaze/math/functors/Erfc.h>
-#include <blaze/math/functors/Eval.h>
-#include <blaze/math/functors/Exp.h>
-#include <blaze/math/functors/Exp2.h>
-#include <blaze/math/functors/Exp10.h>
-#include <blaze/math/functors/Floor.h>
-#include <blaze/math/functors/Imag.h>
-#include <blaze/math/functors/Inv.h>
-#include <blaze/math/functors/InvCbrt.h>
-#include <blaze/math/functors/InvSqrt.h>
-#include <blaze/math/functors/Log.h>
-#include <blaze/math/functors/Log2.h>
-#include <blaze/math/functors/Log10.h>
-#include <blaze/math/functors/Pow.h>
-#include <blaze/math/functors/Real.h>
-#include <blaze/math/functors/Round.h>
-#include <blaze/math/functors/Serial.h>
-#include <blaze/math/functors/Sin.h>
-#include <blaze/math/functors/Sinh.h>
-#include <blaze/math/functors/Sqrt.h>
-#include <blaze/math/functors/Tan.h>
-#include <blaze/math/functors/Tanh.h>
-#include <blaze/math/functors/Trans.h>
-#include <blaze/math/functors/Trunc.h>
+#include <blaze/system/Inline.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Generic wrapper for the decllow() function.
+// \ingroup functors
+*/
+struct DeclLow
+{
+   //**********************************************************************************************
+   /*!\brief Returns the result of the decllow() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the decllow() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
+   {
+      return decllow( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
