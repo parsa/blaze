@@ -111,6 +111,7 @@
 #include <blaze/math/traits/SMatDeclHermExprTrait.h>
 #include <blaze/math/traits/SMatDeclLowExprTrait.h>
 #include <blaze/math/traits/SMatDeclSymExprTrait.h>
+#include <blaze/math/traits/SMatDeclUppExprTrait.h>
 #include <blaze/math/traits/SMatDMatAddExprTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
 #include <blaze/math/traits/SMatDMatSubExprTrait.h>
