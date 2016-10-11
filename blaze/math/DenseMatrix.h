@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/DMatDeclHermExpr.h>
 #include <blaze/math/expressions/DMatDeclLowExpr.h>
 #include <blaze/math/expressions/DMatDeclSymExpr.h>
+#include <blaze/math/expressions/DMatDeclUppExpr.h>
 #include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
 #include <blaze/math/expressions/DMatDMatMultExpr.h>
