@@ -50,6 +50,7 @@
 #include <blaze/math/dense/RQ.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatDeclHermExpr.h>
+#include <blaze/math/expressions/DMatDeclLowExpr.h>
 #include <blaze/math/expressions/DMatDeclSymExpr.h>
 #include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
