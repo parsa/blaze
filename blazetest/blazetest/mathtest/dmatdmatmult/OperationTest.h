@@ -178,6 +178,7 @@ class OperationTest
                           void testSerialOperation   ();
                           void testDeclSymOperation  ();
                           void testDeclHermOperation ();
+                          void testDeclLowOperation  ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -367,6 +368,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation();
    testDeclHermOperation();
+   testDeclLowOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3754,6 +3756,30 @@ void OperationTest<MT1,MT2>::testDeclHermOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclHerm(), "declherm" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the lower dense matrix/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the lower matrix multiplication with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the multiplication
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclLowOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclLow(), "decllow" );
    }
 #endif
 }

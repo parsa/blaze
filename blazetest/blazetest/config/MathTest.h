@@ -373,6 +373,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the decllow tests.
+//
+// This compilation switch triggers the decllow tests for all test scenarios. In case the decllow
+// tests are activated, each operation is tested in combination with a decllow operation. The
+// following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   C = decllow( A + B );  // Explicitly declaring the matrix addition as lower
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The decllow tests are not included in the compilation process and not executed
+//   - 1: The decllow tests are included in the compilation process, but not executed
+//   - 2: The decllow tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the subvector tests.
 //
 // This compilation switch triggers the subvector tests for all test scenarios. In case the

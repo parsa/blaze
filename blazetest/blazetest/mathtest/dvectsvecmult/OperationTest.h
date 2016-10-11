@@ -159,6 +159,7 @@ class OperationTest
                           void testSerialOperation   ();
                           void testDeclSymOperation  ();
                           void testDeclHermOperation ();
+                          void testDeclLowOperation  ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -323,6 +324,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation();
    testDeclHermOperation();
+   testDeclLowOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -1808,6 +1810,30 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclHerm(), "declherm" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the lower dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the lower outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testDeclLowOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclLow(), "decllow" );
    }
 #endif
 }
