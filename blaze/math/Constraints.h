@@ -56,6 +56,7 @@
 #include <blaze/math/constraints/DeclHermExpr.h>
 #include <blaze/math/constraints/DeclLowExpr.h>
 #include <blaze/math/constraints/DeclSymExpr.h>
+#include <blaze/math/constraints/DeclUppExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/Diagonal.h>
