@@ -49,6 +49,7 @@
 #include <blaze/math/traits/DeclHermExprTrait.h>
 #include <blaze/math/traits/DeclLowExprTrait.h>
 #include <blaze/math/traits/DeclSymExprTrait.h>
+#include <blaze/math/traits/DeclUppExprTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
