@@ -176,6 +176,7 @@ class OperationTest
                           void testInvOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
+                          void testDeclSymOperation  ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -363,6 +364,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testInvOperation();
    testEvalOperation();
    testSerialOperation();
+   testDeclSymOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3702,6 +3704,30 @@ void OperationTest<MT1,MT2>::testSerialOperation()
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
       testCustomOperation( blaze::Serial(), "serial" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the symmetric dense matrix/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the symmetric matrix multiplication with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the multiplication
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclSymOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclSym(), "declsym" );
    }
 #endif
 }

@@ -329,6 +329,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the declsym tests.
+//
+// This compilation switch triggers the declsym tests for all test scenarios. In case the declsym
+// tests are activated, each operation is tested in combination with a declsym operation. The
+// following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   C = declsym( A + B );  // Explicitly declaring the matrix addition as symmetric
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The declsym tests are not included in the compilation process and not executed
+//   - 1: The declsym tests are included in the compilation process, but not executed
+//   - 2: The declsym tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the subvector tests.
 //
 // This compilation switch triggers the subvector tests for all test scenarios. In case the
