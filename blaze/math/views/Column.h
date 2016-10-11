@@ -55,8 +55,6 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDeclExpr.h>
-#include <blaze/math/typetraits/IsDeclHermExpr.h>
-#include <blaze/math/typetraits/IsDeclSymExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -443,44 +441,19 @@ inline const EnableIf_< IsMatSerialExpr<MT>, ColumnExprTrait_<MT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix declsym operation.
+/*!\brief Creating a view on a specific column of the given matrix declaration operation.
 // \ingroup views
 //
-// \param matrix The constant matrix declsym operation.
+// \param matrix The constant matrix declaration operation.
 // \param index The index of the column.
-// \return View on the specified column of the declsym operation.
+// \return View on the specified column of the declaration operation.
 //
 // This function returns an expression representing the specified column of the given matrix
-// declsym operation.
+// declaration operation.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const EnableIf_< IsDeclSymExpr<MT>, ColumnExprTrait_<MT> >
-   column( const Matrix<MT,SO>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).operand(), index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix declherm operation.
-// \ingroup views
-//
-// \param matrix The constant matrix declherm operation.
-// \param index The index of the column.
-// \return View on the specified column of the declherm operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// declherm operation.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsDeclHermExpr<MT>, ColumnExprTrait_<MT> >
+inline const EnableIf_< IsDeclExpr<MT>, ColumnExprTrait_<MT> >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
