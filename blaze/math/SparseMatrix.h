@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DVecTSVecMultExpr.h>
 #include <blaze/math/expressions/SMatDeclHermExpr.h>
+#include <blaze/math/expressions/SMatDeclLowExpr.h>
 #include <blaze/math/expressions/SMatDeclSymExpr.h>
 #include <blaze/math/expressions/SMatDVecMultExpr.h>
 #include <blaze/math/expressions/SMatEvalExpr.h>
