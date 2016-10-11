@@ -91,6 +91,7 @@
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDeclExpr.h>
 #include <blaze/math/typetraits/IsDeclHermExpr.h>
+#include <blaze/math/typetraits/IsDeclLowExpr.h>
 #include <blaze/math/typetraits/IsDeclSymExpr.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
