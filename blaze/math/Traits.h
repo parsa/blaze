@@ -207,6 +207,7 @@
 #include <blaze/math/traits/TSMatDeclHermExprTrait.h>
 #include <blaze/math/traits/TSMatDeclLowExprTrait.h>
 #include <blaze/math/traits/TSMatDeclSymExprTrait.h>
+#include <blaze/math/traits/TSMatDeclUppExprTrait.h>
 #include <blaze/math/traits/TSMatDMatAddExprTrait.h>
 #include <blaze/math/traits/TSMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatDMatSubExprTrait.h>
