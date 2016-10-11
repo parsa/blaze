@@ -178,6 +178,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testDeclSymOperation  ();
+                          void testDeclHermOperation ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -366,6 +367,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testDeclSymOperation();
+   testDeclHermOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3730,6 +3732,30 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclSym(), "declsym" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the Hermitian dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the Hermitian matrix subtraction with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the subtraction or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclHermOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclHerm(), "declherm" );
    }
 #endif
 }

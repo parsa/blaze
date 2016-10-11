@@ -158,6 +158,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testDeclSymOperation  ();
+                          void testDeclHermOperation ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -321,6 +322,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testDeclSymOperation();
+   testDeclHermOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -1782,6 +1784,30 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclSym(), "declsym" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the Hermitian sparse vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the Hermitian outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testDeclHermOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclHerm(), "declherm" );
    }
 #endif
 }
