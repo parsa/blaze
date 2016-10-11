@@ -62,6 +62,8 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDeclExpr.h>
+#include <blaze/math/typetraits/IsDeclSymExpr.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
@@ -350,7 +352,8 @@ inline SubmatrixExprTrait_<MT,unaligned>
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<MT,AF> >
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                 , SubmatrixExprTrait_<MT,AF> >
    submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -435,7 +438,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<const MT,AF> >
+inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                       , SubmatrixExprTrait_<const MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -467,7 +471,8 @@ inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExpr
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, SubmatrixExprTrait_<MT,AF> >
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                     , SubmatrixExprTrait_<MT,AF> >
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -852,6 +857,35 @@ inline const EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    BLAZE_FUNCTION_TRACE;
 
    return serial( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix declsym operation.
+// \ingroup views
+//
+// \param matrix The constant matrix declsym operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the declsym operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// declsym operation.
+*/
+template< bool AF      // Alignment flag
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const EnableIf_< IsDeclSymExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return submatrix<AF>( (~matrix).operand(), row, column, m, n );
 }
 /*! \endcond */
 //*************************************************************************************************
