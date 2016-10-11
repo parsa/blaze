@@ -54,6 +54,8 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDeclExpr.h>
+#include <blaze/math/typetraits/IsDeclSymExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -122,7 +124,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTrait_<MT> >
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                 , ColumnExprTrait_<MT> >
    column( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -166,7 +169,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTrait_<MT
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTrait_<const MT> >
+inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                       , ColumnExprTrait_<const MT> >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -192,7 +196,8 @@ inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTra
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT> >, ColumnExprTrait_<MT> >
+inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                 , ColumnExprTrait_<MT> >
    column( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
@@ -430,6 +435,31 @@ inline const EnableIf_< IsMatSerialExpr<MT>, ColumnExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return serial( column( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix declsym operation.
+// \ingroup views
+//
+// \param matrix The constant matrix declsym operation.
+// \param index The index of the column.
+// \return View on the specified column of the declsym operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// declsym operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const EnableIf_< IsDeclSymExpr<MT>, ColumnExprTrait_<MT> >
+   column( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column( (~matrix).operand(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
