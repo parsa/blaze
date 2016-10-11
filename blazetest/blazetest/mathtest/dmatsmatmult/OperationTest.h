@@ -179,6 +179,7 @@ class OperationTest
                           void testDeclSymOperation  ();
                           void testDeclHermOperation ();
                           void testDeclLowOperation  ();
+                          void testDeclUppOperation  ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -369,6 +370,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclSymOperation();
    testDeclHermOperation();
    testDeclLowOperation();
+   testDeclUppOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3780,6 +3782,30 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclLow(), "decllow" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the upper dense matrix/sparse matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the upper matrix multiplication with plain assignment, addition
+// assignment, and subtraction assignment. In case any error resulting from the multiplication
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclUppOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclUpp(), "declupp" );
    }
 #endif
 }

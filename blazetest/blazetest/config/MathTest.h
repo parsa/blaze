@@ -395,6 +395,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the declupp tests.
+//
+// This compilation switch triggers the declupp tests for all test scenarios. In case the declupp
+// tests are activated, each operation is tested in combination with a declupp operation. The
+// following example demonstrates this by means of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   C = declupp( A + B );  // Explicitly declaring the matrix addition as upper
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The declupp tests are not included in the compilation process and not executed
+//   - 1: The declupp tests are included in the compilation process, but not executed
+//   - 2: The declupp tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the subvector tests.
 //
 // This compilation switch triggers the subvector tests for all test scenarios. In case the
