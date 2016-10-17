@@ -82,7 +82,7 @@ struct DMatTDMatMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
                       , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                 , DMatTDMatMultExpr<MT1,MT2>
+                 , DMatTDMatMultExpr<MT1,MT2,false>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
