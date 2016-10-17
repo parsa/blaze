@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/SMatTransposer.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatTransExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -83,6 +84,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -845,6 +847,32 @@ inline typename SMatTransExpr<MT,SO>::Operand trans( const SMatTransExpr<MT,SO>&
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given sparse matrix-scalar multiplication.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a sparse
+// matrix-scalar multiplication. It restructures the expression \f$ A=trans(B*s1) \f$ to the
+// expression \f$ A=trans(B)*s1 \f$.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename ST  // Type of the right-hand side scalar value
+        , bool SO >    // Storage order
+inline const MultExprTrait_< TransExprTrait_<MT>, ST >
+   trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( sm.leftOperand() ) * sm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1056,6 +1084,38 @@ struct TSMatTransExprTrait< SMatTransExpr<MT,true> >
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
                    , Operand_< SMatTransExpr<MT,true> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct SMatTransExprTrait< SMatScalarMultExpr<MT,ST,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< TransExprTrait_<MT>, ST >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct TSMatTransExprTrait< SMatScalarMultExpr<MT,ST,true> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< TransExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
