@@ -52,8 +52,12 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DeclSymExprTrait.h>
+#include <blaze/math/traits/DMatDeclSymExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TDMatDeclSymExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1045,6 +1049,40 @@ inline EnableIf_< IsSymmetric<MT>, const MT& >
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-symmetric dense matrix-scalar multiplication expression as symmetric.
+// \ingroup dense_matrix
+//
+// \param dm The input dense matrix-scalar multiplication expression.
+// \return The redeclared expression.
+//
+// This function implements the application of the declsym() operation on a dense matrix-scalar
+// multiplication. It restructures the expression \f$ A=declsym(B*s1) \f$ to the expression
+// \f$ A=declsym(B)*s1 \f$.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar value
+        , bool SO >    // Storage order
+inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclSymExprTrait_<MT>, ST > >
+   declsym( const DMatScalarMultExpr<MT,ST,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return declsym( dm.leftOperand() ) * dm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ROWS SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1244,6 +1282,38 @@ struct IsStrictlyUpper< DMatDeclSymExpr<MT,SO> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct DMatDeclSymExprTrait< DMatScalarMultExpr<MT,ST,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< DeclSymExprTrait_<MT>, ST >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct TDMatDeclSymExprTrait< DMatScalarMultExpr<MT,ST,true> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< DeclSymExprTrait_<MT>, ST >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
