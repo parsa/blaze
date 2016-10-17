@@ -54,6 +54,7 @@
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatTransExprTrait.h>
+#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatTransExprTrait.h>
@@ -87,6 +88,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -997,6 +999,32 @@ inline typename DMatTransExpr<MT,SO>::Operand trans( const DMatTransExpr<MT,SO>&
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given dense matrix-scalar multiplication.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a dense
+// matrix-scalar multiplication. It restructures the expression \f$ A=trans(B*s1) \f$ to the
+// expression \f$ A=trans(B)*s1 \f$.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar value
+        , bool SO >    // Storage order
+inline const MultExprTrait_< TransExprTrait_<MT>, ST >
+   trans( const DMatScalarMultExpr<MT,ST,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( dm.leftOperand() ) * dm.rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1244,6 +1272,38 @@ struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
                    , Operand_< DMatTransExpr<MT,true> >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct DMatTransExprTrait< DMatScalarMultExpr<MT,ST,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< TransExprTrait_<MT>, ST >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST >
+struct TDMatTransExprTrait< DMatScalarMultExpr<MT,ST,true> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
+                   , MultExprTrait_< TransExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
