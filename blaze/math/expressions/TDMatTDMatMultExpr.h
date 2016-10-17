@@ -65,6 +65,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TDMatDeclSymExprTrait.h>
 #include <blaze/math/traits/TDMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
@@ -144,9 +145,10 @@ namespace blaze {
 // The TDMatTDMatMultExpr class represents the compile time expression for multiplications between
 // two column-major dense matrices.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true >
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SF >     // Symmetry flag
+class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, true >
                          , private MatMatMultExpr
                          , private Computation
 {
@@ -208,6 +210,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+                            !SF &&
                             HasMutableDataAccess_<T1> &&
                             HasConstDataAccess_<T2> &&
                             HasConstDataAccess_<T3> &&
@@ -243,14 +246,14 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 
  public:
    //**Type definitions****************************************************************************
-   typedef TDMatTDMatMultExpr<MT1,MT2>  This;           //!< Type of this TDMatTDMatMultExpr instance.
-   typedef MultTrait_<RT1,RT2>          ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>      SIMDType;       //!< Resulting SIMD element type.
-   typedef const ElementType            ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType             CompositeType;  //!< Data type for composite expression templates.
+   typedef TDMatTDMatMultExpr<MT1,MT2,SF>  This;           //!< Type of this TDMatTDMatMultExpr instance.
+   typedef MultTrait_<RT1,RT2>             ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>       OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>      TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>        ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>         SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType               ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType                CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
@@ -1313,7 +1316,10 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      mmm( C, A, B, ElementType(1), ElementType(0) );
+      if( SF )
+         smmm( C, A, B, ElementType(1) );
+      else
+         mmm( C, A, B, ElementType(1), ElementType(0) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3736,22 +3742,23 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 */
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
+        , bool SF        // Symmetry flag
         , typename ST >  // Type of the right-hand side scalar value
-class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
-   : public DenseMatrix< DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >, true >
+class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
+   : public DenseMatrix< DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >, true >
    , private MatScalarMultExpr
    , private Computation
 {
  private:
    //**Type definitions****************************************************************************
-   typedef TDMatTDMatMultExpr<MT1,MT2>  MMM;  //!< Type of the dense matrix multiplication expression.
-   typedef ResultType_<MMM>             RES;  //!< Result type of the dense matrix multiplication expression.
-   typedef ResultType_<MT1>             RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<MT2>             RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<RT1>            ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef ElementType_<RT2>            ET2;  //!< Element type of the right-hand side dense matrix expression.
-   typedef CompositeType_<MT1>          CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef CompositeType_<MT2>          CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   typedef TDMatTDMatMultExpr<MT1,MT2,SF>  MMM;  //!< Type of the dense matrix multiplication expression.
+   typedef ResultType_<MMM>                RES;  //!< Result type of the dense matrix multiplication expression.
+   typedef ResultType_<MT1>                RT1;  //!< Result type of the left-hand side dense matrix expression.
+   typedef ResultType_<MT2>                RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef ElementType_<RT1>               ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef ElementType_<RT2>               ET2;  //!< Element type of the right-hand side dense matrix expression.
+   typedef CompositeType_<MT1>             CT1;  //!< Composite type of the left-hand side dense matrix expression.
+   typedef CompositeType_<MT2>             CT2;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -3797,6 +3804,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+                            !SF &&
                             HasMutableDataAccess_<T1> &&
                             HasConstDataAccess_<T2> &&
                             HasConstDataAccess_<T3> &&
@@ -3841,7 +3849,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    typedef const ResultType                 CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef const TDMatTDMatMultExpr<MT1,MT2>  LeftOperand;
+   typedef const TDMatTDMatMultExpr<MT1,MT2,SF>  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -4885,7 +4893,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      mmm( C, A, B, scalar, ST2(0) );
+      if( SF )
+         smmm( C, A, B, scalar );
+      else
+         mmm( C, A, B, scalar, ST2(0) );
    }
    //**********************************************************************************************
 
@@ -7188,7 +7199,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline const TDMatTDMatMultExpr<T1,T2>
+inline const TDMatTDMatMultExpr<T1,T2,false>
    operator*( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -7197,7 +7208,46 @@ inline const TDMatTDMatMultExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return TDMatTDMatMultExpr<T1,T2>( ~lhs, ~rhs );
+   return TDMatTDMatMultExpr<T1,T2,false>( ~lhs, ~rhs );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Declares the given non-symmetric dense matrix multiplication expression as symmetric.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix multiplication expression.
+//
+// The \a declsym function declares the given non-symmetric dense matrix multiplication expression
+// \a dm as symmetric. The function returns an expression representing the operation.\n
+// The following example demonstrates the use of the \a declsym function:
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> A, B, C;
+   // ... Resizing and initialization
+   C = declsym( A * B );
+   \endcode
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline const TDMatTDMatMultExpr<MT1,MT2,true>
+   declsym( const TDMatTDMatMultExpr<MT1,MT2,false>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return TDMatTDMatMultExpr<MT1,MT2,true>( dm.leftOperand(), dm.rightOperand() );
 }
 //*************************************************************************************************
 
@@ -7212,8 +7262,8 @@ inline const TDMatTDMatMultExpr<T1,T2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct Rows< TDMatTDMatMultExpr<MT1,MT2> > : public Rows<MT1>
+template< typename MT1, typename MT2, bool SF >
+struct Rows< TDMatTDMatMultExpr<MT1,MT2,SF> > : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7229,8 +7279,8 @@ struct Rows< TDMatTDMatMultExpr<MT1,MT2> > : public Rows<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct Columns< TDMatTDMatMultExpr<MT1,MT2> > : public Columns<MT2>
+template< typename MT1, typename MT2, bool SF >
+struct Columns< TDMatTDMatMultExpr<MT1,MT2,SF> > : public Columns<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7246,8 +7296,8 @@ struct Columns< TDMatTDMatMultExpr<MT1,MT2> > : public Columns<MT2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsAligned< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsAligned< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< And< IsAligned<MT1>, IsAligned<MT2> >::value >
 {};
 /*! \endcond */
@@ -7264,8 +7314,8 @@ struct IsAligned< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsLower< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< And< IsLower<MT1>, IsLower<MT2> >::value >
 {};
 /*! \endcond */
@@ -7282,8 +7332,8 @@ struct IsLower< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniLower< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsUniLower< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< And< IsUniLower<MT1>, IsUniLower<MT2> >::value >
 {};
 /*! \endcond */
@@ -7300,8 +7350,8 @@ struct IsUniLower< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyLower< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsStrictlyLower< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
                             , And< IsStrictlyLower<MT2>, IsLower<MT1> > >::value >
 {};
@@ -7319,8 +7369,8 @@ struct IsStrictlyLower< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsUpper< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< And< IsUpper<MT1>, IsUpper<MT2> >::value >
 {};
 /*! \endcond */
@@ -7337,8 +7387,8 @@ struct IsUpper< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniUpper< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsUniUpper< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< And< IsUniUpper<MT1>, IsUniUpper<MT2> >::value >
 {};
 /*! \endcond */
@@ -7355,8 +7405,8 @@ struct IsUniUpper< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct IsStrictlyUpper< TDMatTDMatMultExpr<MT1,MT2,SF> >
    : public BoolConstant< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
                             , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >::value >
 {};
@@ -7374,8 +7424,8 @@ struct IsStrictlyUpper< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename VT >
-struct TDMatDVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2>, VT >
+template< typename MT1, typename MT2, bool SF, typename VT >
+struct TDMatDVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2,SF>, VT >
 {
  public:
    //**********************************************************************************************
@@ -7392,8 +7442,8 @@ struct TDMatDVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2>, VT >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename VT >
-struct TDMatSVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2>, VT >
+template< typename MT1, typename MT2, bool SF, typename VT >
+struct TDMatSVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2,SF>, VT >
 {
  public:
    //**********************************************************************************************
@@ -7410,8 +7460,8 @@ struct TDMatSVecMultExprTrait< TDMatTDMatMultExpr<MT1,MT2>, VT >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2 >
-struct TDVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2> >
+template< typename VT, typename MT1, typename MT2, bool SF >
+struct TDVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2,SF> >
 {
  public:
    //**********************************************************************************************
@@ -7428,8 +7478,8 @@ struct TDVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2 >
-struct TSVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2> >
+template< typename VT, typename MT1, typename MT2, bool SF >
+struct TSVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2,SF> >
 {
  public:
    //**********************************************************************************************
@@ -7446,8 +7496,25 @@ struct TSVecTDMatMultExprTrait< VT, TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool AF >
-struct SubmatrixExprTrait< TDMatTDMatMultExpr<MT1,MT2>, AF >
+template< typename MT1, typename MT2 >
+struct TDMatDeclSymExprTrait< TDMatTDMatMultExpr<MT1,MT2,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+                   , TDMatTDMatMultExpr<MT1,MT2,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2, bool SF, bool AF >
+struct SubmatrixExprTrait< TDMatTDMatMultExpr<MT1,MT2,SF>, AF >
 {
  public:
    //**********************************************************************************************
@@ -7461,8 +7528,8 @@ struct SubmatrixExprTrait< TDMatTDMatMultExpr<MT1,MT2>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct RowExprTrait< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct RowExprTrait< TDMatTDMatMultExpr<MT1,MT2,SF> >
 {
  public:
    //**********************************************************************************************
@@ -7475,8 +7542,8 @@ struct RowExprTrait< TDMatTDMatMultExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct ColumnExprTrait< TDMatTDMatMultExpr<MT1,MT2> >
+template< typename MT1, typename MT2, bool SF >
+struct ColumnExprTrait< TDMatTDMatMultExpr<MT1,MT2,SF> >
 {
  public:
    //**********************************************************************************************
