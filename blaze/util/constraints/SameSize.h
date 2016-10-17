@@ -58,7 +58,7 @@ namespace blaze {
 // In case the types \a T1 and \a T2 don't have the same size, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_SAME_SIZE(T1,T2) \
-   static_assert( ::blaze::HaveSameSize_<T1,T2>, "Non-matching sizes detected" )
+   static_assert( ::blaze::HaveSameSize<T1,T2>::value, "Non-matching sizes detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the types \a T1 and \a T2 have the same size, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_SAME_SIZE(T1,T2) \
-   static_assert( !::blaze::HaveSameSize_<T1,T2>, "Matching sizes detected" )
+   static_assert( !::blaze::HaveSameSize<T1,T2>::value, "Matching sizes detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -147,24 +147,6 @@ struct IsCharacter<const volatile T> : public IsCharacter<T>::Type
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsCharacter type trait.
-// \ingroup type_traits
-//
-// The IsCharacter_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsCharacter class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsCharacter<T>::value;
-   constexpr bool value2 = IsCharacter_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsCharacter_ = IsCharacter<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

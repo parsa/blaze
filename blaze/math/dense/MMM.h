@@ -171,7 +171,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -460,7 +460,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -668,7 +668,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint_<ET3> )
+         if( IsFloatingPoint<ET3>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -941,7 +941,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -1186,7 +1186,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          size_t i( jj );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -1480,7 +1480,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          size_t i( jj );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -1709,7 +1709,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          size_t j( ii );
 
-         if( IsFloatingPoint_<ET3> )
+         if( IsFloatingPoint<ET3>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -1986,7 +1986,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          size_t j( ii );
 
-         if( IsFloatingPoint_<ET1> )
+         if( IsFloatingPoint<ET1>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {

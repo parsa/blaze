@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not a const-qualified type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CONST(T) \
-   static_assert( ::blaze::IsConst_<T>, "Non-const-qualified type detected" )
+   static_assert( ::blaze::IsConst<T>::value, "Non-const-qualified type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is a const-qualified type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CONST(T) \
-   static_assert( !::blaze::IsConst_<T>, "Const-qualified type detected" )
+   static_assert( !::blaze::IsConst<T>::value, "Const-qualified type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

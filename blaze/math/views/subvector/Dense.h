@@ -1246,7 +1246,7 @@ inline Subvector<VT,unaligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1298,7 +1298,7 @@ inline Subvector<VT,unaligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1348,7 +1348,7 @@ inline Subvector<VT,unaligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1399,7 +1399,7 @@ inline Subvector<VT,unaligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1493,7 +1493,7 @@ inline Subvector<VT,unaligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3294,7 +3294,7 @@ inline Subvector<VT,aligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -3346,7 +3346,7 @@ inline Subvector<VT,aligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3396,7 +3396,7 @@ inline Subvector<VT,aligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3447,7 +3447,7 @@ inline Subvector<VT,aligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3541,7 +3541,7 @@ inline Subvector<VT,aligned,TF,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }

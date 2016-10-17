@@ -79,24 +79,6 @@ struct IsEmpty : public BoolConstant< std::is_empty<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsEmpty type trait.
-// \ingroup type_traits
-//
-// The IsEmpty_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsEmpty class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsEmpty<T>::value;
-   constexpr bool value2 = IsEmpty_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsEmpty_ = IsEmpty<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

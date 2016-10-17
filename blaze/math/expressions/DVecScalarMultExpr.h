@@ -439,7 +439,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
-                               IsNumeric_<ET> &&
+                               IsNumeric<ET>::value &&
                                ( HasSIMDMult_<ET,ST> ||
                                  HasSIMDMult_<UnderlyingElement_<ET>,ST> ) };
 

@@ -78,24 +78,6 @@ struct IsClass : public BoolConstant< std::is_class<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsClass type trait.
-// \ingroup type_traits
-//
-// The IsClass_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsClass class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsClass<T>::value;
-   constexpr bool value2 = IsClass_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsClass_ = IsClass<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

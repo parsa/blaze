@@ -219,8 +219,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, t
                             IsBLASCompatible_< ElementType_<T1> > &&
                             IsBLASCompatible_< ElementType_<T2> > &&
                             IsBLASCompatible_< ElementType_<T3> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T3> > };
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -861,7 +861,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, t
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
@@ -1821,7 +1821,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, t
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
@@ -2788,7 +2788,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, t
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
@@ -3813,9 +3813,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
                             IsBLASCompatible_< ElementType_<T1> > &&
                             IsBLASCompatible_< ElementType_<T2> > &&
                             IsBLASCompatible_< ElementType_<T3> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T3> > &&
-                            !( IsBuiltin_< ElementType_<T1> > && IsComplex_<T4> ) };
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 
@@ -4438,7 +4438,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
@@ -5366,7 +5366,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
@@ -6263,7 +6263,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
 
       size_t i( 0UL );
 
-      if( IsIntegral_<ElementType> )
+      if( IsIntegral<ElementType>::value )
       {
          for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )

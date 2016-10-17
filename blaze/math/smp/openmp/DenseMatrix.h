@@ -345,7 +345,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
-   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame_<ET1,ET2> );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 
@@ -580,7 +580,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
-   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame_<ET1,ET2> );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSame<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 

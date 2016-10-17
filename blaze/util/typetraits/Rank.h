@@ -93,24 +93,6 @@ struct Rank<T[N]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Rank type trait.
-// \ingroup type_traits
-//
-// The Rank_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the Rank class template. For instance, given the type \a T the following two statements are
-// identical:
-
-   \code
-   constexpr size_t value1 = Rank<T>::value;
-   constexpr size_t value2 = Rank_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Rank_ = Rank<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

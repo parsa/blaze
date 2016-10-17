@@ -83,7 +83,7 @@ BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 
-   return IsBuiltin_<Type>;
+   return IsBuiltin<Type>::value;
 }
 //*************************************************************************************************
 
@@ -97,9 +97,9 @@ BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 // \return \a true in case the imaginary part is equal to 0, \a false if not.
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin_<Type> )
+BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin<Type>::value )
 {
-   return IsBuiltin_<Type> && isZero( v.imag() );
+   return IsBuiltin<Type>::value && isZero( v.imag() );
 }
 /*! \endcond */
 //*************************************************************************************************

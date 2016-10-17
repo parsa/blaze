@@ -74,24 +74,6 @@ struct IsConstructible
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsConstructible type trait.
-// \ingroup type_traits
-//
-// The IsConstructible_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsConstructible class template. For instance, given the types \a T1, \a T2
-// and \a T3 the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsConstructible<T1,T2,T3>::value;
-   constexpr bool value2 = IsConstructible_<T1,T2,T3>;
-   \endcode
-*/
-template< typename T, typename... Args >
-constexpr bool IsConstructible_ = IsConstructible<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -119,24 +101,6 @@ template< typename T, typename... Args >
 struct IsNothrowConstructible
    : public BoolConstant< std::is_nothrow_constructible<T,Args...>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowConstructible type trait.
-// \ingroup type_traits
-//
-// The IsNothrowConstructible_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsNothrowConstructible class template. For instance, given the types
-// \a T1, \a T2 and \a T3 the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowConstructible<T1,T2,T3>::value;
-   constexpr bool value2 = IsNothrowConstructible_<T1,T2,T3>;
-   \endcode
-*/
-template< typename T, typename... Args >
-constexpr bool IsNothrowConstructible_ = IsNothrowConstructible<T>::value;
 //*************************************************************************************************
 
 
@@ -170,24 +134,6 @@ struct IsDefaultConstructible
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsDefaultConstructible type trait.
-// \ingroup type_traits
-//
-// The IsDefaultConstructible_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsDefaultConstructible class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsDefaultConstructible<T>::value;
-   constexpr bool value2 = IsDefaultConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsDefaultConstructible_ = IsDefaultConstructible<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -215,24 +161,6 @@ template< typename T >
 struct IsNothrowDefaultConstructible
    : public BoolConstant< std::is_nothrow_default_constructible<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowDefaultConstructible type trait.
-// \ingroup type_traits
-//
-// The IsNothrowDefaultConstructible_ alias declaration provides a convenient shortcut to access
-// the nested \a value of the IsNothrowDefaultConstructible class template. For instance, given
-// the type \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowDefaultConstructible<T>::value;
-   constexpr bool value2 = IsNothrowDefaultConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsNothrowDefaultConstructible_ = IsNothrowDefaultConstructible<T>::value;
 //*************************************************************************************************
 
 
@@ -266,24 +194,6 @@ struct IsCopyConstructible
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsCopyConstructible type trait.
-// \ingroup type_traits
-//
-// The IsCopyConstructible_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsCopyConstructible class template. For instance, given the type \a T the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsCopyConstructible<T>::value;
-   constexpr bool value2 = IsCopyConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsCopyConstructible_ = IsCopyConstructible<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -311,24 +221,6 @@ template< typename T >
 struct IsNothrowCopyConstructible
    : public BoolConstant< std::is_copy_constructible<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowCopyConstructible type trait.
-// \ingroup type_traits
-//
-// The IsNothrowCopyConstructible_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsNothrowCopyConstructible class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowCopyConstructible<T>::value;
-   constexpr bool value2 = IsNothrowCopyConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsNothrowCopyConstructible_ = IsNothrowCopyConstructible<T>::value;
 //*************************************************************************************************
 
 
@@ -362,24 +254,6 @@ struct IsMoveConstructible
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsMoveConstructible type trait.
-// \ingroup type_traits
-//
-// The IsMoveConstructible_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsMoveConstructible class template. For instance, given the type \a T the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsMoveConstructible<T>::value;
-   constexpr bool value2 = IsMoveConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsMoveConstructible_ = IsMoveConstructible<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -407,24 +281,6 @@ template< typename T >
 struct IsNothrowMoveConstructible
    : public BoolConstant< std::is_nothrow_move_constructible<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowMoveConstructible type trait.
-// \ingroup type_traits
-//
-// The IsNothrowMoveConstructible_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsNothrowMoveConstructible class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowMoveConstructible<T>::value;
-   constexpr bool value2 = IsNothrowMoveConstructible_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsNothrowMoveConstructible_ = IsNothrowMoveConstructible<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

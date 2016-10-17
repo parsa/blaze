@@ -76,24 +76,6 @@ struct IsIntegral : public BoolConstant< std::is_integral<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsIntegral type trait.
-// \ingroup type_traits
-//
-// The IsIntegral_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsIntegral class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsIntegral<T>::value;
-   constexpr bool value2 = IsIntegral_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsIntegral_ = IsIntegral<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

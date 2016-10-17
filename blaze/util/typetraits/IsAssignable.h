@@ -74,24 +74,6 @@ struct IsAssignable
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsAssignable type trait.
-// \ingroup type_traits
-//
-// The IsAssignable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsAssignable class template. For instance, given the types \a T and \a U
-// the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsAssignable<T,U>::value;
-   constexpr bool value2 = IsAssignable_<T,U>;
-   \endcode
-*/
-template< typename T, typename U >
-constexpr bool IsAssignable_ = IsAssignable<T,U>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -123,24 +105,6 @@ struct IsNothrowAssignable
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowAssignable type trait.
-// \ingroup type_traits
-//
-// The IsNothrowAssignable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsNothrowAssignable class template. For instance, given the types \a T and \a U
-// the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowAssignable<T,U>::value;
-   constexpr bool value2 = IsNothrowAssignable_<T,U>;
-   \endcode
-*/
-template< typename T, typename U >
-constexpr bool IsNothrowAssignable_ = IsNothrowAssignable<T,U>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -168,24 +132,6 @@ template< typename T >
 struct IsCopyAssignable
    : public BoolConstant< std::is_copy_assignable<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsCopyAssignable type trait.
-// \ingroup type_traits
-//
-// The IsCopyAssignable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsCopyAssignable class template. For instance, given the type \a T the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsCopyAssignable<T>::value;
-   constexpr bool value2 = IsCopyAssignable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsCopyAssignable_ = IsCopyAssignable<T>::value;
 //*************************************************************************************************
 
 
@@ -220,24 +166,6 @@ struct IsNothrowCopyAssignable
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowCopyAssignable type trait.
-// \ingroup type_traits
-//
-// The IsNothrowCopyAssignable_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsNothrowCopyAssignable class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowCopyAssignable<T>::value;
-   constexpr bool value2 = IsNothrowCopyAssignable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsNothrowCopyAssignable_ = IsNothrowCopyAssignable<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -265,24 +193,6 @@ template< typename T >
 struct IsMoveAssignable
    : public BoolConstant< std::is_move_assignable<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsMoveAssignable type trait.
-// \ingroup type_traits
-//
-// The IsMoveAssignable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsMoveAssignable class template. For instance, given the type \a T the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsMoveAssignable<T>::value;
-   constexpr bool value2 = IsMoveAssignable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsMoveAssignable_ = IsMoveAssignable<T>::value;
 //*************************************************************************************************
 
 
@@ -314,24 +224,6 @@ template< typename T >
 struct IsNothrowMoveAssignable
    : public BoolConstant< std::is_nothrow_move_assignable<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsNothrowMoveAssignable type trait.
-// \ingroup type_traits
-//
-// The IsNothrowMoveAssignable_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsNothrowMoveAssignable class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsNothrowMoveAssignable<T>::value;
-   constexpr bool value2 = IsNothrowMoveAssignable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsNothrowMoveAssignable_ = IsNothrowMoveAssignable<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -456,7 +456,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_<Type> };
+   enum : bool { simdEnabled = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -2781,7 +2781,7 @@ class CustomVector<Type,AF,padded,TF>
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_<Type> };
+   enum : bool { simdEnabled = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -3080,13 +3080,13 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( IsVectorizable_<Type> && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
    v_.reset( ptr, NoDelete() );
 
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -3133,13 +3133,13 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( IsVectorizable_<Type> && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
    v_.reset( ptr, d );
 
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }

@@ -212,7 +212,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_<Type> };
+   enum : bool { simdEnabled = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -501,9 +501,9 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector()
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( IsNumeric_<Type> ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -524,7 +524,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
@@ -560,7 +560,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> list )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -602,7 +602,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -611,7 +611,7 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric_<Type> ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -644,7 +644,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
@@ -670,7 +670,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
@@ -692,7 +692,7 @@ template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
@@ -724,7 +724,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable_<Type> || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
    if( (~v).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -1648,7 +1648,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool StaticVector<Type,N,TF>::isIntact() const noexcept
 {
-   if( IsNumeric_<Type> ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=N; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;

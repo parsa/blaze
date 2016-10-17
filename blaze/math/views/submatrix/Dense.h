@@ -1394,7 +1394,7 @@ inline Submatrix<MT,unaligned,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4356,7 +4356,7 @@ inline Submatrix<MT,unaligned,true,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -6913,7 +6913,7 @@ inline Submatrix<MT,aligned,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -9461,7 +9461,7 @@ inline Submatrix<MT,aligned,true,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       smpAssign( left, tmp );
    }

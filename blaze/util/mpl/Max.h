@@ -73,25 +73,6 @@ struct Max : public If_< Less<T1,T2>, T2, T1 >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Max class template.
-// \ingroup mpl
-//
-// The Max_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the Max class template. For instance, given the types \a T1 and \a T2 the following two
-// statements are identical:
-
-   \code
-   constexpr bool value1 = Max<T1,T2>::value;
-   constexpr bool value2 = Max_<T1,T2>;
-   \endcode
-*/
-template< typename T1    // Type of the first compile time value
-        , typename T2 >  // Type of the second compile time value
-constexpr auto Max_ = Max<T1,T2>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

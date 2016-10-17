@@ -76,24 +76,6 @@ struct IsReference : public BoolConstant< std::is_reference<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsReference type trait.
-// \ingroup type_traits
-//
-// The IsReference_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsReference class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsReference<T>::value;
-   constexpr bool value2 = IsReference_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsReference_ = IsReference<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

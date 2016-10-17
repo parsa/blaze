@@ -622,7 +622,7 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
       if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          divAssign( ~lhs, rhs.rhs_ );
       }
-      else if( IsSame_<VT,ResultType> || IsSame_< ElementType_<VT>, ElementType_<VT1> > ) {
+      else if( IsSame<VT,ResultType>::value || IsSame< ElementType_<VT>, ElementType_<VT1> >::value ) {
          assign   ( ~lhs, rhs.lhs_ );
          divAssign( ~lhs, rhs.rhs_ );
       }
@@ -835,7 +835,7 @@ class DVecDVecDivExpr : public DenseVector< DVecDVecDivExpr<VT1,VT2,TF>, TF >
       if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpDivAssign( ~lhs, rhs.rhs_ );
       }
-      else if( IsSame_<VT,ResultType> || IsSame_< ElementType_<VT>, ElementType_<VT1> > ) {
+      else if( IsSame<VT,ResultType>::value || IsSame< ElementType_<VT>, ElementType_<VT1> >::value ) {
          smpAssign   ( ~lhs, rhs.lhs_ );
          smpDivAssign( ~lhs, rhs.rhs_ );
       }

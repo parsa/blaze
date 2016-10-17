@@ -81,24 +81,6 @@ struct Any : public BoolConstant< Or< TypeTrait<Ts>... >::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Any type trait.
-// \ingroup type_traits
-//
-// The Any_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the Any class template. For instance, given the types \a T1, \a T2, and \a T3 the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = Any< IsIntegral, T1, T2, T3 >::value;
-   constexpr bool value2 = Any_< IsIntegral, T1, T2, T3 >;
-   \endcode
-*/
-template< template< typename > class TypeTrait, typename... Ts >
-constexpr size_t Any_ = Any<TypeTrait,Ts...>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

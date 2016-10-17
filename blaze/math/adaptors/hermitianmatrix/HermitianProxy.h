@@ -284,7 +284,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const HermitianProxy& 
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( hp.value1_ ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( hp.value1_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -313,7 +313,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const T& value )
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( value ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -342,7 +342,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator+=( const T& value )
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( value ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -371,7 +371,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator-=( const T& value )
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( value ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -400,7 +400,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator*=( const T& value )
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( value ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -429,7 +429,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator/=( const T& value )
 {
    typedef ElementType_<MT>  ET;
 
-   if( IsComplex_<ET> && diagonal_ && !isReal( value ) ) {
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 

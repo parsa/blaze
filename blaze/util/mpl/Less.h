@@ -79,25 +79,6 @@ struct Less : public Bool< ( T1::value < T2::value ) >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Less class template.
-// \ingroup mpl
-//
-// The Less_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the Less class template. For instance, given the types \a T1 and \a T2 the following two
-// statements are identical:
-
-   \code
-   constexpr bool value1 = Less<T1,T2>::value;
-   constexpr bool value2 = Less_<T1,T2>;
-   \endcode
-*/
-template< typename T1    // The type of the left-hand side operand
-        , typename T2 >  // The type of the right-hand side operand
-constexpr bool Less_ = Less<T1,T2>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

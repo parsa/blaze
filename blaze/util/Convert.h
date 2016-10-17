@@ -240,7 +240,7 @@ struct Converter<To*,From*> : private NonCreatable
 template< typename To, typename From >
 inline To* Converter<To*,From*>::convert( From* from )
 {
-   return CastConverter< To*, From*, blaze::IsBaseOf_<To,From> >::convert( from );
+   return CastConverter< To*, From*, blaze::IsBaseOf<To,From>::value >::convert( from );
 }
 /*! \endcond */
 //*************************************************************************************************

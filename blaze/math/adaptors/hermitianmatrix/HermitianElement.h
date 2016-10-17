@@ -236,7 +236,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianElement<MT>& HermitianElement<MT>::operator=( const T& v )
 {
-   if( IsComplex_<ElementType> && pos_->index() == index_ && !isReal( v ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -259,7 +259,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianElement<MT>& HermitianElement<MT>::operator+=( const T& v )
 {
-   if( IsComplex_<ElementType> && pos_->index() == index_ && !isReal( v ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -281,7 +281,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianElement<MT>& HermitianElement<MT>::operator-=( const T& v )
 {
-   if( IsComplex_<ElementType> && pos_->index() == index_ && !isReal( v ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -303,7 +303,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianElement<MT>& HermitianElement<MT>::operator*=( const T& v )
 {
-   if( IsComplex_<ElementType> && pos_->index() == index_ && !isReal( v ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -325,7 +325,7 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline HermitianElement<MT>& HermitianElement<MT>::operator/=( const T& v )
 {
-   if( IsComplex_<ElementType> && pos_->index() == index_ && !isReal( v ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 

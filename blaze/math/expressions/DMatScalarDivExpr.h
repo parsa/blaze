@@ -440,7 +440,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT::simdEnabled &&
-                               IsNumeric_<ET> &&
+                               IsNumeric<ET>::value &&
                                ( HasSIMDDiv_<ET,ST> ||
                                  HasSIMDDiv_<UnderlyingElement_<ET>,ST> ) };
 

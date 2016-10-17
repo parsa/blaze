@@ -149,24 +149,6 @@ struct HasSize<const volatile void,Size> : public BoolConstant< 0 == Size >
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSize type trait.
-// \ingroup type_traits
-//
-// The HasSize_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the HasSize class template. For instance, given the type \a T and the value \a N the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSize<T,N>::value;
-   constexpr bool value2 = HasSize_<T,N>;
-   \endcode
-*/
-template< typename T, size_t Size >
-constexpr size_t HasSize_ = HasSize<T,Size>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -197,24 +179,6 @@ constexpr size_t HasSize_ = HasSize<T,Size>::value;
 template< typename T >
 struct Has1Byte : public HasSize<T,1UL>
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Has1Byte type trait.
-// \ingroup type_traits
-//
-// The Has1Byte_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Has1Byte class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = Has1Byte<T>::value;
-   constexpr bool value2 = Has1Byte_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Has1Byte_ = Has1Byte<T>::value;
 //*************************************************************************************************
 
 
@@ -251,24 +215,6 @@ struct Has2Bytes : public HasSize<T,2UL>
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Has2Bytes type trait.
-// \ingroup type_traits
-//
-// The Has2Bytes_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Has2Bytes class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = Has2Bytes<T>::value;
-   constexpr bool value2 = Has2Bytes_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Has2Bytes_ = Has2Bytes<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -302,24 +248,6 @@ struct Has4Bytes : public HasSize<T,4UL>
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Has4Bytes type trait.
-// \ingroup type_traits
-//
-// The Has4Bytes_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Has4Bytes class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = Has4Bytes<T>::value;
-   constexpr bool value2 = Has4Bytes_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Has4Bytes_ = Has4Bytes<T>::value;
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -350,24 +278,6 @@ constexpr size_t Has4Bytes_ = Has4Bytes<T>::value;
 template< typename T >
 struct Has8Bytes : public HasSize<T,8UL>
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Has8Bytes type trait.
-// \ingroup type_traits
-//
-// The Has8Bytes_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Has8Bytes class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = Has8Bytes<T>::value;
-   constexpr bool value2 = Has8Bytes_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Has8Bytes_ = Has8Bytes<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

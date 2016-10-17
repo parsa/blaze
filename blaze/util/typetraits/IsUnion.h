@@ -79,24 +79,6 @@ struct IsUnion : public BoolConstant< std::is_union<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUnion type trait.
-// \ingroup type_traits
-//
-// The IsUnion_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsUnion class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsUnion<T>::value;
-   constexpr bool value2 = IsUnion_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUnion_ = IsUnion<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

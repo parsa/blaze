@@ -81,24 +81,6 @@ class IsBaseOf : public BoolConstant< std::is_base_of< RemoveCV_<Base>, RemoveCV
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsBaseOf type trait.
-// \ingroup type_traits
-//
-// The IsBaseOf_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsBaseOf class template. For instance, given the types \a T1 and \a T2 the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsBaseOf<T1,T2>::value;
-   constexpr bool value2 = IsBaseOf_<T1,T2>;
-   \endcode
-*/
-template< typename Base, typename Derived >
-constexpr bool IsBaseOf_ = IsBaseOf<Base,Derived>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

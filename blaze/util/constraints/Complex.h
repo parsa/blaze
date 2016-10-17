@@ -60,7 +60,7 @@ namespace blaze {
 // complex data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE(T) \
-   static_assert( ::blaze::IsComplex_<T>, "Non-complex type detected" )
+   static_assert( ::blaze::IsComplex<T>::value, "Non-complex type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_TYPE(T) \
-   static_assert( !::blaze::IsComplex_<T>, "Complex type detected" )
+   static_assert( !::blaze::IsComplex<T>::value, "Complex type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

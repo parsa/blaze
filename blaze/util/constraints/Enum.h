@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not an enumeration type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ENUM_TYPE(T) \
-   static_assert( ::blaze::IsEnum_<T>, "Non-enum type detected" )
+   static_assert( ::blaze::IsEnum<T>::value, "Non-enum type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is an enumeration type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ENUM_TYPE(T) \
-   static_assert( !::blaze::IsEnum_<T>, "Enum type detected" )
+   static_assert( !::blaze::IsEnum<T>::value, "Enum type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

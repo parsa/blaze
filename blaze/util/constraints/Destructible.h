@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DESTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsDestructible_<T>, "Non-destructible type detected" )
+   static_assert( ::blaze::IsDestructible<T>::value, "Non-destructible type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DESTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsDestructible_<T>, "Destructible type detected" )
+   static_assert( !::blaze::IsDestructible<T>::value, "Destructible type detected" )
 //*************************************************************************************************
 
 
@@ -99,7 +99,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NOTHROW_DESTRUCTIBLE_TYPE(T) \
-   static_assert( ::blaze::IsNothrowDestructible_<T>, "Non-noexcept destructible type detected" )
+   static_assert( ::blaze::IsNothrowDestructible<T>::value, "Non-noexcept destructible type detected" )
 //*************************************************************************************************
 
 
@@ -119,7 +119,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NOTHROW_DESTRUCTIBLE_TYPE(T) \
-   static_assert( !::blaze::IsNothrowDestructible_<T>, "Noexcept destructible type detected" )
+   static_assert( !::blaze::IsNothrowDestructible<T>::value, "Noexcept destructible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -210,7 +210,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
        in can be optimized via SIMD operationss. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_<Type> };
+   enum : bool { simdEnabled = IsVectorizable<Type>::value };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -512,7 +512,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
    , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -540,7 +540,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = init;
 
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -610,7 +610,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=n; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -649,7 +649,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[N] )
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
 
-   if( IsVectorizable_<Type> ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=N; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -716,8 +716,8 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   for( size_t i=( IsSparseVector_<VT>   ? 0UL       : size_ );
-               i<( IsVectorizable_<Type> ? capacity_ : size_ ); ++i ) {
+   for( size_t i=( IsSparseVector_<VT>         ? 0UL       : size_ );
+               i<( IsVectorizable<Type>::value ? capacity_ : size_ ); ++i ) {
       v_[i] = Type();
    }
 
@@ -1448,7 +1448,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
          transfer( v_, v_+size_, tmp );
       }
 
-      if( IsVectorizable_<Type> ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
@@ -1458,7 +1458,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
       deallocate( tmp );
       capacity_ = newCapacity;
    }
-   else if( IsVectorizable_<Type> && n < size_ )
+   else if( IsVectorizable<Type>::value && n < size_ )
    {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
@@ -1512,7 +1512,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       // Initializing the new array
       transfer( v_, v_+size_, tmp );
 
-      if( IsVectorizable_<Type> ) {
+      if( IsVectorizable<Type>::value ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
@@ -1571,7 +1571,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const noexcept
 {
-   if( usePadding && IsVectorizable_<Type> )
+   if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minCapacity, SIMDSIZE );
    else return minCapacity;
 }
@@ -1602,7 +1602,7 @@ inline bool DynamicVector<Type,TF>::isIntact() const noexcept
    if( size_ > capacity_ )
       return false;
 
-   if( IsNumeric_<Type> ) {
+   if( IsNumeric<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i ) {
          if( v_[i] != Type() )
             return false;

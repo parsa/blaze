@@ -1099,7 +1099,7 @@ inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin_; element!=end_; ++element )
          element->value_ *= tmp;

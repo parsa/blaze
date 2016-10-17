@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SIGNED_TYPE(T) \
-   static_assert( ::blaze::IsSigned_<T>, "Non-signed type detected" )
+   static_assert( ::blaze::IsSigned<T>::value, "Non-signed type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SIGNED_TYPE(T) \
-   static_assert( !::blaze::IsSigned_<T>, "Signed type detected" )
+   static_assert( !::blaze::IsSigned<T>::value, "Signed type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -117,7 +117,7 @@ BLAZE_ALWAYS_INLINE constexpr EnableIf_< IsBuiltin<T>, T > conj( T a ) noexcept
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE void conjugate( T& a ) noexcept( IsNumeric_<T> )
+BLAZE_ALWAYS_INLINE void conjugate( T& a ) noexcept( IsNumeric<T>::value )
 {
    a = conj( a );
 }
@@ -192,7 +192,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<T> > cswap_backend( T& a, T& b ) noexce
    \endcode
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE void cswap( T& a, T& b ) noexcept( IsNumeric_<T> )
+BLAZE_ALWAYS_INLINE void cswap( T& a, T& b ) noexcept( IsNumeric<T>::value )
 {
    cswap_backend( a, b );
 }

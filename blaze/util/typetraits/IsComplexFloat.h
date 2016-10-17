@@ -117,24 +117,6 @@ struct IsComplexFloat< const volatile complex<float> > : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsComplexFloat type trait.
-// \ingroup type_traits
-//
-// The IsComplexFloat_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsComplexFloat class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsComplexFloat<T>::value;
-   constexpr bool value2 = IsComplexFloat_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsComplexFloat_ = IsComplexFloat<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

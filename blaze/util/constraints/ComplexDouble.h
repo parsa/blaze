@@ -60,7 +60,7 @@ namespace blaze {
 // not of type \a complex<double> a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COMPLEX_DOUBLE_TYPE(T) \
-   static_assert( ::blaze::IsComplexDouble_<T>, "Non-double precision complex type detected" )
+   static_assert( ::blaze::IsComplexDouble<T>::value, "Non-double precision complex type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // type \a complex<double> a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_DOUBLE_TYPE(T) \
-   static_assert( !::blaze::IsComplexDouble_<T>, "Double precision complex type detected" )
+   static_assert( !::blaze::IsComplexDouble<T>::value, "Double precision complex type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

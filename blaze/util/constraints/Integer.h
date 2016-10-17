@@ -59,7 +59,7 @@ namespace blaze {
 // the cv-qualifiers). In case \a T is not of type \c int, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_INTEGER_TYPE(T) \
-   static_assert( ::blaze::IsInteger_<T>, "Non-integer type detected" )
+   static_assert( ::blaze::IsInteger<T>::value, "Non-integer type detected" )
 //*************************************************************************************************
 
 
@@ -80,7 +80,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_INTEGER_TYPE(T) \
-   static_assert( !::blaze::IsInteger_<T>, "Integer type detected" )
+   static_assert( !::blaze::IsInteger<T>::value, "Integer type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

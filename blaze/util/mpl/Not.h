@@ -71,24 +71,6 @@ struct Not : public Bool< !C::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Not class template.
-// \ingroup mpl
-//
-// The Not_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the Not class template. For instance, given the type \a T the following two statements are
-// identical:
-
-   \code
-   constexpr bool value1 = Not<T>::value;
-   constexpr bool value2 = Not_<T>;
-   \endcode
-*/
-template< typename C >  // Condition to be negated
-constexpr bool Not_ = Not<C>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

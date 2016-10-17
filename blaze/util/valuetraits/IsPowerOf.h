@@ -216,24 +216,6 @@ struct IsPowerOf<0,0> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsPowerOf value trait.
-// \ingroup value_traits
-//
-// The IsPowerOf_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsPowerOf class template. For instance, given the compile time constant values \a B and
-// \a N the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsPowerOf<B,N>::value;
-   constexpr bool value2 = IsPowerOf_<B,N>;
-   \endcode
-*/
-template< size_t B, size_t N >
-constexpr bool IsPowerOf_ = IsPowerOf<B,N>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

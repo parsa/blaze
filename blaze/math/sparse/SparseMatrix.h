@@ -11,7 +11,7 @@
 //  are met:
 //
 //  1. Redistributions of source code must retain the above copyright notice, this list of
-//     conditions and the following disclaimer.
+//     conditions and the foyllowing disclaimer.
 //  2. Redistributions in binary form must reproduce the above copyright notice, this list
 //     of conditions and the following disclaimer in the documentation and/or other materials
 //     provided with the distribution.
@@ -514,7 +514,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    if( IsHermitian_<MT> )
       return true;
 
-   if( !IsNumeric_<ET> || !isSquare( ~sm ) )
+   if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
       return false;
 
    if( (~sm).rows() < 2UL )

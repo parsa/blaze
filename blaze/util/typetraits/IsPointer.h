@@ -76,24 +76,6 @@ struct IsPointer : public BoolConstant< std::is_pointer<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsPointer type trait.
-// \ingroup type_traits
-//
-// The IsPointer_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsPointer class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsPointer<T>::value;
-   constexpr bool value2 = IsPointer_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsPointer_ = IsPointer<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

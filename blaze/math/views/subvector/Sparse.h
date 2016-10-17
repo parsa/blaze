@@ -136,7 +136,7 @@ class Subvector<VT,AF,TF,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse vector elements. */
-      enum : bool { returnConst = IsConst_<VectorType> };
+      enum : bool { returnConst = IsConst<VectorType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -968,7 +968,7 @@ inline Subvector<VT,AF,TF,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> || right.canAlias( &vector_ ) ) {
+   if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
       reset();
       assign( left, tmp );
@@ -1258,7 +1258,7 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=last; ++element )
          element->value() *= tmp;

@@ -103,26 +103,6 @@ struct And
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the And class template.
-// \ingroup mpl
-//
-// The And_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the And class template. For instance, given the types \a T1, \a T2 and \a T3 the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = And<T1,T2,T3>::value;
-   constexpr bool value2 = And_<T1,T2,T3>;
-   \endcode
-*/
-template< typename T1       // Type of the first mandatory operand
-        , typename T2       // Type of the second mandatory operand
-        , typename... Ts >  // Types of the optional operands
-constexpr bool And_ = And<T1,T2,Ts...>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

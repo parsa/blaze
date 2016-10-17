@@ -76,24 +76,6 @@ struct IsConst : public BoolConstant< std::is_const<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsConst type trait.
-// \ingroup type_traits
-//
-// The IsConst_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsConst class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsConst<T>::value;
-   constexpr bool value2 = IsConst_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsConst_ = IsConst<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

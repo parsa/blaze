@@ -78,24 +78,6 @@ struct IsUnsigned : public BoolConstant< std::is_unsigned<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUnsigned type trait.
-// \ingroup type_traits
-//
-// The IsUnsigned_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsUnsigned class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsUnsigned<T>::value;
-   constexpr bool value2 = IsUnsigned_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUnsigned_ = IsUnsigned<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

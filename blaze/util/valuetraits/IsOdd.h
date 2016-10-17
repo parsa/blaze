@@ -74,24 +74,6 @@ struct IsOdd : public BoolConstant< N % 2UL != 0UL >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsOdd value trait.
-// \ingroup value_traits
-//
-// The IsOdd_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsOdd class template. For instance, given the compile time constant value \a N the
-// following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsOdd<N>::value;
-   constexpr bool value2 = IsOdd_<N>;
-   \endcode
-*/
-template< size_t N >
-constexpr bool IsOdd_ = IsOdd<N>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

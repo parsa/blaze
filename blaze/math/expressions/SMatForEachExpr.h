@@ -2441,7 +2441,7 @@ struct IsHermitian< SMatForEachExpr<MT,Real,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< SMatForEachExpr<MT,Imag,SO> >
-   : public BoolConstant< IsBuiltin_< ElementType_<MT> > >
+   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
 {};
 
 template< typename MT, bool SO >

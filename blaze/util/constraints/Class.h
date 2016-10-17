@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CLASS_TYPE(T) \
-   static_assert( ::blaze::IsClass_<T>, "Non-class type detected" )
+   static_assert( ::blaze::IsClass<T>::value, "Non-class type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CLASS_TYPE(T) \
-   static_assert( !::blaze::IsClass_<T>, "Class type detected" )
+   static_assert( !::blaze::IsClass<T>::value, "Class type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

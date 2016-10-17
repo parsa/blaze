@@ -122,24 +122,6 @@ struct Extent<T[E],0U>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Extent type trait.
-// \ingroup type_traits
-//
-// The Extent_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Extent class template. For instance, given the type \a T and the index \a N the
-// following two statements are identical:
-
-   \code
-   constexpr unsigned int value1 = Extent< T[2][3][4], N >::value;
-   constexpr unsigned int value2 = Extent_< T[2][3][4], N >;
-   \endcode
-*/
-template< typename T, unsigned int N >
-constexpr unsigned int Extent_ = Extent<T,N>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

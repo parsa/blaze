@@ -274,7 +274,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator=( const HermitianValue& 
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( hv.pos_->value() ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( hv.pos_->value() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -298,7 +298,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -322,7 +322,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator+=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -346,7 +346,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator-=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -370,7 +370,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator*=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -394,7 +394,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator/=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index_ );
 
-   if( IsComplex_<RepresentedType> && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 

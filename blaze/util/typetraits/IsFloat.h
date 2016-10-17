@@ -116,24 +116,6 @@ struct IsFloat<const volatile float> : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsFloat type trait.
-// \ingroup type_traits
-//
-// The IsFloat_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsFloat class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsFloat<T>::value;
-   constexpr bool value2 = IsFloat_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsFloat_ = IsFloat<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

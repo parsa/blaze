@@ -138,7 +138,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateMatrix = ( IsComputation_<MT> && IsSame_<MET,VET> &&
+   enum : bool { evaluateMatrix = ( IsComputation_<MT> && IsSame<MET,VET>::value &&
                                     IsBLASCompatible_<MET> ) || RequiresEvaluation_<MT> };
    //**********************************************************************************************
 
@@ -176,8 +176,8 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             IsBLASCompatible_< ElementType_<T1> > &&
                             IsBLASCompatible_< ElementType_<T2> > &&
                             IsBLASCompatible_< ElementType_<T3> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T3> > };
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2742,7 +2742,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateMatrix = ( IsComputation_<MT> && IsSame_<MET,VET> &&
+   enum : bool { evaluateMatrix = ( IsComputation_<MT> && IsSame<MET,VET>::value &&
                                     IsBLASCompatible_<MET> ) || RequiresEvaluation_<MT> };
    //**********************************************************************************************
 
@@ -2777,9 +2777,9 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             IsBLASCompatible_< ElementType_<T1> > &&
                             IsBLASCompatible_< ElementType_<T2> > &&
                             IsBLASCompatible_< ElementType_<T3> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T3> > &&
-                            !( IsBuiltin_< ElementType_<T1> > && IsComplex_<T4> ) };
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 

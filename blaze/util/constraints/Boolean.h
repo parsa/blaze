@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a boolean, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_BOOLEAN_TYPE(T) \
-   static_assert( ::blaze::IsBoolean_<T>, "Non-boolean type detected" )
+   static_assert( ::blaze::IsBoolean<T>::value, "Non-boolean type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a boolean, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_BOOLEAN_TYPE(T) \
-   static_assert( !::blaze::IsBoolean_<T>, "Boolean type detected" )
+   static_assert( !::blaze::IsBoolean<T>::value, "Boolean type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -1901,7 +1901,7 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::ctranspose()
 {
-   if( !IsBuiltin_<ElementType> )
+   if( !IsBuiltin<ElementType>::value )
       conjugate( matrix_ );
 
    return *this;

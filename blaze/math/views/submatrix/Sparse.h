@@ -153,7 +153,7 @@ class Submatrix<MT,AF,false,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum : bool { returnConst = IsConst_<MatrixType> };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -1077,7 +1077,7 @@ inline Submatrix<MT,AF,false,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -1326,7 +1326,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<rows(); ++i ) {
          const Iterator last( end(i) );
@@ -2605,7 +2605,7 @@ class Submatrix<MT,AF,true,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum : bool { returnConst = IsConst_<MatrixType> };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -3499,7 +3499,7 @@ inline Submatrix<MT,AF,true,false>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -3748,7 +3748,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( size_t i=0UL; i<columns(); ++i ) {
          const Iterator last( end(i) );

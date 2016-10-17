@@ -81,9 +81,9 @@ struct IsVectorizableHelper
 
  public:
    //**********************************************************************************************
-   enum : bool { value = ( bool( BLAZE_SSE_MODE  ) && IsFloat_<T2>   ) ||
-                         ( bool( BLAZE_SSE2_MODE ) && IsNumeric_<T2> ) ||
-                         ( bool( BLAZE_MIC_MODE  ) && IsNumeric_<T2> && sizeof(T2) >= 4UL ) };
+   enum : bool { value = ( bool( BLAZE_SSE_MODE  ) && IsFloat<T2>::value   ) ||
+                         ( bool( BLAZE_SSE2_MODE ) && IsNumeric<T2>::value ) ||
+                         ( bool( BLAZE_MIC_MODE  ) && IsNumeric<T2>::value && sizeof(T2) >= 4UL ) };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -132,24 +132,6 @@ struct IsVectorizableHelper<void>
 template< typename T >
 struct IsVectorizable : public BoolConstant< IsVectorizableHelper< RemoveCV_<T> >::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsVectorizable type trait.
-// \ingroup type_traits
-//
-// The IsVectorizable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsVectorizable class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsVectorizable<T>::value;
-   constexpr bool value2 = IsVectorizable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsVectorizable_ = IsVectorizable<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

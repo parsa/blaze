@@ -976,7 +976,7 @@ struct IsSymmetric< DiagonalMatrix<MT,SO,DF> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsHermitian< DiagonalMatrix<MT,SO,DF> >
-   : public BoolConstant< IsBuiltin_< ElementType_<MT> > >
+   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -76,25 +76,6 @@ struct Modulus
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Modulus class template.
-// \ingroup mpl
-//
-// The Modulus_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Modulus class template. For instance, given the types \a T1 and \a T2 the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = Modulus<T1,T2>::value;
-   constexpr bool value2 = Modulus_<T1,T2>;
-   \endcode
-*/
-template< typename T1    // Type of the first compile time value
-        , typename T2 >  // Type of the second compile time value
-constexpr auto Modulus_ = Modulus<T1,T2>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

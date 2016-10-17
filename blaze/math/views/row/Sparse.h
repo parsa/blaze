@@ -639,7 +639,7 @@ inline Row<MT,true,false,SF>& Row<MT,true,false,SF>::operator=( const DenseVecto
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -695,7 +695,7 @@ inline Row<MT,true,false,SF>& Row<MT,true,false,SF>::operator=( const SparseVect
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -1120,7 +1120,7 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,true,false,SF> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;
@@ -1891,7 +1891,7 @@ class Row<MT,false,false,false>
           is const qualified, \a returnConst will be set to 1 and the value member function will
           return a reference to const. Otherwise \a returnConst will be set to 0 and the value
           member function will offer write access to the sparse matrix elements. */
-      enum : bool { returnConst = IsConst_<MatrixType> };
+      enum : bool { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
       //**Type definitions*************************************************************************
@@ -2968,7 +2968,7 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,false,false,false> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;
@@ -4169,7 +4169,7 @@ inline Row<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4225,7 +4225,7 @@ inline Row<MT,false,false,true>&
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
-   if( IsReference_<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -4648,7 +4648,7 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,false,false,true> >&
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
-   if( IsNumeric_<DT> && IsFloatingPoint_<DT> ) {
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
       const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
       for( Iterator element=begin(); element!=end(); ++element )
          element->value() *= tmp;

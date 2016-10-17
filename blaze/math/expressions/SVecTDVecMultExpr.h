@@ -138,8 +138,8 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
        a numeric data type, \a useAssign will be set to \a true and the multiplication expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be set to
        \a false and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = ( IsComputation_<VT1> || !IsNumeric_<ET1> ||
-                               IsComputation_<VT2> || !IsNumeric_<ET2> ) };
+   enum : bool { useAssign = ( IsComputation_<VT1> || !IsNumeric<ET1>::value ||
+                               IsComputation_<VT2> || !IsNumeric<ET2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -159,8 +159,8 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T3::simdEnabled &&
-                            IsSame_< ElementType_<T1>, ElementType_<T2> > &&
-                            IsSame_< ElementType_<T1>, ElementType_<T3> > &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
                             HasSIMDMult_< ElementType_<T1>, ElementType_<T1> > };
    };
    /*! \endcond */

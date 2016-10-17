@@ -76,24 +76,6 @@ struct IsArray : public BoolConstant< std::is_array<T>::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsArray type trait.
-// \ingroup type_traits
-//
-// The IsArray_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsArray class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsArray<T>::value;
-   constexpr bool value2 = IsArray_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsArray_ = IsArray<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif
