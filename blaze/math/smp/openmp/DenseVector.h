@@ -51,6 +51,7 @@
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/views/Subvector.h>
 #include <blaze/system/SMP.h>
@@ -62,7 +63,6 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -104,11 +104,11 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
    typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
-   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned ( (~lhs).isAligned() );
-   const bool rhsAligned ( (~rhs).isAligned() );
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -320,11 +320,11 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
-   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned ( (~lhs).isAligned() );
-   const bool rhsAligned ( (~rhs).isAligned() );
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -536,11 +536,11 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
-   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned ( (~lhs).isAligned() );
-   const bool rhsAligned ( (~rhs).isAligned() );
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -753,11 +753,11 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
    typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
-   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned ( (~lhs).isAligned() );
-   const bool rhsAligned ( (~rhs).isAligned() );
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -970,11 +970,11 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
    typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
 
-   enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<VT1> >::size };
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
 
-   const bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSame<ET1,ET2>::value );
-   const bool lhsAligned ( (~lhs).isAligned() );
-   const bool rhsAligned ( (~rhs).isAligned() );
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
