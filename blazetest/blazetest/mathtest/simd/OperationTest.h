@@ -62,6 +62,7 @@
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/shims/Exp.h>
 #include <blaze/math/shims/Exp2.h>
+#include <blaze/math/shims/Exp10.h>
 #include <blaze/math/shims/Floor.h>
 #include <blaze/math/shims/InvCbrt.h>
 #include <blaze/math/shims/InvSqrt.h>
@@ -1415,7 +1416,7 @@ void OperationTest<T>::testExp10( blaze::TrueType )
    initialize();
 
    for( size_t i=0UL; i<N; ++i ) {
-      c_[i] = exp10( a_[i] );
+      c_[i] = pow( T(10), a_[i] );
    }
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
