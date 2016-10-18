@@ -68,7 +68,6 @@
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -83,6 +82,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -173,9 +173,9 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
                             !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T3::simdEnabled &&
                             IsRowMajorMatrix<T1>::value &&
-                            AreSIMDCombinable< ElementType_<T1>
-                                             , ElementType_<T2>
-                                             , ElementType_<T3> >::value &&
+                            IsSIMDCombinable< ElementType_<T1>
+                                            , ElementType_<T2>
+                                            , ElementType_<T3> >::value &&
                             HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
                             HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };

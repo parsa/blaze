@@ -67,7 +67,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -75,6 +74,7 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -670,7 +670,7 @@ class Submatrix<MT,unaligned,false,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -680,7 +680,7 @@ class Submatrix<MT,unaligned,false,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -692,7 +692,7 @@ class Submatrix<MT,unaligned,false,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -3655,7 +3655,7 @@ class Submatrix<MT,unaligned,true,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -3665,7 +3665,7 @@ class Submatrix<MT,unaligned,true,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -3677,7 +3677,7 @@ class Submatrix<MT,unaligned,true,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -6193,7 +6193,7 @@ class Submatrix<MT,aligned,false,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -6203,7 +6203,7 @@ class Submatrix<MT,aligned,false,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -6215,7 +6215,7 @@ class Submatrix<MT,aligned,false,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -8765,7 +8765,7 @@ class Submatrix<MT,aligned,true,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -8775,7 +8775,7 @@ class Submatrix<MT,aligned,true,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
@@ -8787,7 +8787,7 @@ class Submatrix<MT,aligned,true,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };

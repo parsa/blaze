@@ -60,13 +60,13 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DerestrictTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/system/CacheSize.h>
@@ -624,7 +624,7 @@ class Subvector<VT,unaligned,TF,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -634,7 +634,7 @@ class Subvector<VT,unaligned,TF,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -645,7 +645,7 @@ class Subvector<VT,unaligned,TF,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -656,7 +656,7 @@ class Subvector<VT,unaligned,TF,true>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -667,7 +667,7 @@ class Subvector<VT,unaligned,TF,true>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -2685,7 +2685,7 @@ class Subvector<VT,aligned,TF,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2695,7 +2695,7 @@ class Subvector<VT,aligned,TF,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -2706,7 +2706,7 @@ class Subvector<VT,aligned,TF,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -2717,7 +2717,7 @@ class Subvector<VT,aligned,TF,true>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************
@@ -2728,7 +2728,7 @@ class Subvector<VT,aligned,TF,true>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
    };
    //**********************************************************************************************

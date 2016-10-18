@@ -62,7 +62,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -71,6 +70,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -236,7 +236,7 @@ class Column<MT,true,true,SF>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -246,7 +246,7 @@ class Column<MT,true,true,SF>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -257,7 +257,7 @@ class Column<MT,true,true,SF>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -268,7 +268,7 @@ class Column<MT,true,true,SF>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -279,7 +279,7 @@ class Column<MT,true,true,SF>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4000,7 +4000,7 @@ class Column<MT,false,true,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4010,7 +4010,7 @@ class Column<MT,false,true,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDAdd< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4021,7 +4021,7 @@ class Column<MT,false,true,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDSub< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4032,7 +4032,7 @@ class Column<MT,false,true,true>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDMult< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************
@@ -4043,7 +4043,7 @@ class Column<MT,false,true,true>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
                             HasSIMDDiv< ElementType, ElementType_<VT> >::value };
    };
    //**********************************************************************************************

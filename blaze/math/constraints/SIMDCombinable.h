@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 
 
 namespace blaze {
@@ -59,7 +59,7 @@ namespace blaze {
 // common SIMD interface), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES(T1,T2) \
-   static_assert( ::blaze::AreSIMDCombinable<T1,T2>::value, "Non-SIMD combinable types detected" )
+   static_assert( ::blaze::IsSIMDCombinable<T1,T2>::value, "Non-SIMD combinable types detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // SIMD interface), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_COMBINABLE_TYPES(T1,T2) \
-   static_assert( !::blaze::AreSIMDCombinable<T1,T2>::value, "SIMD combinable types detected" )
+   static_assert( !::blaze::IsSIMDCombinable<T1,T2>::value, "SIMD combinable types detected" )
 //*************************************************************************************************
 
 } // namespace blaze

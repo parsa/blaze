@@ -68,7 +68,6 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -80,6 +79,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -366,7 +366,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -379,7 +379,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
@@ -394,7 +394,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDSub< Type, ElementType_<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
@@ -3273,7 +3273,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -3284,7 +3284,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDAdd< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
@@ -3297,7 +3297,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            AreSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
                             HasSIMDSub< Type, ElementType_<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };

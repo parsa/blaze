@@ -53,8 +53,8 @@
 #include <blaze/math/smp/ThreadMapping.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/SMP.h>
@@ -110,7 +110,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
    enum : size_t { SIMDSIZE = SIMDTrait< ElementType_<MT1> >::size };
 
-   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && AreSIMDCombinable<ET1,ET2>::value );
+   const bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    const bool lhsAligned ( (~lhs).isAligned() );
    const bool rhsAligned ( (~rhs).isAligned() );
 

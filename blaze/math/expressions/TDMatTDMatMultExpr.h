@@ -70,7 +70,6 @@
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTDMatMultExprTrait.h>
-#include <blaze/math/typetraits/AreSIMDCombinable.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -89,6 +88,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
@@ -235,9 +235,9 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF>, t
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            AreSIMDCombinable< ElementType_<T1>
-                                             , ElementType_<T2>
-                                             , ElementType_<T3> >::value &&
+                            IsSIMDCombinable< ElementType_<T1>
+                                            , ElementType_<T2>
+                                            , ElementType_<T3> >::value &&
                             HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
                             HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
    };
@@ -3828,10 +3828,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            AreSIMDCombinable< ElementType_<T1>
-                                             , ElementType_<T2>
-                                             , ElementType_<T3>
-                                             , T4 >::value &&
+                            IsSIMDCombinable< ElementType_<T1>
+                                            , ElementType_<T2>
+                                            , ElementType_<T3>
+                                            , T4 >::value &&
                             HasSIMDAdd< ElementType_<T2>, ElementType_<T2> >::value &&
                             HasSIMDMult< ElementType_<T3>, ElementType_<T3> >::value };
    };
@@ -3865,7 +3865,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF>, ST, true >
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = !IsDiagonal<MT1>::value &&
                                MT1::simdEnabled && MT2::simdEnabled &&
-                               AreSIMDCombinable<ET1,ET2,ST>::value &&
+                               IsSIMDCombinable<ET1,ET2,ST>::value &&
                                HasSIMDAdd<ET1,ET2>::value &&
                                HasSIMDMult<ET1,ET2>::value };
 
