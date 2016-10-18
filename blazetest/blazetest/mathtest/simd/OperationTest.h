@@ -62,7 +62,6 @@
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/shims/Exp.h>
 #include <blaze/math/shims/Exp2.h>
-#include <blaze/math/shims/Exp10.h>
 #include <blaze/math/shims/Floor.h>
 #include <blaze/math/shims/InvCbrt.h>
 #include <blaze/math/shims/InvSqrt.h>
