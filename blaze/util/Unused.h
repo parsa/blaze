@@ -78,7 +78,7 @@ namespace blaze {
    \endcode
 */
 template< typename... Args >
-inline constexpr void UNUSED_PARAMETER( const Args&... )
+inline void UNUSED_PARAMETER( const Args&... )
 {}
 //*************************************************************************************************
 
