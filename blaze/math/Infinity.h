@@ -43,7 +43,6 @@
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/Limits.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -368,15 +367,12 @@ inline constexpr bool operator!=( const T& lhs, const NegativeInfinity<I>& rhs )
 /*!\brief Equality comparison between two NegativeInfinity objects.
 // \ingroup math
 //
-// \param lhs The left-hand side NegativeInfinity object.
-// \param rhs The right-hand side NegativeInfinity object.
 // \return \a true.
 */
 template< typename I1    // Left-hand side positive infinity type
         , typename I2 >  // Right-hand side positive infinity type
-inline constexpr bool operator==( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs )
+inline constexpr bool operator==( const NegativeInfinity<I1>& /*lhs*/, const NegativeInfinity<I2>& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return true;
 }
 //*************************************************************************************************
@@ -426,15 +422,12 @@ inline constexpr bool operator==( const T& lhs, const NegativeInfinity<I>& rhs )
 /*!\brief Inequality comparison between two NegativeInfinity objects.
 // \ingroup math
 //
-// \param lhs The left-hand side NegativeInfinity object.
-// \param rhs The right-hand side NegativeInfinity object.
 // \return \a false.
 */
 template< typename I1    // Left-hand side positive infinity type
         , typename I2 >  // Right-hand side positive infinity type
-inline constexpr bool operator!=( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs )
+inline constexpr bool operator!=( const NegativeInfinity<I1>& /*lhs*/, const NegativeInfinity<I2>& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return false;
 }
 //*************************************************************************************************
@@ -907,13 +900,10 @@ inline constexpr bool operator!=( const T& lhs, const Infinity& rhs );
 /*!\brief Equality comparison between two Infinity objects.
 // \ingroup math
 //
-// \param lhs The left-hand side Infinity object.
-// \param rhs The right-hand side Infinity object.
 // \return \a true.
 */
-inline constexpr bool operator==( const Infinity& lhs, const Infinity& rhs )
+inline constexpr bool operator==( const Infinity& /*lhs*/, const Infinity& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return true;
 }
 //*************************************************************************************************
@@ -923,14 +913,11 @@ inline constexpr bool operator==( const Infinity& lhs, const Infinity& rhs )
 /*!\brief Equality comparison between an Infinity object and a NegativeInfinity object.
 // \ingroup math
 //
-// \param lhs The left-hand side Infinity object.
-// \param rhs The right-hand side NegativeInfinity object.
 // \return \a false.
 */
 template< typename I >  // Positive infinity type
-inline constexpr bool operator==( const Infinity& lhs, const NegativeInfinity<I>& rhs )
+inline constexpr bool operator==( const Infinity& /*lhs*/, const NegativeInfinity<I>& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return false;
 }
 //*************************************************************************************************
@@ -940,14 +927,11 @@ inline constexpr bool operator==( const Infinity& lhs, const NegativeInfinity<I>
 /*!\brief Equality comparison between a NegativeInfinity object and an Infinity object.
 // \ingroup math
 //
-// \param rhs The left-hand side NegativeInfinity object.
-// \param lhs The right-hand side Infinity object.
 // \return \a false.
 */
 template< typename I >  // Positive infinity type
-inline constexpr bool operator==( const NegativeInfinity<I>& lhs, const Infinity& rhs )
+inline constexpr bool operator==( const NegativeInfinity<I>& /*lhs*/, const Infinity& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return false;
 }
 //*************************************************************************************************
@@ -995,13 +979,10 @@ inline constexpr bool operator==( const T& lhs, const Infinity& rhs )
 /*!\brief Inequality comparison between two Infinity objects.
 // \ingroup math
 //
-// \param lhs The left-hand side Infinity object.
-// \param rhs The right-hand side Infinity object.
 // \return \a false.
 */
-inline constexpr bool operator!=( const Infinity& lhs, const Infinity& rhs )
+inline constexpr bool operator!=( const Infinity& /*lhs*/, const Infinity& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return false;
 }
 //*************************************************************************************************
@@ -1011,14 +992,11 @@ inline constexpr bool operator!=( const Infinity& lhs, const Infinity& rhs )
 /*!\brief Inequality comparison between an Infinity object and a NegativeInfinity object.
 // \ingroup math
 //
-// \param lhs The left-hand side Infinity object.
-// \param rhs The right-hand side NegativeInfinity object.
 // \return \a true.
 */
 template< typename I >  // Positive infinity type
-inline constexpr bool operator!=( const Infinity& lhs, const NegativeInfinity<I>& rhs )
+inline constexpr bool operator!=( const Infinity& /*lhs*/, const NegativeInfinity<I>& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return true;
 }
 //*************************************************************************************************
@@ -1028,14 +1006,11 @@ inline constexpr bool operator!=( const Infinity& lhs, const NegativeInfinity<I>
 /*!\brief Inequality comparison between a NegativeInfinity object and an Infinity object.
 // \ingroup math
 //
-// \param rhs The left-hand side NegativeInfinity object.
-// \param lhs The right-hand side Infinity object.
 // \return \a true.
 */
 template< typename I >  // Positive infinity type
-inline constexpr bool operator!=( const NegativeInfinity<I>& lhs, const Infinity& rhs )
+inline constexpr bool operator!=( const NegativeInfinity<I>& /*lhs*/, const Infinity& /*rhs*/ )
 {
-   UNUSED_PARAMETER( lhs, rhs );
    return true;
 }
 //*************************************************************************************************
@@ -1095,7 +1070,7 @@ inline constexpr bool operator!=( const T& lhs, const Infinity& rhs )
 // converted to the corresponding built-in data type and represents its largest possible data
 // value.
 */
-const Infinity inf;
+constexpr Infinity inf;
 //*************************************************************************************************
 
 } // namespace blaze
