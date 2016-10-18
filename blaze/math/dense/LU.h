@@ -240,13 +240,13 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
    const size_t mindim( min( m, n ) );
    const size_t size( SO1 ? m : n );
 
-   if( ( !IsResizable_<MT2> && ( (~L).rows() != m      || (~L).columns() != mindim ) ) ||
-       ( !IsResizable_<MT3> && ( (~U).rows() != mindim || (~U).columns() != n      ) ) ||
-       ( !IsResizable_<MT4> && ( (~P).rows() != size   || (~P).columns() != size   ) ) ) {
+   if( ( !IsResizable<MT2>::value && ( (~L).rows() != m      || (~L).columns() != mindim ) ) ||
+       ( !IsResizable<MT3>::value && ( (~U).rows() != mindim || (~U).columns() != n      ) ) ||
+       ( !IsResizable<MT4>::value && ( (~P).rows() != size   || (~P).columns() != size   ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
-   if( ( IsSquare_<MT2> && n < m ) || ( IsSquare_<MT3> && m < n ) ) {
+   if( ( IsSquare<MT2>::value && n < m ) || ( IsSquare<MT3>::value && m < n ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
    }
 

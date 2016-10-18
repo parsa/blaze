@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the MatMatMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatMatMultExpr_<T>, "Non-matrix/matrix multiplication expression type detected" )
+   static_assert( ::blaze::IsMatMatMultExpr<T>::value, "Non-matrix/matrix multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // derived from the MatMatMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatMatMultExpr_<T>, "Matrix/matrix multiplication expression type detected" )
+   static_assert( !::blaze::IsMatMatMultExpr<T>::value, "Matrix/matrix multiplication expression type detected" )
 //*************************************************************************************************
 
 

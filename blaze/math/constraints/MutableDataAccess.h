@@ -59,7 +59,7 @@ namespace blaze {
 // i.e. does not have a non-const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS(T) \
-   static_assert( ::blaze::HasMutableDataAccess_<T>, "Type without mutable data access detected" )
+   static_assert( ::blaze::HasMutableDataAccess<T>::value, "Type without mutable data access detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // does have a non-const 'data' member function, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_MUTABLE_DATA_ACCESS(T) \
-   static_assert( !::blaze::HasMutableDataAccess_<T>, "Type with mutable data access detected" )
+   static_assert( !::blaze::HasMutableDataAccess<T>::value, "Type with mutable data access detected" )
 //*************************************************************************************************
 
 } // namespace blaze

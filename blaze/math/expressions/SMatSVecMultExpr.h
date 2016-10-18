@@ -109,12 +109,12 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation_<MT> };
+   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse vector expression.
-   enum : bool { evaluateVector = RequiresEvaluation_<VT> || IsComputation_<VT> };
+   enum : bool { evaluateVector = RequiresEvaluation<VT>::value || IsComputation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************

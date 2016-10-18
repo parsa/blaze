@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the VecScalarDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECSCALARDIVEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecScalarDivExpr_<T>, "Non-vector/scalar division expression type detected" )
+   static_assert( ::blaze::IsVecScalarDivExpr<T>::value, "Non-vector/scalar division expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // from the VecScalarDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECSCALARDIVEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecScalarDivExpr_<T>, "Vector/scalar division expression type detected" )
+   static_assert( !::blaze::IsVecScalarDivExpr<T>::value, "Vector/scalar division expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

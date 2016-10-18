@@ -118,12 +118,12 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation_<MT> };
+   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateVector = IsComputation_<VT> || RequiresEvaluation_<VT> };
+   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -193,18 +193,18 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      if( IsDiagonal_<MT> )
+      if( IsDiagonal<MT>::value )
       {
          return mat_(index,index) * vec_[index];
       }
-      else if( IsLower_<MT> )
+      else if( IsLower<MT>::value )
       {
-         const size_t n( IsStrictlyLower_<MT> ? index : index+1UL );
+         const size_t n( IsStrictlyLower<MT>::value ? index : index+1UL );
          return subvector( row( mat_, index ), 0UL, n ) * subvector( vec_, 0UL, n );
       }
-      else if( IsUpper_<MT> )
+      else if( IsUpper<MT>::value )
       {
-         const size_t begin( IsStrictlyUpper_<MT> ? index+1UL : index );
+         const size_t begin( IsStrictlyUpper<MT>::value ? index+1UL : index );
          const size_t n    ( mat_.columns() - begin );
          return subvector( row( mat_, index ), begin, n ) * subvector( vec_, begin, n );
       }
@@ -374,7 +374,7 @@ class TSMatDVecMultExpr : public DenseVector< TSMatDVecMultExpr<MT,VT>, false >
          const ConstIterator end( A.end(j) );
 
          for( ; element!=end; ++element ) {
-            if( IsResizable_< ElementType_<VT1> > &&
+            if( IsResizable< ElementType_<VT1> >::value &&
                 isDefault( y[element->index()] ) )
                y[element->index()] = element->value() * x[j];
             else
@@ -1000,7 +1000,7 @@ struct Size< TSMatDVecMultExpr<MT,VT> > : public Rows<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
 struct IsAligned< TSMatDVecMultExpr<MT,VT> >
-   : public BoolConstant< IsAligned_<VT> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

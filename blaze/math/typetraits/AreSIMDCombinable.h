@@ -123,24 +123,6 @@ struct AreSIMDCombinable
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the AreSIMDCombinable type trait.
-// \ingroup math_type_traits
-//
-// The AreSIMDCombinable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the AreSIMDCombinable class template. For instance, given the types \a T1, \a T2
-// and \a T3 the following two statements are identical:
-
-   \code
-   constexpr bool value1 = AreSIMDCombinable<T1,T2,T3>::value;
-   constexpr bool value2 = AreSIMDCombinable_<T1,T2,T3>;
-   \endcode
-*/
-template< typename T1, typename T2, typename... Ts >
-constexpr bool AreSIMDCombinable_ = AreSIMDCombinable<T1,T2,Ts...>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

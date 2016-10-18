@@ -140,8 +140,8 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
        the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsRowMajorMatrix_<T1>    && IsSymmetric_<T3> ) ||
-                            ( IsColumnMajorMatrix_<T1> && IsSymmetric_<T2> ) };
+      enum : bool { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T3>::value ) ||
+                            ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T2>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************

@@ -310,7 +310,7 @@ class LowerMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_STATIC_ASSERT( Rows_<MT> == Columns_<MT> );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -460,11 +460,11 @@ template< typename MT2  // Type of the foreign matrix
 inline LowerMatrix<MT,SO,false>::LowerMatrix( const Matrix<MT2,SO2>& m )
    : matrix_( ~m )  // The adapted sparse matrix
 {
-   if( !IsLower_<MT2> && !isLower( matrix_ ) ) {
+   if( !IsLower<MT2>::value && !isLower( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
    }
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -825,13 +825,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    matrix_ = ~rhs;
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -863,11 +863,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ = ~rhs;
    }
    else {
@@ -880,7 +880,7 @@ inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
       matrix_ = std::move( tmp );
    }
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -912,13 +912,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    matrix_ += ~rhs;
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -950,11 +950,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ += ~rhs;
    }
    else {
@@ -967,7 +967,7 @@ inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
       matrix_ += tmp;
    }
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -999,13 +999,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    matrix_ -= ~rhs;
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -1037,11 +1037,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
    LowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ -= ~rhs;
    }
    else {
@@ -1054,7 +1054,7 @@ inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,false>& >
       matrix_ -= tmp;
    }
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -1097,7 +1097,7 @@ inline LowerMatrix<MT,SO,false>&
 
    matrix_ = std::move( tmp );
 
-   if( !IsLower_<MT2> )
+   if( !IsLower<MT2>::value )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
@@ -1650,7 +1650,7 @@ inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
 
-   return maxNonZeros( Rows_<MT> );
+   return maxNonZeros( Rows<MT>::value );
 }
 /*! \endcond */
 //*************************************************************************************************

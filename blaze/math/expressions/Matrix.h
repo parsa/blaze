@@ -608,7 +608,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return ( IsSquare_<MT> || (~matrix).rows() == (~matrix).columns() );
+   return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
 }
 //*************************************************************************************************
 

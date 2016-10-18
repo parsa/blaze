@@ -140,12 +140,12 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation_<MT1> || RequiresEvaluation_<MT1> };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateRight = IsComputation_<MT2> || RequiresEvaluation_<MT2> };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
        set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsSymmetric_<T2> || IsSymmetric_<T3> ) };
+      enum : bool { value = ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -184,8 +184,8 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal_<T2> &&
-                            !IsResizable_< ElementType_<T1> > };
+                            !IsDiagonal<T2>::value &&
+                            !IsResizable< ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -259,28 +259,28 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal_<MT1> ) {
+      if( IsDiagonal<MT1>::value ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal_<MT2> ) {
+      else if( IsDiagonal<MT2>::value ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular_<MT1> || IsTriangular_<MT2> ) {
-         const size_t begin( ( IsUpper_<MT1> )
-                             ?( ( IsLower_<MT2> )
-                                ?( max( ( IsStrictlyUpper_<MT1> ? i+1UL : i )
-                                      , ( IsStrictlyLower_<MT2> ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper_<MT1> ? i+1UL : i ) )
-                             :( ( IsLower_<MT2> )
-                                ?( IsStrictlyLower_<MT2> ? j+1UL : j )
+      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
+         const size_t begin( ( IsUpper<MT1>::value )
+                             ?( ( IsLower<MT2>::value )
+                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                             :( ( IsLower<MT2>::value )
+                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower_<MT1> )
-                           ?( ( IsUpper_<MT2> )
-                              ?( min( ( IsStrictlyLower_<MT1> ? i : i+1UL )
-                                    , ( IsStrictlyUpper_<MT2> ? j : j+1UL ) ) )
-                              :( IsStrictlyLower_<MT1> ? i : i+1UL ) )
-                           :( ( IsUpper_<MT2> )
-                              ?( IsStrictlyUpper_<MT2> ? j : j+1UL )
+         const size_t end( ( IsLower<MT1>::value )
+                           ?( ( IsUpper<MT2>::value )
+                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                           :( ( IsUpper<MT2>::value )
+                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -491,7 +491,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         if( IsDiagonal_<MT4> )
+         if( IsDiagonal<MT4>::value )
          {
             ConstIterator element( B.begin(j) );
             const ConstIterator end( B.end(j) );
@@ -502,11 +502,11 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
          }
          else
          {
-            const size_t iibegin( ( IsLower_<MT4> )
-                                  ?( IsStrictlyLower_<MT4> ? j+1UL : j )
+            const size_t iibegin( ( IsLower<MT4>::value )
+                                  ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
                                   :( 0UL ) );
-            const size_t iiend( ( IsUpper_<MT4> )
-                                ?( IsStrictlyUpper_<MT4> ? j : j+1UL )
+            const size_t iiend( ( IsUpper<MT4>::value )
+                                ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
                                 :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( iibegin <= iiend, "Invalid loop indices detected" );
 
@@ -582,11 +582,11 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         const size_t iibegin( ( IsLower_<MT4> )
-                               ?( IsStrictlyLower_<MT4> ? j+1UL : j )
+         const size_t iibegin( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
                                :( 0UL ) );
-         const size_t iiend( ( IsUpper_<MT4> )
-                             ?( IsStrictlyUpper_<MT4> ? j : j+1UL )
+         const size_t iiend( ( IsUpper<MT4>::value )
+                             ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
                              :( A.rows() ) );
          BLAZE_INTERNAL_ASSERT( iibegin <= iiend, "Invalid loop indices detected" );
 
@@ -725,9 +725,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          assign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          assign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          assign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -820,7 +820,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         if( IsDiagonal_<MT4> )
+         if( IsDiagonal<MT4>::value )
          {
             ConstIterator element( B.begin(j) );
             const ConstIterator end( B.end(j) );
@@ -831,11 +831,11 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
          }
          else
          {
-            const size_t iibegin( ( IsLower_<MT4> )
-                                  ?( IsStrictlyLower_<MT4> ? j+1UL : j )
+            const size_t iibegin( ( IsLower<MT4>::value )
+                                  ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
                                   :( 0UL ) );
-            const size_t iiend( ( IsUpper_<MT4> )
-                                ?( IsStrictlyUpper_<MT4> ? j : j+1UL )
+            const size_t iiend( ( IsUpper<MT4>::value )
+                                ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
                                 :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( iibegin <= iiend, "Invalid loop indices detected" );
 
@@ -911,9 +911,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          addAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          addAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          addAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1010,7 +1010,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         if( IsDiagonal_<MT4> )
+         if( IsDiagonal<MT4>::value )
          {
             ConstIterator element( B.begin(j) );
             const ConstIterator end( B.end(j) );
@@ -1021,11 +1021,11 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
          }
          else
          {
-            const size_t iibegin( ( IsLower_<MT4> )
-                                  ?( IsStrictlyLower_<MT4> ? j+1UL : j )
+            const size_t iibegin( ( IsLower<MT4>::value )
+                                  ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
                                   :( 0UL ) );
-            const size_t iiend( ( IsUpper_<MT4> )
-                                ?( IsStrictlyUpper_<MT4> ? j : j+1UL )
+            const size_t iiend( ( IsUpper<MT4>::value )
+                                ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
                                 :( A.rows() ) );
             BLAZE_INTERNAL_ASSERT( iibegin <= iiend, "Invalid loop indices detected" );
 
@@ -1101,9 +1101,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          subAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          subAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          subAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1230,9 +1230,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1307,9 +1307,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpAddAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpAddAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpAddAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1389,9 +1389,9 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpSubAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpSubAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpSubAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1523,7 +1523,7 @@ struct Columns< DMatSMatMultExpr<MT1,MT2> > : public Columns<MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsAligned< DMatSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsAligned_<MT1> >
+   : public BoolConstant< IsAligned<MT1>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -85,24 +85,6 @@ struct IsRowMajorMatrix
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsRowMajorMatrix type trait.
-// \ingroup math_type_traits
-//
-// The IsRowMajorMatrix_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsRowMajorMatrix class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsRowMajorMatrix<T>::value;
-   constexpr bool value2 = IsRowMajorMatrix_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsRowMajorMatrix_ = IsRowMajorMatrix<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

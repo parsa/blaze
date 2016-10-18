@@ -75,7 +75,7 @@ struct IsProxyHelper
 
  public:
    //**********************************************************************************************
-   static constexpr bool value = ( sizeof( test( std::declval< RemoveCV_<T> >() ) ) == sizeof( Yes ) );
+   enum : bool { value = ( sizeof( test( std::declval< RemoveCV_<T> >() ) ) == sizeof( Yes ) ) };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -109,24 +109,6 @@ struct IsProxyHelper
 template< typename T >
 struct IsProxy : public BoolConstant< IsProxyHelper<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsProxy type trait.
-// \ingroup math_type_traits
-//
-// The IsProxy_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the IsProxy class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr bool value1 = IsProxy<T>::value;
-   constexpr bool value2 = IsProxy_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsProxy_ = IsProxy<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

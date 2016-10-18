@@ -110,24 +110,6 @@ struct HasSIMDExp10 : public BoolConstant< HasSIMDExp10Helper< Decay_<T> >::valu
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDExp10 type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDExp10_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDExp10 class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDExp10<T>::value;
-   constexpr bool value2 = HasSIMDExp10_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool HasSIMDExp10_ = HasSIMDExp10<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

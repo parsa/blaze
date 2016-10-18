@@ -66,20 +66,20 @@ struct IsSIMDEnabledHelper
  private:
    //**struct HasNestedMember**********************************************************************
    template< typename T2 >
-   struct UseNestedMember { static constexpr bool value = T2::simdEnabled; };
+   struct UseNestedMember { enum : bool { value = T2::simdEnabled }; };
    //**********************************************************************************************
 
    //**struct NotSIMDEnabled***********************************************************************
    template< typename T2 >
-   struct NotSIMDEnabled { static constexpr bool value = false; };
+   struct NotSIMDEnabled { enum : bool { value = false }; };
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   static constexpr bool value = If_< Or< IsVector<T>, IsMatrix<T> >
-                                    , UseNestedMember<T>
-                                    , NotSIMDEnabled<T>
-                                    >::value;
+   enum : bool { value = If_< Or< IsVector<T>, IsMatrix<T> >
+                            , UseNestedMember<T>
+                            , NotSIMDEnabled<T>
+                            >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -99,24 +99,6 @@ struct IsSIMDEnabledHelper
 template< typename T >
 struct IsSIMDEnabled : public BoolConstant< IsSIMDEnabledHelper<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSIMDEnabled type trait.
-// \ingroup math_type_traits
-//
-// The IsSIMDEnabled_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSIMDEnabled class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSIMDEnabled<T>::value;
-   constexpr bool value2 = IsSIMDEnabled_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSIMDEnabled_ = IsSIMDEnabled<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

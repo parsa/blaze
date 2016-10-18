@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the MatSerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATSERIALEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatSerialExpr_<T>, "Non-matrix serial evaluation expression type detected" )
+   static_assert( ::blaze::IsMatSerialExpr<T>::value, "Non-matrix serial evaluation expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // from the MatSerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATSERIALEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatSerialExpr_<T>, "Matrix serial evaluation expression type detected" )
+   static_assert( !::blaze::IsMatSerialExpr<T>::value, "Matrix serial evaluation expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // whose transposition flag is set to blaze::rowVector) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE(T) \
-   static_assert( ::blaze::IsRowVector_<T>, "Non-row vector type detected" )
+   static_assert( ::blaze::IsRowVector<T>::value, "Non-row vector type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // whose transposition flag is set to blaze::rowVector) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE(T) \
-   static_assert( !::blaze::IsRowVector_<T>, "Row vector type detected" )
+   static_assert( !::blaze::IsRowVector<T>::value, "Row vector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

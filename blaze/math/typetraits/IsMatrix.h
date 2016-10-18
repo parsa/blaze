@@ -81,24 +81,6 @@ struct IsMatrix
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsMatrix type trait.
-// \ingroup math_type_traits
-//
-// The IsMatrix_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsMatrix class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsMatrix<T>::value;
-   constexpr bool value2 = IsMatrix_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsMatrix_ = IsMatrix<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

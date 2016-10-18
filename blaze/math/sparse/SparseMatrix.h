@@ -425,7 +425,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsSymmetric_<MT> )
+   if( IsSymmetric<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -511,7 +511,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsHermitian_<MT> )
+   if( IsHermitian<MT>::value )
       return true;
 
    if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
@@ -583,8 +583,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 
    typedef ConstIterator_<MT>  ConstIterator;
 
-   const size_t ibegin( ( IsStrictlyLower_<MT> )?( 1UL ):( 0UL ) );
-   const size_t iend  ( ( IsStrictlyUpper_<MT> )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
+   const size_t ibegin( ( IsStrictlyLower<MT>::value )?( 1UL ):( 0UL ) );
+   const size_t iend  ( ( IsStrictlyUpper<MT>::value )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
       for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
@@ -618,8 +618,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 
    typedef ConstIterator_<MT>  ConstIterator;
 
-   const size_t jbegin( ( IsStrictlyUpper_<MT> )?( 1UL ):( 0UL ) );
-   const size_t jend  ( ( IsStrictlyLower_<MT> )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
+   const size_t jbegin( ( IsStrictlyUpper<MT>::value )?( 1UL ):( 0UL ) );
+   const size_t jend  ( ( IsStrictlyLower<MT>::value )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
       for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
@@ -766,7 +766,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
-   if( IsUniTriangular_<MT> )
+   if( IsUniTriangular<MT>::value )
       return false;
 
    if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
@@ -826,7 +826,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsLower_<MT> )
+   if( IsLower<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -909,7 +909,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsUniLower_<MT> )
+   if( IsUniLower<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1008,10 +1008,10 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsStrictlyLower_<MT> )
+   if( IsStrictlyLower<MT>::value )
       return true;
 
-   if( IsUniLower_<MT> || IsUniUpper_<MT> || !isSquare( ~sm ) )
+   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -1089,7 +1089,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsUpper_<MT> )
+   if( IsUpper<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1172,7 +1172,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsUniUpper_<MT> )
+   if( IsUniUpper<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1271,10 +1271,10 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsStrictlyUpper_<MT> )
+   if( IsStrictlyUpper<MT>::value )
       return true;
 
-   if( IsUniLower_<MT> || IsUniUpper_<MT> || !isSquare( ~sm ) )
+   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -1352,7 +1352,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsDiagonal_<MT> )
+   if( IsDiagonal<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1429,7 +1429,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
    typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
 
-   if( IsIdentity_<MT> )
+   if( IsIdentity<MT>::value )
       return true;
 
    if( !isSquare( ~sm ) )

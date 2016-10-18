@@ -146,7 +146,7 @@ inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
    int lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   if( IsRowMajorMatrix_<MT> ) {
+   if( IsRowMajorMatrix<MT>::value ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

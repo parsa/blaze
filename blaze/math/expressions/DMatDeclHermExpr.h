@@ -1125,7 +1125,7 @@ struct Columns< DMatDeclHermExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsAligned< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsAligned_<MT> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1143,7 +1143,7 @@ struct IsAligned< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric_<MT> >
+   : public BoolConstant< IsSymmetric<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1179,7 +1179,7 @@ struct IsHermitian< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsLower_<MT> >
+   : public BoolConstant< IsLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1197,7 +1197,7 @@ struct IsLower< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsUniLower_<MT> >
+   : public BoolConstant< IsUniLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1215,7 +1215,7 @@ struct IsUniLower< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyLower_<MT> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1233,7 +1233,7 @@ struct IsStrictlyLower< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsUpper_<MT> >
+   : public BoolConstant< IsUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1251,7 +1251,7 @@ struct IsUpper< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper_<MT> >
+   : public BoolConstant< IsUniUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1269,7 +1269,7 @@ struct IsUniUpper< DMatDeclHermExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatDeclHermExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyUpper_<MT> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

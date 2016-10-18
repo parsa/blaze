@@ -73,24 +73,6 @@ struct IsMatSerialExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsMatSerialExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsMatSerialExpr_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsMatSerialExpr class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsMatSerialExpr<T>::value;
-   constexpr bool value2 = IsMatSerialExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsMatSerialExpr_ = IsMatSerialExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -3067,13 +3067,13 @@ inline size_t Column<MT,false,false,false>::nonZeros() const
 template< typename MT >  // Type of the sparse matrix
 inline void Column<MT,false,false,false>::reset()
 {
-   const size_t ibegin( ( IsLower_<MT> )
-                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
                            ?( col_+1UL )
                            :( col_ ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper_<MT> )
-                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
                            ?( col_ )
                            :( col_+1UL ) )
                         :( size() ) );

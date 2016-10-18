@@ -601,10 +601,10 @@ namespace blaze {
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 */
-template< typename MT                         // Type of the adapted matrix
-        , bool SO = IsColumnMajorMatrix_<MT>  // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix_<MT>        // Density flag
-        , bool NF = IsNumericMatrix_<MT> >    // Numeric flag
+template< typename MT                               // Type of the adapted matrix
+        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix<MT>::value        // Density flag
+        , bool NF = IsNumericMatrix<MT>::value >    // Numeric flag
 class SymmetricMatrix
 {};
 //*************************************************************************************************

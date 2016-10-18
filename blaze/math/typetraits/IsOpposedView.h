@@ -118,24 +118,6 @@ struct IsOpposedView< const volatile T > : public IsOpposedView<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsOpposedView type trait.
-// \ingroup math_type_traits
-//
-// The IsOpposedView_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsOpposedView class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsOpposedView<T>::value;
-   constexpr bool value2 = IsOpposedView_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsOpposedView_ = IsOpposedView<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

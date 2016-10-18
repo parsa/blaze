@@ -127,24 +127,6 @@ struct IsIdentity< const volatile T > : public IsIdentity<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsIdentity type trait.
-// \ingroup math_type_traits
-//
-// The IsIdentity_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsIdentity class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsIdentity<T>::value;
-   constexpr bool value2 = IsIdentity_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsIdentity_ = IsIdentity<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

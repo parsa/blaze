@@ -123,24 +123,6 @@ struct IsUniUpper< const volatile T > : public IsUniUpper<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUniUpper type trait.
-// \ingroup math_type_traits
-//
-// The IsUniUpper_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsUniUpper class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsUniUpper<T>::value;
-   constexpr bool value2 = IsUniUpper_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUniUpper_ = IsUniUpper<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

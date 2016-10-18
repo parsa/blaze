@@ -88,24 +88,6 @@ struct IsUniTriangular : public BoolConstant< Or< IsUniLower<T>, IsUniUpper<T> >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUniTriangular type trait.
-// \ingroup math_type_traits
-//
-// The IsUniTriangular_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsUniTriangular class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsUniTriangular<T>::value;
-   constexpr bool value2 = IsUniTriangular_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUniTriangular_ = IsUniTriangular<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

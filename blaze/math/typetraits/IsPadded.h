@@ -113,24 +113,6 @@ struct IsPadded< const volatile T > : public IsPadded<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsPadded type trait.
-// \ingroup math_type_traits
-//
-// The IsPadded_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsPadded class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsPadded<T>::value;
-   constexpr bool value2 = IsPadded_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsPadded_ = IsPadded<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

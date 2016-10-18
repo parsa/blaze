@@ -138,7 +138,7 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
       return;
    }
 
-   if( IsRowMajorMatrix_<MT> ) {
+   if( IsRowMajorMatrix<MT>::value ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

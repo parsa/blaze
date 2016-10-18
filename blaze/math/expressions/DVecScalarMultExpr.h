@@ -133,7 +133,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN> };
+   enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN,ST>  ExprReturnType;
@@ -147,7 +147,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
        evaluation, \a useAssign will be set to 1 and the multiplication expression will be
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0
        and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = IsComputation_<VT> && RequiresEvaluation_<VT> };
+   enum : bool { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -440,8 +440,8 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
                                IsNumeric<ET>::value &&
-                               ( HasSIMDMult_<ET,ST> ||
-                                 HasSIMDMult_<UnderlyingElement_<ET>,ST> ) };
+                               ( HasSIMDMult<ET,ST>::value ||
+                                 HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -562,7 +562,7 @@ class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF 
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation_<VT> && vector_.canAlias( alias );
+      return IsComputation<VT>::value && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 
@@ -1856,7 +1856,7 @@ struct Size< DVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsAligned< DVecScalarMultExpr<VT,ST,TF> >
-   : public BoolConstant< IsAligned_<VT> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1874,7 +1874,7 @@ struct IsAligned< DVecScalarMultExpr<VT,ST,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
-   : public BoolConstant< IsPadded_<VT> >
+   : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -3053,13 +3053,13 @@ inline size_t Row<MT,false,false,false>::nonZeros() const
 template< typename MT >  // Type of the sparse matrix
 inline void Row<MT,false,false,false>::reset()
 {
-   const size_t jbegin( ( IsUpper_<MT> )
-                        ?( ( IsUniUpper_<MT> || IsStrictlyUpper_<MT> )
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
                            ?( row_+1UL )
                            :( row_ ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower_<MT> )
-                        ?( ( IsUniLower_<MT> || IsStrictlyLower_<MT> )
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
                            ?( row_ )
                            :( row_+1UL ) )
                         :( size() ) );

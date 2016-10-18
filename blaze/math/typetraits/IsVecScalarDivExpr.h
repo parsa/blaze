@@ -75,24 +75,6 @@ struct IsVecScalarDivExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsVecScalarDivExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsVecScalarDivExpr_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsVecScalarDivExpr class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsVecScalarDivExpr<T>::value;
-   constexpr bool value2 = IsVecScalarDivExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsVecScalarDivExpr_ = IsVecScalarDivExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

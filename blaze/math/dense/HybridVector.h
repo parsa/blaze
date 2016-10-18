@@ -318,7 +318,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -330,8 +330,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDAdd_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -343,8 +343,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDSub_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -356,8 +356,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDMult_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -369,8 +369,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDDiv_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -766,8 +766,8 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
 
-   for( size_t i=( IsSparseVector_<VT>    ? 0UL : size_ );
-               i<( IsNumeric<Type>::value ? NN  : size_ ); ++i ) {
+   for( size_t i=( IsSparseVector<VT>::value ? 0UL : size_ );
+               i<( IsNumeric<Type>::value    ? NN  : size_ ); ++i ) {
       v_[i] = Type();
    }
 
@@ -1160,7 +1160,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Vector
    }
    else {
       resize( (~rhs).size(), false );
-      if( IsSparseVector_<VT> )
+      if( IsSparseVector<VT>::value )
          reset();
       assign( *this, ~rhs );
    }
@@ -1269,7 +1269,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector_<VT> || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       const HybridVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
@@ -2118,7 +2118,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssi
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2208,7 +2208,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2298,7 +2298,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2388,7 +2388,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMult
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );

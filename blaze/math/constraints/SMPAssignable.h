@@ -59,7 +59,7 @@ namespace blaze {
 // threads), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SMP_ASSIGNABLE(T) \
-   static_assert( ::blaze::IsSMPAssignable_<T>, "Non-SMP assignable type detected" )
+   static_assert( ::blaze::IsSMPAssignable<T>::value, "Non-SMP assignable type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE(T) \
-   static_assert( !::blaze::IsSMPAssignable_<T>, "SMP assignable type detected" )
+   static_assert( !::blaze::IsSMPAssignable<T>::value, "SMP assignable type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

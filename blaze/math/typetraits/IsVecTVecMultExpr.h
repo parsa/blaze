@@ -74,24 +74,6 @@ struct IsVecTVecMultExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsVecTVecMultExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsVecTVecMultExpr_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the IsVecTVecMultExpr class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = IsVecTVecMultExpr<T>::value;
-   constexpr bool value2 = IsVecTVecMultExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsVecTVecMultExpr_ = IsVecTVecMultExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

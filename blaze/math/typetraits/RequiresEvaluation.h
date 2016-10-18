@@ -74,24 +74,6 @@ struct RequiresEvaluation
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the RequiresEvaluation type trait.
-// \ingroup math_type_traits
-//
-// The RequiresEvaluation_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the RequiresEvaluation class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = RequiresEvaluation<T>::value;
-   constexpr bool value2 = RequiresEvaluation_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool RequiresEvaluation_ = RequiresEvaluation<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

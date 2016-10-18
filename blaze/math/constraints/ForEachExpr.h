@@ -59,7 +59,7 @@ namespace blaze {
 // ForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_FOREACHEXPR_TYPE(T) \
-   static_assert( ::blaze::IsForEachExpr_<T>, "Non-for-each expression type detected" )
+   static_assert( ::blaze::IsForEachExpr<T>::value, "Non-for-each expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // ForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_FOREACHEXPR_TYPE(T) \
-   static_assert( !::blaze::IsForEachExpr_<T>, "For-each expression type detected" )
+   static_assert( !::blaze::IsForEachExpr<T>::value, "For-each expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

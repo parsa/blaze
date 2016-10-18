@@ -1626,7 +1626,7 @@ struct HasConstDataAccess< UniLowerMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsAligned_<MT> >
+struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1643,7 +1643,7 @@ struct IsAligned< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsAligned_<M
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsPadded_<MT> >
+struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1660,7 +1660,7 @@ struct IsPadded< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsPadded_<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsResizable_<MT> >
+struct IsResizable< UniLowerMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

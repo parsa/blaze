@@ -124,24 +124,6 @@ struct IsAligned< const volatile T > : public IsAligned<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsAligned type trait.
-// \ingroup math_type_traits
-//
-// The IsAligned_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsAligned class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsAligned<T>::value;
-   constexpr bool value2 = IsAligned_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsAligned_ = IsAligned<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

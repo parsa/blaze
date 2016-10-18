@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the VecVecDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECDIVEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecVecDivExpr_<T>, "Non-vector/vector division expression type detected" )
+   static_assert( ::blaze::IsVecVecDivExpr<T>::value, "Non-vector/vector division expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // from the VecVecDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECDIVEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecVecDivExpr_<T>, "Vector/vector division expression type detected" )
+   static_assert( !::blaze::IsVecVecDivExpr<T>::value, "Vector/vector division expression type detected" )
 //*************************************************************************************************
 
 

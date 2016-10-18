@@ -778,7 +778,7 @@ struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsAligned_<MT> >
+struct IsAligned< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -795,7 +795,7 @@ struct IsAligned< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsAligned_<
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsPadded_<MT> >
+struct IsPadded< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -812,7 +812,7 @@ struct IsPadded< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsPadded_<MT
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsResizable_<MT> >
+struct IsResizable< HermitianMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

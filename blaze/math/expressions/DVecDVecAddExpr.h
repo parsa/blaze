@@ -119,7 +119,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
        or matrix, \a returnExpr will be set to 0 and the subscript operator will return
        it's result by value. Otherwise \a returnExpr will be set to 1 and the subscript
        operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
@@ -133,7 +133,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
        can only return by value, \a useAssign will be set to 1 and the addition expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be
        set to 0 and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = ( RequiresEvaluation_<VT1> || RequiresEvaluation_<VT2> || !returnExpr ) };
+   enum : bool { useAssign = ( RequiresEvaluation<VT1>::value || RequiresEvaluation<VT2>::value || !returnExpr ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -432,7 +432,7 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
-                               HasSIMDAdd_<ET1,ET2> };
+                               HasSIMDAdd<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && VT2::smpAssignable };
@@ -555,8 +555,8 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression_<VT1> && ( RequiresEvaluation_<VT1> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression_<VT2> && ( RequiresEvaluation_<VT2> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression<VT1>::value && ( RequiresEvaluation<VT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression<VT2>::value && ( RequiresEvaluation<VT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -621,10 +621,10 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsComputation_<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsComputation<VT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          addAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -825,10 +825,10 @@ class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpAddAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsComputation_<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsComputation<VT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          smpAddAssign( ~lhs, rhs.lhs_ );
       }
       else {

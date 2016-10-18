@@ -73,24 +73,6 @@ struct IsDeclExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsDeclExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsDeclExpr_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsDeclExpr class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsDeclExpr<T>::value;
-   constexpr bool value2 = IsDeclExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsDeclExpr_ = IsDeclExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

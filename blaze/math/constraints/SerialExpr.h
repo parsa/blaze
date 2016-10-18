@@ -59,7 +59,7 @@ namespace blaze {
 // from the SerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SERIALEXPR_TYPE(T) \
-   static_assert( ::blaze::IsSerialExpr_<T>, "Non-serial evaluation expression type detected" )
+   static_assert( ::blaze::IsSerialExpr<T>::value, "Non-serial evaluation expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the SerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SERIALEXPR_TYPE(T) \
-   static_assert( !::blaze::IsSerialExpr_<T>, "Serial evaluation expression type detected" )
+   static_assert( !::blaze::IsSerialExpr<T>::value, "Serial evaluation expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

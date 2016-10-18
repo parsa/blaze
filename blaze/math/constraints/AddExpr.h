@@ -59,7 +59,7 @@ namespace blaze {
 // AddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ADDEXPR_TYPE(T) \
-   static_assert( ::blaze::IsAddExpr_<T>, "Non-addition expression type detected" )
+   static_assert( ::blaze::IsAddExpr<T>::value, "Non-addition expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // AddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ADDEXPR_TYPE(T) \
-   static_assert( !::blaze::IsAddExpr_<T>, "Addition expression type detected" )
+   static_assert( !::blaze::IsAddExpr<T>::value, "Addition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

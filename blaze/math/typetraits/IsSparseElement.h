@@ -73,24 +73,6 @@ struct IsSparseElement
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSparseElement type trait.
-// \ingroup math_type_traits
-//
-// The IsSparseElement_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSparseElement class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSparseElement<T>::value;
-   constexpr bool value2 = IsSparseElement_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSparseElement_ = IsSparseElement<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

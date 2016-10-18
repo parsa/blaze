@@ -72,24 +72,6 @@ struct IsTemporary
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsTemporary type trait.
-// \ingroup math_type_traits
-//
-// The IsTemporary_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsTemporary class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsTemporary<T>::value;
-   constexpr bool value2 = IsTemporary_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsTemporary_ = IsTemporary<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

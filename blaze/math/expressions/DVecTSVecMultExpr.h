@@ -124,7 +124,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
@@ -139,8 +139,8 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
        multiplication expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to \a false and the expression will be evaluated via the
        subscript operator. */
-   enum : bool { useAssign = ( IsComputation_<VT1> || !IsNumeric<ET1>::value ||
-                               IsComputation_<VT2> || !IsNumeric<ET2>::value ) };
+   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric<ET1>::value ||
+                               IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -162,7 +162,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
                             T1::simdEnabled && T2::simdEnabled &&
                             IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
                             IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDMult_< ElementType_<T1>, ElementType_<T1> > };
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -686,7 +686,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -967,7 +967,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1137,7 +1137,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded_<MT> || !IsPadded_<VT3> );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

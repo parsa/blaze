@@ -72,24 +72,6 @@ struct IsEvalExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsEvalExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsEvalExpr_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsEvalExpr class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsEvalExpr<T>::value;
-   constexpr bool value2 = IsEvalExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsEvalExpr_ = IsEvalExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -112,23 +112,6 @@ struct HasMutableDataAccess< const volatile T > : public HasMutableDataAccess<T>
 /*! \endcond */
 //*************************************************************************************************
 
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasMutableDataAccess type trait.
-// \ingroup math_type_traits
-//
-// The HasMutableDataAccess_ alias declaration provides a convenient shortcut to access the
-// nested \a value of the HasMutableDataAccess class template. For instance, given the type
-// \a T the following two statements are identical:
-
-   \code
-   constexpr bool value1 = HasMutableDataAccess<T>::value;
-   constexpr bool value2 = HasMutableDataAccess_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool HasMutableDataAccess_ = HasMutableDataAccess<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a square matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SQUARE(T) \
-   static_assert( ::blaze::IsSquare_<T>, "Non-square matrix type detected" )
+   static_assert( ::blaze::IsSquare<T>::value, "Non-square matrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a square matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SQUARE(T) \
-   static_assert( !::blaze::IsSquare_<T>, "Square matrix type detected" )
+   static_assert( !::blaze::IsSquare<T>::value, "Square matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

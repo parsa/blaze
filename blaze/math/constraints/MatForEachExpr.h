@@ -59,7 +59,7 @@ namespace blaze {
 // from the MatForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATFOREACHEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatForEachExpr_<T>, "Non-matrix for-each expression type detected" )
+   static_assert( ::blaze::IsMatForEachExpr<T>::value, "Non-matrix for-each expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the MatForEachExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATFOREACHEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatForEachExpr_<T>, "Matrix for-each expression type detected" )
+   static_assert( !::blaze::IsMatForEachExpr<T>::value, "Matrix for-each expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

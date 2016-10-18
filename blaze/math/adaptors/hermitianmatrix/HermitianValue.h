@@ -429,8 +429,8 @@ inline void HermitianValue<MT>::reset() const
 
    if( pos_->index() != index_ )
    {
-      const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
       const IteratorType pos2( matrix_->find( row, column ) );
 
       reset( pos2->value() );
@@ -455,8 +455,8 @@ inline void HermitianValue<MT>::clear() const
 
    if( pos_->index() != index_ )
    {
-      const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
       const IteratorType pos2( matrix_->find( row, column ) );
 
       clear( pos2->value() );
@@ -479,8 +479,8 @@ inline void HermitianValue<MT>::invert() const
 
    if( pos_->index() != index_ )
    {
-      const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
       const IteratorType pos2( matrix_->find( row, column ) );
 
       pos2->value() = conj( pos_->value() );
@@ -513,8 +513,8 @@ inline void HermitianValue<MT>::sync() const
    if( pos_->index() == index_ || isDefault( pos_->value() ) )
       return;
 
-   const size_t row   ( ( IsRowMajorMatrix_<MT> )?( pos_->index() ):( index_ ) );
-   const size_t column( ( IsRowMajorMatrix_<MT> )?( index_ ):( pos_->index() ) );
+   const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+   const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
 
    matrix_->set( row, column, conj( pos_->value() ) );
 }

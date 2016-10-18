@@ -629,7 +629,7 @@ class SymmetricMatrix<MT,SO,false,false>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE         ( ElementType );
-   BLAZE_STATIC_ASSERT( Rows_<MT> == Columns_<MT> );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -790,7 +790,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
 
    Tmp tmp( ~m );
 
-   if( !IsSymmetric_<MT2> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
    }
 
@@ -827,7 +827,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 
    Tmp tmp( ~m );
 
-   if( !IsSymmetric_<MT2> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
    }
 
@@ -1196,7 +1196,7 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
 {
    using blaze::resize;
 
-   if( !IsSymmetric_<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1241,13 +1241,13 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
 {
    using blaze::resize;
 
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    const ResultType_<MT2> tmp( ~rhs );
 
-   if( !IsSymmetric_<MT2> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1313,13 +1313,13 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef AddTrait_< MT, ResultType_<MT2> >  Tmp;
 
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    Tmp tmp( (*this) + ~rhs );
 
-   if( !IsSymmetric_<Tmp> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1385,13 +1385,13 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef SubTrait_< MT, ResultType_<MT2> >  Tmp;
 
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    Tmp tmp( (*this) - ~rhs );
 
-   if( !IsSymmetric_<Tmp> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1463,7 +1463,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    Tmp tmp( (*this) * ~rhs );
 
-   if( !IsSymmetric_<Tmp> && !isSymmetric( tmp ) ) {
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 

@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE(T) \
-   static_assert( ::blaze::IsVector_<T>, "Non-vector type detected" )
+   static_assert( ::blaze::IsVector<T>::value, "Non-vector type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE(T) \
-   static_assert( !::blaze::IsVector_<T>, "Vector type detected" )
+   static_assert( !::blaze::IsVector<T>::value, "Vector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

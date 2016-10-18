@@ -263,7 +263,7 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO
    const int n  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   trmv( ( IsRowMajorMatrix_<MT> )?( CblasRowMajor ):( CblasColMajor ),
+   trmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
          uplo, CblasNoTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
 }
 #endif
@@ -309,7 +309,7 @@ BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>
    const int n  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   trmv( ( IsRowMajorMatrix_<MT> )?( CblasRowMajor ):( CblasColMajor ),
+   trmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
          uplo, CblasTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
 }
 #endif

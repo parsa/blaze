@@ -110,24 +110,6 @@ struct HasSIMDPow : public BoolConstant< HasSIMDPowHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDPow type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDPow_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDPow class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDPow<T>::value;
-   constexpr bool value2 = HasSIMDPow_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool HasSIMDPow_ = HasSIMDPow<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

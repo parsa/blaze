@@ -111,7 +111,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
        be set to 1 and the transposition expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
        the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation_<VT> };
+   enum : bool { useAssign = RequiresEvaluation<VT>::value };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -1038,7 +1038,7 @@ struct Size< DVecTransExpr<VT,TF> > : public Size<VT>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecTransExpr<VT,TF> >
-   : public BoolConstant< IsAligned_<VT> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1056,7 +1056,7 @@ struct IsAligned< DVecTransExpr<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsPadded< DVecTransExpr<VT,TF> >
-   : public BoolConstant< IsPadded_<VT> >
+   : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

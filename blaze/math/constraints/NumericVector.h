@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a numeric vector type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NUMERIC_VECTOR_TYPE(T) \
-   static_assert( ::blaze::IsNumericVector_<T>, "Non-numeric vector type detected" )
+   static_assert( ::blaze::IsNumericVector<T>::value, "Non-numeric vector type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a numeric vector type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_VECTOR_TYPE(T) \
-   static_assert( !::blaze::IsNumericVector_<T>, "Numeric vector type detected" )
+   static_assert( !::blaze::IsNumericVector<T>::value, "Numeric vector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

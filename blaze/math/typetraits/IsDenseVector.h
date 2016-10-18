@@ -81,24 +81,6 @@ struct IsDenseVector
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsDenseVector type trait.
-// \ingroup math_type_traits
-//
-// The IsDenseVector_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsDenseVector class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsDenseVector<T>::value;
-   constexpr bool value2 = IsDenseVector_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsDenseVector_ = IsDenseVector<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

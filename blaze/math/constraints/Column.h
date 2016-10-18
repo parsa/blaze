@@ -59,7 +59,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE(T) \
-   static_assert( ::blaze::IsColumn_<T>, "Non-column type detected" )
+   static_assert( ::blaze::IsColumn<T>::value, "Non-column type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_TYPE(T) \
-   static_assert( !::blaze::IsColumn_<T>, "Column type detected" )
+   static_assert( !::blaze::IsColumn<T>::value, "Column type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

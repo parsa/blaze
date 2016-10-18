@@ -112,24 +112,6 @@ struct Size< const volatile T > : public SizeT< Size<T>::value >
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the Size type trait.
-// \ingroup math_type_traits
-//
-// The Size_ alias declaration provides a convenient shortcut to access the nested \a value
-// of the Size class template. For instance, given the type \a T the following two statements
-// are identical:
-
-   \code
-   constexpr size_t value1 = Size<T>::value;
-   constexpr size_t value2 = Size<T>;
-   \endcode
-*/
-template< typename T >
-constexpr size_t Size_ = Size<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -59,7 +59,7 @@ namespace blaze {
 // the CrossExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CROSSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsCrossExpr_<T>, "Non-cross product expression type detected" )
+   static_assert( ::blaze::IsCrossExpr<T>::value, "Non-cross product expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // CrossExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CROSSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsCrossExpr_<T>, "Cross product expression type detected" )
+   static_assert( !::blaze::IsCrossExpr<T>::value, "Cross product expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

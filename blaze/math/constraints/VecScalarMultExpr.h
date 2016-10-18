@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the VecScalarMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECSCALARMULTEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecScalarMultExpr_<T>, "Non-vector/scalar multiplication expression type detected" )
+   static_assert( ::blaze::IsVecScalarMultExpr<T>::value, "Non-vector/scalar multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // derived from the VecScalarMultExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECSCALARMULTEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecScalarMultExpr_<T>, "Vector/scalar multiplication expression type detected" )
+   static_assert( !::blaze::IsVecScalarMultExpr<T>::value, "Vector/scalar multiplication expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

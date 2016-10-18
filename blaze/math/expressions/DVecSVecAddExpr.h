@@ -115,7 +115,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
@@ -242,7 +242,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression_<VT1> && lhs_.canAlias( alias ) ) ||
+      return ( IsExpression<VT1>::value && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
@@ -284,7 +284,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -470,7 +470,7 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsComputation<VT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpAddAssign( ~lhs, rhs.rhs_ );
       }
       else {

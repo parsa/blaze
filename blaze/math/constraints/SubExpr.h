@@ -59,7 +59,7 @@ namespace blaze {
 // SubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SUBEXPR_TYPE(T) \
-   static_assert( ::blaze::IsSubExpr_<T>, "Non-subtraction expression type detected" )
+   static_assert( ::blaze::IsSubExpr<T>::value, "Non-subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // SubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SUBEXPR_TYPE(T) \
-   static_assert( !::blaze::IsSubExpr_<T>, "Subtraction expression type detected" )
+   static_assert( !::blaze::IsSubExpr<T>::value, "Subtraction expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

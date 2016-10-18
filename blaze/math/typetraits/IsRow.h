@@ -134,24 +134,6 @@ struct IsRow< const volatile Row<MT,SO,DF,SF> > : public TrueType
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsRow type trait.
-// \ingroup math_type_traits
-//
-// The IsRow_ alias declaration provides a convenient shortcut to access the nested \a value of
-// the IsRow class template. For instance, given the type \a T the following two statements are
-// identical:
-
-   \code
-   constexpr bool value1 = IsRow<T>::value;
-   constexpr bool value2 = IsRow_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsRow_ = IsRow<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

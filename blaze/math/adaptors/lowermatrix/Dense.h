@@ -801,7 +801,7 @@ class LowerMatrix<MT,SO,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_STATIC_ASSERT( Rows_<MT> == Columns_<MT> );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1724,7 +1724,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
@@ -1759,11 +1759,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ = ~rhs;
    }
    else {
@@ -1805,7 +1805,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
@@ -1840,11 +1840,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ += ~rhs;
    }
    else {
@@ -1886,7 +1886,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower_<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
@@ -1921,11 +1921,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   if( IsLower_<MT2> ) {
+   if( IsLower<MT2>::value ) {
       matrix_ -= ~rhs;
    }
    else {
@@ -2244,7 +2244,7 @@ inline void LowerMatrix<MT,SO,true>::clear()
 {
    using blaze::clear;
 
-   if( IsResizable_<MT> ) {
+   if( IsResizable<MT>::value ) {
       clear( matrix_ );
    }
    else {
@@ -2416,7 +2416,7 @@ inline constexpr size_t LowerMatrix<MT,SO,true>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
 
-   return maxNonZeros( Rows_<MT> );
+   return maxNonZeros( Rows<MT>::value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2726,7 +2726,7 @@ inline const MT LowerMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T 
 {
    const MT tmp( ~m );
 
-   if( !IsLower_<MT2> && !isLower( tmp ) ) {
+   if( !IsLower<MT2>::value && !isLower( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
    }
 

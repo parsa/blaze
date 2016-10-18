@@ -78,24 +78,6 @@ struct TransposeFlag : public BoolConstant< ( IsRowVector<T>::value ? rowVector 
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the TransposeFlag type trait.
-// \ingroup math_type_traits
-//
-// The TransposeFlag_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the TransposeFlag class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = TransposeFlag<T>::value;
-   constexpr bool value2 = TransposeFlag<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool TransposeFlag_ = TransposeFlag<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

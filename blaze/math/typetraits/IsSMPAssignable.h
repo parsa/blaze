@@ -66,20 +66,20 @@ struct IsSMPAssignableHelper
  private:
    //**struct HasNestedMember**********************************************************************
    template< typename T2 >
-   struct UseNestedMember { static constexpr bool value = T2::smpAssignable; };
+   struct UseNestedMember { enum : bool { value = T2::smpAssignable }; };
    //**********************************************************************************************
 
    //**struct NoNestedMember***********************************************************************
    template< typename T2 >
-   struct NotSMPAssignable { static constexpr bool value = false; };
+   struct NotSMPAssignable { enum : bool { value = false }; };
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   static constexpr bool value = If_< Or< IsVector<T>, IsMatrix<T> >
-                                    , UseNestedMember<T>
-                                    , NotSMPAssignable<T>
-                                    >::value;
+   enum : bool { value = If_< Or< IsVector<T>, IsMatrix<T> >
+                            , UseNestedMember<T>
+                            , NotSMPAssignable<T>
+                            >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -118,24 +118,6 @@ struct IsSMPAssignableHelper
 template< typename T >
 struct IsSMPAssignable : public BoolConstant< IsSMPAssignableHelper<T>::value >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSMPAssignable type trait.
-// \ingroup math_type_traits
-//
-// The IsSMPAssignable_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSMPAssignable class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSMPAssignable<T>::value;
-   constexpr bool value2 = IsSMPAssignable_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSMPAssignable_ = IsSMPAssignable<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // common SIMD interface), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES(T1,T2) \
-   static_assert( ::blaze::AreSIMDCombinable_<T1,T2>, "Non-SIMD combinable types detected" )
+   static_assert( ::blaze::AreSIMDCombinable<T1,T2>::value, "Non-SIMD combinable types detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // SIMD interface), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_COMBINABLE_TYPES(T1,T2) \
-   static_assert( !::blaze::AreSIMDCombinable_<T1,T2>, "SIMD combinable types detected" )
+   static_assert( !::blaze::AreSIMDCombinable<T1,T2>::value, "SIMD combinable types detected" )
 //*************************************************************************************************
 
 } // namespace blaze

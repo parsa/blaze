@@ -128,7 +128,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
@@ -142,7 +142,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
        can only return by value, \a useAssign will be set to 1 and the addition expression
        will be evaluated via the \a assign function family. Otherwise \a useAssign will be
        set to 0 and the expression will be evaluated via the function call operator. */
-   enum : bool { useAssign = RequiresEvaluation_<MT1> || RequiresEvaluation_<MT2> || !returnExpr };
+   enum : bool { useAssign = RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value || !returnExpr };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -442,7 +442,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT1::simdEnabled && MT2::simdEnabled &&
-                               HasSIMDAdd_<ET1,ET2> };
+                               HasSIMDAdd<ET1,ET2>::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };
@@ -587,8 +587,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression_<MT1> && ( RequiresEvaluation_<MT1> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression_<MT2> && ( RequiresEvaluation_<MT2> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -655,10 +655,10 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression_<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsExpression_<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsExpression<MT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          addAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -808,10 +808,10 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression_<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpAddAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsExpression_<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsExpression<MT2>::value && isSame( ~lhs, rhs.rhs_ ) ) {
          smpAddAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -1085,7 +1085,7 @@ struct IsPadded< DMatDMatAddExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< DMatDMatAddExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric_<MT1> && IsSymmetric_<MT2> >
+   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1103,7 +1103,7 @@ struct IsSymmetric< DMatDMatAddExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsHermitian< DMatDMatAddExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsHermitian_<MT1> && IsHermitian_<MT2> >
+   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

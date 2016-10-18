@@ -127,24 +127,6 @@ struct IsDiagonal< const volatile T > : public IsDiagonal<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsDiagonal type trait.
-// \ingroup math_type_traits
-//
-// The IsDiagonal_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsDiagonal class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsDiagonal<T>::value;
-   constexpr bool value2 = IsDiagonal_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsDiagonal_ = IsDiagonal<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

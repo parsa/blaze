@@ -110,24 +110,6 @@ struct HasSIMDLog : public BoolConstant< HasSIMDLogHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDLog type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDLog_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDLog class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDLog<T>::value;
-   constexpr bool value2 = HasSIMDLog_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool HasSIMDLog_ = HasSIMDLog<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -59,7 +59,7 @@ namespace blaze {
 // from the VecTransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTRANSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecTransExpr_<T>, "Non-vector transposition expression type detected" )
+   static_assert( ::blaze::IsVecTransExpr<T>::value, "Non-vector transposition expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the VecTransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECTRANSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecTransExpr_<T>, "Vector transposition expression type detected" )
+   static_assert( !::blaze::IsVecTransExpr<T>::value, "Vector transposition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

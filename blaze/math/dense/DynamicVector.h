@@ -216,7 +216,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable_<Type> };
+   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -314,7 +314,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -326,8 +326,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDAdd_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -339,8 +339,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDSub_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -352,8 +352,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDMult_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -365,8 +365,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            AreSIMDCombinable_< Type, ElementType_<VT> > &&
-                            HasSIMDDiv_< Type, ElementType_<VT> > };
+                            AreSIMDCombinable< Type, ElementType_<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -716,7 +716,7 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   for( size_t i=( IsSparseVector_<VT>         ? 0UL       : size_ );
+   for( size_t i=( IsSparseVector<VT>::value   ? 0UL       : size_ );
                i<( IsVectorizable<Type>::value ? capacity_ : size_ ); ++i ) {
       v_[i] = Type();
    }
@@ -1114,7 +1114,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<V
    }
    else {
       resize( (~rhs).size(), false );
-      if( IsSparseVector_<VT> )
+      if( IsSparseVector<VT>::value )
          reset();
       smpAssign( *this, ~rhs );
    }
@@ -1215,7 +1215,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector_<VT> || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       DynamicVector<Type,TF> tmp( *this * (~rhs) );
       swap( tmp );
    }
@@ -1954,7 +1954,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAssig
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2068,7 +2068,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAddAs
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2170,7 +2170,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedSubAs
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2272,7 +2272,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedMultA
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !usePadding || !IsPadded_<VT> );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );

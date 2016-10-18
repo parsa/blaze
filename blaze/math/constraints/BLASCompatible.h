@@ -59,7 +59,7 @@ namespace blaze {
 // complex<float>, or complex<double>), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE(T) \
-   static_assert( ::blaze::IsBLASCompatible_<T>, "Non-BLAS compatible type detected" )
+   static_assert( ::blaze::IsBLASCompatible<T>::value, "Non-BLAS compatible type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // or complex<double>), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_BLAS_COMPATIBLE_TYPE(T) \
-   static_assert( !::blaze::IsBLASCompatible_<T>, "BLAS compatible type detected" )
+   static_assert( !::blaze::IsBLASCompatible<T>::value, "BLAS compatible type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

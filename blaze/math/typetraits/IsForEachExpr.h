@@ -73,24 +73,6 @@ struct IsForEachExpr
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsForEachExpr type trait.
-// \ingroup math_type_traits
-//
-// The IsForEachExpr_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsForEachExpr class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsForEachExpr<T>::value;
-   constexpr bool value2 = IsForEachExpr_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsForEachExpr_ = IsForEachExpr<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

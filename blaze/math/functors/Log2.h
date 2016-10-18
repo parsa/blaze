@@ -80,7 +80,7 @@ struct Log2
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDLog2_<T>; }
+   static constexpr bool simdEnabled() { return HasSIMDLog2<T>::value; }
    //**********************************************************************************************
 
    //**********************************************************************************************

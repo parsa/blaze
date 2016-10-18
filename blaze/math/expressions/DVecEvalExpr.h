@@ -801,7 +801,7 @@ struct Size< DVecEvalExpr<VT,TF> > : public Size<VT>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecEvalExpr<VT,TF> >
-   : public BoolConstant< IsAligned_<VT> >
+   : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -128,24 +128,6 @@ struct IsGeneral< const volatile T > : public IsGeneral<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsGeneral type trait.
-// \ingroup math_type_traits
-//
-// The IsGeneral_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsGeneral class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsGeneral<T>::value;
-   constexpr bool value2 = IsGeneral_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsGeneral_ = IsGeneral<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

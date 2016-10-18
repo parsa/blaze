@@ -110,7 +110,7 @@ class SVecSVecAddExpr : public SparseVector< SVecSVecAddExpr<VT1,VT2,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef AddExprTrait_<RN1,RN2>  ExprReturnType;

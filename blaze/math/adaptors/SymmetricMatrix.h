@@ -574,7 +574,7 @@ struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsAligned_<MT> >
+struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -591,7 +591,7 @@ struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsAligne
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsPadded_<MT> >
+struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -608,7 +608,7 @@ struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsPadded_
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsResizable_<MT> >
+struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

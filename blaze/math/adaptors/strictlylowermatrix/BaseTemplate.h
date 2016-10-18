@@ -548,9 +548,9 @@ namespace blaze {
    C = A * B;  // Results in a strictly lower matrix; no runtime overhead
    \endcode
 */
-template< typename MT                         // Type of the adapted matrix
-        , bool SO = IsColumnMajorMatrix_<MT>  // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix_<MT> >      // Density flag
+template< typename MT                               // Type of the adapted matrix
+        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix<MT>::value >      // Density flag
 class StrictlyLowerMatrix
 {};
 //*************************************************************************************************

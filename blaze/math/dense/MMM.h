@@ -115,7 +115,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded_<MT2> || !IsPadded_<MT3> );
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -148,8 +148,8 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t ibegin( IsLower_<MT2> ? kk : 0UL );
-      const size_t iend  ( IsUpper_<MT2> ? kk+kblock : M );
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
       A2 = submatrix<!remainder>( A, ibegin, kk, isize, kblock );
@@ -161,8 +161,8 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( ( IsLower_<MT3> && kk+kblock <= jj ) ||
-             ( IsUpper_<MT3> && jj+jblock <= kk ) ) {
+         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
+             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
             jj += jblock;
             continue;
          }
@@ -439,7 +439,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
    {
       const size_t ksize( K - kk );
 
-      const size_t ibegin( IsLower_<MT2> ? kk : 0UL );
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
       A2 = submatrix( A, ibegin, kk, isize, ksize );
@@ -451,7 +451,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( IsUpper_<MT3> && jj+jblock <= kk ) {
+         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
             jj += jblock;
             continue;
          }
@@ -612,7 +612,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded_<MT2> || !IsPadded_<MT3> );
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -645,8 +645,8 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t jbegin( IsUpper_<MT3> ? kk : 0UL );
-      const size_t jend  ( IsLower_<MT3> ? kk+kblock : N );
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
       B2 = submatrix<!remainder>( B, kk, jbegin, kblock, jsize );
@@ -658,8 +658,8 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( ( IsLower_<MT2> && ii+iblock <= kk ) ||
-             ( IsUpper_<MT2> && kk+kblock <= ii ) ) {
+         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
+             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
             ii += iblock;
             continue;
          }
@@ -920,7 +920,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
    {
       const size_t ksize( K - kk );
 
-      const size_t jbegin( IsUpper_<MT3> ? kk : 0UL );
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
       B2 = submatrix( B, kk, jbegin, ksize, jsize );
@@ -932,7 +932,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( IsLower_<MT2> && ii+iblock <= kk ) {
+         if( IsLower<MT2>::value && ii+iblock <= kk ) {
             ii += iblock;
             continue;
          }
@@ -1132,7 +1132,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded_<MT2> || !IsPadded_<MT3> );
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -1163,8 +1163,8 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t ibegin( IsLower_<MT2> ? kk : 0UL );
-      const size_t iend  ( IsUpper_<MT2> ? kk+kblock : M );
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
       A2 = submatrix<!remainder>( A, ibegin, kk, isize, kblock );
@@ -1176,8 +1176,8 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( ( IsLower_<MT3> && kk+kblock <= jj ) ||
-             ( IsUpper_<MT3> && jj+jblock <= kk ) ) {
+         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
+             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
             jj += jblock;
             continue;
          }
@@ -1459,7 +1459,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
    {
       const size_t ksize( K - kk );
 
-      const size_t ibegin( IsLower_<MT2> ? kk : 0UL );
+      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
       A2 = submatrix( A, ibegin, kk, isize, ksize );
@@ -1471,7 +1471,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( IsUpper_<MT3> && jj+jblock <= kk ) {
+         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
             jj += jblock;
             continue;
          }
@@ -1655,7 +1655,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded_<MT2> || !IsPadded_<MT3> );
+   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -1686,8 +1686,8 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t jbegin( IsUpper_<MT3> ? kk : 0UL );
-      const size_t jend  ( IsLower_<MT3> ? kk+kblock : N );
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
       B2 = submatrix<!remainder>( B, kk, jbegin, kblock, jsize );
@@ -1699,8 +1699,8 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( ( IsLower_<MT2> && ii+iblock <= kk ) ||
-             ( IsUpper_<MT2> && kk+kblock <= ii ) ) {
+         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
+             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
             ii += iblock;
             continue;
          }
@@ -1965,7 +1965,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
    {
       const size_t ksize( K - kk );
 
-      const size_t jbegin( IsUpper_<MT3> ? kk : 0UL );
+      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
       B2 = submatrix( B, kk, jbegin, ksize, jsize );
@@ -1977,7 +1977,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( IsLower_<MT2> && ii+iblock <= kk ) {
+         if( IsLower<MT2>::value && ii+iblock <= kk ) {
             ii += iblock;
             continue;
          }

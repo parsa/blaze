@@ -61,8 +61,8 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER(T,SO) \
-   static_assert( ::blaze::IsMatrix_<T> && \
-                  ::blaze::StorageOrder_<T> == SO, "Invalid storage order detected" )
+   static_assert( ::blaze::IsMatrix<T>::value && \
+                  ::blaze::StorageOrder<T>::value == SO, "Invalid storage order detected" )
 //*************************************************************************************************
 
 
@@ -82,9 +82,9 @@ namespace blaze {
 // the storage order of both matrix types doesn't match, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER(T1,T2) \
-   static_assert( ::blaze::IsMatrix_<T1> && \
-                  ::blaze::IsMatrix_<T2> && \
-                  ::blaze::StorageOrder_<T1> == ::blaze::StorageOrder_<T2>, "Invalid storage order failed" )
+   static_assert( ::blaze::IsMatrix<T1>::value && \
+                  ::blaze::IsMatrix<T2>::value && \
+                  ::blaze::StorageOrder<T1>::value == ::blaze::StorageOrder<T2>::value, "Invalid storage order failed" )
 //*************************************************************************************************
 
 

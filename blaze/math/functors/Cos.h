@@ -80,7 +80,7 @@ struct Cos
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDCos_<T>; }
+   static constexpr bool simdEnabled() { return HasSIMDCos<T>::value; }
    //**********************************************************************************************
 
    //**********************************************************************************************

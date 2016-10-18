@@ -122,24 +122,6 @@ struct IsSymmetric< const volatile T > : public IsSymmetric<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSymmetric type trait.
-// \ingroup math_type_traits
-//
-// The IsSymmetric_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSymmetric class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSymmetric<T>::value;
-   constexpr bool value2 = IsSymmetric_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSymmetric_ = IsSymmetric<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

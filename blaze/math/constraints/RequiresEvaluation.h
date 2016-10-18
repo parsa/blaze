@@ -59,7 +59,7 @@ namespace blaze {
 // expressions, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_REQUIRE_EVALUATION(T) \
-   static_assert( ::blaze::RequiresEvaluation_<T>, "Type without evaluation requirement detected" )
+   static_assert( ::blaze::RequiresEvaluation<T>::value, "Type without evaluation requirement detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // expressions, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION(T) \
-   static_assert( !::blaze::RequiresEvaluation_<T>, "Type with evaluation requirement detected" )
+   static_assert( !::blaze::RequiresEvaluation<T>::value, "Type with evaluation requirement detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // SIMD member functions), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SIMD_ENABLED(T) \
-   static_assert( ::blaze::IsSIMDEnabled_<T>, "Non-SIMD enabled type detected" )
+   static_assert( ::blaze::IsSIMDEnabled<T>::value, "Non-SIMD enabled type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // functions), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED(T) \
-   static_assert( !::blaze::IsSIMDEnabled_<T>, "SIMD enabled type detected" )
+   static_assert( !::blaze::IsSIMDEnabled<T>::value, "SIMD enabled type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

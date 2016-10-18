@@ -124,7 +124,7 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
@@ -141,7 +141,7 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
    template< typename T1, typename T2 >
    struct UseSymmetricKernel {
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( T1, T2 );
-      enum : bool { value = IsSymmetric_<T2> };
+      enum : bool { value = IsSymmetric<T2>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -350,7 +350,7 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
 
       assign( ~lhs, rhs.lhs_ );
 
-      if( !IsResizable_< ElementType_<MT> > ) {
+      if( !IsResizable< ElementType_<MT> >::value ) {
          addAssign( ~lhs, rhs.rhs_ );
       }
       else
@@ -917,7 +917,7 @@ struct Columns< SMatTSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsSymmetric< SMatTSMatAddExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric_<MT1> && IsSymmetric_<MT2> >
+   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -935,7 +935,7 @@ struct IsSymmetric< SMatTSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsHermitian< SMatTSMatAddExpr<MT1,MT2> >
-   : public BoolConstant< IsHermitian_<MT1> && IsHermitian_<MT2> >
+   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -81,24 +81,6 @@ struct IsVector
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsVector type trait.
-// \ingroup math_type_traits
-//
-// The IsVector_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsVector class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsVector<T>::value;
-   constexpr bool value2 = IsVector_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsVector_ = IsVector<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -140,12 +140,12 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateLeft = IsComputation_<MT1> || RequiresEvaluation_<MT1> };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation_<MT2> || RequiresEvaluation_<MT2> };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsSymmetric_<T2> || IsSymmetric_<T3> ) };
+      enum : bool { value = ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -185,9 +185,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal_<T3> &&
-                            !IsResizable_< ElementType_<T1> > &&
-                            !IsResizable_<ET1> };
+                            !IsDiagonal<T3>::value &&
+                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable<ET1>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -261,28 +261,28 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal_<MT1> ) {
+      if( IsDiagonal<MT1>::value ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal_<MT2> ) {
+      else if( IsDiagonal<MT2>::value ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular_<MT1> || IsTriangular_<MT2> ) {
-         const size_t begin( ( IsUpper_<MT1> )
-                             ?( ( IsLower_<MT2> )
-                                ?( max( ( IsStrictlyUpper_<MT1> ? i+1UL : i )
-                                      , ( IsStrictlyLower_<MT2> ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper_<MT1> ? i+1UL : i ) )
-                             :( ( IsLower_<MT2> )
-                                ?( IsStrictlyLower_<MT2> ? j+1UL : j )
+      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
+         const size_t begin( ( IsUpper<MT1>::value )
+                             ?( ( IsLower<MT2>::value )
+                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                             :( ( IsLower<MT2>::value )
+                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower_<MT1> )
-                           ?( ( IsUpper_<MT2> )
-                              ?( min( ( IsStrictlyLower_<MT1> ? i : i+1UL )
-                                    , ( IsStrictlyUpper_<MT2> ? j : j+1UL ) ) )
-                              :( IsStrictlyLower_<MT1> ? i : i+1UL ) )
-                           :( ( IsUpper_<MT2> )
-                              ?( IsStrictlyUpper_<MT2> ? j : j+1UL )
+         const size_t end( ( IsLower<MT1>::value )
+                           ?( ( IsUpper<MT2>::value )
+                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                           :( ( IsUpper<MT2>::value )
+                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -462,8 +462,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix_<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix_<MT3> && size < 625UL ) )
+      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
          selectSmallAssignKernel( C, A, B );
       else
          selectLargeAssignKernel( C, A, B );
@@ -495,7 +495,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
       reset( C );
 
-      if( IsDiagonal_<MT5> )
+      if( IsDiagonal<MT5>::value )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -520,11 +520,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
                const ConstIterator end( A.end(i) );
                ConstIterator element( A.begin(i) );
 
-               const size_t jbegin( ( IsUpper_<MT5> )
-                                    ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                     :( jj ) );
-               const size_t jend( ( IsLower_<MT5> )
-                                  ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                   :( jpos ) );
 
                if( jbegin >= jend )
@@ -593,7 +593,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -607,11 +607,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
          for( size_t i=0UL; i<A.columns(); ++i )
          {
-            const size_t jbegin( ( IsUpper_<MT5> )
-                                 ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                  :( jj ) );
-            const size_t jend( ( IsLower_<MT5> )
-                               ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                :( jpos ) );
 
             if( jbegin >= jend )
@@ -779,9 +779,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          assign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          assign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          assign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -845,8 +845,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix_<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix_<MT3> && size < 625UL ) )
+      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
          selectSmallAddAssignKernel( C, A, B );
       else
          selectLargeAddAssignKernel( C, A, B );
@@ -876,7 +876,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      if( IsDiagonal_<MT5> )
+      if( IsDiagonal<MT5>::value )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -901,11 +901,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
                const ConstIterator end( A.end(i) );
                ConstIterator element( A.begin(i) );
 
-               const size_t jbegin( ( IsUpper_<MT5> )
-                                    ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                     :( jj ) );
-               const size_t jend( ( IsLower_<MT5> )
-                                  ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                   :( jpos ) );
 
                if( jbegin >= jend )
@@ -971,7 +971,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -979,11 +979,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
          for( size_t i=0UL; i<A.columns(); ++i )
          {
-            const size_t jbegin( ( IsUpper_<MT5> )
-                                 ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                  :( jj ) );
-            const size_t jend( ( IsLower_<MT5> )
-                               ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                :( jpos ) );
 
             if( jbegin >= jend )
@@ -1113,9 +1113,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          addAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          addAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          addAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1183,8 +1183,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix_<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix_<MT3> && size < 625UL ) )
+      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
          selectSmallSubAssignKernel( C, A, B );
       else
          selectLargeSubAssignKernel( C, A, B );
@@ -1214,7 +1214,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      if( IsDiagonal_<MT5> )
+      if( IsDiagonal<MT5>::value )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -1239,11 +1239,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
                const ConstIterator end( A.end(i) );
                ConstIterator element( A.begin(i) );
 
-               const size_t jbegin( ( IsUpper_<MT5> )
-                                    ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                     :( jj ) );
-               const size_t jend( ( IsLower_<MT5> )
-                                  ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                   :( jpos ) );
 
                if( jbegin >= jend )
@@ -1309,7 +1309,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1317,11 +1317,11 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
          for( size_t i=0UL; i<A.columns(); ++i )
          {
-            const size_t jbegin( ( IsUpper_<MT5> )
-                                 ?( max( IsStrictlyUpper_<MT5> ? i+1UL : i, jj ) )
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                  :( jj ) );
-            const size_t jend( ( IsLower_<MT5> )
-                               ?( min( IsStrictlyLower_<MT5> ? i : i+1UL, jpos ) )
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
                                :( jpos ) );
 
             if( jbegin >= jend )
@@ -1451,9 +1451,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          subAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          subAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          subAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1582,9 +1582,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1660,9 +1660,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpAddAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpAddAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpAddAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1742,9 +1742,9 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( IsSymmetric_<MT1> && IsSymmetric_<MT2> )
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
          smpSubAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
-      else if( IsSymmetric_<MT1> )
+      else if( IsSymmetric<MT1>::value )
          smpSubAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
       else
          smpSubAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
@@ -1876,7 +1876,7 @@ struct Columns< TSMatTDMatMultExpr<MT1,MT2> > : public Columns<MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsAligned< TSMatTDMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsAligned_<MT2> >
+   : public BoolConstant< IsAligned<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -899,7 +899,7 @@ class SymmetricMatrix<MT,SO,true,true>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
-   BLAZE_STATIC_ASSERT( Rows_<MT> == Columns_<MT> );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1271,7 +1271,7 @@ template< typename MT2 >  // Type of the foreign matrix
 inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( const Matrix<MT2,SO>& m )
    : matrix_( ~m )  // The adapted dense matrix
 {
-   if( !IsSymmetric_<MT2> && !isSymmetric( matrix_ ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
    }
 
@@ -1298,7 +1298,7 @@ template< typename MT2 >  // Type of the foreign matrix
 inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( const Matrix<MT2,!SO>& m )
    : matrix_( trans( ~m ) )  // The adapted dense matrix
 {
-   if( !IsSymmetric_<MT2> && !isSymmetric( matrix_ ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
    }
 
@@ -1802,7 +1802,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric_<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1836,11 +1836,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   if( IsSymmetric_<MT2> ) {
+   if( IsSymmetric<MT2>::value ) {
       matrix_ = ~rhs;
    }
    else {
@@ -1906,7 +1906,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric_<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -1940,11 +1940,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   if( IsSymmetric_<MT2> ) {
+   if( IsSymmetric<MT2>::value ) {
       matrix_ += ~rhs;
    }
    else {
@@ -2011,7 +2011,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric_<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
@@ -2045,11 +2045,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >
    SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSquare_<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   if( IsSymmetric_<MT2> ) {
+   if( IsSymmetric<MT2>::value ) {
       matrix_ -= ~rhs;
    }
    else {

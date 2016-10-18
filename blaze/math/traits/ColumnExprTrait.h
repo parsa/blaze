@@ -88,7 +88,7 @@ struct ColumnExprTrait
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
    struct Result {
-      using Type = Column< T, IsColumnMajorMatrix_<T>, IsDenseMatrix_<T>, IsSymmetric_<T> >;
+      using Type = Column< T, IsColumnMajorMatrix<T>::value, IsDenseMatrix<T>::value, IsSymmetric<T>::value >;
    };
    /*! \endcond */
    //**********************************************************************************************

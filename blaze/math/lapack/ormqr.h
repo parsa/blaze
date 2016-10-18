@@ -174,7 +174,7 @@ inline void ormqr( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
       return;
    }
 
-   if( IsRowMajorMatrix_<MT1> ) {
+   if( IsRowMajorMatrix<MT1>::value ) {
       ( side  == 'L' )?( side  = 'R' ):( side  = 'L' );
    }
 

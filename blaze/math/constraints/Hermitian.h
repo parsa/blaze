@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not an Hermitian matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsHermitian_<T>, "Non-Hermitian matrix type detected" )
+   static_assert( ::blaze::IsHermitian<T>::value, "Non-Hermitian matrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is an Hermitian matrix type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsHermitian_<T>, "Hermitian matrix type detected" )
+   static_assert( !::blaze::IsHermitian<T>::value, "Hermitian matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

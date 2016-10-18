@@ -81,24 +81,6 @@ struct IsSparseMatrix
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSparseMatrix type trait.
-// \ingroup math_type_traits
-//
-// The IsSparseMatrix_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSparseMatrix class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSparseMatrix<T>::value;
-   constexpr bool value2 = IsSparseMatrix_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSparseMatrix_ = IsSparseMatrix<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

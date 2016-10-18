@@ -122,7 +122,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
@@ -268,7 +268,7 @@ class SMatDMatSubExpr : public DenseMatrix< SMatDMatSubExpr<MT1,MT2,SO>, SO >
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
       return ( lhs_.canAlias( alias ) ) ||
-             ( IsExpression_<MT2> && rhs_.canAlias( alias ) );
+             ( IsExpression<MT2>::value && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 
@@ -748,7 +748,7 @@ struct Columns< SMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric_<MT1> && IsSymmetric_<MT2> >
+   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -766,7 +766,7 @@ struct IsSymmetric< SMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsHermitian< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsHermitian_<MT1> && IsHermitian_<MT2> >
+   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

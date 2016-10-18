@@ -496,10 +496,10 @@ namespace blaze {
    submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 */
-template< typename MT                         // Type of the matrix
-        , bool AF = unaligned                 // Alignment flag
-        , bool SO = IsColumnMajorMatrix_<MT>  // Storage order
-        , bool DF = IsDenseMatrix_<MT> >      // Density flag
+template< typename MT                               // Type of the matrix
+        , bool AF = unaligned                       // Alignment flag
+        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
+        , bool DF = IsDenseMatrix<MT>::value >      // Density flag
 class Submatrix
 {};
 //*************************************************************************************************

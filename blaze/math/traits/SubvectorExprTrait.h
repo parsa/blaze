@@ -88,7 +88,7 @@ struct SubvectorExprTrait
    //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct Result { using Type = Subvector< T, AF, IsRowVector_<T>, IsDenseVector_<T> >; };
+   struct Result { using Type = Subvector< T, AF, IsRowVector<T>::value, IsDenseVector<T>::value >; };
    /*! \endcond */
    //**********************************************************************************************
 

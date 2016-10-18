@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsDenseMatrix_<T>, "Non-dense matrix type detected" )
+   static_assert( ::blaze::IsDenseMatrix<T>::value, "Non-dense matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DENSE_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsDenseMatrix_<T>, "Dense matrix type detected" )
+   static_assert( !::blaze::IsDenseMatrix<T>::value, "Dense matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

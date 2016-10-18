@@ -140,12 +140,12 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation_<MT1> || RequiresEvaluation_<MT1> };
+   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateRight = IsComputation_<MT2> || RequiresEvaluation_<MT2> };
+   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
        Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = IsSymmetric_<T2> };
+      enum : bool { value = IsSymmetric<T2>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -184,9 +184,9 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal_<T2> &&
-                            !IsResizable_< ElementType_<T1> > &&
-                            !IsResizable_<ET2> };
+                            !IsDiagonal<T2>::value &&
+                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable<ET2>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -248,28 +248,28 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal_<MT1> ) {
+      if( IsDiagonal<MT1>::value ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal_<MT2> ) {
+      else if( IsDiagonal<MT2>::value ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular_<MT1> || IsTriangular_<MT2> ) {
-         const size_t begin( ( IsUpper_<MT1> )
-                             ?( ( IsLower_<MT2> )
-                                ?( max( ( IsStrictlyUpper_<MT1> ? i+1UL : i )
-                                      , ( IsStrictlyLower_<MT2> ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper_<MT1> ? i+1UL : i ) )
-                             :( ( IsLower_<MT2> )
-                                ?( IsStrictlyLower_<MT2> ? j+1UL : j )
+      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
+         const size_t begin( ( IsUpper<MT1>::value )
+                             ?( ( IsLower<MT2>::value )
+                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                             :( ( IsLower<MT2>::value )
+                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower_<MT1> )
-                           ?( ( IsUpper_<MT2> )
-                              ?( min( ( IsStrictlyLower_<MT1> ? i : i+1UL )
-                                    , ( IsStrictlyUpper_<MT2> ? j : j+1UL ) ) )
-                              :( IsStrictlyLower_<MT1> ? i : i+1UL ) )
-                           :( ( IsUpper_<MT2> )
-                              ?( IsStrictlyUpper_<MT2> ? j : j+1UL )
+         const size_t end( ( IsLower<MT1>::value )
+                           ?( ( IsUpper<MT2>::value )
+                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                           :( ( IsUpper<MT2>::value )
+                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -450,7 +450,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -461,11 +461,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -493,11 +493,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -519,11 +519,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -564,7 +564,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       reset( C );
 
@@ -577,11 +577,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -627,11 +627,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -673,11 +673,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -843,7 +843,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -854,11 +854,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -873,11 +873,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -890,11 +890,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element )
@@ -928,7 +928,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -939,11 +939,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -989,11 +989,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1035,11 +1035,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1173,7 +1173,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1184,11 +1184,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -1203,11 +1203,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -1220,11 +1220,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element )
@@ -1258,7 +1258,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef ConstIterator_<MT5>  ConstIterator;
 
-      const size_t block( IsRowMajorMatrix_<MT3> ? B.columns() : 256UL );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 256UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1269,11 +1269,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+4UL) <= A.rows(); i+=4UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1319,11 +1319,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; (i+2UL) <= A.rows(); i+=2UL ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1365,11 +1365,11 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
          for( ; i<A.rows(); ++i ) {
             for( size_t j=jj; j<jend; ++j )
             {
-               ConstIterator element( ( IsUpper_<MT4> )
-                                      ?( IsStrictlyUpper_<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper<MT4>::value )
+                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower_<MT4> )
-                                        ?( IsStrictlyLower_<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower<MT4>::value )
+                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1832,7 +1832,7 @@ struct Columns< DMatTSMatMultExpr<MT1,MT2> > : public Columns<MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsAligned< DMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsAligned_<MT1> >
+   : public BoolConstant< IsAligned<MT1>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1850,7 +1850,7 @@ struct IsAligned< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< DMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsLower_<MT1> && IsLower_<MT2> >
+   : public BoolConstant< IsLower<MT1>::value && IsLower<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1868,7 +1868,7 @@ struct IsLower< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< DMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsUniLower_<MT1> && IsUniLower_<MT2> >
+   : public BoolConstant< IsUniLower<MT1>::value && IsUniLower<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1905,7 +1905,7 @@ struct IsStrictlyLower< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< DMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_<MT1> && IsUpper_<MT2> >
+   : public BoolConstant< IsUpper<MT1>::value && IsUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1923,7 +1923,7 @@ struct IsUpper< DMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< DMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< IsUniUpper_<MT1> && IsUniUpper_<MT2> >
+   : public BoolConstant< IsUniUpper<MT1>::value && IsUniUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -59,7 +59,7 @@ namespace blaze {
 // to the natural storage order of its underlying type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_OPPOSED_VIEW(T) \
-   static_assert( ::blaze::IsOpposedView_<T>, "Non-opposed view detected" )
+   static_assert( ::blaze::IsOpposedView<T>::value, "Non-opposed view detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // natural storage order of its underlying type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_OPPOSED_VIEW(T) \
-   static_assert( !::blaze::IsOpposedView_<T>, "Opposed view detected" )
+   static_assert( !::blaze::IsOpposedView<T>::value, "Opposed view detected" )
 //*************************************************************************************************
 
 } // namespace blaze

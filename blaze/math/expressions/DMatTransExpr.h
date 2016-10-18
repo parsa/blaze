@@ -126,7 +126,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
        be set to 1 and the transposition expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
        via the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation_<MT> };
+   enum : bool { useAssign = RequiresEvaluation<MT>::value };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -1071,7 +1071,7 @@ struct Columns< DMatTransExpr<MT,SO> > : public Rows<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsAligned< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsAligned_<MT> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1089,7 +1089,7 @@ struct IsAligned< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsPadded< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsPadded_<MT> >
+   : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1107,7 +1107,7 @@ struct IsPadded< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric_<MT> >
+   : public BoolConstant< IsSymmetric<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1125,7 +1125,7 @@ struct IsSymmetric< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsHermitian_<MT> >
+   : public BoolConstant< IsHermitian<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1143,7 +1143,7 @@ struct IsHermitian< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsUpper_<MT> >
+   : public BoolConstant< IsUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1161,7 +1161,7 @@ struct IsLower< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper_<MT> >
+   : public BoolConstant< IsUniUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1179,7 +1179,7 @@ struct IsUniLower< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyUpper_<MT> >
+   : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1197,7 +1197,7 @@ struct IsStrictlyLower< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsLower_<MT> >
+   : public BoolConstant< IsLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1215,7 +1215,7 @@ struct IsUpper< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsUniLower_<MT> >
+   : public BoolConstant< IsUniLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1233,7 +1233,7 @@ struct IsUniUpper< DMatTransExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatTransExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyLower_<MT> >
+   : public BoolConstant< IsStrictlyLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

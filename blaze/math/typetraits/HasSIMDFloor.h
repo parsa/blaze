@@ -110,24 +110,6 @@ struct HasSIMDFloor : public BoolConstant< HasSIMDFloorHelper< Decay_<T> >::valu
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDFloor type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDFloor_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDFloor class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDFloor<T>::value;
-   constexpr bool value2 = HasSIMDFloor_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool HasSIMDFloor_ = HasSIMDFloor<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

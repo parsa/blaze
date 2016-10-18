@@ -125,24 +125,6 @@ struct IsSquare< const volatile T > : public IsSquare<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsSquare type trait.
-// \ingroup math_type_traits
-//
-// The IsSquare_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsSquare class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsSquare<T>::value;
-   constexpr bool value2 = IsSquare_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsSquare_ = IsSquare<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

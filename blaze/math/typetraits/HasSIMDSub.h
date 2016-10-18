@@ -164,25 +164,6 @@ struct HasSIMDSub : public BoolConstant< HasSIMDSubHelper< Decay_<T1>, Decay_<T2
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDSub type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDSub_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDSub class template. For instance, given the types \a T1 and \a T2
-// the following two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDSub<T1,T2>::value;
-   constexpr bool value2 = HasSIMDSub_<T1,T2>;
-   \endcode
-*/
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-constexpr bool HasSIMDSub_ = HasSIMDSub<T1,T2>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

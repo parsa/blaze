@@ -67,7 +67,7 @@ namespace blaze {
 // derived from the MatMatAddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMATADDEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatMatAddExpr_<T>, "Non-matrix/matrix addition expression type detected" )
+   static_assert( ::blaze::IsMatMatAddExpr<T>::value, "Non-matrix/matrix addition expression type detected" )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ namespace blaze {
 // from the MatMatAddExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATADDEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatMatAddExpr_<T>, "Matrix/matrix addition expression type detected" )
+   static_assert( !::blaze::IsMatMatAddExpr<T>::value, "Matrix/matrix addition expression type detected" )
 //*************************************************************************************************
 
 

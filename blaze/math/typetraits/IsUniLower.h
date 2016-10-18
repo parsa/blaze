@@ -123,24 +123,6 @@ struct IsUniLower< const volatile T > : public IsUniLower<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUniLower type trait.
-// \ingroup math_type_traits
-//
-// The IsUniLower_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsUniLower class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsUniLower<T>::value;
-   constexpr bool value2 = IsUniLower_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUniLower_ = IsUniLower<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

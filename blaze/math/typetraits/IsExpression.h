@@ -73,24 +73,6 @@ struct IsExpression
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsExpression type trait.
-// \ingroup math_type_traits
-//
-// The IsExpression_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsExpression class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsExpression<T>::value;
-   constexpr bool value2 = IsExpression_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsExpression_ = IsExpression<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

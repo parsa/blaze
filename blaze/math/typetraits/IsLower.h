@@ -125,24 +125,6 @@ struct IsLower< const volatile T > : public IsLower<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsLower type trait.
-// \ingroup math_type_traits
-//
-// The IsLower_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsLower class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsLower<T>::value;
-   constexpr bool value2 = IsLower_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsLower_ = IsLower<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

@@ -115,7 +115,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
@@ -243,7 +243,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
       return ( lhs_.canAlias( alias ) ) ||
-             ( IsExpression_<VT2> && rhs_.canAlias( alias ) );
+             ( IsExpression<VT2>::value && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

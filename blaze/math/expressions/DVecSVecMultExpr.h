@@ -112,7 +112,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_<RN1> && !IsTemporary_<RN2> };
+   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
    typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
@@ -126,7 +126,7 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
        to \a true and the multiplication expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to \a false and the expression will be
        evaluated via the subscript operator. */
-   enum : bool { useAssign = ( RequiresEvaluation_<VT1> || RequiresEvaluation_<VT2> ) };
+   enum : bool { useAssign = ( RequiresEvaluation<VT1>::value || RequiresEvaluation<VT2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.

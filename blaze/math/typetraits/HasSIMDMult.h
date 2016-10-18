@@ -163,25 +163,6 @@ struct HasSIMDMult : public BoolConstant< HasSIMDMultHelper< Decay_<T1>, Decay_<
 {};
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the HasSIMDMult type trait.
-// \ingroup math_type_traits
-//
-// The HasSIMDMult_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the HasSIMDMult class template. For instance, given the types \a T1 and \a T2
-// the following two statements are identical:
-
-   \code
-   constexpr bool value1 = HasSIMDMult<T1,T2>::value;
-   constexpr bool value2 = HasSIMDMult_<T1,T2>;
-   \endcode
-*/
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
-constexpr bool HasSIMDMult_ = HasSIMDMult<T1,T2>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

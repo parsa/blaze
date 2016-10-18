@@ -125,24 +125,6 @@ struct IsUpper< const volatile T > : public IsUpper<T>
 /*! \endcond */
 //*************************************************************************************************
 
-
-//*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the IsUpper type trait.
-// \ingroup math_type_traits
-//
-// The IsUpper_ alias declaration provides a convenient shortcut to access the nested
-// \a value of the IsUpper class template. For instance, given the type \a T the following
-// two statements are identical:
-
-   \code
-   constexpr bool value1 = IsUpper<T>::value;
-   constexpr bool value2 = IsUpper_<T>;
-   \endcode
-*/
-template< typename T >
-constexpr bool IsUpper_ = IsUpper<T>::value;
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif
