@@ -631,9 +631,9 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.rows() );
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -1001,9 +1001,9 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.rows() );
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -1289,9 +1289,9 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
-      const size_t M( A.rows() );
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+      const size_t M( A.rows() );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );

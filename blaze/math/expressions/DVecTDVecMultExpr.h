@@ -764,10 +764,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -883,10 +883,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1040,10 +1040,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1160,10 +1160,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1285,10 +1285,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1405,10 +1405,10 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
-
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

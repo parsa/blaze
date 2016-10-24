@@ -684,9 +684,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    {
       typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
-      const size_t M( (~A).rows() );
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const size_t M( (~A).rows() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -965,9 +965,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    {
       typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
-      const size_t M( (~A).rows() );
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const size_t M( (~A).rows() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1135,9 +1135,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    {
       typedef ConstIterator_< RemoveReference_<RT> >  ConstIterator;
 
-      const size_t M( (~A).rows() );
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
-      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      const size_t M( (~A).rows() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

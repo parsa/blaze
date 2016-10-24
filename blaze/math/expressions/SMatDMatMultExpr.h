@@ -673,7 +673,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       reset( C );
 
@@ -1051,7 +1051,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
@@ -1394,7 +1394,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    {
       typedef ConstIterator_<MT4>  ConstIterator;
 
-      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {

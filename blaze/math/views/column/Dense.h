@@ -1628,7 +1628,8 @@ inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAss
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -1747,7 +1748,8 @@ inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAdd
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -1854,7 +1856,8 @@ inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSub
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -1961,7 +1964,8 @@ inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMul
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t rows( size() );
 
    const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
@@ -5355,7 +5359,8 @@ inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -5471,7 +5476,8 @@ inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -5575,7 +5581,8 @@ inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
@@ -5679,7 +5686,8 @@ inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+
    const size_t columns( size() );
 
    const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
