@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/Custom.h>
+#include <blaze/math/constraints/DeclDiagExpr.h>
 #include <blaze/math/constraints/DeclExpr.h>
 #include <blaze/math/constraints/DeclHermExpr.h>
 #include <blaze/math/constraints/DeclLowExpr.h>
