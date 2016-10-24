@@ -569,10 +569,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -593,14 +593,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -627,10 +627,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -653,9 +653,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -677,8 +677,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+            xmm1 += A.load(i         ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
@@ -698,7 +698,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+            xmm1 += A.load(i,j) * set( x[j] );
          }
 
          y.store( i, xmm1 );
@@ -771,10 +771,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -805,14 +805,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -831,10 +831,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -849,9 +849,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -865,8 +865,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1 );
@@ -878,7 +878,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) + xmm1 );
@@ -1152,10 +1152,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1183,14 +1183,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1220,10 +1220,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1248,9 +1248,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1273,8 +1273,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+            xmm1 += A.load(i         ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
@@ -1294,7 +1294,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          SIMDType xmm1( y.load(i) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+            xmm1 += A.load(i,j) * set( x[j] );
          }
 
          y.store( i, xmm1 );
@@ -1367,10 +1367,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -1399,14 +1399,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -1425,10 +1425,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -1443,9 +1443,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1 );
@@ -1459,8 +1459,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1 );
@@ -1472,7 +1472,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) + xmm1 );
@@ -1722,10 +1722,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1753,14 +1753,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 - A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 - A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 - A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 - A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 - A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 -= A.load(i             ,j) * x1;
+            xmm2 -= A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 -= A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 -= A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 -= A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 -= A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 -= A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 -= A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1790,10 +1790,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 - A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 -= A.load(i             ,j) * x1;
+            xmm2 -= A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 -= A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 -= A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1818,9 +1818,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 - A.load(i             ,j) * x1;
-            xmm2 = xmm2 - A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 - A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 -= A.load(i             ,j) * x1;
+            xmm2 -= A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 -= A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1 );
@@ -1843,8 +1843,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 - A.load(i         ,j) * x1;
-            xmm2 = xmm2 - A.load(i+SIMDSIZE,j) * x1;
+            xmm1 -= A.load(i         ,j) * x1;
+            xmm2 -= A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1 );
@@ -1864,7 +1864,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
          SIMDType xmm1( y.load(i) );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            xmm1 = xmm1 - A.load(i,j) * set( x[j] );
+            xmm1 -= A.load(i,j) * set( x[j] );
          }
 
          y.store( i, xmm1 );
@@ -1938,10 +1938,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -1970,14 +1970,14 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
@@ -1996,10 +1996,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
@@ -2014,9 +2014,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1 );
@@ -2030,8 +2030,8 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) - xmm1 );
@@ -2043,7 +2043,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) - xmm1 );
@@ -2907,10 +2907,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -2933,14 +2933,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
@@ -2967,10 +2967,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
@@ -2993,9 +2993,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , xmm1*factor );
@@ -3017,8 +3017,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+            xmm1 += A.load(i         ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , xmm1*factor );
@@ -3039,7 +3039,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i,j) * x1;
+            xmm1 += A.load(i,j) * x1;
          }
 
          y.store( i, xmm1*factor );
@@ -3112,10 +3112,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -3148,14 +3148,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3174,10 +3174,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3192,9 +3192,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3208,8 +3208,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1*factor );
@@ -3221,7 +3221,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) + xmm1*factor );
@@ -3465,10 +3465,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -3491,14 +3491,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3525,10 +3525,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3551,9 +3551,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3575,8 +3575,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+            xmm1 += A.load(i         ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , y.load(i         ) + xmm1*factor );
@@ -3596,7 +3596,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+            xmm1 += A.load(i,j) * set( x[j] );
          }
 
          y.store( i, y.load(i) + xmm1*factor );
@@ -3670,10 +3670,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -3704,14 +3704,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3730,10 +3730,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3748,9 +3748,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) + xmm1*factor );
@@ -3764,8 +3764,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) + xmm1*factor );
@@ -3777,7 +3777,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) + xmm1*factor );
@@ -3998,10 +3998,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -4024,14 +4024,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-            xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-            xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-            xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-            xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+            xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+            xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+            xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4058,10 +4058,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-            xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4084,9 +4084,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i             ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-            xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+            xmm1 += A.load(i             ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+            xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
          }
 
          y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4108,8 +4108,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
          for( size_t j=jbegin; j<jend; ++j ) {
             const SIMDType x1( set( x[j] ) );
-            xmm1 = xmm1 + A.load(i         ,j) * x1;
-            xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+            xmm1 += A.load(i         ,j) * x1;
+            xmm2 += A.load(i+SIMDSIZE,j) * x1;
          }
 
          y.store( i         , y.load(i         ) - xmm1*factor );
@@ -4129,7 +4129,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
          SIMDType xmm1;
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+            xmm1 += A.load(i,j) * set( x[j] );
          }
 
          y.store( i, y.load(i) - xmm1*factor );
@@ -4203,10 +4203,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
+      constexpr bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
+
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
-
-      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       const size_t iblock( 32768UL / sizeof( ElementType ) );
       const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
@@ -4237,14 +4237,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
-                  xmm5 = xmm5 + A.load(i+SIMDSIZE*4UL,j) * x1;
-                  xmm6 = xmm6 + A.load(i+SIMDSIZE*5UL,j) * x1;
-                  xmm7 = xmm7 + A.load(i+SIMDSIZE*6UL,j) * x1;
-                  xmm8 = xmm8 + A.load(i+SIMDSIZE*7UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm5 += A.load(i+SIMDSIZE*4UL,j) * x1;
+                  xmm6 += A.load(i+SIMDSIZE*5UL,j) * x1;
+                  xmm7 += A.load(i+SIMDSIZE*6UL,j) * x1;
+                  xmm8 += A.load(i+SIMDSIZE*7UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4263,10 +4263,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
-                  xmm4 = xmm4 + A.load(i+SIMDSIZE*3UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm4 += A.load(i+SIMDSIZE*3UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4281,9 +4281,9 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i             ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE    ,j) * x1;
-                  xmm3 = xmm3 + A.load(i+SIMDSIZE*2UL,j) * x1;
+                  xmm1 += A.load(i             ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE    ,j) * x1;
+                  xmm3 += A.load(i+SIMDSIZE*2UL,j) * x1;
                }
 
                y.store( i             , y.load(i             ) - xmm1*factor );
@@ -4297,8 +4297,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
                for( size_t j=jj; j<jend; ++j ) {
                   const SIMDType x1( set( x[j] ) );
-                  xmm1 = xmm1 + A.load(i         ,j) * x1;
-                  xmm2 = xmm2 + A.load(i+SIMDSIZE,j) * x1;
+                  xmm1 += A.load(i         ,j) * x1;
+                  xmm2 += A.load(i+SIMDSIZE,j) * x1;
                }
 
                y.store( i         , y.load(i         ) - xmm1*factor );
@@ -4310,7 +4310,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                SIMDType xmm1;
 
                for( size_t j=jj; j<jend; ++j ) {
-                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+                  xmm1 += A.load(i,j) * set( x[j] );
                }
 
                y.store( i, y.load(i) - xmm1*factor );
