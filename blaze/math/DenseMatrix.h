@@ -49,6 +49,7 @@
 #include <blaze/math/dense/QR.h>
 #include <blaze/math/dense/RQ.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/DMatDeclDiagExpr.h>
 #include <blaze/math/expressions/DMatDeclHermExpr.h>
 #include <blaze/math/expressions/DMatDeclLowExpr.h>
 #include <blaze/math/expressions/DMatDeclSymExpr.h>
