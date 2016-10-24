@@ -358,9 +358,10 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -475,9 +476,10 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -552,9 +554,10 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );

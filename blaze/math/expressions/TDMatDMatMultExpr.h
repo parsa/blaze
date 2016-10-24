@@ -718,10 +718,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -878,10 +878,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -2213,10 +2213,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -2357,10 +2357,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -3730,10 +3730,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -3874,10 +3874,10 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF>, tru
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -5843,10 +5843,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -6003,10 +6003,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -7247,10 +7247,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -7391,10 +7391,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -8591,10 +8591,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
       selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -8735,10 +8735,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF>, ST, true >
    static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
       selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
-
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );

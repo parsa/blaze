@@ -615,9 +615,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -744,9 +745,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -873,9 +875,10 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -1494,9 +1497,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
@@ -1622,9 +1626,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
@@ -1750,9 +1755,10 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
 
+      constexpr size_t block( BLOCK_SIZE );
+
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
