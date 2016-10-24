@@ -64,7 +64,7 @@ struct DeclLow
    // \return The result of the decllow() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
    {
       return decllow( a );
    }

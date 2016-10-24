@@ -64,7 +64,7 @@ struct DeclSym
    // \return The result of the declsym() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
    {
       return declsym( a );
    }
