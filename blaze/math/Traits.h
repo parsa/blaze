@@ -46,6 +46,7 @@
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
+#include <blaze/math/traits/DeclDiagExprTrait.h>
 #include <blaze/math/traits/DeclHermExprTrait.h>
 #include <blaze/math/traits/DeclLowExprTrait.h>
 #include <blaze/math/traits/DeclSymExprTrait.h>
