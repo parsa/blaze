@@ -103,17 +103,17 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
-                      , private DeclHermExpr
-                      , private If< IsComputation<MT>, Computation, EmptyType >::Type
+                       , private DeclHermExpr
+                       , private If< IsComputation<MT>, Computation, EmptyType >::Type
 {
  public:
    //**Type definitions****************************************************************************
    typedef SMatDeclHermExpr<MT,SO>  This;           //!< Type of this SMatDeclHermExpr instance.
-   typedef ResultType_<MT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>       OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<MT>      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>        ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>         ReturnType;     //!< Return type for expression template evaluations.
+   typedef ResultType_<MT>          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<MT>        OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<MT>       TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>         ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>          ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclHermExpr& >  CompositeType;
