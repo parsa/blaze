@@ -161,6 +161,7 @@ class OperationTest
                           void testDeclHermOperation ();
                           void testDeclLowOperation  ();
                           void testDeclUppOperation  ();
+                          void testDeclDiagOperation ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -327,6 +328,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testDeclHermOperation();
    testDeclLowOperation();
    testDeclUppOperation();
+   testDeclDiagOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -1860,6 +1862,30 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
    if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
    {
       testCustomOperation( blaze::DeclUpp(), "declupp" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the diagonal sparse vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the diagonal outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclDiagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclDiag(), "decldiag" );
    }
 #endif
 }

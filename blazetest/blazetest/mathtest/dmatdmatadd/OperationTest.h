@@ -3817,6 +3817,30 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the diagonal matrix/dense matrix addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the diagonal matrix addition with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the addition or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclDiagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::DeclDiag(), "decldiag" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the submatrix-wise dense matrix/dense matrix addition.
 //
 // \return void
