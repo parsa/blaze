@@ -54,6 +54,7 @@
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatCTransExprTrait.h>
+#include <blaze/math/traits/DMatDeclDiagExprTrait.h>
 #include <blaze/math/traits/DMatDeclHermExprTrait.h>
 #include <blaze/math/traits/DMatDeclLowExprTrait.h>
 #include <blaze/math/traits/DMatDeclSymExprTrait.h>
