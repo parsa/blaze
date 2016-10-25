@@ -800,7 +800,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the addition of a row-major and a column-major dense matrix:
 

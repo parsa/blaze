@@ -957,7 +957,7 @@ class DMatDMatSubExpr : public DenseMatrix< DMatDMatSubExpr<MT1,MT2,SO>, SO >
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the subtraction of two dense matrices with identical storage order:
 

@@ -965,7 +965,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the addition of two dense matrices with identical storage order:
 

@@ -1123,7 +1123,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
 // \param lhs The left-hand side sparse matrix for the matrix multiplication.
 // \param rhs The right-hand side sparse matrix for the matrix multiplication.
 // \return The product of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the multiplication of a row-major sparse matrix and a column-major
 // sparse matrix:

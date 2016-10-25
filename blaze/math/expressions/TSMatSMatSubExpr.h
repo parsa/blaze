@@ -786,7 +786,7 @@ class TSMatSMatSubExpr : public SparseMatrix< TSMatSMatSubExpr<MT1,MT2>, false >
 // \param lhs The left-hand side sparse matrix for the matrix subtraction.
 // \param rhs The right-hand side sparse matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the subtraction of a column-major and a row-major sparse matrix:
 

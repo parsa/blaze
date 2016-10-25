@@ -784,7 +784,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
 // \param lhs The left-hand side sparse matrix for the matrix addition.
 // \param rhs The right-hand side sparse matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This operator represents the addition of two row-major sparse matrices:
 
