@@ -1789,6 +1789,9 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
 #if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
    {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
       testCustomOperation( blaze::DeclSym(), "declsym" );
    }
 #endif
@@ -1813,6 +1816,9 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
 #if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
    {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
       testCustomOperation( blaze::DeclHerm(), "declherm" );
    }
 #endif
@@ -1837,6 +1843,9 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
 #if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
    {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
       testCustomOperation( blaze::DeclLow(), "decllow" );
    }
 #endif
@@ -1861,6 +1870,9 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
 #if BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
    {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
       testCustomOperation( blaze::DeclUpp(), "declupp" );
    }
 #endif
@@ -1885,6 +1897,9 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation()
 #if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
    {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
       testCustomOperation( blaze::DeclDiag(), "decldiag" );
    }
 #endif
