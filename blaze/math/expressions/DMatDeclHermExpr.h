@@ -1000,9 +1000,11 @@ class DMatDeclHermExpr : public DenseMatrix< DMatDeclHermExpr<MT,SO>, SO >
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
+// \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
 // The \a declherm function declares the given non-Hermitian dense matrix expression \a dm as
-// Hermitian. The function returns an expression representing the operation.\n
+// Hermitian. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a declherm function:
 
    \code
@@ -1017,6 +1019,10 @@ inline DisableIf_< IsHermitian<MT>, const DMatDeclHermExpr<MT,SO> >
    declherm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
+   }
 
    return DMatDeclHermExpr<MT,SO>( ~dm );
 }
@@ -1060,10 +1066,12 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 //
 // \param dm The input dense matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
-// This function implements the application of the declherm() operation on a dense matrix-scalar
-// multiplication. It restructures the expression \f$ A=declherm(B*s1) \f$ to the expression
-// \f$ A=declherm(B)*s1 \f$.
+// This function implements the application of the declherm() operation on a dense matrix-
+// scalar multiplication. It restructures the expression \f$ A=declherm(B*s1) \f$ to the
+// expression \f$ A=declherm(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -1072,6 +1080,10 @@ inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclHermExprTrait_<MT>
    declherm( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
+   }
 
    return declherm( dm.leftOperand() ) * dm.rightOperand();
 }

@@ -1000,9 +1000,11 @@ class DMatDeclSymExpr : public DenseMatrix< DMatDeclSymExpr<MT,SO>, SO >
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
+// \exception std::invalid_argument Invalid symmetric matrix specification.
 //
 // The \a declsym function declares the given non-symmetric dense matrix expression \a dm as
-// symmetric. The function returns an expression representing the operation.\n
+// symmetric. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a declsym function:
 
    \code
@@ -1017,6 +1019,10 @@ inline DisableIf_< IsSymmetric<MT>, const DMatDeclSymExpr<MT,SO> >
    declsym( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
+   }
 
    return DMatDeclSymExpr<MT,SO>( ~dm );
 }
@@ -1060,10 +1066,12 @@ inline EnableIf_< IsSymmetric<MT>, const MT& >
 //
 // \param dm The input dense matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid symmetric matrix specification.
 //
-// This function implements the application of the declsym() operation on a dense matrix-scalar
-// multiplication. It restructures the expression \f$ A=declsym(B*s1) \f$ to the expression
-// \f$ A=declsym(B)*s1 \f$.
+// This function implements the application of the \a declsym operation on a dense matrix-
+// scalar multiplication. It restructures the expression \f$ A=declsym(B*s1) \f$ to the
+// expression \f$ A=declsym(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -1072,6 +1080,10 @@ inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclSymExprTrait_<MT>,
    declsym( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
+   }
 
    return declsym( dm.leftOperand() ) * dm.rightOperand();
 }

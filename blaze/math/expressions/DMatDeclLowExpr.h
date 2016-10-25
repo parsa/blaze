@@ -1000,10 +1000,12 @@ class DMatDeclLowExpr : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
+// \exception std::invalid_argument Invalid lower matrix specification.
 //
 // The \a decllow function declares the given non-lower dense matrix expression \a dm as
-// lower. The function returns an expression representing the operation.\n The following
-// example demonstrates the use of the \a decllow function:
+// lower. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The following example demonstrates the use of the \a decllow function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1017,6 +1019,10 @@ inline DisableIf_< IsLower<MT>, const DMatDeclLowExpr<MT,SO> >
    decllow( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
+   }
 
    return DMatDeclLowExpr<MT,SO>( ~dm );
 }
@@ -1060,10 +1066,12 @@ inline EnableIf_< IsLower<MT>, const MT& >
 //
 // \param dm The input dense matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid lower matrix specification.
 //
-// This function implements the application of the decllow() operation on a dense matrix-scalar
-// multiplication. It restructures the expression \f$ A=decllow(B*s1) \f$ to the expression
-// \f$ A=decllow(B)*s1 \f$.
+// This function implements the application of the decllow() operation on a dense matrix-
+// scalar multiplication. It restructures the expression \f$ A=decllow(B*s1) \f$ to the
+// expression \f$ A=decllow(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -1072,6 +1080,10 @@ inline const DisableIf_< IsLower<MT>, MultExprTrait_< DeclLowExprTrait_<MT>, ST 
    decllow( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
+   }
 
    return decllow( dm.leftOperand() ) * dm.rightOperand();
 }

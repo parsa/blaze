@@ -10108,9 +10108,12 @@ inline const TDMatDMatMultExpr<T1,T2,false>
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix multiplication expression.
+// \exception std::invalid_argument Invalid symmetric matrix specification.
 //
 // The \a declsym function declares the given non-symmetric dense matrix multiplication expression
-// \a dm as symmetric. The function returns an expression representing the operation.\n
+// \a dm as symmetric. The function returns an expression representing the operation. In case the
+// given expression does not represent a square matrix, a \a std::invalid_argument exception is
+// thrown.\n
 // The following example demonstrates the use of the \a declsym function:
 
    \code
@@ -10129,6 +10132,10 @@ inline const TDMatDMatMultExpr<MT1,MT2,true>
    declsym( const TDMatDMatMultExpr<MT1,MT2,false>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
+   }
 
    return TDMatDMatMultExpr<MT1,MT2,true>( dm.leftOperand(), dm.rightOperand() );
 }

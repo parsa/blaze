@@ -1000,10 +1000,12 @@ class DMatDeclUppExpr : public DenseMatrix< DMatDeclUppExpr<MT,SO>, SO >
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
+// \exception std::invalid_argument Invalid upper matrix specification.
 //
 // The \a declupp function declares the given non-upper dense matrix expression \a dm as
-// upper. The function returns an expression representing the operation.\n The following
-// example demonstrates the use of the \a declupp function:
+// upper. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The following example demonstrates the use of the \a declupp function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -1017,6 +1019,10 @@ inline DisableIf_< IsUpper<MT>, const DMatDeclUppExpr<MT,SO> >
    declupp( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
+   }
 
    return DMatDeclUppExpr<MT,SO>( ~dm );
 }
@@ -1060,10 +1066,12 @@ inline EnableIf_< IsUpper<MT>, const MT& >
 //
 // \param dm The input dense matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid upper matrix specification.
 //
-// This function implements the application of the declupp() operation on a dense matrix-scalar
-// multiplication. It restructures the expression \f$ A=declupp(B*s1) \f$ to the expression
-// \f$ A=declupp(B)*s1 \f$.
+// This function implements the application of the declupp() operation on a dense matrix-
+// scalar multiplication. It restructures the expression \f$ A=declupp(B*s1) \f$ to the
+// expression \f$ A=declupp(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -1072,6 +1080,10 @@ inline const DisableIf_< IsUpper<MT>, MultExprTrait_< DeclUppExprTrait_<MT>, ST 
    declupp( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
+   }
 
    return declupp( dm.leftOperand() ) * dm.rightOperand();
 }

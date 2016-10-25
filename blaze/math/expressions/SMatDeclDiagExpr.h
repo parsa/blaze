@@ -836,9 +836,11 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
+// \exception std::invalid_argument Invalid diagonal matrix specification.
 //
 // The \a decldiag function declares the given non-Hermitian sparse matrix expression \a sm as
-// Hermitian. The function returns an expression representing the operation.\n
+// Hermitian. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decldiag function:
 
    \code
@@ -853,6 +855,10 @@ inline DisableIf_< IsHermitian<MT>, const SMatDeclDiagExpr<MT,SO> >
    decldiag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~sm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
+   }
 
    return SMatDeclDiagExpr<MT,SO>( ~sm );
 }
@@ -896,10 +902,12 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 //
 // \param sm The input sparse matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid diagonal matrix specification.
 //
-// This function implements the application of the decldiag() operation on a sparse matrix-scalar
-// multiplication. It restructures the expression \f$ A=decldiag(B*s1) \f$ to the expression
-// \f$ A=decldiag(B)*s1 \f$.
+// This function implements the application of the decldiag() operation on a sparse matrix-
+// scalar multiplication. It restructures the expression \f$ A=decldiag(B*s1) \f$ to the
+// expression \f$ A=decldiag(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -908,6 +916,10 @@ inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclDiagExprTrait_<MT>
    decldiag( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~sm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
+   }
 
    return decldiag( sm.leftOperand() ) * sm.rightOperand();
 }

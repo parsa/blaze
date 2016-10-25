@@ -836,10 +836,12 @@ class SMatDeclUppExpr : public SparseMatrix< SMatDeclUppExpr<MT,SO>, SO >
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
+// \exception std::invalid_argument Invalid upper matrix specification.
 //
 // The \a declupp function declares the given non-upper sparse matrix expression \a sm as
-// upper. The function returns an expression representing the operation.\n The following
-// example demonstrates the use of the \a declupp function:
+// upper. The function returns an expression representing the operation. In case the given
+// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The following example demonstrates the use of the \a declupp function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -853,6 +855,10 @@ inline DisableIf_< IsUpper<MT>, const SMatDeclUppExpr<MT,SO> >
    declupp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~sm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
+   }
 
    return SMatDeclUppExpr<MT,SO>( ~sm );
 }
@@ -896,10 +902,12 @@ inline EnableIf_< IsUpper<MT>, const MT& >
 //
 // \param sm The input sparse matrix-scalar multiplication expression.
 // \return The redeclared expression.
+// \exception std::invalid_argument Invalid upper matrix specification.
 //
-// This function implements the application of the declupp() operation on a sparse matrix-scalar
-// multiplication. It restructures the expression \f$ A=declupp(B*s1) \f$ to the expression
-// \f$ A=declupp(B)*s1 \f$.
+// This function implements the application of the declupp() operation on a sparse matrix-
+// scalar multiplication. It restructures the expression \f$ A=declupp(B*s1) \f$ to the
+// expression \f$ A=declupp(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
@@ -908,6 +916,10 @@ inline const DisableIf_< IsUpper<MT>, MultExprTrait_< DeclUppExprTrait_<MT>, ST 
    declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~sm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
+   }
 
    return declupp( sm.leftOperand() ) * sm.rightOperand();
 }
