@@ -104,7 +104,6 @@
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RealTrait.h>
