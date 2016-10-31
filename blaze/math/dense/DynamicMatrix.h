@@ -62,7 +62,6 @@
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -72,6 +71,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -83,6 +83,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
@@ -6247,17 +6248,35 @@ struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MathTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
+struct HighType< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using HighType = DynamicMatrix< typename MathTrait<T1,T2>::HighType, SO >;
-   using LowType  = DynamicMatrix< typename MathTrait<T1,T2>::LowType , SO >;
+   using Type = DynamicMatrix< typename HighType<T1,T2>::Type, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO, typename T2 >
+struct LowType< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
+{
+   using Type = DynamicMatrix< typename LowType<T1,T2>::Type, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

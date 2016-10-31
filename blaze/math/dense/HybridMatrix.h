@@ -62,7 +62,6 @@
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -72,6 +71,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -84,6 +84,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
@@ -6584,17 +6585,35 @@ struct DivTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MathTrait< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
+struct HighType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using HighType = HybridMatrix< typename MathTrait<T1,T2>::HighType, M, N, SO >;
-   using LowType  = HybridMatrix< typename MathTrait<T1,T2>::LowType , M, N, SO >;
+   using Type = HybridMatrix< typename HighType<T1,T2>::Type, M, N, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO, typename T2 >
+struct LowType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
+{
+   using Type = HybridMatrix< typename LowType<T1,T2>::Type, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -54,13 +54,13 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
@@ -1763,17 +1764,35 @@ struct ForEachTrait< StrictlyUpperMatrix<MT,SO,DF>, Erf >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct MathTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
+struct HighType< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
 {
-   using HighType = StrictlyUpperMatrix< typename MathTrait<MT1,MT2>::HighType >;
-   using LowType  = StrictlyUpperMatrix< typename MathTrait<MT1,MT2>::LowType  >;
+   using Type = StrictlyUpperMatrix< typename HighType<MT1,MT2>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct LowType< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
+{
+   using Type = StrictlyUpperMatrix< typename LowType<MT1,MT2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

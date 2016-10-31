@@ -58,12 +58,13 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Algorithm.h>
@@ -2616,6 +2617,25 @@ struct DivTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
 //=================================================================================================
 //
+//  HIGHTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct HighType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< typename HighType<T1,T2>::Type, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  MATHTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2623,10 +2643,9 @@ struct DivTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct MathTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
+struct LowType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
-   using HighType = CompressedVector< typename MathTrait<T1,T2>::HighType, TF >;
-   using LowType  = CompressedVector< typename MathTrait<T1,T2>::LowType , TF >;
+   using Type = CompressedVector< typename LowType<T1,T2>::Type, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

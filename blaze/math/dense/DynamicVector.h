@@ -58,7 +58,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -68,12 +67,14 @@
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -2934,17 +2935,35 @@ struct DivTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct MathTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
+struct HighType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   using HighType = DynamicVector< typename MathTrait<T1,T2>::HighType, TF >;
-   using LowType  = DynamicVector< typename MathTrait<T1,T2>::LowType , TF >;
+   using Type = DynamicVector< typename HighType<T1,T2>::Type, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct LowType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
+{
+   using Type = DynamicVector< typename LowType<T1,T2>::Type, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -65,13 +65,13 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
@@ -1867,17 +1868,35 @@ struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Erf >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct MathTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+struct HighType< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using HighType = DiagonalMatrix< typename MathTrait<MT1,MT2>::HighType >;
-   using LowType  = DiagonalMatrix< typename MathTrait<MT1,MT2>::LowType  >;
+   using Type = DiagonalMatrix< typename HighType<MT1,MT2>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct LowType< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   using Type = DiagonalMatrix< typename LowType<MT1,MT2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

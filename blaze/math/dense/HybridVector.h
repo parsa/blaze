@@ -49,7 +49,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -59,11 +58,13 @@
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
@@ -2974,17 +2975,35 @@ struct DivTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 
 //=================================================================================================
 //
-//  MATHTRAIT SPECIALIZATIONS
+//  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, size_t N, bool TF, typename T2 >
-struct MathTrait< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
+struct HighType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 {
-   using HighType = StaticVector< typename MathTrait<T1,T2>::HighType, N, TF >;
-   using LowType  = StaticVector< typename MathTrait<T1,T2>::LowType , N, TF >;
+   using Type = StaticVector< typename HighType<T1,T2>::Type, N, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOWTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2 >
+struct LowType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = StaticVector< typename LowType<T1,T2>::Type, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
