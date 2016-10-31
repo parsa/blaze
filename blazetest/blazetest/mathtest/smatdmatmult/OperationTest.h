@@ -58,12 +58,16 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -176,7 +180,8 @@ class OperationTest
                           void testInvOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testDeclSymOperation  ();
+                          void testDeclSymOperation  ( blaze::TrueType  );
+                          void testDeclSymOperation  ( blaze::FalseType );
                           void testDeclHermOperation ();
                           void testDeclLowOperation  ();
                           void testDeclUppOperation  ();
@@ -368,7 +373,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testInvOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation();
+   testDeclSymOperation( blaze::IsSame< blaze::LowType_<ET1,ET2>, ET1 >() );
    testDeclHermOperation();
    testDeclLowOperation();
    testDeclUppOperation();
@@ -3725,12 +3730,13 @@ void OperationTest<MT1,MT2>::testSerialOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the symmetric matrix multiplication with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the multiplication
-// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// assignment, and subtraction assignment in the case that the left-hand side element type
+// is the lower data type. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testDeclSymOperation()
+void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
@@ -3739,13 +3745,9 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
          return;
 
 
-      const TMT1  tlhs ( trans( lhs_ ) );
-      const TMT2  trhs ( trans( rhs_ ) );
-      const TOMT1 tolhs( trans( lhs_ ) );
-      const TOMT2 torhs( trans( rhs_ ) );
-
-      const typename RT2::template Rebind<ET1>::Other treflhs( trans( lhs_ ) );
-      const typename RT1::template Rebind<ET2>::Other trefrhs( trans( rhs_ ) );
+      const MT2  rhs   ( trans( lhs_ ) );
+      const OMT2 orhs  ( trans( lhs_ ) );
+      const RT2  refrhs( trans( lhs_ ) );
 
 
       //=====================================================================================
@@ -3759,115 +3761,59 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   = declsym( lhs_ * tlhs );
-            odres_  = declsym( lhs_ * tlhs );
-            sres_   = declsym( lhs_ * tlhs );
-            osres_  = declsym( lhs_ * tlhs );
-            refres_ = declsym( reflhs_ * treflhs );
+            dres_   = declsym( lhs_ * rhs );
+            odres_  = declsym( lhs_ * rhs );
+            sres_   = declsym( lhs_ * rhs );
+            osres_  = declsym( lhs_ * rhs );
+            refres_ = declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   = declsym( lhs_ * tolhs );
-            odres_  = declsym( lhs_ * tolhs );
-            sres_   = declsym( lhs_ * tolhs );
-            osres_  = declsym( lhs_ * tolhs );
-            refres_ = declsym( reflhs_ * treflhs );
+            dres_   = declsym( lhs_ * orhs );
+            odres_  = declsym( lhs_ * orhs );
+            sres_   = declsym( lhs_ * orhs );
+            osres_  = declsym( lhs_ * orhs );
+            refres_ = declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   = declsym( olhs_ * tlhs );
-            odres_  = declsym( olhs_ * tlhs );
-            sres_   = declsym( olhs_ * tlhs );
-            osres_  = declsym( olhs_ * tlhs );
-            refres_ = declsym( reflhs_ * treflhs );
+            dres_   = declsym( olhs_ * rhs );
+            odres_  = declsym( olhs_ * rhs );
+            sres_   = declsym( olhs_ * rhs );
+            osres_  = declsym( olhs_ * rhs );
+            refres_ = declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   = declsym( olhs_ * tolhs );
-            odres_  = declsym( olhs_ * tolhs );
-            sres_   = declsym( olhs_ * tolhs );
-            osres_  = declsym( olhs_ * tolhs );
-            refres_ = declsym( reflhs_ * treflhs );
+            dres_   = declsym( olhs_ * rhs );
+            odres_  = declsym( olhs_ * rhs );
+            sres_   = declsym( olhs_ * rhs );
+            osres_  = declsym( olhs_ * rhs );
+            refres_ = declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
-
-         try {
-            initResults();
-            dres_   = declsym( trhs * rhs_ );
-            odres_  = declsym( trhs * rhs_ );
-            sres_   = declsym( trhs * rhs_ );
-            osres_  = declsym( trhs * rhs_ );
-            refres_ = declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
-         }
-
-         checkResults<TMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( torhs * rhs_ );
-            odres_  = declsym( torhs * rhs_ );
-            sres_   = declsym( torhs * rhs_ );
-            osres_  = declsym( torhs * rhs_ );
-            refres_ = declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
-         }
-
-         checkResults<TOMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( trhs * orhs_ );
-            odres_  = declsym( trhs * orhs_ );
-            sres_   = declsym( trhs * orhs_ );
-            osres_  = declsym( trhs * orhs_ );
-            refres_ = declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
-         }
-
-         checkResults<TMT2,OMT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( torhs * orhs_ );
-            odres_  = declsym( torhs * orhs_ );
-            sres_   = declsym( torhs * orhs_ );
-            osres_  = declsym( torhs * orhs_ );
-            refres_ = declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
-         }
-
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
       }
 
       // Declsym multiplication with evaluated matrices
@@ -3877,115 +3823,59 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   = declsym( eval( lhs_ ) * eval( tlhs ) );
-            odres_  = declsym( eval( lhs_ ) * eval( tlhs ) );
-            sres_   = declsym( eval( lhs_ ) * eval( tlhs ) );
-            osres_  = declsym( eval( lhs_ ) * eval( tlhs ) );
-            refres_ = declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   = declsym( eval( lhs_ ) * eval( rhs ) );
+            odres_  = declsym( eval( lhs_ ) * eval( rhs ) );
+            sres_   = declsym( eval( lhs_ ) * eval( rhs ) );
+            osres_  = declsym( eval( lhs_ ) * eval( rhs ) );
+            refres_ = declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   = declsym( eval( lhs_ ) * eval( tolhs ) );
-            odres_  = declsym( eval( lhs_ ) * eval( tolhs ) );
-            sres_   = declsym( eval( lhs_ ) * eval( tolhs ) );
-            osres_  = declsym( eval( lhs_ ) * eval( tolhs ) );
-            refres_ = declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   = declsym( eval( lhs_ ) * eval( orhs ) );
+            odres_  = declsym( eval( lhs_ ) * eval( orhs ) );
+            sres_   = declsym( eval( lhs_ ) * eval( orhs ) );
+            osres_  = declsym( eval( lhs_ ) * eval( orhs ) );
+            refres_ = declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   = declsym( eval( olhs_ ) * eval( tlhs ) );
-            odres_  = declsym( eval( olhs_ ) * eval( tlhs ) );
-            sres_   = declsym( eval( olhs_ ) * eval( tlhs ) );
-            osres_  = declsym( eval( olhs_ ) * eval( tlhs ) );
-            refres_ = declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   = declsym( eval( olhs_ ) * eval( rhs ) );
+            odres_  = declsym( eval( olhs_ ) * eval( rhs ) );
+            sres_   = declsym( eval( olhs_ ) * eval( rhs ) );
+            osres_  = declsym( eval( olhs_ ) * eval( rhs ) );
+            refres_ = declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   = declsym( eval( olhs_ ) * eval( tolhs ) );
-            odres_  = declsym( eval( olhs_ ) * eval( tolhs ) );
-            sres_   = declsym( eval( olhs_ ) * eval( tolhs ) );
-            osres_  = declsym( eval( olhs_ ) * eval( tolhs ) );
-            refres_ = declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   = declsym( eval( olhs_ ) * eval( orhs ) );
+            odres_  = declsym( eval( olhs_ ) * eval( orhs ) );
+            sres_   = declsym( eval( olhs_ ) * eval( orhs ) );
+            osres_  = declsym( eval( olhs_ ) * eval( orhs ) );
+            refres_ = declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
-
-         try {
-            initResults();
-            dres_   = declsym( eval( trhs ) * eval( rhs_ ) );
-            odres_  = declsym( eval( trhs ) * eval( rhs_ ) );
-            sres_   = declsym( eval( trhs ) * eval( rhs_ ) );
-            osres_  = declsym( eval( trhs ) * eval( rhs_ ) );
-            refres_ = declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
-         }
-
-         checkResults<TMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( eval( torhs ) * eval( rhs_ ) );
-            odres_  = declsym( eval( torhs ) * eval( rhs_ ) );
-            sres_   = declsym( eval( torhs ) * eval( rhs_ ) );
-            osres_  = declsym( eval( torhs ) * eval( rhs_ ) );
-            refres_ = declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
-         }
-
-         checkResults<TOMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( eval( trhs ) * eval( orhs_ ) );
-            odres_  = declsym( eval( trhs ) * eval( orhs_ ) );
-            sres_   = declsym( eval( trhs ) * eval( orhs_ ) );
-            osres_  = declsym( eval( trhs ) * eval( orhs_ ) );
-            refres_ = declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
-         }
-
-         checkResults<TMT2,OMT2>();
-
-         try {
-            initResults();
-            dres_   = declsym( eval( torhs ) * eval( orhs_ ) );
-            odres_  = declsym( eval( torhs ) * eval( orhs_ ) );
-            sres_   = declsym( eval( torhs ) * eval( orhs_ ) );
-            osres_  = declsym( eval( torhs ) * eval( orhs_ ) );
-            refres_ = declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
-         }
-
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
       }
 
 
@@ -4000,115 +3890,59 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   += declsym( lhs_ * tlhs );
-            odres_  += declsym( lhs_ * tlhs );
-            sres_   += declsym( lhs_ * tlhs );
-            osres_  += declsym( lhs_ * tlhs );
-            refres_ += declsym( reflhs_ * treflhs );
+            dres_   += declsym( lhs_ * rhs );
+            odres_  += declsym( lhs_ * rhs );
+            sres_   += declsym( lhs_ * rhs );
+            osres_  += declsym( lhs_ * rhs );
+            refres_ += declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   += declsym( lhs_ * tolhs );
-            odres_  += declsym( lhs_ * tolhs );
-            sres_   += declsym( lhs_ * tolhs );
-            osres_  += declsym( lhs_ * tolhs );
-            refres_ += declsym( reflhs_ * treflhs );
+            dres_   += declsym( lhs_ * orhs );
+            odres_  += declsym( lhs_ * orhs );
+            sres_   += declsym( lhs_ * orhs );
+            osres_  += declsym( lhs_ * orhs );
+            refres_ += declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   += declsym( olhs_ * tlhs );
-            odres_  += declsym( olhs_ * tlhs );
-            sres_   += declsym( olhs_ * tlhs );
-            osres_  += declsym( olhs_ * tlhs );
-            refres_ += declsym( reflhs_ * treflhs );
+            dres_   += declsym( olhs_ * rhs );
+            odres_  += declsym( olhs_ * rhs );
+            sres_   += declsym( olhs_ * rhs );
+            osres_  += declsym( olhs_ * rhs );
+            refres_ += declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   += declsym( olhs_ * tolhs );
-            odres_  += declsym( olhs_ * tolhs );
-            sres_   += declsym( olhs_ * tolhs );
-            osres_  += declsym( olhs_ * tolhs );
-            refres_ += declsym( reflhs_ * treflhs );
+            dres_   += declsym( olhs_ * orhs );
+            odres_  += declsym( olhs_ * orhs );
+            sres_   += declsym( olhs_ * orhs );
+            osres_  += declsym( olhs_ * orhs );
+            refres_ += declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
-
-         try {
-            initResults();
-            dres_   += declsym( trhs * rhs_ );
-            odres_  += declsym( trhs * rhs_ );
-            sres_   += declsym( trhs * rhs_ );
-            osres_  += declsym( trhs * rhs_ );
-            refres_ += declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
-         }
-
-         checkResults<TMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( torhs * rhs_ );
-            odres_  += declsym( torhs * rhs_ );
-            sres_   += declsym( torhs * rhs_ );
-            osres_  += declsym( torhs * rhs_ );
-            refres_ += declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
-         }
-
-         checkResults<TOMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( trhs * orhs_ );
-            odres_  += declsym( trhs * orhs_ );
-            sres_   += declsym( trhs * orhs_ );
-            osres_  += declsym( trhs * orhs_ );
-            refres_ += declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
-         }
-
-         checkResults<TMT2,OMT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( torhs * orhs_ );
-            odres_  += declsym( torhs * orhs_ );
-            sres_   += declsym( torhs * orhs_ );
-            osres_  += declsym( torhs * orhs_ );
-            refres_ += declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
-         }
-
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
       }
 
       // Declsym multiplication with addition assignment with evaluated matrices
@@ -4118,115 +3952,59 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   += declsym( eval( lhs_ ) * eval( tlhs ) );
-            odres_  += declsym( eval( lhs_ ) * eval( tlhs ) );
-            sres_   += declsym( eval( lhs_ ) * eval( tlhs ) );
-            osres_  += declsym( eval( lhs_ ) * eval( tlhs ) );
-            refres_ += declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   += declsym( eval( lhs_ ) * eval( rhs ) );
+            odres_  += declsym( eval( lhs_ ) * eval( rhs ) );
+            sres_   += declsym( eval( lhs_ ) * eval( rhs ) );
+            osres_  += declsym( eval( lhs_ ) * eval( rhs ) );
+            refres_ += declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   += declsym( eval( lhs_ ) * eval( tolhs ) );
-            odres_  += declsym( eval( lhs_ ) * eval( tolhs ) );
-            sres_   += declsym( eval( lhs_ ) * eval( tolhs ) );
-            osres_  += declsym( eval( lhs_ ) * eval( tolhs ) );
-            refres_ += declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   += declsym( eval( lhs_ ) * eval( orhs ) );
+            odres_  += declsym( eval( lhs_ ) * eval( orhs ) );
+            sres_   += declsym( eval( lhs_ ) * eval( orhs ) );
+            osres_  += declsym( eval( lhs_ ) * eval( orhs ) );
+            refres_ += declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   += declsym( eval( olhs_ ) * eval( tlhs ) );
-            odres_  += declsym( eval( olhs_ ) * eval( tlhs ) );
-            sres_   += declsym( eval( olhs_ ) * eval( tlhs ) );
-            osres_  += declsym( eval( olhs_ ) * eval( tlhs ) );
-            refres_ += declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   += declsym( eval( olhs_ ) * eval( rhs ) );
+            odres_  += declsym( eval( olhs_ ) * eval( rhs ) );
+            sres_   += declsym( eval( olhs_ ) * eval( rhs ) );
+            osres_  += declsym( eval( olhs_ ) * eval( rhs ) );
+            refres_ += declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   += declsym( eval( olhs_ ) * eval( tolhs ) );
-            odres_  += declsym( eval( olhs_ ) * eval( tolhs ) );
-            sres_   += declsym( eval( olhs_ ) * eval( tolhs ) );
-            osres_  += declsym( eval( olhs_ ) * eval( tolhs ) );
-            refres_ += declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   += declsym( eval( olhs_ ) * eval( orhs ) );
+            odres_  += declsym( eval( olhs_ ) * eval( orhs ) );
+            sres_   += declsym( eval( olhs_ ) * eval( orhs ) );
+            osres_  += declsym( eval( olhs_ ) * eval( orhs ) );
+            refres_ += declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
-
-         try {
-            initResults();
-            dres_   += declsym( eval( trhs ) * eval( rhs_ ) );
-            odres_  += declsym( eval( trhs ) * eval( rhs_ ) );
-            sres_   += declsym( eval( trhs ) * eval( rhs_ ) );
-            osres_  += declsym( eval( trhs ) * eval( rhs_ ) );
-            refres_ += declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
-         }
-
-         checkResults<TMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( eval( torhs ) * eval( rhs_ ) );
-            odres_  += declsym( eval( torhs ) * eval( rhs_ ) );
-            sres_   += declsym( eval( torhs ) * eval( rhs_ ) );
-            osres_  += declsym( eval( torhs ) * eval( rhs_ ) );
-            refres_ += declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
-         }
-
-         checkResults<TOMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( eval( trhs ) * eval( orhs_ ) );
-            odres_  += declsym( eval( trhs ) * eval( orhs_ ) );
-            sres_   += declsym( eval( trhs ) * eval( orhs_ ) );
-            osres_  += declsym( eval( trhs ) * eval( orhs_ ) );
-            refres_ += declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
-         }
-
-         checkResults<TMT2,OMT2>();
-
-         try {
-            initResults();
-            dres_   += declsym( eval( torhs ) * eval( orhs_ ) );
-            odres_  += declsym( eval( torhs ) * eval( orhs_ ) );
-            sres_   += declsym( eval( torhs ) * eval( orhs_ ) );
-            osres_  += declsym( eval( torhs ) * eval( orhs_ ) );
-            refres_ += declsym( eval( trefrhs ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
-         }
-
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
       }
 
 
@@ -4241,115 +4019,59 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   -= declsym( lhs_ * tlhs );
-            odres_  -= declsym( lhs_ * tlhs );
-            sres_   -= declsym( lhs_ * tlhs );
-            osres_  -= declsym( lhs_ * tlhs );
-            refres_ -= declsym( reflhs_ * treflhs );
+            dres_   -= declsym( lhs_ * rhs );
+            odres_  -= declsym( lhs_ * rhs );
+            sres_   -= declsym( lhs_ * rhs );
+            osres_  -= declsym( lhs_ * rhs );
+            refres_ -= declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( lhs_ * tolhs );
-            odres_  -= declsym( lhs_ * tolhs );
-            sres_   -= declsym( lhs_ * tolhs );
-            osres_  -= declsym( lhs_ * tolhs );
-            refres_ -= declsym( reflhs_ * treflhs );
+            dres_   -= declsym( lhs_ * orhs );
+            odres_  -= declsym( lhs_ * orhs );
+            sres_   -= declsym( lhs_ * orhs );
+            osres_  -= declsym( lhs_ * orhs );
+            refres_ -= declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   -= declsym( olhs_ * tlhs );
-            odres_  -= declsym( olhs_ * tlhs );
-            sres_   -= declsym( olhs_ * tlhs );
-            osres_  -= declsym( olhs_ * tlhs );
-            refres_ -= declsym( reflhs_ * treflhs );
+            dres_   -= declsym( olhs_ * rhs );
+            odres_  -= declsym( olhs_ * rhs );
+            sres_   -= declsym( olhs_ * rhs );
+            osres_  -= declsym( olhs_ * rhs );
+            refres_ -= declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( olhs_ * tolhs );
-            odres_  -= declsym( olhs_ * tolhs );
-            sres_   -= declsym( olhs_ * tolhs );
-            osres_  -= declsym( olhs_ * tolhs );
-            refres_ -= declsym( reflhs_ * treflhs );
+            dres_   -= declsym( olhs_ * orhs );
+            odres_  -= declsym( olhs_ * orhs );
+            sres_   -= declsym( olhs_ * orhs );
+            osres_  -= declsym( olhs_ * orhs );
+            refres_ -= declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
-
-         try {
-            initResults();
-            dres_   -= declsym( trhs * rhs_ );
-            odres_  -= declsym( trhs * rhs_ );
-            sres_   -= declsym( trhs * rhs_ );
-            osres_  -= declsym( trhs * rhs_ );
-            refres_ -= declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
-         }
-
-         checkResults<TMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   -= declsym( torhs * rhs_ );
-            odres_  -= declsym( torhs * rhs_ );
-            sres_   -= declsym( torhs * rhs_ );
-            osres_  -= declsym( torhs * rhs_ );
-            refres_ -= declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
-         }
-
-         checkResults<TOMT2,MT2>();
-
-         try {
-            initResults();
-            dres_   -= declsym( trhs * orhs_ );
-            odres_  -= declsym( trhs * orhs_ );
-            sres_   -= declsym( trhs * orhs_ );
-            osres_  -= declsym( trhs * orhs_ );
-            refres_ -= declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
-         }
-
-         checkResults<TMT2,OMT2>();
-
-         try {
-            initResults();
-            dres_   -= declsym( torhs * orhs_ );
-            odres_  -= declsym( torhs * orhs_ );
-            sres_   -= declsym( torhs * orhs_ );
-            osres_  -= declsym( torhs * orhs_ );
-            refres_ -= declsym( trefrhs * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
-         }
-
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
       }
 
       // Declsym multiplication with subtraction assignment with evaluated matrices
@@ -4359,115 +4081,477 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
          try {
             initResults();
-            dres_   -= declsym( eval( lhs_ ) * eval( tlhs ) );
-            odres_  -= declsym( eval( lhs_ ) * eval( tlhs ) );
-            sres_   -= declsym( eval( lhs_ ) * eval( tlhs ) );
-            osres_  -= declsym( eval( lhs_ ) * eval( tlhs ) );
-            refres_ -= declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   -= declsym( eval( lhs_ ) * eval( rhs ) );
+            odres_  -= declsym( eval( lhs_ ) * eval( rhs ) );
+            sres_   -= declsym( eval( lhs_ ) * eval( rhs ) );
+            osres_  -= declsym( eval( lhs_ ) * eval( rhs ) );
+            refres_ -= declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TMT1>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<MT1,TMT1>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( lhs_ ) * eval( tolhs ) );
-            odres_  -= declsym( eval( lhs_ ) * eval( tolhs ) );
-            sres_   -= declsym( eval( lhs_ ) * eval( tolhs ) );
-            osres_  -= declsym( eval( lhs_ ) * eval( tolhs ) );
-            refres_ -= declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   -= declsym( eval( lhs_ ) * eval( orhs ) );
+            odres_  -= declsym( eval( lhs_ ) * eval( orhs ) );
+            sres_   -= declsym( eval( lhs_ ) * eval( orhs ) );
+            osres_  -= declsym( eval( lhs_ ) * eval( orhs ) );
+            refres_ -= declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<MT1,TOMT1>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<MT1,TOMT1>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( olhs_ ) * eval( tlhs ) );
-            odres_  -= declsym( eval( olhs_ ) * eval( tlhs ) );
-            sres_   -= declsym( eval( olhs_ ) * eval( tlhs ) );
-            osres_  -= declsym( eval( olhs_ ) * eval( tlhs ) );
-            refres_ -= declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   -= declsym( eval( olhs_ ) * eval( rhs ) );
+            odres_  -= declsym( eval( olhs_ ) * eval( rhs ) );
+            sres_   -= declsym( eval( olhs_ ) * eval( rhs ) );
+            osres_  -= declsym( eval( olhs_ ) * eval( rhs ) );
+            refres_ -= declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TMT1>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<OMT1,TMT1>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( olhs_ ) * eval( tolhs ) );
-            odres_  -= declsym( eval( olhs_ ) * eval( tolhs ) );
-            sres_   -= declsym( eval( olhs_ ) * eval( tolhs ) );
-            osres_  -= declsym( eval( olhs_ ) * eval( tolhs ) );
-            refres_ -= declsym( eval( reflhs_ ) * eval( treflhs ) );
+            dres_   -= declsym( eval( olhs_ ) * eval( orhs ) );
+            odres_  -= declsym( eval( olhs_ ) * eval( orhs ) );
+            sres_   -= declsym( eval( olhs_ ) * eval( orhs ) );
+            osres_  -= declsym( eval( olhs_ ) * eval( orhs ) );
+            refres_ -= declsym( eval( reflhs_ ) * eval( refrhs ) );
          }
          catch( std::exception& ex ) {
-            convertException<OMT1,TOMT1>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<OMT1,TOMT1>();
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the symmetric sparse matrix/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the symmetric matrix multiplication with plain assignment, addition
+// assignment, and subtraction assignment in the case that the right-hand side element type
+// is the lower data type. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::FalseType )
+{
+#if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
+   {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
+
+      const MT1  lhs   ( trans( rhs_ ) );
+      const OMT1 olhs  ( trans( rhs_ ) );
+      const RT1  reflhs( trans( rhs_ ) );
+
+
+      //=====================================================================================
+      // Declsym multiplication
+      //=====================================================================================
+
+      // Declsym multiplication with the given matrices
+      {
+         test_  = "Declsym multiplication the given matrices";
+         error_ = "Failed multiplication operation";
 
          try {
             initResults();
-            dres_   -= declsym( eval( trhs ) * eval( rhs_ ) );
-            odres_  -= declsym( eval( trhs ) * eval( rhs_ ) );
-            sres_   -= declsym( eval( trhs ) * eval( rhs_ ) );
-            osres_  -= declsym( eval( trhs ) * eval( rhs_ ) );
-            refres_ -= declsym( eval( trefrhs ) * eval( refrhs_ ) );
+            dres_   = declsym( lhs * rhs_ );
+            odres_  = declsym( lhs * rhs_ );
+            sres_   = declsym( lhs * rhs_ );
+            osres_  = declsym( lhs * rhs_ );
+            refres_ = declsym( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
-            convertException<TMT2,MT2>( ex );
+            convertException<MT1,MT2>( ex );
          }
 
-         checkResults<TMT2,MT2>();
+         checkResults<MT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( torhs ) * eval( rhs_ ) );
-            odres_  -= declsym( eval( torhs ) * eval( rhs_ ) );
-            sres_   -= declsym( eval( torhs ) * eval( rhs_ ) );
-            osres_  -= declsym( eval( torhs ) * eval( rhs_ ) );
-            refres_ -= declsym( eval( trefrhs ) * eval( refrhs_ ) );
+            dres_   = declsym( lhs * orhs_ );
+            odres_  = declsym( lhs * orhs_ );
+            sres_   = declsym( lhs * orhs_ );
+            osres_  = declsym( lhs * orhs_ );
+            refres_ = declsym( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
-            convertException<TOMT2,MT2>( ex );
+            convertException<MT1,OMT2>( ex );
          }
 
-         checkResults<TOMT2,MT2>();
+         checkResults<MT1,OMT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( trhs ) * eval( orhs_ ) );
-            odres_  -= declsym( eval( trhs ) * eval( orhs_ ) );
-            sres_   -= declsym( eval( trhs ) * eval( orhs_ ) );
-            osres_  -= declsym( eval( trhs ) * eval( orhs_ ) );
-            refres_ -= declsym( eval( trefrhs ) * eval( refrhs_ ) );
+            dres_   = declsym( olhs * rhs_ );
+            odres_  = declsym( olhs * rhs_ );
+            sres_   = declsym( olhs * rhs_ );
+            osres_  = declsym( olhs * rhs_ );
+            refres_ = declsym( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
-            convertException<TMT2,OMT2>( ex );
+            convertException<OMT1,MT2>( ex );
          }
 
-         checkResults<TMT2,OMT2>();
+         checkResults<OMT1,MT2>();
 
          try {
             initResults();
-            dres_   -= declsym( eval( torhs ) * eval( orhs_ ) );
-            odres_  -= declsym( eval( torhs ) * eval( orhs_ ) );
-            sres_   -= declsym( eval( torhs ) * eval( orhs_ ) );
-            osres_  -= declsym( eval( torhs ) * eval( orhs_ ) );
-            refres_ -= declsym( eval( trefrhs ) * eval( refrhs_ ) );
+            dres_   = declsym( olhs * rhs_ );
+            odres_  = declsym( olhs * rhs_ );
+            sres_   = declsym( olhs * rhs_ );
+            osres_  = declsym( olhs * rhs_ );
+            refres_ = declsym( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
-            convertException<TOMT2,OMT2>( ex );
+            convertException<OMT1,OMT2>( ex );
          }
 
-         checkResults<TOMT2,OMT2>();
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declsym multiplication with evaluated matrices
+      {
+         test_  = "Declsym multiplication with evaluated left-hand side matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = declsym( eval( lhs ) * eval( rhs_ ) );
+            odres_  = declsym( eval( lhs ) * eval( rhs_ ) );
+            sres_   = declsym( eval( lhs ) * eval( rhs_ ) );
+            osres_  = declsym( eval( lhs ) * eval( rhs_ ) );
+            refres_ = declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declsym( eval( lhs ) * eval( orhs_ ) );
+            odres_  = declsym( eval( lhs ) * eval( orhs_ ) );
+            sres_   = declsym( eval( lhs ) * eval( orhs_ ) );
+            osres_  = declsym( eval( lhs ) * eval( orhs_ ) );
+            refres_ = declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = declsym( eval( olhs ) * eval( rhs_ ) );
+            odres_  = declsym( eval( olhs ) * eval( rhs_ ) );
+            sres_   = declsym( eval( olhs ) * eval( rhs_ ) );
+            osres_  = declsym( eval( olhs ) * eval( rhs_ ) );
+            refres_ = declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declsym( eval( olhs ) * eval( orhs_ ) );
+            odres_  = declsym( eval( olhs ) * eval( orhs_ ) );
+            sres_   = declsym( eval( olhs ) * eval( orhs_ ) );
+            osres_  = declsym( eval( olhs ) * eval( orhs_ ) );
+            refres_ = declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declsym multiplication with addition assignment
+      //=====================================================================================
+
+      // Declsym multiplication with addition assignment with the given matrices
+      {
+         test_  = "Declsym multiplication with addition assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declsym( lhs * rhs_ );
+            odres_  += declsym( lhs * rhs_ );
+            sres_   += declsym( lhs * rhs_ );
+            osres_  += declsym( lhs * rhs_ );
+            refres_ += declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( lhs * orhs_ );
+            odres_  += declsym( lhs * orhs_ );
+            sres_   += declsym( lhs * orhs_ );
+            osres_  += declsym( lhs * orhs_ );
+            refres_ += declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( olhs * rhs_ );
+            odres_  += declsym( olhs * rhs_ );
+            sres_   += declsym( olhs * rhs_ );
+            osres_  += declsym( olhs * rhs_ );
+            refres_ += declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( olhs * orhs_ );
+            odres_  += declsym( olhs * orhs_ );
+            sres_   += declsym( olhs * orhs_ );
+            osres_  += declsym( olhs * orhs_ );
+            refres_ += declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declsym multiplication with addition assignment with evaluated matrices
+      {
+         test_  = "Declsym multiplication with addition assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declsym( eval( lhs ) * eval( rhs_ ) );
+            odres_  += declsym( eval( lhs ) * eval( rhs_ ) );
+            sres_   += declsym( eval( lhs ) * eval( rhs_ ) );
+            osres_  += declsym( eval( lhs ) * eval( rhs_ ) );
+            refres_ += declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( eval( lhs ) * eval( orhs_ ) );
+            odres_  += declsym( eval( lhs ) * eval( orhs_ ) );
+            sres_   += declsym( eval( lhs ) * eval( orhs_ ) );
+            osres_  += declsym( eval( lhs ) * eval( orhs_ ) );
+            refres_ += declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( eval( olhs ) * eval( rhs_ ) );
+            odres_  += declsym( eval( olhs ) * eval( rhs_ ) );
+            sres_   += declsym( eval( olhs ) * eval( rhs_ ) );
+            osres_  += declsym( eval( olhs ) * eval( rhs_ ) );
+            refres_ += declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declsym( eval( olhs ) * eval( orhs_ ) );
+            odres_  += declsym( eval( olhs ) * eval( orhs_ ) );
+            sres_   += declsym( eval( olhs ) * eval( orhs_ ) );
+            osres_  += declsym( eval( olhs ) * eval( orhs_ ) );
+            refres_ += declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declsym multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Declsym multiplication with subtraction assignment with the given matrices
+      {
+         test_  = "Declsym multiplication with subtraction assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declsym( lhs * rhs_ );
+            odres_  -= declsym( lhs * rhs_ );
+            sres_   -= declsym( lhs * rhs_ );
+            osres_  -= declsym( lhs * rhs_ );
+            refres_ -= declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( lhs * orhs_ );
+            odres_  -= declsym( lhs * orhs_ );
+            sres_   -= declsym( lhs * orhs_ );
+            osres_  -= declsym( lhs * orhs_ );
+            refres_ -= declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( olhs * rhs_ );
+            odres_  -= declsym( olhs * rhs_ );
+            sres_   -= declsym( olhs * rhs_ );
+            osres_  -= declsym( olhs * rhs_ );
+            refres_ -= declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( olhs * orhs_ );
+            odres_  -= declsym( olhs * orhs_ );
+            sres_   -= declsym( olhs * orhs_ );
+            osres_  -= declsym( olhs * orhs_ );
+            refres_ -= declsym( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declsym multiplication with subtraction assignment with evaluated matrices
+      {
+         test_  = "Declsym multiplication with subtraction assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declsym( eval( lhs ) * eval( rhs_ ) );
+            odres_  -= declsym( eval( lhs ) * eval( rhs_ ) );
+            sres_   -= declsym( eval( lhs ) * eval( rhs_ ) );
+            osres_  -= declsym( eval( lhs ) * eval( rhs_ ) );
+            refres_ -= declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( eval( lhs ) * eval( orhs_ ) );
+            odres_  -= declsym( eval( lhs ) * eval( orhs_ ) );
+            sres_   -= declsym( eval( lhs ) * eval( orhs_ ) );
+            osres_  -= declsym( eval( lhs ) * eval( orhs_ ) );
+            refres_ -= declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( eval( olhs ) * eval( rhs_ ) );
+            odres_  -= declsym( eval( olhs ) * eval( rhs_ ) );
+            sres_   -= declsym( eval( olhs ) * eval( rhs_ ) );
+            osres_  -= declsym( eval( olhs ) * eval( rhs_ ) );
+            refres_ -= declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declsym( eval( olhs ) * eval( orhs_ ) );
+            odres_  -= declsym( eval( olhs ) * eval( orhs_ ) );
+            sres_   -= declsym( eval( olhs ) * eval( orhs_ ) );
+            osres_  -= declsym( eval( olhs ) * eval( orhs_ ) );
+            refres_ -= declsym( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
       }
    }
 #endif
