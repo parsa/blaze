@@ -166,6 +166,7 @@
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/typetraits/IsView.h>
+#include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
