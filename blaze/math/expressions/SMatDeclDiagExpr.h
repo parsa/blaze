@@ -851,7 +851,7 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline DisableIf_< IsHermitian<MT>, const SMatDeclDiagExpr<MT,SO> >
+inline DisableIf_< IsDiagonal<MT>, const SMatDeclDiagExpr<MT,SO> >
    decldiag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -877,7 +877,7 @@ inline DisableIf_< IsHermitian<MT>, const SMatDeclDiagExpr<MT,SO> >
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsHermitian<MT>, const MT& >
+inline EnableIf_< IsDiagonal<MT>, const MT& >
    decldiag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -912,7 +912,7 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclDiagExprTrait_<MT>, ST > >
+inline const DisableIf_< IsDiagonal<MT>, MultExprTrait_< DeclDiagExprTrait_<MT>, ST > >
    decldiag( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
