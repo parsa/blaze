@@ -912,7 +912,7 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclHermExprTrait_<MT>, ST > >
+inline const DisableIf_< IsHermitian<MT>, MultExprTrait_< DeclHermExprTrait_<MT>, ST > >
    declherm( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
