@@ -42,6 +42,7 @@
 
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDeclExpr.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
@@ -101,7 +102,7 @@ struct SubmatrixExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
+   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp>, IsDeclExpr<Tmp> >
                             , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
                                  , SubmatrixExprTrait< RemoveCV_<Tmp>, AF >
                                  , Failure >
