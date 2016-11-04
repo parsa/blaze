@@ -973,7 +973,7 @@ struct Columns< SMatDeclDiagExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

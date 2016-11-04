@@ -1155,7 +1155,7 @@ struct IsAligned< DMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
