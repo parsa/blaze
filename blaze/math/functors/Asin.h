@@ -62,6 +62,13 @@ namespace blaze {
 struct Asin
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Asin functor.
+   */
+   explicit inline Asin()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the asin() function for the given object/value.
    //
    // \param a The given object/value.

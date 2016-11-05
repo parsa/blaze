@@ -62,6 +62,13 @@ namespace blaze {
 struct Floor
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Floor functor.
+   */
+   explicit inline Floor()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the floor() function for the given object/value.
    //
    // \param a The given object/value.

@@ -62,6 +62,13 @@ namespace blaze {
 struct Erf
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Erf functor.
+   */
+   explicit inline Erf()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the erf() function for the given object/value.
    //
    // \param a The given object/value.

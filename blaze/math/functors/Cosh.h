@@ -62,6 +62,13 @@ namespace blaze {
 struct Cosh
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Cosh functor.
+   */
+   explicit inline Cosh()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the cosh() function for the given object/value.
    //
    // \param a The given object/value.

@@ -62,6 +62,13 @@ namespace blaze {
 struct Trunc
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Trunc functor.
+   */
+   explicit inline Trunc()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the trunc() function for the given object/value.
    //
    // \param a The given object/value.

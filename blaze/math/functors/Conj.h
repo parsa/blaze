@@ -62,6 +62,13 @@ namespace blaze {
 struct Conj
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Conj functor.
+   */
+   explicit inline Conj()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the conj() function for the given object/value.
    //
    // \param a The given object/value.

@@ -58,6 +58,13 @@ namespace blaze {
 struct Serial
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Serial functor.
+   */
+   explicit inline Serial()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the serial() function for the given object/value.
    //
    // \param a The given object/value.

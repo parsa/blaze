@@ -58,6 +58,13 @@ namespace blaze {
 struct DeclSym
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the DeclSym functor.
+   */
+   explicit inline DeclSym()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the declsym() function for the given object/value.
    //
    // \param a The given object/value.

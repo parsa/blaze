@@ -62,6 +62,13 @@ namespace blaze {
 struct Sqrt
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Sqrt functor.
+   */
+   explicit inline Sqrt()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the sqrt() function for the given object/value.
    //
    // \param a The given object/value.

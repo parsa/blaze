@@ -62,6 +62,13 @@ namespace blaze {
 struct Atanh
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Atanh functor.
+   */
+   explicit inline Atanh()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the atanh() function for the given object/value.
    //
    // \param a The given object/value.

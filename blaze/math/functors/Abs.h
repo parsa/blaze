@@ -62,6 +62,13 @@ namespace blaze {
 struct Abs
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Abs functor.
+   */
+   explicit inline Abs()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the abs() function for the given object/value.
    //
    // \param a The given object/value.

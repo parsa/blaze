@@ -58,6 +58,13 @@ namespace blaze {
 struct DeclUpp
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the DeclUpp functor.
+   */
+   explicit inline DeclUpp()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the declupp() function for the given object/value.
    //
    // \param a The given object/value.

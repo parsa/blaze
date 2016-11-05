@@ -62,6 +62,13 @@ namespace blaze {
 struct Sinh
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Sinh functor.
+   */
+   explicit inline Sinh()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the sinh() function for the given object/value.
    //
    // \param a The given object/value.

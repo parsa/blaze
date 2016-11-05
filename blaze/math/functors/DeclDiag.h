@@ -58,6 +58,13 @@ namespace blaze {
 struct DeclDiag
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the DeclDiag functor.
+   */
+   explicit inline DeclDiag()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the decldiag() function for the given object/value.
    //
    // \param a The given object/value.

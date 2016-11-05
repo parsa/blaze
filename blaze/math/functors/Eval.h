@@ -58,6 +58,13 @@ namespace blaze {
 struct Eval
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Eval functor.
+   */
+   explicit inline Eval()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the eval() function for the given object/value.
    //
    // \param a The given object/value.

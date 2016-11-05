@@ -62,6 +62,13 @@ namespace blaze {
 struct Sin
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Sin functor.
+   */
+   explicit inline Sin()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the sin() function for the given object/value.
    //
    // \param a The given object/value.

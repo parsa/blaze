@@ -62,6 +62,13 @@ namespace blaze {
 struct Tanh
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Tanh functor.
+   */
+   explicit inline Tanh()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the tanh() function for the given object/value.
    //
    // \param a The given object/value.

@@ -59,6 +59,13 @@ namespace blaze {
 struct Imag
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Imag functor.
+   */
+   explicit inline Imag()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the imag() function for the given object/value.
    //
    // \param a The given object/value.

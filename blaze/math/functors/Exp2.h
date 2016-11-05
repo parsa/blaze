@@ -62,6 +62,13 @@ namespace blaze {
 struct Exp2
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Exp2 functor.
+   */
+   explicit inline Exp2()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the exp2() function for the given object/value.
    //
    // \param a The given object/value.

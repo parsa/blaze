@@ -59,6 +59,13 @@ namespace blaze {
 struct Inv
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Inv functor.
+   */
+   explicit inline Inv()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the inv() function for the given object/value.
    //
    // \param a The given object/value.

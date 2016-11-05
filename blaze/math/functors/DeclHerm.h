@@ -58,6 +58,13 @@ namespace blaze {
 struct DeclHerm
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the DeclHerm functor.
+   */
+   explicit inline DeclHerm()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the declherm() function for the given object/value.
    //
    // \param a The given object/value.

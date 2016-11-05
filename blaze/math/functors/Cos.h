@@ -62,6 +62,13 @@ namespace blaze {
 struct Cos
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the Cos functor.
+   */
+   explicit inline Cos()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the cos() function for the given object/value.
    //
    // \param a The given object/value.

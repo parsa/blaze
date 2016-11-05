@@ -58,6 +58,13 @@ namespace blaze {
 struct CTrans
 {
    //**********************************************************************************************
+   /*!\brief Default constructor of the CTrans functor.
+   */
+   explicit inline CTrans()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the ctrans() function for the given object/value.
    //
    // \param a The given object/value.
