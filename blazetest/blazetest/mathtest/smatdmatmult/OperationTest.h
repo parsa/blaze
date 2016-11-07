@@ -3745,9 +3745,18 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
          return;
 
 
-      const MT2  rhs   ( trans( lhs_ ) );
-      const OMT2 orhs  ( trans( lhs_ ) );
-      const RT2  refrhs( trans( lhs_ ) );
+      MT2  rhs;     // The test-specific right-hand side dense matrix
+      OMT2 orhs;    // The test-specific right-hand side dense matrix with opposite storage order
+      RT2  refrhs;  // The test-specific reference right-hand side matrix
+
+      try {
+         rhs    = trans( lhs_ );
+         orhs   = trans( lhs_ );
+         refrhs = trans( lhs_ );
+      }
+      catch( std::exception& ) {
+         return;
+      }
 
 
       //=====================================================================================
@@ -4163,9 +4172,18 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::FalseType )
          return;
 
 
-      const MT1  lhs   ( trans( rhs_ ) );
-      const OMT1 olhs  ( trans( rhs_ ) );
-      const RT1  reflhs( trans( rhs_ ) );
+      MT1  lhs;     // The test-specific left-hand side dense matrix
+      OMT1 olhs;    // The test-specific left-hand side dense matrix with opposite storage order
+      RT1  reflhs;  // The test-specific reference left-hand side matrix
+
+      try {
+         lhs    = trans( rhs_ );
+         olhs   = trans( rhs_ );
+         reflhs = trans( rhs_ );
+      }
+      catch( std::exception& ) {
+         return;
+      }
 
 
       //=====================================================================================
