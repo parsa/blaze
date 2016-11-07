@@ -1183,13 +1183,15 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          B2 = submatrix<!remainder>( B, kk, jj, kblock, jblock );
 
-         size_t i( jj );
+         size_t i( 0UL );
 
          if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
-               const size_t jend( min( i-jj+5UL, jblock ) );
+               if( jj > ibegin+i+4UL ) continue;
+
+               const size_t jend( min( i+5UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL )
@@ -1264,7 +1266,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
          {
             for( ; (i+4UL) <= isize; i+=4UL )
             {
-               const size_t jend( min( i-jj+4UL, jblock ) );
+               if( jj > ibegin+i+3UL ) continue;
+
+               const size_t jend( min( i+4UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL )
@@ -1330,7 +1334,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          for( ; (i+2UL) <= isize; i+=2UL )
          {
-            const size_t jend( min( i-jj+2UL, jblock ) );
+            if( jj > ibegin+i+1UL ) continue;
+
+            const size_t jend( min( i+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+4UL) <= jend; j+=4UL )
@@ -1411,10 +1417,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
             }
          }
 
-         //if( i<isize )
-         for( ; i<isize; ++i )
+         if( i<isize && jj <= ibegin+i )
          {
-            const size_t jend( min( i-jj+2UL, jblock ) );
+            const size_t jend( min( i+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -1477,13 +1482,15 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          B2 = submatrix( B, kk, jj, ksize, jblock );
 
-         size_t i( jj );
+         size_t i( 0UL );
 
          if( IsFloatingPoint<ET1>::value )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
-               const size_t jend( min( i-jj+5UL, jblock ) );
+               if( jj > ibegin+i+4UL ) continue;
+
+               const size_t jend( min( i+5UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1516,7 +1523,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
          {
             for( ; (i+4UL) <= isize; i+=4UL )
             {
-               const size_t jend( min( i-jj+4UL, jblock ) );
+               if( jj > ibegin+i+3UL ) continue;
+
+               const size_t jend( min( i+4UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1545,7 +1554,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
          for( ; (i+2UL) <= isize; i+=2UL )
          {
-            const size_t jend( min( i-jj+2UL, jblock ) );
+            if( jj > ibegin+i+1UL ) continue;
+
+            const size_t jend( min( i+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1565,9 +1576,9 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
             }
          }
 
-         if( i<isize )
+         if( i<isize && jj <= ibegin+i )
          {
-            const size_t jend( min( i-jj+5UL, jblock ) );
+            const size_t jend( min( i+5UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1706,13 +1717,15 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          A2 = submatrix<!remainder>( A, ii, kk, iblock, kblock );
 
-         size_t j( ii );
+         size_t j( 0UL );
 
          if( IsFloatingPoint<ET3>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
-               const size_t iend( min( j-ii+5UL, iblock ) );
+               if( ii > jbegin+j+4UL ) continue;
+
+               const size_t iend( min( j+5UL, iblock ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL )
@@ -1781,7 +1794,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
          {
             for( ; (j+4UL) <= jsize; j+=4UL )
             {
-               const size_t iend( min( j-ii+4UL, iblock ) );
+               if( ii > jbegin+j+3UL ) continue;
+
+               const size_t iend( min( j+4UL, iblock ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL )
@@ -1842,7 +1857,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          for( ; (j+2UL) <= jsize; j+=2UL )
          {
-            const size_t iend( min( j-ii+2UL, iblock ) );
+            if( ii > jbegin+j+1UL ) continue;
+
+            const size_t iend( min( j+2UL, iblock ) );
             size_t i( 0UL );
 
             for( ; (i+4UL) <= iend; i+=4UL )
@@ -1920,9 +1937,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
             }
          }
 
-         if( j<jsize )
+         if( j<jsize && ii <= jbegin+j )
          {
-            const size_t iend( min( j-ii+2UL, iblock ) );
+            const size_t iend( min( j+2UL, iblock ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -1983,13 +2000,15 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          A2 = submatrix( A, ii, kk, iblock, ksize );
 
-         size_t j( ii );
+         size_t j( 0UL );
 
          if( IsFloatingPoint<ET1>::value )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
-               const size_t iend( min( j-ii+5UL, iblock ) );
+               if( ii > jbegin+j+4UL ) continue;
+
+               const size_t iend( min( j+5UL, iblock ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -2022,7 +2041,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
          {
             for( ; (j+4UL) <= jsize; j+=4UL )
             {
-               const size_t iend( min( j-ii+4UL, iblock ) );
+               if( ii > jbegin+j+3UL ) continue;
+
+               const size_t iend( min( j+4UL, iblock ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -2051,7 +2072,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
          for( ; (j+2UL) <= jsize; j+=2UL )
          {
-            const size_t iend( min( j-ii+2UL, iblock ) );
+            if( ii > jbegin+j+1UL ) continue;
+
+            const size_t iend( min( j+2UL, iblock ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -2071,9 +2094,9 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
             }
          }
 
-         if( j<jsize )
+         if( j<jsize && ii <= jbegin+j )
          {
-            const size_t iend( min( j-ii+2UL, iblock ) );
+            const size_t iend( min( j+2UL, iblock ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
