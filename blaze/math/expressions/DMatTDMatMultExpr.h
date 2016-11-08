@@ -569,7 +569,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SYM>, fa
          if( SYM && jbegin > jend ) continue;
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         for( size_t j=0UL; !SYM && j<jbegin; ++j ) {
+         for( size_t j=( SYM ? i : 0UL ); j<jbegin; ++j ) {
             reset( (~C)(i,j) );
          }
          for( size_t j=jbegin; j<jend; ++j )
@@ -675,7 +675,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SYM>, fa
          if( SYM && ibegin > iend ) continue;
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=0UL; !SYM && i<ibegin; ++i ) {
+         for( size_t i=( SYM ? j : 0UL ); i<ibegin; ++i ) {
             reset( (~C)(i,j) );
          }
          for( size_t i=ibegin; i<iend; ++i )
@@ -4485,7 +4485,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SYM>, ST, false >
          if( SYM && jbegin > jend ) continue;
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         for( size_t j=0UL; !SYM && j<jbegin; ++j ) {
+         for( size_t j=( SYM ? i : 0UL ); j<jbegin; ++j ) {
             reset( (~C)(i,j) );
          }
          for( size_t j=jbegin; j<jend; ++j )
@@ -4592,7 +4592,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SYM>, ST, false >
          if( SYM && ibegin > iend ) continue;
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=0UL; !SYM && i<ibegin; ++i ) {
+         for( size_t i=( SYM ? j : 0UL ); i<ibegin; ++i ) {
             reset( (~C)(i,j) );
          }
          for( size_t i=ibegin; i<iend; ++i )
