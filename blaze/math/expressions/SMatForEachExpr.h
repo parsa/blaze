@@ -82,6 +82,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
