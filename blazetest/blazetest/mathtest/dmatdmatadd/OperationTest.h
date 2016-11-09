@@ -181,6 +181,7 @@ class OperationTest
                           void testDeclHermOperation ();
                           void testDeclLowOperation  ();
                           void testDeclUppOperation  ();
+                          void testDeclDiagOperation ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -372,6 +373,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclHermOperation();
    testDeclLowOperation();
    testDeclUppOperation();
+   testDeclDiagOperation();
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
