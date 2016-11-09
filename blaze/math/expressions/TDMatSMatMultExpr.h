@@ -610,10 +610,6 @@ class TDMatSMatMultExpr : public DenseMatrix< TDMatSMatMultExpr<MT1,MT2,SYM>, tr
                             :( A.rows() ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-         BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
-
          for( size_t k=0UL; k<kpos; k+=4UL )
          {
             const size_t j1( element->index() );
@@ -632,6 +628,10 @@ class TDMatSMatMultExpr : public DenseMatrix< TDMatSMatMultExpr<MT1,MT2,SYM>, tr
             BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
 
             size_t i( SYM ? max(j1,ibegin) : ibegin );
+
+            const size_t inum( iend - i );
+            const size_t ipos( i + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( i + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
 
             for( ; i<ipos; i+=4UL ) {
                C(i    ,j1) += A(i    ,j) * v1;
@@ -665,6 +665,10 @@ class TDMatSMatMultExpr : public DenseMatrix< TDMatSMatMultExpr<MT1,MT2,SYM>, tr
             const ET2    v1( element->value() );
 
             size_t i( SYM ? max(j1,ibegin) : ibegin );
+
+            const size_t inum( iend - i );
+            const size_t ipos( i + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( i + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
 
             for( ; i<ipos; i+=4UL ) {
                C(i    ,j1) += A(i    ,j) * v1;
