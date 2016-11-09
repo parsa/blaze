@@ -3350,6 +3350,186 @@ inline void smmm( MT1& C, const MT2& A, const MT3& B )
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  HERMITIAN DENSE MATRIX MULTIPLICATION KERNELS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a Hermitian dense matrix/dense matrix multiplication
+//        (\f$ C=\alpha*A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side row-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \param alpha The scaling factor for \f$ A*B \f$.
+// \return void
+//
+// This function implements the compute kernel for a Hermitian dense matrix/dense matrix
+// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix type.
+// The element types of all three matrices must be SIMD combinable, i.e. must provide a common
+// SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3, typename ST >
+void hmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT1 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   const size_t M( A.rows()    );
+   const size_t N( B.columns() );
+
+   BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
+
+   lmmm( C, A, B, alpha );
+
+   for( size_t ii=0UL; ii<M; ii+=BLOCK_SIZE )
+   {
+      const size_t iend( min( M, ii+BLOCK_SIZE ) );
+
+      for( size_t i=ii; i<iend; ++i ) {
+         for( size_t j=i+1UL; j<iend; ++j ) {
+            (~C)(i,j) = conj( (~C)(j,i) );
+         }
+      }
+
+      for( size_t jj=ii+BLOCK_SIZE; jj<N; jj+=BLOCK_SIZE ) {
+         const size_t jend( min( N, jj+BLOCK_SIZE ) );
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               (~C)(i,j) = conj( (~C)(j,i) );
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a Hermitian dense matrix/dense matrix multiplication
+//        (\f$ C=\alpha*A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side column-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \param alpha The scaling factor for \f$ A*B \f$.
+// \return void
+//
+// This function implements the compute kernel for a Hermitian dense matrix/dense matrix
+// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, column-major dense matrix
+// type. The element types of all three matrices must be SIMD combinable, i.e. must provide
+// a common SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3, typename ST >
+void hmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE        ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT1 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   const size_t M( A.rows()    );
+   const size_t N( B.columns() );
+
+   BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
+
+   ummm( C, A, B, alpha );
+
+   for( size_t jj=0UL; jj<N; jj+=BLOCK_SIZE )
+   {
+      const size_t jend( min( N, jj+BLOCK_SIZE ) );
+
+      for( size_t j=jj; j<jend; ++j ) {
+         for( size_t i=jj+1UL; i<jend; ++i ) {
+            (~C)(i,j) = conj( (~C)(j,i) );
+         }
+      }
+
+      for( size_t ii=jj+BLOCK_SIZE; ii<M; ii+=BLOCK_SIZE ) {
+         const size_t iend( min( M, ii+BLOCK_SIZE ) );
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               (~C)(i,j) = conj( (~C)(j,i) );
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compute kernel for a Hermitian dense matrix/dense matrix multiplication (\f$ C=A*B \f$).
+// \ingroup dense_matrix
+//
+// \param C The target left-hand side column-major dense matrix.
+// \param A The left-hand side multiplication operand.
+// \param B The right-hand side multiplication operand.
+// \return void
+//
+// This function implements the compute kernel for a Hermitian dense matrix/dense matrix
+// multiplication of the form \f$ C=A*B \f$. Both \a A and \a B must be non-expression
+// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix
+// type. The element types of all three matrices must be SIMD combinable, i.e. must
+// provide a common SIMD interface.
+*/
+template< typename MT1, typename MT2, typename MT3 >
+inline void hmmm( MT1& C, const MT2& A, const MT3& B )
+{
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
+
+   hmmm( C, A, B, ET1(1) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
