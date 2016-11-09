@@ -59,12 +59,15 @@
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/functors/DeclHerm.h>
 #include <blaze/math/functors/DeclSym.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/SIMD.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DMatDeclHermExprTrait.h>
 #include <blaze/math/traits/DMatDeclSymExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatSVecMultExprTrait.h>
@@ -119,9 +122,11 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -152,8 +157,9 @@ namespace blaze {
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
-        , bool SYM >    // Symmetry flag
-class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, false >
+        , bool SYM      // Symmetry flag
+        , bool HERM >   // Hermitian flag
+class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, false >
                        , private MatMatMultExpr
                        , private Computation
 {
@@ -215,7 +221,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
    template< typename T1, typename T2, typename T3 >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM &&
+                            !SYM && !HERM &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -249,16 +255,27 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Type of the functor for forwarding an expression to another assign kernel.
+   /*! In case a temporary matrix needs to be created, this functor is used to forward the
+       resulting expression to another assign kernel. */
+   typedef IfTrue_< SYM, DeclSym, IfTrue_< HERM, DeclHerm, Noop > >  ForwardFunctor;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef DMatDMatMultExpr<MT1,MT2,SYM>  This;           //!< Type of this DMatDMatMultExpr instance.
-   typedef MultTrait_<RT1,RT2>            ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>       ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>        SIMDType;       //!< Resulting SIMD element type.
-   typedef const ElementType              ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType               CompositeType;  //!< Data type for composite expression templates.
+   //! Type of this DMatDMatMultExpr instance.
+   typedef DMatDMatMultExpr<MT1,MT2,SYM,HERM>  This;
+
+   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
@@ -557,7 +574,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( !SYM || M == N, "Invalid symmetric matrix detected" );
+      BLAZE_INTERNAL_ASSERT( !( SYM || HERM ) || ( M == N ), "Broken invariant detected" );
 
       for( size_t i=0UL; i<M; ++i )
       {
@@ -610,14 +627,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
          {
             const size_t jbegin( ( IsUpper<MT5>::value )
                                  ?( ( IsStrictlyUpper<MT5>::value )
-                                    ?( SYM ? max( i, k+1UL ) : k+1UL )
-                                    :( SYM ? max( i, k ) : k ) )
-                                 :( SYM ? i : 0UL ) );
+                                    ?( SYM || HERM ? max( i, k+1UL ) : k+1UL )
+                                    :( SYM || HERM ? max( i, k ) : k ) )
+                                 :( SYM || HERM ? i : 0UL ) );
             const size_t jend( ( IsLower<MT5>::value )
                                ?( IsStrictlyLower<MT5>::value ? k-1UL : k )
                                :( N ) );
 
-            if( SYM && jbegin > jend ) continue;
+            if( ( SYM || HERM ) && ( jbegin > jend ) ) continue;
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
@@ -629,10 +646,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
          }
       }
 
-      if( SYM ) {
+      if( SYM || HERM ) {
          for( size_t i=1UL; i<M; ++i ) {
             for( size_t j=0UL; j<i; ++j ) {
-               C(i,j) = C(j,i);
+               C(i,j) = SYM ? C(j,i) : conj( C(j,i) );
             }
          }
       }
@@ -828,7 +845,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( !SYM || M == N, "Invalid symmetric matrix detected" );
+      BLAZE_INTERNAL_ASSERT( !( SYM || HERM ) || ( M == N ), "Broken invariant detected" );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -838,7 +855,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
 
          if( IsIntegral<ElementType>::value )
          {
-            for( ; !SYM && (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
+            for( ; !SYM && !HERM && (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
                for( size_t i=0UL; i<M; ++i )
                {
                   const size_t kbegin( ( IsUpper<MT4>::value )
@@ -878,7 +895,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*4UL) < jpos; j+=SIMDSIZE*5UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*4UL) < jpos; j+=SIMDSIZE*5UL )
          {
             size_t i( 0UL );
 
@@ -957,7 +974,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL )
          {
             size_t i( 0UL );
 
@@ -1029,7 +1046,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*2UL) < jpos; j+=SIMDSIZE*3UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*2UL) < jpos; j+=SIMDSIZE*3UL )
          {
             size_t i( 0UL );
 
@@ -1096,7 +1113,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
 
          for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -1154,7 +1171,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
 
          for( ; j<jpos; j+=SIMDSIZE )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -1199,7 +1216,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
 
          for( ; remainder && j<N; ++j )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -1243,10 +1260,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
          }
       }
 
-      if( SYM ) {
+      if( SYM || HERM ) {
          for( size_t i=0UL; i<M; ++i ) {
             for( size_t j=i+1UL; j<N; ++j ) {
-               (~C)(i,j) = (~C)(j,i);
+               (~C)(i,j) = SYM ? (~C)(j,i) : conj( (~C)(j,i) );
             }
          }
       }
@@ -1280,23 +1297,23 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         assign( ~C, op( tmp * B ) );
+         assign( ~C, fwd( tmp * B ) );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         assign( ~C, op( A * tmp ) );
+         assign( ~C, fwd( A * tmp ) );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         assign( ~C, op( tmp * B ) );
+         assign( ~C, fwd( tmp * B ) );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         assign( ~C, op( A * tmp ) );
+         assign( ~C, fwd( A * tmp ) );
       }
    }
    /*! \endcond */
@@ -1348,6 +1365,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
    {
       if( SYM )
          smmm( C, A, B, ElementType(1) );
+      else if( HERM )
+         hmmm( C, A, B, ElementType(1) );
       else
          mmm( C, A, B, ElementType(1), ElementType(0) );
    }
@@ -1448,10 +1467,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, op( tmp ) );
+      assign( ~lhs, fwd( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1482,14 +1501,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         assign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         assign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         assign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         assign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         assign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         assign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2284,23 +2303,23 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         addAssign( ~C, op( tmp * B ) );
+         addAssign( ~C, fwd( tmp * B ) );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         addAssign( ~C, op( A * tmp ) );
+         addAssign( ~C, fwd( A * tmp ) );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         addAssign( ~C, op( tmp * B ) );
+         addAssign( ~C, fwd( tmp * B ) );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         addAssign( ~C, op( A * tmp ) );
+         addAssign( ~C, fwd( A * tmp ) );
       }
    }
    /*! \endcond */
@@ -2449,14 +2468,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         addAssign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         addAssign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         addAssign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         addAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3255,23 +3274,23 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         subAssign( ~C, op( tmp * B ) );
+         subAssign( ~C, fwd( tmp * B ) );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         subAssign( ~C, op( A * tmp ) );
+         subAssign( ~C, fwd( A * tmp ) );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         subAssign( ~C, op( tmp * B ) );
+         subAssign( ~C, fwd( tmp * B ) );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         subAssign( ~C, op( A * tmp ) );
+         subAssign( ~C, fwd( A * tmp ) );
       }
    }
    /*! \endcond */
@@ -3420,14 +3439,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         subAssign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         subAssign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         subAssign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         subAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3526,10 +3545,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, op( tmp ) );
+      smpAssign( ~lhs, fwd( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3560,14 +3579,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpAssign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         smpAssign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         smpAssign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         smpAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3643,14 +3662,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpAddAssign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         smpAddAssign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         smpAddAssign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         smpAddAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3730,14 +3749,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpSubAssign( ~lhs, op( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
+         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
       else if( IsSymmetric<MT1>::value )
-         smpSubAssign( ~lhs, op( trans( rhs.lhs_ ) * rhs.rhs_ ) );
+         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
-         smpSubAssign( ~lhs, op( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+         smpSubAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3761,6 +3780,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATMULTEXPR( MT1, MT2 );
+
+   BLAZE_STATIC_ASSERT_MSG( !( SYM && HERM ), "Invalid flag combination detected" );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -3786,22 +3807,25 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SYM>, fals
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
         , bool SYM       // Symmetry flag
+        , bool HERM      // Hermitian flag
         , typename ST >  // Type of the right-hand side scalar value
-class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
-   : public DenseMatrix< DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >, false >
+class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, ST, false >
+   : public DenseMatrix< DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, ST, false >, false >
    , private MatScalarMultExpr
    , private Computation
 {
  private:
    //**Type definitions****************************************************************************
-   typedef DMatDMatMultExpr<MT1,MT2,SYM>  MMM;  //!< Type of the dense matrix multiplication expression.
-   typedef ResultType_<MMM>               RES;  //!< Result type of the dense matrix multiplication expression.
-   typedef ResultType_<MT1>               RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<MT2>               RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<RT1>              ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef ElementType_<RT2>              ET2;  //!< Element type of the right-hand side dense matrix expression.
-   typedef CompositeType_<MT1>            CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef CompositeType_<MT2>            CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   //! Type of the dense matrix multiplication expression.
+   typedef DMatDMatMultExpr<MT1,MT2,SYM,HERM>  MMM;
+
+   typedef ResultType_<MMM>     RES;  //!< Result type of the dense matrix multiplication expression.
+   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side dense matrix expression.
+   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side dense matrix expression.
+   typedef ElementType_<RT1>    ET1;  //!< Element type of the left-hand side dense matrix expression.
+   typedef ElementType_<RT2>    ET2;  //!< Element type of the right-hand side dense matrix expression.
+   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side dense matrix expression.
+   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -3847,7 +3871,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM &&
+                            !SYM && !HERM &&
                             HasMutableDataAccess<T1>::value &&
                             HasConstDataAccess<T2>::value &&
                             HasConstDataAccess<T3>::value &&
@@ -3880,19 +3904,30 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Type of the functor for forwarding an expression to another assign kernel.
+   /*! In case a temporary matrix needs to be created, this functor is used to forward the
+       resulting expression to another assign kernel. */
+   typedef IfTrue_< SYM, DeclSym, IfTrue_< HERM, DeclHerm, Noop > >  ForwardFunctor;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarMultExpr<MMM,ST,false>  This;           //!< Type of this DMatScalarMultExpr instance.
-   typedef MultTrait_<RES,ST>                ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>         OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>          ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>           SIMDType;       //!< Resulting SIMD element type.
-   typedef const ElementType                 ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
+   //! Type of this DMatScalarMultExpr instance.
+   typedef DMatScalarMultExpr<MMM,ST,false>  This;
+
+   typedef MultTrait_<RES,ST>          ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
+   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef const DMatDMatMultExpr<MT1,MT2,SYM>  LeftOperand;
+   typedef const DMatDMatMultExpr<MT1,MT2,SYM,HERM>  LeftOperand;
 
    //! Composite type of the right-hand side scalar value.
    typedef ST  RightOperand;
@@ -4156,7 +4191,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( !SYM || M == N, "Invalid symmetric matrix detected" );
+      BLAZE_INTERNAL_ASSERT( !( SYM || HERM ) || M == N, "Broken invariant detected" );
 
       for( size_t i=0UL; i<M; ++i )
       {
@@ -4209,14 +4244,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
          {
             const size_t jbegin( ( IsUpper<MT5>::value )
                                  ?( ( IsStrictlyUpper<MT5>::value )
-                                    ?( SYM ? max( i, k+1UL ) : k+1UL )
-                                    :( SYM ? max( i, k ) : k ) )
-                                 :( SYM ? i : 0UL ) );
+                                    ?( SYM || HERM ? max( i, k+1UL ) : k+1UL )
+                                    :( SYM || HERM ? max( i, k ) : k ) )
+                                 :( SYM || HERM ? i : 0UL ) );
             const size_t jend( ( IsLower<MT5>::value )
                                ?( IsStrictlyLower<MT5>::value ? k-1UL : k )
                                :( N ) );
 
-            if( SYM && jbegin > jend ) continue;
+            if( ( SYM || HERM ) && ( jbegin > jend ) ) continue;
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
@@ -4242,10 +4277,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
          }
       }
 
-      if( SYM ) {
+      if( SYM || HERM ) {
          for( size_t i=1UL; i<M; ++i ) {
             for( size_t j=0UL; j<i; ++j ) {
-               C(i,j) = C(j,i);
+               C(i,j) = SYM ? C(j,i) : conj( C(j,i) );
             }
          }
       }
@@ -4442,7 +4477,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( !SYM || M == N, "Invalid symmetric matrix detected" );
+      BLAZE_INTERNAL_ASSERT( !( SYM || HERM ) || M == N, "Broken invariant detected" );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -4454,7 +4489,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
 
          if( IsIntegral<ElementType>::value )
          {
-            for( ; !SYM && (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
+            for( ; !SYM && !HERM && (j+SIMDSIZE*7UL) < jpos; j+=SIMDSIZE*8UL ) {
                for( size_t i=0UL; i<M; ++i )
                {
                   const size_t kbegin( ( IsUpper<MT4>::value )
@@ -4494,7 +4529,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*4UL) < jpos; j+=SIMDSIZE*5UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*4UL) < jpos; j+=SIMDSIZE*5UL )
          {
             size_t i( 0UL );
 
@@ -4573,7 +4608,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL )
          {
             size_t i( 0UL );
 
@@ -4645,7 +4680,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
             }
          }
 
-         for( ; !SYM && (j+SIMDSIZE*2UL) < jpos; j+=SIMDSIZE*3UL )
+         for( ; !SYM && !HERM && (j+SIMDSIZE*2UL) < jpos; j+=SIMDSIZE*3UL )
          {
             size_t i( 0UL );
 
@@ -4712,7 +4747,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
 
          for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -4770,7 +4805,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
 
          for( ; j<jpos; j+=SIMDSIZE )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -4815,7 +4850,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
 
          for( ; remainder && j<N; ++j )
          {
-            size_t i( SYM ? j : 0UL );
+            size_t i( SYM || HERM ? j : 0UL );
 
             for( ; (i+2UL) <= M; i+=2UL )
             {
@@ -4859,10 +4894,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
          }
       }
 
-      if( SYM ) {
+      if( SYM || HERM ) {
          for( size_t i=0UL; i<M; ++i ) {
             for( size_t j=i+1UL; j<N; ++j ) {
-               (~C)(i,j) = (~C)(j,i);
+               (~C)(i,j) = SYM ? (~C)(j,i) : conj( (~C)(j,i) );
             }
          }
       }
@@ -4896,23 +4931,23 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         assign( ~C, op( tmp * B ) * scalar );
+         assign( ~C, fwd( tmp * B ) * scalar );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         assign( ~C, op( A * tmp ) * scalar );
+         assign( ~C, fwd( A * tmp ) * scalar );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         assign( ~C, op( tmp * B ) * scalar );
+         assign( ~C, fwd( tmp * B ) * scalar );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         assign( ~C, op( A * tmp ) * scalar );
+         assign( ~C, fwd( A * tmp ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -4966,6 +5001,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
    {
       if( SYM )
          smmm( C, A, B, scalar );
+      else if( HERM )
+         hmmm( C, A, B, scalar );
       else
          mmm( C, A, B, scalar, ST2(0) );
    }
@@ -5066,10 +5103,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, op( tmp ) );
+      assign( ~lhs, fwd( tmp ) );
    }
    //**********************************************************************************************
 
@@ -5098,17 +5135,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         assign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         assign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         assign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         assign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         assign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         assign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -5830,23 +5867,23 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         addAssign( ~C, op( tmp * B ) * scalar );
+         addAssign( ~C, fwd( tmp * B ) * scalar );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         addAssign( ~C, op( A * tmp ) * scalar );
+         addAssign( ~C, fwd( A * tmp ) * scalar );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         addAssign( ~C, op( tmp * B ) * scalar );
+         addAssign( ~C, fwd( tmp * B ) * scalar );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         addAssign( ~C, op( A * tmp ) * scalar );
+         addAssign( ~C, fwd( A * tmp ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -5993,17 +6030,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         addAssign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         addAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         addAssign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         addAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         addAssign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         addAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -6728,23 +6765,23 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT4> );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         subAssign( ~C, op( tmp * B ) * scalar );
+         subAssign( ~C, fwd( tmp * B ) * scalar );
       }
       else if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
          const OppositeType_<MT5> tmp( serial( B ) );
-         subAssign( ~C, op( A * tmp ) * scalar );
+         subAssign( ~C, fwd( A * tmp ) * scalar );
       }
       else if( A.rows() * A.columns() <= B.rows() * B.columns() ) {
          const OppositeType_<MT4> tmp( serial( A ) );
-         subAssign( ~C, op( tmp * B ) * scalar );
+         subAssign( ~C, fwd( tmp * B ) * scalar );
       }
       else {
          const OppositeType_<MT5> tmp( serial( B ) );
-         subAssign( ~C, op( A * tmp ) * scalar );
+         subAssign( ~C, fwd( A * tmp ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -6891,17 +6928,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         subAssign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         subAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         subAssign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         subAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         subAssign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         subAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7001,10 +7038,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, op( tmp ) );
+      smpAssign( ~lhs, fwd( tmp ) );
    }
    //**********************************************************************************************
 
@@ -7033,17 +7070,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpAssign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         smpAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         smpAssign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         smpAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         smpAssign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         smpAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7118,17 +7155,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpAddAssign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         smpAddAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         smpAddAssign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         smpAddAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         smpAddAssign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         smpAddAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7207,17 +7244,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const IfTrue_< SYM, DeclSym, Noop > op;
+      const ForwardFunctor fwd;
 
       LeftOperand_<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_<MMM> right( rhs.matrix_.rightOperand() );
 
       if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
-         smpSubAssign( ~lhs, op( trans( left ) * trans( right ) ) * rhs.scalar_ );
+         smpSubAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
       else if( IsSymmetric<MT1>::value )
-         smpSubAssign( ~lhs, op( trans( left ) * right ) * rhs.scalar_ );
+         smpSubAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
-         smpSubAssign( ~lhs, op( left * trans( right ) ) * rhs.scalar_ );
+         smpSubAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7285,7 +7322,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SYM>, ST, false >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline const DMatDMatMultExpr<T1,T2,false>
+inline const DMatDMatMultExpr<T1,T2,false,false>
    operator*( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -7294,7 +7331,7 @@ inline const DMatDMatMultExpr<T1,T2,false>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatDMatMultExpr<T1,T2,false>( ~lhs, ~rhs );
+   return DMatDMatMultExpr<T1,T2,false,false>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -7330,10 +7367,11 @@ inline const DMatDMatMultExpr<T1,T2,false>
    C = declsym( A * B );
    \endcode
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline const DMatDMatMultExpr<MT1,MT2,true>
-   declsym( const DMatDMatMultExpr<MT1,MT2,false>& dm )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool HERM >   // Hermitian flag
+inline const DMatDMatMultExpr<MT1,MT2,true,false>
+   declsym( const DMatDMatMultExpr<MT1,MT2,false,HERM>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -7341,7 +7379,48 @@ inline const DMatDMatMultExpr<MT1,MT2,true>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,true>( dm.leftOperand(), dm.rightOperand() );
+   return DMatDMatMultExpr<MT1,MT2,true,false>( dm.leftOperand(), dm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-Hermitian matrix multiplication expression as Hermitian.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix multiplication expression.
+// \return The redeclared dense matrix multiplication expression.
+// \exception std::invalid_argument Invalid Hermitian matrix specification.
+//
+// The \a declherm function declares the given non-Hermitian matrix multiplication expression
+// \a dm as Hermitian. The function returns an expression representing the operation. In case
+// the given expression does not represent a square matrix, a \a std::invalid_argument exception
+// is thrown.\n
+// The following example demonstrates the use of the \a declherm function:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, B, C;
+   // ... Resizing and initialization
+   C = declherm( A * B );
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SYM >    // Symmetry flag
+inline const DMatDMatMultExpr<MT1,MT2,false,true>
+   declherm( const DMatDMatMultExpr<MT1,MT2,SYM,false>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
+   }
+
+   return DMatDMatMultExpr<MT1,MT2,false,true>( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7358,8 +7437,8 @@ inline const DMatDMatMultExpr<MT1,MT2,true>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct Rows< DMatDMatMultExpr<MT1,MT2,SYM> > : public Rows<MT1>
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct Rows< DMatDMatMultExpr<MT1,MT2,SYM,HERM> > : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7375,8 +7454,8 @@ struct Rows< DMatDMatMultExpr<MT1,MT2,SYM> > : public Rows<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct Columns< DMatDMatMultExpr<MT1,MT2,SYM> > : public Columns<MT2>
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct Columns< DMatDMatMultExpr<MT1,MT2,SYM,HERM> > : public Columns<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7392,8 +7471,8 @@ struct Columns< DMatDMatMultExpr<MT1,MT2,SYM> > : public Columns<MT2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsAligned< DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsAligned< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
    : public BoolConstant< And< IsAligned<MT1>, IsAligned<MT2> >::value >
 {};
 /*! \endcond */
@@ -7411,7 +7490,35 @@ struct IsAligned< DMatDMatMultExpr<MT1,MT2,SYM> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatDMatMultExpr<MT1,MT2,true> >
+struct IsSymmetric< DMatDMatMultExpr<MT1,MT2,true,false> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsSymmetric< DMatDMatMultExpr<MT1,MT2,false,true> >
+   : public BoolConstant< IsBuiltin< ElementType_< DMatDMatMultExpr<MT1,MT2,false,true> > >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsHermitian< DMatDMatMultExpr<MT1,MT2,false,true> >
    : public TrueType
 {};
 /*! \endcond */
@@ -7428,9 +7535,11 @@ struct IsSymmetric< DMatDMatMultExpr<MT1,MT2,true> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsLower< DMatDMatMultExpr<MT1,MT2,SYM> >
-   : public BoolConstant< And< IsLower<MT1>, IsLower<MT2> >::value >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsLower< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
+   : public BoolConstant< Or< And< IsLower<MT1>, IsLower<MT2> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , IsUpper<MT1>, IsUpper<MT2> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7446,9 +7555,11 @@ struct IsLower< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsUniLower< DMatDMatMultExpr<MT1,MT2,SYM> >
-   : public BoolConstant< And< IsUniLower<MT1>, IsUniLower<MT2> >::value >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsUniLower< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
+   : public BoolConstant< Or< And< IsUniLower<MT1>, IsUniLower<MT2> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , IsUniUpper<MT1>, IsUniUpper<MT2> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7464,10 +7575,13 @@ struct IsUniLower< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsStrictlyLower< DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsStrictlyLower< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
    : public BoolConstant< Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-                            , And< IsStrictlyLower<MT2>, IsLower<MT1> > >::value >
+                            , And< IsStrictlyLower<MT2>, IsLower<MT1> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
+                                     , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > > > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7483,9 +7597,11 @@ struct IsStrictlyLower< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
-   : public BoolConstant< And< IsUpper<MT1>, IsUpper<MT2> >::value >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsUpper< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
+   : public BoolConstant< Or< And< IsUpper<MT1>, IsUpper<MT2> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , IsLower<MT1>, IsLower<MT2> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7501,9 +7617,11 @@ struct IsUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsUniUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
-   : public BoolConstant< And< IsUniUpper<MT1>, IsUniUpper<MT2> >::value >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsUniUpper< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
+   : public BoolConstant< Or< And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , IsUniLower<MT1>, IsUniLower<MT2> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7519,10 +7637,13 @@ struct IsUniUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct IsStrictlyUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct IsStrictlyUpper< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
    : public BoolConstant< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-                            , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >::value >
+                            , And< IsStrictlyUpper<MT2>, IsUpper<MT1> >
+                            , And< Or< Bool<SYM>, Bool<HERM> >
+                                 , Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
+                                     , And< IsStrictlyLower<MT2>, IsLower<MT1> > > > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -7538,8 +7659,8 @@ struct IsStrictlyUpper< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM, typename VT >
-struct DMatDVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, VT >
+template< typename MT1, typename MT2, bool SYM, bool HERM, typename VT >
+struct DMatDVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, VT >
 {
  public:
    //**********************************************************************************************
@@ -7556,8 +7677,8 @@ struct DMatDVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, VT >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM, typename VT >
-struct DMatSVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, VT >
+template< typename MT1, typename MT2, bool SYM, bool HERM, typename VT >
+struct DMatSVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, VT >
 {
  public:
    //**********************************************************************************************
@@ -7574,8 +7695,8 @@ struct DMatSVecMultExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, VT >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2, bool SYM >
-struct TDVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename VT, typename MT1, typename MT2, bool SYM, bool HERM >
+struct TDVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
 {
  public:
    //**********************************************************************************************
@@ -7592,8 +7713,8 @@ struct TDVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2, bool SYM >
-struct TSVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename VT, typename MT1, typename MT2, bool SYM, bool HERM >
+struct TSVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
 {
  public:
    //**********************************************************************************************
@@ -7610,14 +7731,14 @@ struct TSVecDMatMultExprTrait< VT, DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct DMatDeclSymExprTrait< DMatDMatMultExpr<MT1,MT2,false> >
+template< typename MT1, typename MT2, bool HERM >
+struct DMatDeclSymExprTrait< DMatDMatMultExpr<MT1,MT2,false,HERM> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                   , DMatDMatMultExpr<MT1,MT2,true>
+                   , DMatDMatMultExpr<MT1,MT2,true,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -7627,8 +7748,25 @@ struct DMatDeclSymExprTrait< DMatDMatMultExpr<MT1,MT2,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM, bool AF >
-struct SubmatrixExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, AF >
+template< typename MT1, typename MT2, bool SYM >
+struct DMatDeclHermExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+                   , DMatDMatMultExpr<MT1,MT2,false,true>
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2, bool SYM, bool HERM, bool AF >
+struct SubmatrixExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,HERM>, AF >
 {
  public:
    //**********************************************************************************************
@@ -7642,8 +7780,8 @@ struct SubmatrixExprTrait< DMatDMatMultExpr<MT1,MT2,SYM>, AF >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct RowExprTrait< DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct RowExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
 {
  public:
    //**********************************************************************************************
@@ -7656,8 +7794,8 @@ struct RowExprTrait< DMatDMatMultExpr<MT1,MT2,SYM> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SYM >
-struct ColumnExprTrait< DMatDMatMultExpr<MT1,MT2,SYM> >
+template< typename MT1, typename MT2, bool SYM, bool HERM >
+struct ColumnExprTrait< DMatDMatMultExpr<MT1,MT2,SYM,HERM> >
 {
  public:
    //**********************************************************************************************
