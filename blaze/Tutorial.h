@@ -3183,9 +3183,9 @@
    B = declsym( A );
    \endcode
 
-// Any matrix or matrix expression that has been declared as symmetric via \c declsym() will gain
-// all the benefits of a symmetric matrix, which range from reduced runtime checking for symmetry
-// to a considerable speed-up in computations:
+// Any matrix or matrix expression that has been declared as symmetric via \c declsym() will
+// gain all the benefits of a symmetric matrix, which range from reduced runtime checking to
+// a considerable speed-up in computations:
 
    \code
    using blaze::DynamicMatrix;
@@ -3206,6 +3206,44 @@
 // \warning The \c declsym() operation has the semantics of a cast: The caller is completely
 // responsible and the system trusts the given information. Declaring a non-symmetric matrix or
 // matrix expression as symmetric via the \c declsym() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declherm declherm()
+//
+// The \c declherm() operation can be used to explicitly declare any matrix or matrix expression
+// as Hermitian:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declherm( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as Hermitian via \c declherm() will
+// gain all the benefits of an Hermitian matrix, which range from reduced runtime checking to
+// a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::HermitianMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   HermitianMatrix< DynamicMatrix<double> > S;
+   // ... Resizing and initialization
+
+   isHermitian( declherm( A ) );  // Will always return true without runtime effort
+
+   S = declherm( A );  // Omit any runtime check for Hermitian symmetry
+
+   C = declherm( A * B );  // Declare the result of the matrix multiplication as Hermitian
+                           // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declherm() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-Hermitian matrix or
+// matrix expression as Hermitian via the \c declherm() operation leads to undefined behavior
 // (which can be violated invariants or wrong computation results)!
 //
 //
@@ -8042,24 +8080,34 @@
 // highest performance for a multiplication between two matrices can be expected for two
 // matrices with the same scalar element type.
 //
-// In case the resulting matrix is known to be symmetric, the computation can be optimized by
-// explicitly declaring the multiplication as symmetric via the \ref matrix_operations_declsym
-// operation:
+// In case the resulting matrix is known to be symmetric or Hermitian, the computation can be
+// optimized by explicitly declaring the multiplication as symmetric or Hermitian via the
+// \ref matrix_operations_declsym or \ref matrix_operations_declherm operations, respectively:
 
    \code
    using blaze::DynamicMatrix;
 
-   DynamicMatrix<double> A, B, C
+   DynamicMatrix<double> M1, M2, M3;
 
    // ... Initialization of the matrices
 
-   C = declsym( A * B );
+   M3 = declsym( M1 * M2 );  // Declare the result of the matrix multiplication as symmetric
    \endcode
 
-// Declaring the multiplication as symmetric can speed up the computation by up to a factor of 2.
-// Note however that the caller of the \ref matrix_operations_declsym operation takes full
-// responsibility for the correctness of the declaration. Declaring a multiplication, which does
-// not result in a symmetric matrix, as symmetric leads to undefined behavior!
+   \code
+   using blaze::DynamicMatrix;
+
+   DynamicMatrix< complex<double> > A, B, C
+
+   // ... Initialization of the matrices
+
+   M3 = declherm( M1 * M2 );  // Declare the result of the matrix multiplication as Hermitian
+   \endcode
+
+// Declaring the multiplication as symmetric or Hermitian can speed up the computation by up to
+// a factor of 2. Note however that the caller of the \ref matrix_operations_declsym operation
+// takes full responsibility for the correctness of the declaration. Falsely declaring a
+// multiplication as symmetric or Hermitian leads to undefined behavior!
 //
 // \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref custom_operations
 */
