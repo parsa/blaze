@@ -4202,12 +4202,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SYM,HERM>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Type of the functor for forwarding an expression to another assign kernel.
    /*! In case a temporary matrix needs to be created, this functor is used to forward the
        resulting expression to another assign kernel. */
    typedef IfTrue_< SYM, DeclSym, IfTrue_< HERM, DeclHerm, Noop > >  ForwardFunctor;
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
