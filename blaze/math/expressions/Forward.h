@@ -135,7 +135,7 @@ template< typename, typename > class SVecTDVecMultExpr;
 template< typename, bool > class SVecTransExpr;
 template< typename, bool > class SVecTransposer;
 template< typename, typename > class SVecTSVecMultExpr;
-template< typename, typename, bool > class TDMatDMatMultExpr;
+template< typename, typename, bool, bool > class TDMatDMatMultExpr;
 template< typename, typename > class TDMatDVecMultExpr;
 template< typename, typename > class TDMatSMatAddExpr;
 template< typename, typename, bool > class TDMatSMatMultExpr;
