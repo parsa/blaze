@@ -1525,7 +1525,7 @@
 
 // \n \subsection vector_operations_rounding_functions floor() / ceil() / trunc() / round()
 //
-// The \c floor() \c ceil(), \c trunc(), and \c round() functions can be used to round down/up
+// The \c floor(), \c ceil(), \c trunc(), and \c round() functions can be used to round down/up
 // each element of a vector, respectively:
 
    \code
@@ -3171,12 +3171,52 @@
 // Note that non-square matrices are never considered to be identity matrices!
 //
 //
+// \n \subsection matrix_operations_declsym declsym()
+//
+// The \c declsym() operation can be used to explicitly declare any matrix or matrix expression
+// as symmetric:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declsym( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as symmetric via \c declsym() will gain
+// all the benefits of a symmetric matrix, which range from reduced runtime checking for symmetry
+// to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   SymmetricMatrix< DynamicMatrix<double> > S;
+   // ... Resizing and initialization
+
+   isSymmetric( declsym( A ) );  // Will always return true without runtime effort
+
+   S = declsym( A );  // Omit any runtime check for symmetry
+
+   C = declsym( A * B );  // Declare the result of the matrix multiplication as symmetric
+                          // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declsym() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-symmetric matrix or
+// matrix expression as symmetric via the \c declsym() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
 // \n \subsection matrix_operations_min_max min() / max()
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
 // dense or sparse matrix, respectively:
 
    \code
+   using blaze::rowMajor;
+
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -5, 2, 7 },
                                                 {  4, 0, 1 } };
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> B{ { -5, 2, -7 },
@@ -7997,8 +8037,29 @@
    \endcode
 
 // The storage order of the two matrices poses no restrictions on the operation, all variations
-// are possible. Note however that the highest performance for a multiplication between two dense
-// matrices can be expected for two matrices with the same scalar element type.
+// are possible. It is also possible to multiply two matrices with different element type, as
+// long as the element types themselves can be multiplied and added. Note however that the
+// highest performance for a multiplication between two matrices can be expected for two
+// matrices with the same scalar element type.
+//
+// In case the resulting matrix is known to be symmetric, the computation can be optimized by
+// explicitly declaring the multiplication as symmetric via the \ref matrix_operations_declsym
+// operation:
+
+   \code
+   using blaze::DynamicMatrix;
+
+   DynamicMatrix<double> A, B, C
+
+   // ... Initialization of the matrices
+
+   C = declsym( A * B );
+   \endcode
+
+// Declaring the multiplication as symmetric can speed up the computation by up to a factor of 2.
+// Note however that the caller of the \ref matrix_operations_declsym operation takes full
+// responsibility for the correctness of the declaration. Declaring a multiplication, which does
+// not result in a symmetric matrix, as symmetric leads to undefined behavior!
 //
 // \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref custom_operations
 */
