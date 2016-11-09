@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SMATDECLHERMEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_SMATDECLHERMEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SMATDECLDIAGEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SMATDECLDIAGEXPR_H_
 
 
 //*************************************************************************************************
