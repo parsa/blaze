@@ -1092,23 +1092,24 @@ inline void mmm( MT1& C, const MT2& A, const MT3& B )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compute kernel for a lower dense matrix/dense matrix multiplication
-//        (\f$ C=\alpha*A*B \f$).
+//        (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup dense_matrix
 //
 // \param C The target left-hand side row-major dense matrix.
 // \param A The left-hand side multiplication operand.
 // \param B The right-hand side multiplication operand.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param beta The scaling factor for \f$ C \f$.
 // \return void
 //
 // This function implements the compute kernel for a lower dense matrix/dense matrix
-// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
-// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix type.
-// The element types of all three matrices must be SIMD combinable, i.e. must provide a common
-// SIMD interface.
+// multiplication of the form \f$ C=\alpha*A*B+\beta*C \f$. Both \a A and \a B must
+// be non-expression dense matrix types, \a C must be a non-expression, non-adaptor,
+// row-major dense matrix type. The element types of all three matrices must be SIMD
+// combinable, i.e. must provide a common SIMD interface.
 */
 template< typename MT1, typename MT2, typename MT3, typename ST >
-void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
+void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST beta )
 {
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
@@ -1148,7 +1149,9 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   reset( ~C );
+   if( beta != ST(1) ) {
+      (~C) *= beta;
+   }
 
    size_t kk( 0UL );
    size_t kblock( 0UL );
@@ -1606,23 +1609,24 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compute kernel for a lower dense matrix/dense matrix multiplication
-//        (\f$ C=\alpha*A*B \f$).
+//        (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup dense_matrix
 //
 // \param C The target left-hand side column-major dense matrix.
 // \param A The left-hand side multiplication operand.
 // \param B The right-hand side multiplication operand.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param beta The scaling factor for \f$ C \f$.
 // \return void
 //
 // This function implements the compute kernel for a lower dense matrix/dense matrix
-// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
-// dense matrix types, \a C must be a non-expression, non-adaptor, column-major dense matrix
-// type. The element types of all three matrices must be SIMD combinable, i.e. must provide
-// a common SIMD interface.
+// multiplication of the form \f$ C=\alpha*A*B+\beta*C \f$. Both \a A and \a B must
+// be non-expression dense matrix types, \a C must be a non-expression, non-adaptor,
+// column-major dense matrix type. The element types of all three matrices must be SIMD
+// combinable, i.e. must provide a common SIMD interface.
 */
 template< typename MT1, typename MT2, typename MT3, typename ST >
-void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
+void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST beta )
 {
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
@@ -1662,7 +1666,9 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   reset( ~C );
+   if( beta != ST(1) ) {
+      (~C) *= beta;
+   }
 
    size_t kk( 0UL );
    size_t kblock( 0UL );
@@ -2121,7 +2127,7 @@ inline void lmmm( MT1& C, const MT2& A, const MT3& B )
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   lmmm( C, A, B, ET1(1) );
+   lmmm( C, A, B, ET1(1), ET1(0) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2138,23 +2144,24 @@ inline void lmmm( MT1& C, const MT2& A, const MT3& B )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compute kernel for a upper dense matrix/dense matrix multiplication
-//        (\f$ C=\alpha*A*B \f$).
+//        (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup dense_matrix
 //
 // \param C The target left-hand side row-major dense matrix.
 // \param A The left-hand side multiplication operand.
 // \param B The right-hand side multiplication operand.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param beta The scaling factor for \f$ C \f$.
 // \return void
 //
 // This function implements the compute kernel for a upper dense matrix/dense matrix
-// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
-// dense matrix types, \a C must be a non-expression, non-adaptor, row-major dense matrix type.
-// The element types of all three matrices must be SIMD combinable, i.e. must provide a common
-// SIMD interface.
+// multiplication of the form \f$ C=\alpha*A*B+\beta*C \f$. Both \a A and \a B must
+// be non-expression dense matrix types, \a C must be a non-expression, non-adaptor,
+// row-major dense matrix type. The element types of all three matrices must be SIMD
+// combinable, i.e. must provide a common SIMD interface.
 */
 template< typename MT1, typename MT2, typename MT3, typename ST >
-void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
+void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST beta )
 {
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
@@ -2194,7 +2201,9 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   reset( ~C );
+   if( beta != ST(1) ) {
+      (~C) *= beta;
+   }
 
    size_t kk( 0UL );
    size_t kblock( 0UL );
@@ -2644,23 +2653,24 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compute kernel for a upper dense matrix/dense matrix multiplication
-//        (\f$ C=\alpha*A*B \f$).
+//        (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup dense_matrix
 //
 // \param C The target left-hand side column-major dense matrix.
 // \param A The left-hand side multiplication operand.
 // \param B The right-hand side multiplication operand.
 // \param alpha The scaling factor for \f$ A*B \f$.
+// \param beta The scaling factor for \f$ C \f$.
 // \return void
 //
 // This function implements the compute kernel for a upper dense matrix/dense matrix
-// multiplication of the form \f$ C=\alpha*A*B \f$. Both \a A and \a B must be non-expression
-// dense matrix types, \a C must be a non-expression, non-adaptor, column-major dense matrix
-// type. The element types of all three matrices must be SIMD combinable, i.e. must provide
-// a common SIMD interface.
+// multiplication of the form \f$ C=\alpha*A*B+\beta*C \f$. Both \a A and \a B must
+// be non-expression dense matrix types, \a C must be a non-expression, non-adaptor,
+// column-major dense matrix type. The element types of all three matrices must be SIMD
+// combinable, i.e. must provide a common SIMD interface.
 */
 template< typename MT1, typename MT2, typename MT3, typename ST >
-void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
+void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST beta )
 {
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
@@ -2700,7 +2710,9 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   reset( ~C );
+   if( beta != ST(1) ) {
+      (~C) *= beta;
+   }
 
    size_t kk( 0UL );
    size_t kblock( 0UL );
@@ -3165,7 +3177,7 @@ inline void ummm( MT1& C, const MT2& A, const MT3& B )
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   ummm( C, A, B, ET1(1) );
+   ummm( C, A, B, ET1(1), ET1(0) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3223,7 +3235,7 @@ void smmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
    BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
 
-   lmmm( C, A, B, alpha );
+   lmmm( C, A, B, alpha, ST(0) );
 
    for( size_t ii=0UL; ii<M; ii+=BLOCK_SIZE )
    {
@@ -3293,7 +3305,7 @@ void smmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
    BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
 
-   ummm( C, A, B, alpha );
+   ummm( C, A, B, alpha, ST(0) );
 
    for( size_t jj=0UL; jj<N; jj+=BLOCK_SIZE )
    {
@@ -3403,7 +3415,7 @@ void hmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha )
 
    BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
 
-   lmmm( C, A, B, alpha );
+   lmmm( C, A, B, alpha, ST(0) );
 
    for( size_t ii=0UL; ii<M; ii+=BLOCK_SIZE )
    {
@@ -3473,7 +3485,7 @@ void hmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha )
 
    BLAZE_INTERNAL_ASSERT( A.columns() == B.rows(), "Invalid matrix sizes detected" );
 
-   ummm( C, A, B, alpha );
+   ummm( C, A, B, alpha, ST(0) );
 
    for( size_t jj=0UL; jj<N; jj+=BLOCK_SIZE )
    {
