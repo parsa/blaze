@@ -182,7 +182,8 @@ class OperationTest
                           void testSerialOperation   ();
                           void testDeclSymOperation  ( blaze::TrueType  );
                           void testDeclSymOperation  ( blaze::FalseType );
-                          void testDeclHermOperation ();
+                          void testDeclHermOperation ( blaze::TrueType  );
+                          void testDeclHermOperation ( blaze::FalseType );
                           void testDeclLowOperation  ();
                           void testDeclUppOperation  ();
                           void testDeclDiagOperation ();
@@ -374,7 +375,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testDeclSymOperation( blaze::IsSame< blaze::LowType_<ET1,ET2>, ET1 >() );
-   testDeclHermOperation();
+   testDeclHermOperation( blaze::IsSame< blaze::LowType_<ET1,ET2>, ET1 >() );
    testDeclLowOperation();
    testDeclUppOperation();
    testDeclDiagOperation();
@@ -4584,12 +4585,13 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::FalseType )
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the Hermitian matrix multiplication with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the multiplication
-// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// assignment, and subtraction assignment in the case that the left-hand side element type
+// is the lower data type. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testDeclHermOperation()
+void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
@@ -4597,7 +4599,833 @@ void OperationTest<MT1,MT2>::testDeclHermOperation()
       if( lhs_.rows() != rhs_.columns() )
          return;
 
-      testCustomOperation( blaze::DeclHerm(), "declherm" );
+
+      MT2  rhs;     // The test-specific right-hand side dense matrix
+      OMT2 orhs;    // The test-specific right-hand side dense matrix with opposite storage order
+      RT2  refrhs;  // The test-specific reference right-hand side matrix
+
+      try {
+         rhs    = trans( lhs_ );
+         orhs   = trans( lhs_ );
+         refrhs = trans( lhs_ );
+      }
+      catch( std::exception& ) {
+         return;
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication
+      //=====================================================================================
+
+      // Declherm multiplication with the given matrices
+      {
+         test_  = "Declherm multiplication the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = declherm( lhs_ * rhs );
+            odres_  = declherm( lhs_ * rhs );
+            sres_   = declherm( lhs_ * rhs );
+            osres_  = declherm( lhs_ * rhs );
+            refres_ = declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( lhs_ * orhs );
+            odres_  = declherm( lhs_ * orhs );
+            sres_   = declherm( lhs_ * orhs );
+            osres_  = declherm( lhs_ * orhs );
+            refres_ = declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( olhs_ * rhs );
+            odres_  = declherm( olhs_ * rhs );
+            sres_   = declherm( olhs_ * rhs );
+            osres_  = declherm( olhs_ * rhs );
+            refres_ = declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( olhs_ * rhs );
+            odres_  = declherm( olhs_ * rhs );
+            sres_   = declherm( olhs_ * rhs );
+            osres_  = declherm( olhs_ * rhs );
+            refres_ = declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with evaluated matrices
+      {
+         test_  = "Declherm multiplication with evaluated left-hand side matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = declherm( eval( lhs_ ) * eval( rhs ) );
+            odres_  = declherm( eval( lhs_ ) * eval( rhs ) );
+            sres_   = declherm( eval( lhs_ ) * eval( rhs ) );
+            osres_  = declherm( eval( lhs_ ) * eval( rhs ) );
+            refres_ = declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( lhs_ ) * eval( orhs ) );
+            odres_  = declherm( eval( lhs_ ) * eval( orhs ) );
+            sres_   = declherm( eval( lhs_ ) * eval( orhs ) );
+            osres_  = declherm( eval( lhs_ ) * eval( orhs ) );
+            refres_ = declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( olhs_ ) * eval( rhs ) );
+            odres_  = declherm( eval( olhs_ ) * eval( rhs ) );
+            sres_   = declherm( eval( olhs_ ) * eval( rhs ) );
+            osres_  = declherm( eval( olhs_ ) * eval( rhs ) );
+            refres_ = declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( olhs_ ) * eval( orhs ) );
+            odres_  = declherm( eval( olhs_ ) * eval( orhs ) );
+            sres_   = declherm( eval( olhs_ ) * eval( orhs ) );
+            osres_  = declherm( eval( olhs_ ) * eval( orhs ) );
+            refres_ = declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication with addition assignment
+      //=====================================================================================
+
+      // Declherm multiplication with addition assignment with the given matrices
+      {
+         test_  = "Declherm multiplication with addition assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declherm( lhs_ * rhs );
+            odres_  += declherm( lhs_ * rhs );
+            sres_   += declherm( lhs_ * rhs );
+            osres_  += declherm( lhs_ * rhs );
+            refres_ += declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( lhs_ * orhs );
+            odres_  += declherm( lhs_ * orhs );
+            sres_   += declherm( lhs_ * orhs );
+            osres_  += declherm( lhs_ * orhs );
+            refres_ += declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( olhs_ * rhs );
+            odres_  += declherm( olhs_ * rhs );
+            sres_   += declherm( olhs_ * rhs );
+            osres_  += declherm( olhs_ * rhs );
+            refres_ += declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( olhs_ * orhs );
+            odres_  += declherm( olhs_ * orhs );
+            sres_   += declherm( olhs_ * orhs );
+            osres_  += declherm( olhs_ * orhs );
+            refres_ += declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with addition assignment with evaluated matrices
+      {
+         test_  = "Declherm multiplication with addition assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declherm( eval( lhs_ ) * eval( rhs ) );
+            odres_  += declherm( eval( lhs_ ) * eval( rhs ) );
+            sres_   += declherm( eval( lhs_ ) * eval( rhs ) );
+            osres_  += declherm( eval( lhs_ ) * eval( rhs ) );
+            refres_ += declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( lhs_ ) * eval( orhs ) );
+            odres_  += declherm( eval( lhs_ ) * eval( orhs ) );
+            sres_   += declherm( eval( lhs_ ) * eval( orhs ) );
+            osres_  += declherm( eval( lhs_ ) * eval( orhs ) );
+            refres_ += declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( olhs_ ) * eval( rhs ) );
+            odres_  += declherm( eval( olhs_ ) * eval( rhs ) );
+            sres_   += declherm( eval( olhs_ ) * eval( rhs ) );
+            osres_  += declherm( eval( olhs_ ) * eval( rhs ) );
+            refres_ += declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( olhs_ ) * eval( orhs ) );
+            odres_  += declherm( eval( olhs_ ) * eval( orhs ) );
+            sres_   += declherm( eval( olhs_ ) * eval( orhs ) );
+            osres_  += declherm( eval( olhs_ ) * eval( orhs ) );
+            refres_ += declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Declherm multiplication with subtraction assignment with the given matrices
+      {
+         test_  = "Declherm multiplication with subtraction assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( lhs_ * rhs );
+            odres_  -= declherm( lhs_ * rhs );
+            sres_   -= declherm( lhs_ * rhs );
+            osres_  -= declherm( lhs_ * rhs );
+            refres_ -= declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( lhs_ * orhs );
+            odres_  -= declherm( lhs_ * orhs );
+            sres_   -= declherm( lhs_ * orhs );
+            osres_  -= declherm( lhs_ * orhs );
+            refres_ -= declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( olhs_ * rhs );
+            odres_  -= declherm( olhs_ * rhs );
+            sres_   -= declherm( olhs_ * rhs );
+            osres_  -= declherm( olhs_ * rhs );
+            refres_ -= declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( olhs_ * orhs );
+            odres_  -= declherm( olhs_ * orhs );
+            sres_   -= declherm( olhs_ * orhs );
+            osres_  -= declherm( olhs_ * orhs );
+            refres_ -= declherm( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with subtraction assignment with evaluated matrices
+      {
+         test_  = "Declherm multiplication with subtraction assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( lhs_ ) * eval( rhs ) );
+            odres_  -= declherm( eval( lhs_ ) * eval( rhs ) );
+            sres_   -= declherm( eval( lhs_ ) * eval( rhs ) );
+            osres_  -= declherm( eval( lhs_ ) * eval( rhs ) );
+            refres_ -= declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( lhs_ ) * eval( orhs ) );
+            odres_  -= declherm( eval( lhs_ ) * eval( orhs ) );
+            sres_   -= declherm( eval( lhs_ ) * eval( orhs ) );
+            osres_  -= declherm( eval( lhs_ ) * eval( orhs ) );
+            refres_ -= declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( olhs_ ) * eval( rhs ) );
+            odres_  -= declherm( eval( olhs_ ) * eval( rhs ) );
+            sres_   -= declherm( eval( olhs_ ) * eval( rhs ) );
+            osres_  -= declherm( eval( olhs_ ) * eval( rhs ) );
+            refres_ -= declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( olhs_ ) * eval( orhs ) );
+            odres_  -= declherm( eval( olhs_ ) * eval( orhs ) );
+            sres_   -= declherm( eval( olhs_ ) * eval( orhs ) );
+            osres_  -= declherm( eval( olhs_ ) * eval( orhs ) );
+            refres_ -= declherm( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the Hermitian sparse matrix/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the Hermitian matrix multiplication with plain assignment, addition
+// assignment, and subtraction assignment in the case that the right-hand side element type
+// is the lower data type. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::FalseType )
+{
+#if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
+   {
+      if( lhs_.rows() != rhs_.columns() )
+         return;
+
+
+      MT1  lhs;     // The test-specific left-hand side dense matrix
+      OMT1 olhs;    // The test-specific left-hand side dense matrix with opposite storage order
+      RT1  reflhs;  // The test-specific reference left-hand side matrix
+
+      try {
+         lhs    = trans( rhs_ );
+         olhs   = trans( rhs_ );
+         reflhs = trans( rhs_ );
+      }
+      catch( std::exception& ) {
+         return;
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication
+      //=====================================================================================
+
+      // Declherm multiplication with the given matrices
+      {
+         test_  = "Declherm multiplication the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = declherm( lhs * rhs_ );
+            odres_  = declherm( lhs * rhs_ );
+            sres_   = declherm( lhs * rhs_ );
+            osres_  = declherm( lhs * rhs_ );
+            refres_ = declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( lhs * orhs_ );
+            odres_  = declherm( lhs * orhs_ );
+            sres_   = declherm( lhs * orhs_ );
+            osres_  = declherm( lhs * orhs_ );
+            refres_ = declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( olhs * rhs_ );
+            odres_  = declherm( olhs * rhs_ );
+            sres_   = declherm( olhs * rhs_ );
+            osres_  = declherm( olhs * rhs_ );
+            refres_ = declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( olhs * rhs_ );
+            odres_  = declherm( olhs * rhs_ );
+            sres_   = declherm( olhs * rhs_ );
+            osres_  = declherm( olhs * rhs_ );
+            refres_ = declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with evaluated matrices
+      {
+         test_  = "Declherm multiplication with evaluated left-hand side matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = declherm( eval( lhs ) * eval( rhs_ ) );
+            odres_  = declherm( eval( lhs ) * eval( rhs_ ) );
+            sres_   = declherm( eval( lhs ) * eval( rhs_ ) );
+            osres_  = declherm( eval( lhs ) * eval( rhs_ ) );
+            refres_ = declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( lhs ) * eval( orhs_ ) );
+            odres_  = declherm( eval( lhs ) * eval( orhs_ ) );
+            sres_   = declherm( eval( lhs ) * eval( orhs_ ) );
+            osres_  = declherm( eval( lhs ) * eval( orhs_ ) );
+            refres_ = declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( olhs ) * eval( rhs_ ) );
+            odres_  = declherm( eval( olhs ) * eval( rhs_ ) );
+            sres_   = declherm( eval( olhs ) * eval( rhs_ ) );
+            osres_  = declherm( eval( olhs ) * eval( rhs_ ) );
+            refres_ = declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = declherm( eval( olhs ) * eval( orhs_ ) );
+            odres_  = declherm( eval( olhs ) * eval( orhs_ ) );
+            sres_   = declherm( eval( olhs ) * eval( orhs_ ) );
+            osres_  = declherm( eval( olhs ) * eval( orhs_ ) );
+            refres_ = declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication with addition assignment
+      //=====================================================================================
+
+      // Declherm multiplication with addition assignment with the given matrices
+      {
+         test_  = "Declherm multiplication with addition assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declherm( lhs * rhs_ );
+            odres_  += declherm( lhs * rhs_ );
+            sres_   += declherm( lhs * rhs_ );
+            osres_  += declherm( lhs * rhs_ );
+            refres_ += declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( lhs * orhs_ );
+            odres_  += declherm( lhs * orhs_ );
+            sres_   += declherm( lhs * orhs_ );
+            osres_  += declherm( lhs * orhs_ );
+            refres_ += declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( olhs * rhs_ );
+            odres_  += declherm( olhs * rhs_ );
+            sres_   += declherm( olhs * rhs_ );
+            osres_  += declherm( olhs * rhs_ );
+            refres_ += declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( olhs * orhs_ );
+            odres_  += declherm( olhs * orhs_ );
+            sres_   += declherm( olhs * orhs_ );
+            osres_  += declherm( olhs * orhs_ );
+            refres_ += declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with addition assignment with evaluated matrices
+      {
+         test_  = "Declherm multiplication with addition assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   += declherm( eval( lhs ) * eval( rhs_ ) );
+            odres_  += declherm( eval( lhs ) * eval( rhs_ ) );
+            sres_   += declherm( eval( lhs ) * eval( rhs_ ) );
+            osres_  += declherm( eval( lhs ) * eval( rhs_ ) );
+            refres_ += declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( lhs ) * eval( orhs_ ) );
+            odres_  += declherm( eval( lhs ) * eval( orhs_ ) );
+            sres_   += declherm( eval( lhs ) * eval( orhs_ ) );
+            osres_  += declherm( eval( lhs ) * eval( orhs_ ) );
+            refres_ += declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( olhs ) * eval( rhs_ ) );
+            odres_  += declherm( eval( olhs ) * eval( rhs_ ) );
+            sres_   += declherm( eval( olhs ) * eval( rhs_ ) );
+            osres_  += declherm( eval( olhs ) * eval( rhs_ ) );
+            refres_ += declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += declherm( eval( olhs ) * eval( orhs_ ) );
+            odres_  += declherm( eval( olhs ) * eval( orhs_ ) );
+            sres_   += declherm( eval( olhs ) * eval( orhs_ ) );
+            osres_  += declherm( eval( olhs ) * eval( orhs_ ) );
+            refres_ += declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Declherm multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Declherm multiplication with subtraction assignment with the given matrices
+      {
+         test_  = "Declherm multiplication with subtraction assignment with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( lhs * rhs_ );
+            odres_  -= declherm( lhs * rhs_ );
+            sres_   -= declherm( lhs * rhs_ );
+            osres_  -= declherm( lhs * rhs_ );
+            refres_ -= declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( lhs * orhs_ );
+            odres_  -= declherm( lhs * orhs_ );
+            sres_   -= declherm( lhs * orhs_ );
+            osres_  -= declherm( lhs * orhs_ );
+            refres_ -= declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( olhs * rhs_ );
+            odres_  -= declherm( olhs * rhs_ );
+            sres_   -= declherm( olhs * rhs_ );
+            osres_  -= declherm( olhs * rhs_ );
+            refres_ -= declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( olhs * orhs_ );
+            odres_  -= declherm( olhs * orhs_ );
+            sres_   -= declherm( olhs * orhs_ );
+            osres_  -= declherm( olhs * orhs_ );
+            refres_ -= declherm( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Declherm multiplication with subtraction assignment with evaluated matrices
+      {
+         test_  = "Declherm multiplication with subtraction assignment with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( lhs ) * eval( rhs_ ) );
+            odres_  -= declherm( eval( lhs ) * eval( rhs_ ) );
+            sres_   -= declherm( eval( lhs ) * eval( rhs_ ) );
+            osres_  -= declherm( eval( lhs ) * eval( rhs_ ) );
+            refres_ -= declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( lhs ) * eval( orhs_ ) );
+            odres_  -= declherm( eval( lhs ) * eval( orhs_ ) );
+            sres_   -= declherm( eval( lhs ) * eval( orhs_ ) );
+            osres_  -= declherm( eval( lhs ) * eval( orhs_ ) );
+            refres_ -= declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( olhs ) * eval( rhs_ ) );
+            odres_  -= declherm( eval( olhs ) * eval( rhs_ ) );
+            sres_   -= declherm( eval( olhs ) * eval( rhs_ ) );
+            osres_  -= declherm( eval( olhs ) * eval( rhs_ ) );
+            refres_ -= declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( olhs ) * eval( orhs_ ) );
+            odres_  -= declherm( eval( olhs ) * eval( orhs_ ) );
+            sres_   -= declherm( eval( olhs ) * eval( orhs_ ) );
+            osres_  -= declherm( eval( olhs ) * eval( orhs_ ) );
+            refres_ -= declherm( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
    }
 #endif
 }
