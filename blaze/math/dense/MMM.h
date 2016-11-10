@@ -50,6 +50,8 @@
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -131,7 +133,10 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
@@ -628,7 +633,10 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
@@ -1149,7 +1157,10 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
@@ -1666,7 +1677,10 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
@@ -2201,7 +2215,10 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
@@ -2710,7 +2727,10 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   if( beta != ST(1) ) {
+   if( isDefault( beta ) ) {
+      reset( ~C );
+   }
+   else if( !isOne( beta ) ) {
       (~C) *= beta;
    }
 
