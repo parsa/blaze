@@ -118,7 +118,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
@@ -618,7 +618,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
@@ -1142,7 +1142,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
@@ -1662,7 +1662,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
@@ -2200,7 +2200,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );
@@ -2712,7 +2712,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
 
-   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 8UL/sizeof(ET1) ) );
+   constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
 
    BLAZE_STATIC_ASSERT( KBLOCK >= SIMDSIZE && KBLOCK % SIMDSIZE == 0UL );

@@ -57,7 +57,7 @@ namespace blaze {
 /*! \cond BLAZE_INTERNAL */
 constexpr size_t DEFAULT_BLOCK_SIZE = 256UL;
 
-constexpr size_t MMM_DEFAULT_OUTER_BLOCK_SIZE = 224UL;
+constexpr size_t MMM_DEFAULT_OUTER_BLOCK_SIZE = 112UL;
 constexpr size_t MMM_DEFAULT_INNER_BLOCK_SIZE =  96UL;
 /*! \endcond */
 //*************************************************************************************************
