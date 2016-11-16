@@ -45,14 +45,23 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SIMDCombinable.h>
+#include <blaze/math/constraints/StrictlyLower.h>
+#include <blaze/math/constraints/StrictlyUpper.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/UniLower.h>
+#include <blaze/math/constraints/UniUpper.h>
+#include <blaze/math/constraints/Lower.h>
+#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -1124,10 +1133,14 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    using ET3 = ElementType_<MT3>;
    using SIMDType = SIMDTrait_<ET1>;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE     ( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE          ( MT1 );
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
@@ -1157,11 +1170,13 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
+   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+
    if( isDefault( beta ) ) {
-      reset( ~C );
+      reset( c );
    }
    else if( !isOne( beta ) ) {
-      (~C) *= beta;
+      c *= beta;
    }
 
    size_t kk( 0UL );
@@ -1235,16 +1250,16 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm10 += a5 * b2;
                   }
 
-                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1  ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2  ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3  ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4  ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5  ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6  ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7  ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8  ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j    ) += sum( xmm9  ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j+1UL) += sum( xmm10 ) * alpha;
+                  c(ibegin+i    ,jj+j    ) += sum( xmm1  ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += sum( xmm2  ) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += sum( xmm3  ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4  ) * alpha;
+                  c(ibegin+i+2UL,jj+j    ) += sum( xmm5  ) * alpha;
+                  c(ibegin+i+2UL,jj+j+1UL) += sum( xmm6  ) * alpha;
+                  c(ibegin+i+3UL,jj+j    ) += sum( xmm7  ) * alpha;
+                  c(ibegin+i+3UL,jj+j+1UL) += sum( xmm8  ) * alpha;
+                  c(ibegin+i+4UL,jj+j    ) += sum( xmm9  ) * alpha;
+                  c(ibegin+i+4UL,jj+j+1UL) += sum( xmm10 ) * alpha;
                }
 
                if( j<jend )
@@ -1268,11 +1283,11 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm5 += a5 * b1;
                   }
 
-                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j) += sum( xmm5 ) * alpha;
+                  c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+                  c(ibegin+i+4UL,jj+j) += sum( xmm5 ) * alpha;
                }
             }
          }
@@ -1309,14 +1324,14 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm8 += a4 * b2;
                   }
 
-                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8 ) * alpha;
+                  c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+                  c(ibegin+i+2UL,jj+j    ) += sum( xmm5 ) * alpha;
+                  c(ibegin+i+2UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+                  c(ibegin+i+3UL,jj+j    ) += sum( xmm7 ) * alpha;
+                  c(ibegin+i+3UL,jj+j+1UL) += sum( xmm8 ) * alpha;
                }
 
                if( j<jend )
@@ -1338,10 +1353,10 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm4 += a4 * b1;
                   }
 
-                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+                  c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
                }
             }
          }
@@ -1377,14 +1392,14 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm8 += a2 * b4;
                }
 
-               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+2UL) += sum( xmm3 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+3UL) += sum( xmm4 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm5 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm6 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+2UL) += sum( xmm7 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+3UL) += sum( xmm8 ) * alpha;
+               c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i    ,jj+j+2UL) += sum( xmm3 ) * alpha;
+               c(ibegin+i    ,jj+j+3UL) += sum( xmm4 ) * alpha;
+               c(ibegin+i+1UL,jj+j    ) += sum( xmm5 ) * alpha;
+               c(ibegin+i+1UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+               c(ibegin+i+1UL,jj+j+2UL) += sum( xmm7 ) * alpha;
+               c(ibegin+i+1UL,jj+j+3UL) += sum( xmm8 ) * alpha;
             }
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -1405,10 +1420,10 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm4 += a2 * b2;
                }
 
-               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+               c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+               c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
             }
 
             if( j<jend )
@@ -1426,8 +1441,8 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm2 += a2 * b1;
                }
 
-               (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+               c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+               c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
             }
          }
 
@@ -1448,8 +1463,8 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm2 += a1 * B2.load(k,j+1UL);
                }
 
-               (~C)(ibegin+i,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i,jj+j+1UL) += sum( xmm2 ) * alpha;
             }
 
             if( j<jend )
@@ -1463,7 +1478,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm1 += a1 * B2.load(k,j);
                }
 
-               (~C)(ibegin+i,jj+j) += sum( xmm1 ) * alpha;
+               c(ibegin+i,jj+j) += sum( xmm1 ) * alpha;
             }
          }
 
@@ -1509,26 +1524,26 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j    ) += A2(i+4UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j+1UL) += A2(i+4UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+4UL,jj+j    ) += A2(i+4UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+4UL,jj+j+1UL) += A2(i+4UL,k) * B2(k,j+1UL) * alpha;
                   }
                }
 
                if( j<jend ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j) += A2(i+4UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+4UL,jj+j) += A2(i+4UL,k) * B2(k,j) * alpha;
                   }
                }
             }
@@ -1544,23 +1559,23 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
                   }
                }
 
                if( j<jend ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
                   }
                }
             }
@@ -1575,17 +1590,17 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( j<jend ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                  c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
                }
             }
          }
@@ -1597,14 +1612,14 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i,jj+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i,jj+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i,jj+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i,jj+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( j<jend ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i,jj+j) += A2(i,k) * B2(k,j) * alpha;
+                  c(ibegin+i,jj+j) += A2(i,k) * B2(k,j) * alpha;
                }
             }
          }
@@ -1644,10 +1659,14 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    using ET3 = ElementType_<MT3>;
    using SIMDType = SIMDTrait_<ET1>;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE        ( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE          ( MT1 );
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
@@ -1677,11 +1696,13 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
+   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+
    if( isDefault( beta ) ) {
-      reset( ~C );
+      reset( c );
    }
    else if( !isOne( beta ) ) {
-      (~C) *= beta;
+      c *= beta;
    }
 
    size_t kk( 0UL );
@@ -1754,16 +1775,16 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm10 += a2 * b5;
                   }
 
-                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+4UL) += sum( xmm5  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm6  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm7  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm8  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm9  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+4UL) += sum( xmm10 ) * alpha;
+                  c(ii+i    ,jbegin+j    ) += sum( xmm1  ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += sum( xmm2  ) * alpha;
+                  c(ii+i    ,jbegin+j+2UL) += sum( xmm3  ) * alpha;
+                  c(ii+i    ,jbegin+j+3UL) += sum( xmm4  ) * alpha;
+                  c(ii+i    ,jbegin+j+4UL) += sum( xmm5  ) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += sum( xmm6  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += sum( xmm7  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+2UL) += sum( xmm8  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+3UL) += sum( xmm9  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+4UL) += sum( xmm10 ) * alpha;
                }
 
                if( i<iblock )
@@ -1781,11 +1802,11 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm5 += a1 * B2.load(k,j+4UL);
                   }
 
-                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
-                  (~C)(ii+i,jbegin+j+4UL) += sum( xmm5 ) * alpha;
+                  c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i,jbegin+j+4UL) += sum( xmm5 ) * alpha;
                }
             }
          }
@@ -1821,14 +1842,14 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm8 += a2 * b4;
                   }
 
-                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm5 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm7 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm8 ) * alpha;
+                  c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i    ,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i    ,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+2UL) += sum( xmm7 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+3UL) += sum( xmm8 ) * alpha;
                }
 
                if( i<iblock )
@@ -1845,10 +1866,10 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm4 += a1 * B2.load(k,j+3UL);
                   }
 
-                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
                }
             }
          }
@@ -1883,14 +1904,14 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm8 += a4 * b2;
                }
 
-               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
-               (~C)(ii+i+2UL,jbegin+j    ) += sum( xmm5 ) * alpha;
-               (~C)(ii+i+2UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
-               (~C)(ii+i+3UL,jbegin+j    ) += sum( xmm7 ) * alpha;
-               (~C)(ii+i+3UL,jbegin+j+1UL) += sum( xmm8 ) * alpha;
+               c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               c(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+               c(ii+i+2UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+               c(ii+i+2UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+               c(ii+i+3UL,jbegin+j    ) += sum( xmm7 ) * alpha;
+               c(ii+i+3UL,jbegin+j+1UL) += sum( xmm8 ) * alpha;
             }
 
             for( ; (i+2UL) <= iblock; i+=2UL )
@@ -1911,10 +1932,10 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm4 += a2 * b2;
                }
 
-               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+               c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               c(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
             }
 
             if( i<iblock )
@@ -1929,8 +1950,8 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm2 += a1 * B2.load(k,j+1UL);
                }
 
-               (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
             }
          }
 
@@ -1950,8 +1971,8 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm2 += A2.load(i+1UL,k) * b1;
                }
 
-               (~C)(ii+i    ,jbegin+j) += sum( xmm1 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j) += sum( xmm2 ) * alpha;
+               c(ii+i    ,jbegin+j) += sum( xmm1 ) * alpha;
+               c(ii+i+1UL,jbegin+j) += sum( xmm2 ) * alpha;
             }
 
             if( i<iblock )
@@ -1963,7 +1984,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm1 += A2.load(i,k) * B2.load(k,j);
                }
 
-               (~C)(ii+i,jbegin+j) += sum( xmm1 ) * alpha;
+               c(ii+i,jbegin+j) += sum( xmm1 ) * alpha;
             }
          }
 
@@ -2008,26 +2029,26 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
                for( ; (i+2UL) <= iblock; i+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+4UL) += A2(i    ,k) * B2(k,j+4UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+4UL) += A2(i+1UL,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i    ,jbegin+j+4UL) += A2(i    ,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+4UL) += A2(i+1UL,k) * B2(k,j+4UL) * alpha;
                   }
                }
 
                if( i<iblock ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i,jbegin+j+4UL) += A2(i,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i,jbegin+j+4UL) += A2(i,k) * B2(k,j+4UL) * alpha;
                   }
                }
             }
@@ -2042,23 +2063,23 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
                for( ; (i+2UL) <= iblock; i+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
                   }
                }
 
                if( i<iblock ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
                   }
                }
             }
@@ -2072,17 +2093,17 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
             for( ; (i+2UL) <= iblock; i+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( i<iblock ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
                }
             }
          }
@@ -2095,14 +2116,14 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
             for( ; (i+2UL) <= iblock; i+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i    ,jbegin+j) += A2(i    ,k) * B2(k,j) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                  c(ii+i    ,jbegin+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  c(ii+i+1UL,jbegin+j) += A2(i+1UL,k) * B2(k,j) * alpha;
                }
             }
 
             if( i<iblock ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i,jbegin+j) += A2(i,k) * B2(k,j) * alpha;
+                  c(ii+i,jbegin+j) += A2(i,k) * B2(k,j) * alpha;
                }
             }
          }
@@ -2182,10 +2203,14 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    using ET3 = ElementType_<MT3>;
    using SIMDType = SIMDTrait_<ET1>;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE     ( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE          ( MT1 );
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
@@ -2215,11 +2240,13 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
+   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+
    if( isDefault( beta ) ) {
-      reset( ~C );
+      reset( c );
    }
    else if( !isOne( beta ) ) {
-      (~C) *= beta;
+      c *= beta;
    }
 
    size_t kk( 0UL );
@@ -2292,16 +2319,16 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm10 += a5 * b2;
                   }
 
-                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1  ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2  ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3  ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4  ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5  ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6  ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7  ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8  ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j    ) += sum( xmm9  ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j+1UL) += sum( xmm10 ) * alpha;
+                  c(ibegin+i    ,jj+j    ) += sum( xmm1  ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += sum( xmm2  ) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += sum( xmm3  ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4  ) * alpha;
+                  c(ibegin+i+2UL,jj+j    ) += sum( xmm5  ) * alpha;
+                  c(ibegin+i+2UL,jj+j+1UL) += sum( xmm6  ) * alpha;
+                  c(ibegin+i+3UL,jj+j    ) += sum( xmm7  ) * alpha;
+                  c(ibegin+i+3UL,jj+j+1UL) += sum( xmm8  ) * alpha;
+                  c(ibegin+i+4UL,jj+j    ) += sum( xmm9  ) * alpha;
+                  c(ibegin+i+4UL,jj+j+1UL) += sum( xmm10 ) * alpha;
                }
 
                if( j<jblock )
@@ -2325,11 +2352,11 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm5 += a5 * b1;
                   }
 
-                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
-                  (~C)(ibegin+i+4UL,jj+j) += sum( xmm5 ) * alpha;
+                  c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+                  c(ibegin+i+4UL,jj+j) += sum( xmm5 ) * alpha;
                }
             }
          }
@@ -2365,14 +2392,14 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm8 += a4 * b2;
                   }
 
-                  (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j    ) += sum( xmm5 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j+1UL) += sum( xmm6 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j    ) += sum( xmm7 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j+1UL) += sum( xmm8 ) * alpha;
+                  c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+                  c(ibegin+i+2UL,jj+j    ) += sum( xmm5 ) * alpha;
+                  c(ibegin+i+2UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+                  c(ibegin+i+3UL,jj+j    ) += sum( xmm7 ) * alpha;
+                  c(ibegin+i+3UL,jj+j+1UL) += sum( xmm8 ) * alpha;
                }
 
                if( j<jblock )
@@ -2394,10 +2421,10 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                      xmm4 += a4 * b1;
                   }
 
-                  (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
-                  (~C)(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
-                  (~C)(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
+                  c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+                  c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+                  c(ibegin+i+2UL,jj+j) += sum( xmm3 ) * alpha;
+                  c(ibegin+i+3UL,jj+j) += sum( xmm4 ) * alpha;
                }
             }
          }
@@ -2432,14 +2459,14 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm8 += a2 * b4;
                }
 
-               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+2UL) += sum( xmm3 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+3UL) += sum( xmm4 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm5 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm6 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+2UL) += sum( xmm7 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+3UL) += sum( xmm8 ) * alpha;
+               c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i    ,jj+j+2UL) += sum( xmm3 ) * alpha;
+               c(ibegin+i    ,jj+j+3UL) += sum( xmm4 ) * alpha;
+               c(ibegin+i+1UL,jj+j    ) += sum( xmm5 ) * alpha;
+               c(ibegin+i+1UL,jj+j+1UL) += sum( xmm6 ) * alpha;
+               c(ibegin+i+1UL,jj+j+2UL) += sum( xmm7 ) * alpha;
+               c(ibegin+i+1UL,jj+j+3UL) += sum( xmm8 ) * alpha;
             }
 
             for( ; (j+2UL) <= jblock; j+=2UL )
@@ -2460,10 +2487,10 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm4 += a2 * b2;
                }
 
-               (~C)(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
+               c(ibegin+i    ,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i    ,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i+1UL,jj+j    ) += sum( xmm3 ) * alpha;
+               c(ibegin+i+1UL,jj+j+1UL) += sum( xmm4 ) * alpha;
             }
 
             if( j<jblock )
@@ -2481,8 +2508,8 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm2 += a2 * b1;
                }
 
-               (~C)(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
+               c(ibegin+i    ,jj+j) += sum( xmm1 ) * alpha;
+               c(ibegin+i+1UL,jj+j) += sum( xmm2 ) * alpha;
             }
          }
 
@@ -2502,8 +2529,8 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm2 += a1 * B2.load(k,j+1UL);
                }
 
-               (~C)(ibegin+i,jj+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ibegin+i,jj+j+1UL) += sum( xmm2 ) * alpha;
+               c(ibegin+i,jj+j    ) += sum( xmm1 ) * alpha;
+               c(ibegin+i,jj+j+1UL) += sum( xmm2 ) * alpha;
             }
 
             if( j<jblock )
@@ -2517,7 +2544,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
                   xmm1 += a1 * B2.load(k,j);
                }
 
-               (~C)(ibegin+i,jj+j) += sum( xmm1 ) * alpha;
+               c(ibegin+i,jj+j) += sum( xmm1 ) * alpha;
             }
          }
 
@@ -2562,26 +2589,26 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
                for( ; (j+2UL) <= jblock; j+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j    ) += A2(i+4UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j+1UL) += A2(i+4UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+4UL,jj+j    ) += A2(i+4UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+4UL,jj+j+1UL) += A2(i+4UL,k) * B2(k,j+1UL) * alpha;
                   }
                }
 
                if( j<jblock ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+4UL,jj+j) += A2(i+4UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+4UL,jj+j) += A2(i+4UL,k) * B2(k,j) * alpha;
                   }
                }
             }
@@ -2596,23 +2623,23 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
                for( ; (j+2UL) <= jblock; j+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+2UL,jj+j    ) += A2(i+2UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+2UL,jj+j+1UL) += A2(i+2UL,k) * B2(k,j+1UL) * alpha;
+                     c(ibegin+i+3UL,jj+j    ) += A2(i+3UL,k) * B2(k,j    ) * alpha;
+                     c(ibegin+i+3UL,jj+j+1UL) += A2(i+3UL,k) * B2(k,j+1UL) * alpha;
                   }
                }
 
                if( j<jblock ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
-                     (~C)(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                     c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+2UL,jj+j) += A2(i+2UL,k) * B2(k,j) * alpha;
+                     c(ibegin+i+3UL,jj+j) += A2(i+3UL,k) * B2(k,j) * alpha;
                   }
                }
             }
@@ -2626,17 +2653,17 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
             for( ; (j+2UL) <= jblock; j+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i    ,jj+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i    ,jj+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i+1UL,jj+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i+1UL,jj+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( j<jblock ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
-                  (~C)(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                  c(ibegin+i    ,jj+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  c(ibegin+i+1UL,jj+j) += A2(i+1UL,k) * B2(k,j) * alpha;
                }
             }
          }
@@ -2647,14 +2674,14 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
             for( ; (j+2UL) <= jblock; j+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i,jj+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                  (~C)(ibegin+i,jj+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                  c(ibegin+i,jj+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  c(ibegin+i,jj+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( j<jblock ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ibegin+i,jj+j) += A2(i,k) * B2(k,j) * alpha;
+                  c(ibegin+i,jj+j) += A2(i,k) * B2(k,j) * alpha;
                }
             }
          }
@@ -2694,10 +2721,14 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    using ET3 = ElementType_<MT3>;
    using SIMDType = SIMDTrait_<ET1>;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE        ( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE     ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE         ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE      ( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE          ( MT1 );
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
@@ -2727,11 +2758,13 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
+   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+
    if( isDefault( beta ) ) {
-      reset( ~C );
+      reset( c );
    }
    else if( !isOne( beta ) ) {
-      (~C) *= beta;
+      c *= beta;
    }
 
    size_t kk( 0UL );
@@ -2805,16 +2838,16 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm10 += a2 * b5;
                   }
 
-                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4  ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+4UL) += sum( xmm5  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm6  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm7  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm8  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm9  ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+4UL) += sum( xmm10 ) * alpha;
+                  c(ii+i    ,jbegin+j    ) += sum( xmm1  ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += sum( xmm2  ) * alpha;
+                  c(ii+i    ,jbegin+j+2UL) += sum( xmm3  ) * alpha;
+                  c(ii+i    ,jbegin+j+3UL) += sum( xmm4  ) * alpha;
+                  c(ii+i    ,jbegin+j+4UL) += sum( xmm5  ) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += sum( xmm6  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += sum( xmm7  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+2UL) += sum( xmm8  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+3UL) += sum( xmm9  ) * alpha;
+                  c(ii+i+1UL,jbegin+j+4UL) += sum( xmm10 ) * alpha;
                }
 
                if( i<iend )
@@ -2832,11 +2865,11 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm5 += a1 * B2.load(k,j+4UL);
                   }
 
-                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
-                  (~C)(ii+i,jbegin+j+4UL) += sum( xmm5 ) * alpha;
+                  c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i,jbegin+j+4UL) += sum( xmm5 ) * alpha;
                }
             }
          }
@@ -2873,14 +2906,14 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm8 += a2 * b4;
                   }
 
-                  (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+3UL) += sum( xmm4 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm5 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+2UL) += sum( xmm7 ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+3UL) += sum( xmm8 ) * alpha;
+                  c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i    ,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i    ,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+2UL) += sum( xmm7 ) * alpha;
+                  c(ii+i+1UL,jbegin+j+3UL) += sum( xmm8 ) * alpha;
                }
 
                if( i<iend )
@@ -2897,10 +2930,10 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                      xmm4 += a1 * B2.load(k,j+3UL);
                   }
 
-                  (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-                  (~C)(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
-                  (~C)(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
+                  c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+                  c(ii+i,jbegin+j+2UL) += sum( xmm3 ) * alpha;
+                  c(ii+i,jbegin+j+3UL) += sum( xmm4 ) * alpha;
                }
             }
          }
@@ -2936,14 +2969,14 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm8 += a4 * b2;
                }
 
-               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
-               (~C)(ii+i+2UL,jbegin+j    ) += sum( xmm5 ) * alpha;
-               (~C)(ii+i+2UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
-               (~C)(ii+i+3UL,jbegin+j    ) += sum( xmm7 ) * alpha;
-               (~C)(ii+i+3UL,jbegin+j+1UL) += sum( xmm8 ) * alpha;
+               c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               c(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+               c(ii+i+2UL,jbegin+j    ) += sum( xmm5 ) * alpha;
+               c(ii+i+2UL,jbegin+j+1UL) += sum( xmm6 ) * alpha;
+               c(ii+i+3UL,jbegin+j    ) += sum( xmm7 ) * alpha;
+               c(ii+i+3UL,jbegin+j+1UL) += sum( xmm8 ) * alpha;
             }
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -2964,10 +2997,10 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm4 += a2 * b2;
                }
 
-               (~C)(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
+               c(ii+i    ,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i    ,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i+1UL,jbegin+j    ) += sum( xmm3 ) * alpha;
+               c(ii+i+1UL,jbegin+j+1UL) += sum( xmm4 ) * alpha;
             }
 
             if( i<iend )
@@ -2982,8 +3015,8 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm2 += a1 * B2.load(k,j+1UL);
                }
 
-               (~C)(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
-               (~C)(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
+               c(ii+i,jbegin+j    ) += sum( xmm1 ) * alpha;
+               c(ii+i,jbegin+j+1UL) += sum( xmm2 ) * alpha;
             }
          }
 
@@ -3004,8 +3037,8 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm2 += A2.load(i+1UL,k) * b1;
                }
 
-               (~C)(ii+i    ,jbegin+j) += sum( xmm1 ) * alpha;
-               (~C)(ii+i+1UL,jbegin+j) += sum( xmm2 ) * alpha;
+               c(ii+i    ,jbegin+j) += sum( xmm1 ) * alpha;
+               c(ii+i+1UL,jbegin+j) += sum( xmm2 ) * alpha;
             }
 
             if( i<iend )
@@ -3017,7 +3050,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
                   xmm1 += A2.load(i,k) * B2.load(k,j);
                }
 
-               (~C)(ii+i,jbegin+j) += sum( xmm1 ) * alpha;
+               c(ii+i,jbegin+j) += sum( xmm1 ) * alpha;
             }
          }
 
@@ -3063,26 +3096,26 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+4UL) += A2(i    ,k) * B2(k,j+4UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+4UL) += A2(i+1UL,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i    ,jbegin+j+4UL) += A2(i    ,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+4UL) += A2(i+1UL,k) * B2(k,j+4UL) * alpha;
                   }
                }
 
                if( i<iend ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i,jbegin+j+4UL) += A2(i,k) * B2(k,j+4UL) * alpha;
+                     c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i,jbegin+j+4UL) += A2(i,k) * B2(k,j+4UL) * alpha;
                   }
                }
             }
@@ -3098,23 +3131,23 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                     c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i    ,jbegin+j+2UL) += A2(i    ,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i    ,jbegin+j+3UL) += A2(i    ,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                     c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+2UL) += A2(i+1UL,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i+1UL,jbegin+j+3UL) += A2(i+1UL,k) * B2(k,j+3UL) * alpha;
                   }
                }
 
                if( i<iend ) {
                   for( size_t k=0UL; k<ksize; ++k ) {
-                     (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                     (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
-                     (~C)(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
-                     (~C)(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
+                     c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                     c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                     c(ii+i,jbegin+j+2UL) += A2(i,k) * B2(k,j+2UL) * alpha;
+                     c(ii+i,jbegin+j+3UL) += A2(i,k) * B2(k,j+3UL) * alpha;
                   }
                }
             }
@@ -3129,17 +3162,17 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i    ,jbegin+j    ) += A2(i    ,k) * B2(k,j    ) * alpha;
+                  c(ii+i    ,jbegin+j+1UL) += A2(i    ,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i+1UL,jbegin+j    ) += A2(i+1UL,k) * B2(k,j    ) * alpha;
+                  c(ii+i+1UL,jbegin+j+1UL) += A2(i+1UL,k) * B2(k,j+1UL) * alpha;
                }
             }
 
             if( i<iend ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
-                  (~C)(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
+                  c(ii+i,jbegin+j    ) += A2(i,k) * B2(k,j    ) * alpha;
+                  c(ii+i,jbegin+j+1UL) += A2(i,k) * B2(k,j+1UL) * alpha;
                }
             }
          }
@@ -3151,14 +3184,14 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i    ,jbegin+j) += A2(i    ,k) * B2(k,j) * alpha;
-                  (~C)(ii+i+1UL,jbegin+j) += A2(i+1UL,k) * B2(k,j) * alpha;
+                  c(ii+i    ,jbegin+j) += A2(i    ,k) * B2(k,j) * alpha;
+                  c(ii+i+1UL,jbegin+j) += A2(i+1UL,k) * B2(k,j) * alpha;
                }
             }
 
             if( i<iend ) {
                for( size_t k=0UL; k<ksize; ++k ) {
-                  (~C)(ii+i,jbegin+j) += A2(i,k) * B2(k,j) * alpha;
+                  c(ii+i,jbegin+j) += A2(i,k) * B2(k,j) * alpha;
                }
             }
          }
