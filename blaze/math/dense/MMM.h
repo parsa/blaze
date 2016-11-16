@@ -1205,7 +1205,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             {
                if( jj > ibegin+i+4UL ) continue;
 
-               const size_t jend( min( i+5UL, jblock ) );
+               const size_t jend( min( ibegin+i-jj+5UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL )
@@ -1282,7 +1282,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             {
                if( jj > ibegin+i+3UL ) continue;
 
-               const size_t jend( min( i+4UL, jblock ) );
+               const size_t jend( min( ibegin+i-jj+4UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL )
@@ -1350,7 +1350,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
          {
             if( jj > ibegin+i+1UL ) continue;
 
-            const size_t jend( min( i+2UL, jblock ) );
+            const size_t jend( min( ibegin+i-jj+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+4UL) <= jend; j+=4UL )
@@ -1433,7 +1433,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          if( i<isize && jj <= ibegin+i )
          {
-            const size_t jend( min( i+2UL, jblock ) );
+            const size_t jend( min( ibegin+i-jj+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -1504,7 +1504,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             {
                if( jj > ibegin+i+4UL ) continue;
 
-               const size_t jend( min( i+5UL, jblock ) );
+               const size_t jend( min( ibegin+i-jj+5UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1539,7 +1539,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             {
                if( jj > ibegin+i+3UL ) continue;
 
-               const size_t jend( min( i+4UL, jblock ) );
+               const size_t jend( min( ibegin+i-jj+4UL, jblock ) );
                size_t j( 0UL );
 
                for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1570,7 +1570,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
          {
             if( jj > ibegin+i+1UL ) continue;
 
-            const size_t jend( min( i+2UL, jblock ) );
+            const size_t jend( min( ibegin+i-jj+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -1592,7 +1592,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          if( i<isize && jj <= ibegin+i )
          {
-            const size_t jend( min( i+5UL, jblock ) );
+            const size_t jend( min( ibegin+i-jj+2UL, jblock ) );
             size_t j( 0UL );
 
             for( ; (j+2UL) <= jend; j+=2UL ) {
@@ -2775,7 +2775,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             {
                if( ii > jbegin+j+4UL ) continue;
 
-               const size_t iend( min( j+5UL, iblock ) );
+               const size_t iend( min( iblock, jbegin+j-ii+5UL ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL )
@@ -2846,7 +2846,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             {
                if( ii > jbegin+j+3UL ) continue;
 
-               const size_t iend( min( j+4UL, iblock ) );
+               const size_t iend( min( iblock, jbegin+j-ii+4UL ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL )
@@ -2909,7 +2909,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
          {
             if( ii > jbegin+j+1UL ) continue;
 
-            const size_t iend( min( j+2UL, iblock ) );
+            const size_t iend( min( iblock, jbegin+j-ii+2UL ) );
             size_t i( 0UL );
 
             for( ; (i+4UL) <= iend; i+=4UL )
@@ -2989,7 +2989,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          if( j<jsize && ii <= jbegin+j )
          {
-            const size_t iend( min( j+2UL, iblock ) );
+            const size_t iend( min( iblock, jbegin+j-ii+2UL ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -3058,7 +3058,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             {
                if( ii > jbegin+j+4UL ) continue;
 
-               const size_t iend( min( j+5UL, iblock ) );
+               const size_t iend( min( iblock, jbegin+j-ii+5UL ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -3093,7 +3093,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             {
                if( ii > jbegin+j+3UL ) continue;
 
-               const size_t iend( min( j+4UL, iblock ) );
+               const size_t iend( min( iblock, jbegin+j-ii+4UL ) );
                size_t i( 0UL );
 
                for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -3124,7 +3124,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
          {
             if( ii > jbegin+j+1UL ) continue;
 
-            const size_t iend( min( j+2UL, iblock ) );
+            const size_t iend( min( iblock, jbegin+j-ii+2UL ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
@@ -3146,7 +3146,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          if( j<jsize && ii <= jbegin+j )
          {
-            const size_t iend( min( j+2UL, iblock ) );
+            const size_t iend( min( iblock, jbegin+j-ii+2UL ) );
             size_t i( 0UL );
 
             for( ; (i+2UL) <= iend; i+=2UL ) {
