@@ -3212,6 +3212,22 @@
    max( A - B - C );  // Returns 11, i.e. the largest value of the resulting matrix
    \endcode
 
+// \n \subsection matrix_operators_trace trace()
+//
+// The \c trace() function sums the diagonal elements of a square dense or sparse matrix:
+
+   \code
+   blaze::StaticMatrix<int,3UL,3UL> A{ { -1,  2, -3 }
+                                     , { -4, -5,  6 }
+                                     , {  7, -8, -9 } };
+
+   trace( A );  // Returns the sum of the diagonal elements, i.e. -15
+   \endcode
+
+// In case the given matrix is not a square matrix, a \c std::invalid_argument exception is
+// thrown.
+//
+//
 // \n \subsection matrix_operators_abs abs()
 //
 // The \c abs() function can be used to compute the absolute values of each element of a matrix.
