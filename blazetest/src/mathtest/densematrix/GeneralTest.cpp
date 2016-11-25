@@ -78,6 +78,7 @@ GeneralTest::GeneralTest()
    testIsIdentity();
    testMinimum();
    testMaximum();
+   testTrace();
 }
 //*************************************************************************************************
 
@@ -4549,6 +4550,161 @@ void GeneralTest::testMaximum()
             throw std::runtime_error( oss.str() );
          }
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trace() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trace() function for dense matrices template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testTrace()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major trace()";
+
+      // Determining the trace of a 0x0 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a 3x3 matrix
+      {
+         const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { -1,  2, -3 }
+                                                            , { -4, -5,  6 }
+                                                            , {  7, -8, -9 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 9UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != -15 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: -15\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a non-square matrix
+      try
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
+
+         checkRows   ( mat, 2UL );
+         checkColumns( mat, 3UL );
+
+         const int trace = blaze::trace( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Trace computation on a non-square matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trace << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major trace()";
+
+      // Determining the trace of a 0x0 matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a 3x3 matrix
+      {
+         const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { -1,  2, -3 }
+                                                               , { -4, -5,  6 }
+                                                               , {  7, -8, -9 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 9UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != -15 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: -15\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a non-square matrix
+      try
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
+
+         checkRows   ( mat, 2UL );
+         checkColumns( mat, 3UL );
+
+         const int trace = blaze::trace( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Trace computation on a non-square matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trace << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
