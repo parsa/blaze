@@ -103,6 +103,7 @@ class GeneralTest
    void testIsIdentity();
    void testMinimum();
    void testMaximum();
+   void testTrace();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

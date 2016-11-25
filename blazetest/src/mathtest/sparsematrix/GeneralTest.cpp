@@ -63,6 +63,8 @@ namespace sparsematrix {
 */
 GeneralTest::GeneralTest()
 {
+   testIsNan();
+   testIsSquare();
    testIsSymmetric();
    testIsHermitian();
    testIsUniform();
@@ -74,6 +76,9 @@ GeneralTest::GeneralTest()
    testIsStrictlyUpper();
    testIsDiagonal();
    testIsIdentity();
+   testMinimum();
+   testMaximum();
+   testTrace();
 }
 //*************************************************************************************************
 
@@ -1024,12 +1029,12 @@ void GeneralTest::testIsHermitian()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isUniform() function for dense matrices.
+/*!\brief Test of the \c isUniform() function for sparse matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isUniform() function for dense matrices. In case an
+// This function performs a test of the \c isUniform() function for sparse matrices. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testIsUniform()
@@ -4620,6 +4625,170 @@ void GeneralTest::testMaximum()
    }
 }
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trace() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trace() function for sparse matrices template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testTrace()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major trace()";
+
+      // Determining the trace of a 0x0 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a 3x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = -1;
+         mat(0,2) = -3;
+         mat(1,1) = -5;
+         mat(1,2) =  6;
+         mat(2,0) =  7;
+         mat(2,2) = -9;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 6UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != -15 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: -15\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a non-square matrix
+      try
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
+
+         checkRows   ( mat, 2UL );
+         checkColumns( mat, 3UL );
+
+         const int trace = blaze::trace( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Trace computation on a non-square matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trace << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major trace()";
+
+      // Determining the trace of a 0x0 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: First computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a 3x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = -1;
+         mat(0,2) = -3;
+         mat(1,1) = -5;
+         mat(1,2) =  6;
+         mat(2,0) =  7;
+         mat(2,2) = -9;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 6UL );
+
+         const int trace = blaze::trace( mat );
+
+         if( trace != -15 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Second computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trace << "\n"
+                << "   Expected result: -15\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the trace of a non-square matrix
+      try
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+
+         const int trace = blaze::trace( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Trace computation on a non-square matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trace << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
 
 } // namespace sparsematrix
 
