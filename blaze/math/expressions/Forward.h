@@ -109,7 +109,7 @@ template< typename, typename > class SMatSMatAddExpr;
 template< typename, typename > class SMatSMatMultExpr;
 template< typename, typename > class SMatSMatSubExpr;
 template< typename, typename > class SMatSVecMultExpr;
-template< typename, typename, bool, bool > class SMatTDMatMultExpr;
+template< typename, typename, bool, bool, bool, bool > class SMatTDMatMultExpr;
 template< typename, typename > class SMatTDMatSubExpr;
 template< typename, bool > class SMatTransExpr;
 template< typename, bool > class SMatTransposer;
