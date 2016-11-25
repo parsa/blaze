@@ -3171,82 +3171,6 @@
 // Note that non-square matrices are never considered to be identity matrices!
 //
 //
-// \n \subsection matrix_operations_declsym declsym()
-//
-// The \c declsym() operation can be used to explicitly declare any matrix or matrix expression
-// as symmetric:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-
-   B = declsym( A );
-   \endcode
-
-// Any matrix or matrix expression that has been declared as symmetric via \c declsym() will
-// gain all the benefits of a symmetric matrix, which range from reduced runtime checking to
-// a considerable speed-up in computations:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
-
-   DynamicMatrix<double> A, B, C;
-   SymmetricMatrix< DynamicMatrix<double> > S;
-   // ... Resizing and initialization
-
-   isSymmetric( declsym( A ) );  // Will always return true without runtime effort
-
-   S = declsym( A );  // Omit any runtime check for symmetry
-
-   C = declsym( A * B );  // Declare the result of the matrix multiplication as symmetric
-                          // i.e. perform an optimized matrix multiplication
-   \endcode
-
-// \warning The \c declsym() operation has the semantics of a cast: The caller is completely
-// responsible and the system trusts the given information. Declaring a non-symmetric matrix or
-// matrix expression as symmetric via the \c declsym() operation leads to undefined behavior
-// (which can be violated invariants or wrong computation results)!
-//
-//
-// \n \subsection matrix_operations_declherm declherm()
-//
-// The \c declherm() operation can be used to explicitly declare any matrix or matrix expression
-// as Hermitian:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-
-   B = declherm( A );
-   \endcode
-
-// Any matrix or matrix expression that has been declared as Hermitian via \c declherm() will
-// gain all the benefits of an Hermitian matrix, which range from reduced runtime checking to
-// a considerable speed-up in computations:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::HermitianMatrix;
-
-   DynamicMatrix<double> A, B, C;
-   HermitianMatrix< DynamicMatrix<double> > S;
-   // ... Resizing and initialization
-
-   isHermitian( declherm( A ) );  // Will always return true without runtime effort
-
-   S = declherm( A );  // Omit any runtime check for Hermitian symmetry
-
-   C = declherm( A * B );  // Declare the result of the matrix multiplication as Hermitian
-                           // i.e. perform an optimized matrix multiplication
-   \endcode
-
-// \warning The \c declherm() operation has the semantics of a cast: The caller is completely
-// responsible and the system trusts the given information. Declaring a non-Hermitian matrix or
-// matrix expression as Hermitian via the \c declherm() operation leads to undefined behavior
-// (which can be violated invariants or wrong computation results)!
-//
-//
 // \n \subsection matrix_operations_min_max min() / max()
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
@@ -3649,6 +3573,199 @@
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
 
+// \n \section matrix_operations_declaration_operations Declaration Operations
+// <hr>
+//
+// \subsection matrix_operations_declsym declsym()
+//
+// The \c declsym() operation can be used to explicitly declare any matrix or matrix expression
+// as symmetric:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declsym( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as symmetric via \c declsym() will
+// gain all the benefits of a symmetric matrix, which range from reduced runtime checking to
+// a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   SymmetricMatrix< DynamicMatrix<double> > S;
+   // ... Resizing and initialization
+
+   isSymmetric( declsym( A ) );  // Will always return true without runtime effort
+
+   S = declsym( A );  // Omit any runtime check for symmetry
+
+   C = declsym( A * B );  // Declare the result of the matrix multiplication as symmetric
+                          // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declsym() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-symmetric matrix or
+// matrix expression as symmetric via the \c declsym() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declherm declherm()
+//
+// The \c declherm() operation can be used to explicitly declare any matrix or matrix expression
+// as Hermitian:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declherm( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as Hermitian via \c declherm() will
+// gain all the benefits of an Hermitian matrix, which range from reduced runtime checking to
+// a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::HermitianMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   HermitianMatrix< DynamicMatrix<double> > S;
+   // ... Resizing and initialization
+
+   isHermitian( declherm( A ) );  // Will always return true without runtime effort
+
+   S = declherm( A );  // Omit any runtime check for Hermitian symmetry
+
+   C = declherm( A * B );  // Declare the result of the matrix multiplication as Hermitian
+                           // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declherm() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-Hermitian matrix or
+// matrix expression as Hermitian via the \c declherm() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_decllow decllow()
+//
+// The \c decllow() operation can be used to explicitly declare any matrix or matrix expression
+// as lower triangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = decllow( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as lower triangular via \c decllow()
+// will gain all the benefits of a lower triangular matrix, which range from reduced runtime
+// checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   LowerMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isLower( decllow( A ) );  // Will always return true without runtime effort
+
+   L = decllow( A );  // Omit any runtime check for A being a lower matrix
+
+   C = decllow( A * B );  // Declare the result of the matrix multiplication as lower triangular
+                          // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c decllow() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-lower matrix or
+// matrix expression as lower triangular via the \c decllow() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declupp declupp()
+//
+// The \c declupp() operation can be used to explicitly declare any matrix or matrix expression
+// as upper triangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declupp( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as upper triangular via \c declupp()
+// will gain all the benefits of a upper triangular matrix, which range from reduced runtime
+// checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UpperMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   UpperMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isUpper( declupp( A ) );  // Will always return true without runtime effort
+
+   L = declupp( A );  // Omit any runtime check for A being a upper matrix
+
+   C = declupp( A * B );  // Declare the result of the matrix multiplication as upper triangular
+                          // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declupp() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-upper matrix or
+// matrix expression as upper triangular via the \c declupp() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_decldiag decldiag()
+//
+// The \c decldiag() operation can be used to explicitly declare any matrix or matrix expression
+// as diagonal:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = decldiag( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as diagonal via \c decldiag() will
+// gain all the benefits of a diagonal matrix, which range from reduced runtime checking to
+// a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DiagonalMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   DiagonalMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isDiagonal( decldiag( A ) );  // Will always return true without runtime effort
+
+   L = decldiag( A );  // Omit any runtime check for A being a diagonal matrix
+
+   C = decldiag( A * B );  // Declare the result of the matrix multiplication as diagonal
+                           // i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c decldiag() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-diagonal matrix
+// or matrix expression as diagonal via the \c decldiag() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
 // \n \section matrix_operations_matrix_inversion Matrix Inversion
 // <hr>
 //
@@ -8080,34 +8197,30 @@
 // highest performance for a multiplication between two matrices can be expected for two
 // matrices with the same scalar element type.
 //
-// In case the resulting matrix is known to be symmetric or Hermitian, the computation can be
-// optimized by explicitly declaring the multiplication as symmetric or Hermitian via the
-// \ref matrix_operations_declsym or \ref matrix_operations_declherm operations, respectively:
+// In case the resulting matrix is known to be symmetric, Hermitian, lower triangular, upper
+// triangular, or diagonal, the computation can be optimized by explicitly declaring the
+// multiplication as symmetric, Hermitian, lower triangular, upper triangular, or diagonal by
+// means of the \ref matrix_operations_declaration_operations:
 
    \code
    using blaze::DynamicMatrix;
 
    DynamicMatrix<double> M1, M2, M3;
 
-   // ... Initialization of the matrices
+   // ... Initialization of the square matrices
 
-   M3 = declsym( M1 * M2 );  // Declare the result of the matrix multiplication as symmetric
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-
-   DynamicMatrix< complex<double> > A, B, C
-
-   // ... Initialization of the matrices
-
+   M3 = declsym ( M1 * M2 );  // Declare the result of the matrix multiplication as symmetric
    M3 = declherm( M1 * M2 );  // Declare the result of the matrix multiplication as Hermitian
+   M3 = decllow ( M1 * M2 );  // Declare the result of the matrix multiplication as lower triangular
+   M3 = declupp ( M1 * M2 );  // Declare the result of the matrix multiplication as upper triangular
+   M3 = decldiag( M1 * M2 );  // Declare the result of the matrix multiplication as diagonal
    \endcode
 
-// Declaring the multiplication as symmetric or Hermitian can speed up the computation by up to
-// a factor of 2. Note however that the caller of the \ref matrix_operations_declsym operation
-// takes full responsibility for the correctness of the declaration. Falsely declaring a
-// multiplication as symmetric or Hermitian leads to undefined behavior!
+// Using a declaration operation on the a multiplication expression can speed up the computation
+// by a factor of 2. Note however that the caller of the according declaration operation takes
+// full responsibility for the correctness of the declaration. Falsely declaring a multiplication
+// as symmetric, Hermitian, lower triangular, upper triangular, or diagonal leads to undefined
+// behavior!
 //
 // \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref custom_operations
 */
