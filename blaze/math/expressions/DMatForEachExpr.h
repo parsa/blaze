@@ -1446,25 +1446,25 @@ inline const DMatForEachExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& d
 // \param max The upper delimiter.
 // \return The matrix with restricted elements.
 //
-// The \a clip() function restricts each element of the input matrix \a dm to the range
+// The \a clamp() function restricts each element of the input matrix \a dm to the range
 // \f$[min..max]\f$. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a clip() function:
+// The following example demonstrates the use of the \a clamp() function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
    // ... Resizing and initialization
-   B = clip( A, -1.0, 1.0 );
+   B = clamp( A, -1.0, 1.0 );
    \endcode
 */
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , typename DT >  // Type of the delimiters
-inline const DMatForEachExpr<MT,Clip<DT>,SO>
-   clip( const DenseMatrix<MT,SO>& dm, const DT& min, const DT& max )
+inline const DMatForEachExpr<MT,Clamp<DT>,SO>
+   clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatForEachExpr<MT,Clip<DT>,SO>( ~dm, Clip<DT>( min, max ) );
+   return DMatForEachExpr<MT,Clamp<DT>,SO>( ~dm, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 

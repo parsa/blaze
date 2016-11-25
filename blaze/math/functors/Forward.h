@@ -53,7 +53,7 @@ struct Atan;
 struct Atanh;
 struct Cbrt;
 struct Ceil;
-template< typename > struct Clip;
+template< typename > struct Clamp;
 struct Conj;
 struct Cos;
 struct Cosh;

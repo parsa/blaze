@@ -49,8 +49,8 @@
 #include <blaze/math/shims/Atanh.h>
 #include <blaze/math/shims/Cbrt.h>
 #include <blaze/math/shims/Ceil.h>
+#include <blaze/math/shims/Clamp.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Clip.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Cos.h>
 #include <blaze/math/shims/Cosh.h>

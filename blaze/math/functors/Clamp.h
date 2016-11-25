@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Clip.h
-//  \brief Header file for the Clip functor
+//  \file blaze/math/functors/Clamp.h
+//  \brief Header file for the Clamp functor
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_CLIP_H_
-#define _BLAZE_MATH_FUNCTORS_CLIP_H_
+#ifndef _BLAZE_MATH_FUNCTORS_CLAMP_H_
+#define _BLAZE_MATH_FUNCTORS_CLAMP_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Clip.h>
+#include <blaze/math/shims/Clamp.h>
 #include <blaze/system/Inline.h>
 
 
@@ -53,35 +53,35 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the clip() function.
+/*!\brief Generic wrapper for the clamp() function.
 // \ingroup functors
 */
 template< typename DT >  // Type of the delimiters
-struct Clip
+struct Clamp
 {
  public:
    //**********************************************************************************************
-   /*!\brief Constructor of the Clip functor.
+   /*!\brief Constructor of the Clamp functor.
    //
    // \param min The lower limit of the range.
    // \param max The upper limit of the range.
    */
-   explicit inline Clip( const DT& min, const DT& max )
+   explicit inline Clamp( const DT& min, const DT& max )
       : min_( min )  // The lower delimiter
       , max_( max )  // The upper delimiter
    {}
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the clip() function for the given object/value.
+   /*!\brief Returns the result of the clamp() function for the given object/value.
    //
    // \param a The given object/value.
-   // \return The result of the clip() function for the given object/value.
+   // \return The result of the clamp() function for the given object/value.
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
    {
-      return clip( a, min_, max_ );
+      return clamp( a, min_, max_ );
    }
    //**********************************************************************************************
 

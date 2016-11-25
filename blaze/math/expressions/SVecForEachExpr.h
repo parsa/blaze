@@ -1264,25 +1264,25 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
 // \param max The upper delimiter.
 // \return The vector with restricted elements.
 //
-// The \a clip() function resetricts each element of the input vector \a sv to the range
+// The \a clamp() function resetricts each element of the input vector \a sv to the range
 // \f$[min..max]\f$. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a clip() function:
+// The following example demonstrates the use of the \a clamp() function:
 
    \code
    blaze::CompressedVector<double> a, b;
    // ... Resizing and initialization
-   b = clip( a, -1.0, 1.0 );
+   b = clamp( a, -1.0, 1.0 );
    \endcode
 */
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const SVecForEachExpr<VT,Clip<DT>,TF>
-   clip( const SparseVector<VT,TF>& sv, const DT& min, const DT& max )
+inline const SVecForEachExpr<VT,Clamp<DT>,TF>
+   clamp( const SparseVector<VT,TF>& sv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Clip<DT>,TF>( ~sv, Clip<DT>( min, max ) );
+   return SVecForEachExpr<VT,Clamp<DT>,TF>( ~sv, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 

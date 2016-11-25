@@ -1314,25 +1314,25 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 // \param max The upper delimiter.
 // \return The matrix with restricted elements.
 //
-// The \a clip() function restricts each element of the input matrix \a sm to the range
+// The \a clamp() function restricts each element of the input matrix \a sm to the range
 // \f$[min..max]\f$. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a clip() function:
+// The following example demonstrates the use of the \a clamp() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
    // ... Resizing and initialization
-   B = clip( A, -1.0, 1.0 );
+   B = clamp( A, -1.0, 1.0 );
    \endcode
 */
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename DT >  // Type of the delimiters
-inline const SMatForEachExpr<MT,Clip<DT>,SO>
-   clip( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
+inline const SMatForEachExpr<MT,Clamp<DT>,SO>
+   clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Clip<DT>,SO>( ~sm, Clip<DT>( min, max ) );
+   return SMatForEachExpr<MT,Clamp<DT>,SO>( ~sm, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 

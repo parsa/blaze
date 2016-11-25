@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/shims/Clip.h
-//  \brief Header file for the clip shim
+//  \file blaze/math/shims/Clamp.h
+//  \brief Header file for the clamp shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_CLIP_H_
-#define _BLAZE_MATH_SHIMS_CLIP_H_
+#ifndef _BLAZE_MATH_SHIMS_CLAMP_H_
+#define _BLAZE_MATH_SHIMS_CLAMP_H_
 
 
 //*************************************************************************************************
@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLIP SHIM
+//  CLAMP SHIM
 //
 //=================================================================================================
 
@@ -61,9 +61,9 @@ namespace blaze {
 // \param a The given value/object.
 // \param min The lower limit of the range.
 // \param max The upper limit of the range.
-// \return The clipped value.
+// \return The clamped value.
 //
-// The \a clip shim represents an abstract interface for restricting a value to the specified
+// The \a clamp shim represents an abstract interface for restricting a value to the specified
 // range \f$[min..max]\f$:
 
    \code
@@ -71,13 +71,13 @@ namespace blaze {
    double d2 =  1.5;
    double d3 = -1.5;
 
-   clip( d1, -1.0, 1.0 );  // Results in 0.5
-   clip( d2, -1.0, 1.0 );  // Results in 1.0
-   clip( d3, -1.0, 1.0 );  // Results in -1.0
+   clamp( d1, -1.0, 1.0 );  // Results in 0.5
+   clamp( d2, -1.0, 1.0 );  // Results in 1.0
+   clamp( d3, -1.0, 1.0 );  // Results in -1.0
    \endcode
 */
 template< typename T >
-const T clip( const T& a, const T& min, const T& max ) noexcept
+const T& clamp( const T& a, const T& min, const T& max ) noexcept
 {
    if( a < min )
       return min;

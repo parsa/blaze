@@ -1509,25 +1509,25 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 // \param max The upper delimiter.
 // \return The vector with restricted elements.
 //
-// The \a clip() function restricts each element of the input vector \a dv to the range
+// The \a clamp() function restricts each element of the input vector \a dv to the range
 // \f$[min..max]\f$. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a clip() function:
+// The following example demonstrates the use of the \a clamp() function:
 
    \code
    blaze::DynamicVector<double> a, b;
    // ... Resizing and initialization
-   b = clip( a, -1.0, 1.0 );
+   b = clamp( a, -1.0, 1.0 );
    \endcode
 */
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const DVecForEachExpr<VT,Clip<DT>,TF>
-   clip( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
+inline const DVecForEachExpr<VT,Clamp<DT>,TF>
+   clamp( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Clip<DT>,TF>( ~dv, Clip<DT>( min, max ) );
+   return DVecForEachExpr<VT,Clamp<DT>,TF>( ~dv, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
