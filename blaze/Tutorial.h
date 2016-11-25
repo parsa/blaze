@@ -8216,7 +8216,7 @@
 // In case the resulting matrix is known to be symmetric, Hermitian, lower triangular, upper
 // triangular, or diagonal, the computation can be optimized by explicitly declaring the
 // multiplication as symmetric, Hermitian, lower triangular, upper triangular, or diagonal by
-// means of the \ref matrix_operations_declaration_operations:
+// means of the \ref matrix_operations_declaration_operations :
 
    \code
    using blaze::DynamicMatrix;
@@ -9413,6 +9413,9 @@
 // \tableofcontents
 //
 //
+// \n \section lapack_introction Introduction
+// <hr>
+//
 // The \b Blaze library makes extensive use of the LAPACK functionality for various compute tasks
 // (including the decomposition, inversion and the computation of the determinant of dense matrices).
 // For this purpose, \b Blaze implements several convenient C++ wrapper functions for all required
@@ -9422,6 +9425,44 @@
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
+// Most of the wrapper functions are implemented as thin wrappers around LAPACK functions. They
+// provide the parameters of the original LAPACK functions and thus provide maximum flexibility:
+
+   \code
+   constexpr size_t N( 100UL );
+
+   blaze::DynamicMatrix<double,blaze::columnMajor> A( N, N );
+   // ... Initializing the matrix
+
+   const int m    ( boost::numeric_cast<int>( A.rows()    ) );  // == N
+   const int n    ( boost::numeric_cast<int>( A.columns() ) );  // == N
+   const int lda  ( boost::numeric_cast<int>( A.spacing() ) );  // >= N
+   const int lwork( n*lda );
+
+   const std::unique_ptr<int[]> ipiv( new int[N] );        // No initialization required
+   const std::unique_ptr<double[]> work( new double[N] );  // No initialization required
+
+   int info( 0 );
+
+   getrf( m, n, A.data(), lda, ipiv.get(), &info );                  // Reports failure via 'info'
+   getri( n, A.data(), lda, ipiv.get(), work.get(), lwork, &info );  // Reports failure via 'info'
+   \endcode
+
+// Additionally, \b Blaze provides wrappers that provide a higher level of abstraction. These
+// wrappers provide a maximum of convenience:
+
+   \code
+   constexpr size_t N( 100UL );
+
+   blaze::DynamicMatrix<double,blaze::columnMajor> A( N, N );
+   // ... Initializing the matrix
+
+   const std::unique_ptr<int[]> ipiv( new int[N] );  // No initialization required
+
+   getrf( A, ipiv.get() );  // Cannot fail
+   getri( A, ipiv.get() );  // Reports failure via exception
+   \endcode
+
 // \note All functions only work for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
