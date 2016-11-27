@@ -4389,6 +4389,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t jend( ( ( IsLower<MT4>::value && IsLower<MT5>::value ) || LOW )
                                ?( IsStrictlyLower<MT4>::value || IsStrictlyLower<MT5>::value ? i : i+1UL )
                                :( N ) );
+
+            if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) continue;
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
