@@ -4688,7 +4688,13 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                ?( LOW ? min(i+1UL,N-1UL) : N-1UL )
                                :( LOW ? i+1UL : N ) ) );
 
-         if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) continue;
+         if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) {
+            for( size_t j=0UL; j<N; ++j ) {
+               reset( (~C)(i,j) );
+            }
+            continue;
+         }
+
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=( SYM || HERM ? i : 0UL ); j<jbegin; ++j ) {
@@ -4797,7 +4803,13 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                ?( UPP ? min(j+1UL,M-1UL) : M-1UL )
                                :( UPP ? j+1UL : M ) ) );
 
-         if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) continue;
+         if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) {
+            for( size_t i=0UL; i<M; ++i ) {
+               reset( (~C)(i,j) );
+            }
+            continue;
+         }
+
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=( SYM || HERM ? j : 0UL ); i<ibegin; ++i ) {
