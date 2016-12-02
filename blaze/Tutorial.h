@@ -2737,9 +2737,9 @@
 // Although the \c insert() function is very flexible, due to performance reasons it is not
 // suited for the setup of large sparse matrices. A very efficient, yet also very low-level
 // way to fill a sparse matrix is the \c append() function. It requires the sparse matrix to
-// provide enough capacity to insert a new element in the specified row. Additionally, the
-// index of the new element must be larger than the index of the previous element in the same
-// row. Violating these conditions results in undefined behavior!
+// provide enough capacity to insert a new element in the specified row/column. Additionally,
+// the index of the new element must be larger than the index of the previous element in the
+// same row/column. Violating these conditions results in undefined behavior!
 
    \code
    M1.reserve( 0, 3 );     // Reserving space for three non-zero elements in row 0
@@ -2752,16 +2752,28 @@
 // \c reserve(), \c append(), and the \c finalize() function:
 
    \code
+   // Setup of the compressed row-major matrix
+   //
+   //       ( 0 1 0 2 0 )
+   //   A = ( 0 0 0 0 0 )
+   //       ( 3 0 0 0 0 )
+   //
    blaze::CompressedMatrix<int> M1( 3UL, 5UL );
    M1.reserve( 3 );       // Reserving enough space for 3 non-zero elements
    M1.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
+   M1.append( 0, 3, 2 );  // Appending the value 2 in row 0 with column index 3
    M1.finalize( 0 );      // Finalizing row 0
-   M1.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
-   M1.finalize( 1 );      // Finalizing row 1
+   M1.finalize( 1 );      // Finalizing the empty row 1 to prepare row 2
    M1.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
    M1.finalize( 2 );      // Finalizing row 2
    \endcode
 
+// \note The \c finalize() function has to be explicitly called for each row or column, even
+// for empty ones!
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+//
+//
 // \n \section matrix_operations_member_functions Member Functions
 // <hr>
 //
