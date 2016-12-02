@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/expressions/SMatDeclDiagExpr.h
-//  \brief Header file for the sparse matrix Hermitian declaration expression
+//  \brief Header file for the sparse matrix diagonal declaration expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -44,7 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/Hermitian.h>
+#include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DeclDiagExpr.h>
@@ -94,10 +94,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the explicit Hermitian declaration of sparse matrices.
+/*!\brief Expression object for the explicit diagonal declaration of sparse matrices.
 // \ingroup sparse_matrix_expression
 //
-// The SMatDeclDiagExpr class represents the compile time expression for the explicit Hermitian
+// The SMatDeclDiagExpr class represents the compile time expression for the explicit diagonal
 // declaration of a sparse matrix.
 */
 template< typename MT  // Type of the sparse matrix
@@ -815,7 +815,7 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -831,15 +831,15 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Declares the given non-Hermitian sparse matrix expression \a sm as Hermitian.
+/*!\brief Declares the given non-diagonal sparse matrix expression \a sm as diagonal.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid diagonal matrix specification.
 //
-// The \a decldiag function declares the given non-Hermitian sparse matrix expression \a sm as
-// Hermitian. The function returns an expression representing the operation. In case the given
+// The \a decldiag function declares the given non-diagonal sparse matrix expression \a sm as
+// diagonal. The function returns an expression representing the operation. In case the given
 // matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decldiag function:
 
@@ -866,14 +866,14 @@ inline DisableIf_< IsDiagonal<MT>, const SMatDeclDiagExpr<MT,SO> >
 
 
 //*************************************************************************************************
-/*!\brief Redeclares the given Hermitian sparse matrix expression \a sm as Hermitian.
+/*!\brief Redeclares the given diagonal sparse matrix expression \a sm as diagonal.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 //
-// The \a decldiag function redeclares the given Hermitian sparse matrix expression \a sm as
-// Hermitian. The function returns a reference to the already Hermitian matrix expression.
+// The \a decldiag function redeclares the given diagonal sparse matrix expression \a sm as
+// diagonal. The function returns a reference to the already diagonal matrix expression.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -897,7 +897,7 @@ inline EnableIf_< IsDiagonal<MT>, const MT& >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Declares the given non-Hermitian sparse matrix-scalar multiplication expression as Hermitian.
+/*!\brief Declares the given non-diagonal sparse matrix-scalar multiplication expression as diagonal.
 // \ingroup sparse_matrix
 //
 // \param sm The input sparse matrix-scalar multiplication expression.
