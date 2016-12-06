@@ -2039,10 +2039,10 @@ void DenseAlignedTest::testReset()
 
    test_ = "Subvector::reset()";
 
-   initialize();
-
    // Resetting a single element in the range [0,15]
    {
+      initialize();
+
       ASVT sv1 = subvector<aligned>  ( vec1_, 0UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 0UL, 16UL );
       reset( sv1[4] );
@@ -2062,8 +2062,10 @@ void DenseAlignedTest::testReset()
       }
    }
 
-   // Resetting the range [0,15]
+   // Resetting the range [0,15] (lvalue)
    {
+      initialize();
+
       ASVT sv1 = subvector<aligned>  ( vec1_, 0UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 0UL, 16UL );
       reset( sv1 );
@@ -2083,23 +2085,20 @@ void DenseAlignedTest::testReset()
       }
    }
 
-   // Resetting the range [16,63]
+   // Resetting the range [16,63] (rvalue)
    {
-      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 48UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 48UL );
-      reset( sv1 );
-      reset( sv2 );
+      initialize();
 
-      checkSize( sv1, 48UL );
-      checkSize( sv2, 48UL );
+      reset( subvector<aligned>  ( vec1_, 16UL, 48UL ) );
+      reset( subvector<unaligned>( vec2_, 16UL, 48UL ) );
 
-      if( sv1 != sv2 || vec1_ != vec2_ ) {
+      if( vec1_ != vec2_ ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation of range [16,63] failed\n"
              << " Details:\n"
-             << "   Result:\n" << sv1 << "\n"
-             << "   Expected result:\n" << sv2 << "\n";
+             << "   Result:\n" << vec1_ << "\n"
+             << "   Expected result:\n" << vec2_ << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2126,10 +2125,10 @@ void DenseAlignedTest::testClear()
 
    test_ = "Subvector::clear()";
 
-   initialize();
-
    // Clearing a single element in the range [0,15]
    {
+      initialize();
+
       ASVT sv1 = subvector<aligned>  ( vec1_, 0UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 0UL, 16UL );
       clear( sv1[4] );
@@ -2145,6 +2144,47 @@ void DenseAlignedTest::testClear()
              << " Details:\n"
              << "   Result:\n" << sv1 << "\n"
              << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Clearing the range [0,15] (lvalue)
+   {
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 0UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 0UL, 16UL );
+      clear( sv1 );
+      clear( sv2 );
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation of range [0,15] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Clearing the range [16,63] (rvalue)
+   {
+      initialize();
+
+      clear( subvector<aligned>  ( vec1_, 16UL, 48UL ) );
+      clear( subvector<unaligned>( vec2_, 16UL, 48UL ) );
+
+      if( vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation of range [16,63] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec1_ << "\n"
+             << "   Expected result:\n" << vec2_ << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

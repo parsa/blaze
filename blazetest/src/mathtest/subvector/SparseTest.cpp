@@ -1815,10 +1815,10 @@ void SparseTest::testReset()
 
    test_ = "Subvector::reset()";
 
-   initialize();
-
    // Resetting a single element of the range [1,6]
    {
+      initialize();
+
       SVT sv = blaze::subvector( vec_, 1UL, 6UL );
       reset( sv[2] );
 
@@ -1838,8 +1838,10 @@ void SparseTest::testReset()
       }
    }
 
-   // Resetting the range [0,3]
+   // Resetting the range [0,3] (lvalue)
    {
+      initialize();
+
       SVT sv = blaze::subvector( vec_, 0UL, 4UL );
       reset( sv );
 
@@ -1857,25 +1859,36 @@ void SparseTest::testReset()
              << "   Expected result:\n( 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 0 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation of range [0,3] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 0 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Resetting the range [4,7]
+   // Resetting the range [4,7] (rvalue)
    {
-      SVT sv = blaze::subvector( vec_, 4UL, 4UL );
-      reset( sv );
+      initialize();
 
-      checkSize    ( sv  , 4UL );
-      checkNonZeros( sv  , 0UL );
+      reset( blaze::subvector( vec_, 4UL, 4UL ) );
+
       checkSize    ( vec_, 8UL );
-      checkNonZeros( vec_, 0UL );
+      checkNonZeros( vec_, 2UL );
 
-      if( sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ) {
+      if( vec_[0] != 0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != -2 ||
+          vec_[4] != 0 || vec_[5] != 0 || vec_[6] != 0 || vec_[7] !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation of range [4,7] failed\n"
              << " Details:\n"
-             << "   Result:\n" << sv << "\n"
-             << "   Expected result:\n( 0 0 0 0 )\n";
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 0 -2 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1898,10 +1911,10 @@ void SparseTest::testClear()
 
    test_ = "clear() function";
 
-   initialize();
-
    // Clearing a single element of the range [1,6]
    {
+      initialize();
+
       SVT sv = blaze::subvector( vec_, 1UL, 6UL );
       clear( sv[2] );
 
@@ -1917,6 +1930,61 @@ void SparseTest::testClear()
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
              << "   Expected result:\n( 1 0 0 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Clearing the range [0,3] (lvalue)
+   {
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 0UL, 4UL );
+      clear( sv );
+
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 0UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
+
+      if( sv[0] != 0 || sv[1] != 0 || sv[2] != 0 || sv[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation of range [0,3] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 0 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation of range [0,3] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 0 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Clearing the range [4,7] (rvalue)
+   {
+      initialize();
+
+      clear( blaze::subvector( vec_, 4UL, 4UL ) );
+
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
+
+      if( vec_[0] != 0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != -2 ||
+          vec_[4] != 0 || vec_[5] != 0 || vec_[6] != 0 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation of range [4,7] failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 0 -2 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
