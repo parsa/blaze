@@ -5298,7 +5298,7 @@ void SparseTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major Submatrix::reset()";
+      test_ = "Row-major Submatrix::reset() (lvalue)";
 
       initialize();
 
@@ -5330,7 +5330,37 @@ void SparseTest::testReset()
           mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "(  0  0 -3  0 )\n"
+                                     "(  0  0  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Submatrix::reset() (rvalue)";
+
+      initialize();
+
+      reset( blaze::submatrix( mat_, 1UL, 0UL, 3UL, 2UL ) );
+
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) !=  0 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  0 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
@@ -5481,7 +5511,7 @@ void SparseTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major Submatrix::reset()";
+      test_ = "Column-major Submatrix::reset() (lvalue)";
 
       initialize();
 
@@ -5512,7 +5542,35 @@ void SparseTest::testReset()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0  7 )\n"
+                                     "( 0  0  0  0 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Submatrix::reset() (rvalue)";
+
+      initialize();
+
+      reset( blaze::submatrix( tmat_, 0UL, 1UL, 2UL, 3UL ) );
+
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0  0  0  7 )\n"
@@ -5674,6 +5732,86 @@ void SparseTest::testClear()
 
 
    //=====================================================================================
+   // Row-major clear
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function (lvalue)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
+
+      clear( sm );
+
+      checkRows    ( sm  , 3UL );
+      checkColumns ( sm  , 2UL );
+      checkNonZeros( sm  , 0UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( !isDefault( sm ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) !=  0 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  0 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "(  0  0 -3  0 )\n"
+                                     "(  0  0  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major clear() function (rvalue)";
+
+      initialize();
+
+      clear( blaze::submatrix( mat_, 1UL, 0UL, 3UL, 2UL ) );
+
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) !=  0 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  0 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "(  0  0 -3  0 )\n"
+                                     "(  0  0  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major single element clear
    //=====================================================================================
 
@@ -5714,6 +5852,82 @@ void SparseTest::testClear()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
                                      "( 0  0  0  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major clear
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function (lvalue)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+
+      clear( sm );
+
+      checkRows    ( sm   , 2UL );
+      checkColumns ( sm   , 3UL );
+      checkNonZeros( sm   , 0UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( !isDefault( sm ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0  7 )\n"
+                                     "( 0  0  0  0 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major clear() function (rvalue)";
+
+      initialize();
+
+      clear( blaze::submatrix( tmat_, 0UL, 1UL, 2UL, 3UL ) );
+
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0  7 )\n"
+                                     "( 0  0  0  0 -8 )\n"
                                      "( 0  0 -3  5  9 )\n"
                                      "( 0  0  0 -6 10 )\n";
          throw std::runtime_error( oss.str() );

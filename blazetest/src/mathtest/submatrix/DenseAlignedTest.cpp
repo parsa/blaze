@@ -5149,7 +5149,7 @@ void DenseAlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major Submatrix::reset()";
+      test_ = "Row-major Submatrix::reset() (lvalue)";
 
       initialize();
 
@@ -5171,6 +5171,25 @@ void DenseAlignedTest::testReset()
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Submatrix::reset() (rvalue)";
+
+      initialize();
+
+      reset( submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL ) );
+      reset( submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL ) );
+
+      if( mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1_ << "\n"
+             << "   Expected result:\n" << mat2_ << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5243,7 +5262,7 @@ void DenseAlignedTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major Submatrix::reset()";
+      test_ = "Column-major Submatrix::reset() (lvalue)";
 
       initialize();
 
@@ -5265,6 +5284,25 @@ void DenseAlignedTest::testReset()
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Submatrix::reset() (rvalue)";
+
+      initialize();
+
+      reset( submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL ) );
+      reset( submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL ) );
+
+      if( mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1_ << "\n"
+             << "   Expected result:\n" << mat2_ << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5352,6 +5390,57 @@ void DenseAlignedTest::testClear()
 
 
    //=====================================================================================
+   // Row-major clear
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function (lvalue)";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      clear( sm1 );
+      clear( sm2 );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( !isDefault( sm1 ) || !isDefault( sm2 ) || sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major clear() function (rvalue)";
+
+      initialize();
+
+      clear( submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL ) );
+      clear( submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL ) );
+
+      if( mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1_ << "\n"
+             << "   Expected result:\n" << mat2_ << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major single element clear
    //=====================================================================================
 
@@ -5378,6 +5467,57 @@ void DenseAlignedTest::testClear()
              << " Details:\n"
              << "   Result:\n" << sm1 << "\n"
              << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major clear
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function (lvalue)";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      clear( sm1 );
+      clear( sm2 );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( !isDefault( sm1 ) || !isDefault( sm2 ) || sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major clear() function (rvalue)";
+
+      initialize();
+
+      clear( submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL ) );
+      clear( submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL ) );
+
+      if( mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1_ << "\n"
+             << "   Expected result:\n" << mat2_ << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
