@@ -3541,10 +3541,10 @@ void SparseSymmetricTest::testReset()
    {
       test_ = "Row-major Row::reset()";
 
-      initialize();
-
       // Resetting a single element in row 3
       {
+         initialize();
+
          RT row3 = blaze::row( mat_, 3UL );
          reset( row3[1] );
 
@@ -3565,24 +3565,50 @@ void SparseSymmetricTest::testReset()
          }
       }
 
-      // Resetting the 3rd row
+      // Resetting the 2nd row (lvalue)
       {
-         RT row3 = blaze::row( mat_, 3UL );
-         reset( row3 );
+         initialize();
 
-         checkSize    ( row3, 4UL );
-         checkNonZeros( row3, 0UL );
+         RT row2 = blaze::row( mat_, 2UL );
+         reset( row2 );
+
+         checkSize    ( row2, 4UL );
+         checkNonZeros( row2, 0UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 4UL );
+
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation of 2nd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 3rd row (rvalue)
+      {
+         initialize();
+
+         reset( blaze::row( mat_, 3UL ) );
+
          checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 2UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
+         if( mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != 0 || mat_(3,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n"
+                                        "( 0 1 0 0 )\n"
+                                        "( 0 0 3 0 )\n"
+                                        "( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3596,10 +3622,10 @@ void SparseSymmetricTest::testReset()
    {
       test_ = "Column-major Row::reset()";
 
-      initialize();
-
       // Resetting a single element in row 3
       {
+         initialize();
+
          ORT row3 = blaze::row( tmat_, 3UL );
          reset( row3[1] );
 
@@ -3620,24 +3646,50 @@ void SparseSymmetricTest::testReset()
          }
       }
 
-      // Resetting the 3rd row
+      // Resetting the 2nd row (lvalue)
       {
-         ORT row3 = blaze::row( tmat_, 3UL );
-         reset( row3 );
+         initialize();
 
-         checkSize    ( row3 , 4UL );
-         checkNonZeros( row3 , 0UL );
+         ORT row2 = blaze::row( tmat_, 2UL );
+         reset( row2 );
+
+         checkSize    ( row2 , 4UL );
+         checkNonZeros( row2 , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 4UL );
+
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation of 2nd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 3rd row (rvalue)
+      {
+         initialize();
+
+         reset( blaze::row( tmat_, 3UL ) );
+
          checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 2UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
+         if( tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n"
+                                        "( 0 1 0 0 )\n"
+                                        "( 0 0 3 0 )\n"
+                                        "( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3667,10 +3719,10 @@ void SparseSymmetricTest::testClear()
    {
       test_ = "Row-major clear() function";
 
-      initialize();
-
       // Clearing a single element in row 3
       {
+         initialize();
+
          RT row3 = blaze::row( mat_, 3UL );
          clear( row3[1] );
 
@@ -3690,6 +3742,54 @@ void SparseSymmetricTest::testClear()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // Clearing the 2nd row (lvalue)
+      {
+         initialize();
+
+         RT row2 = blaze::row( mat_, 2UL );
+         clear( row2 );
+
+         checkSize    ( row2, 4UL );
+         checkNonZeros( row2, 0UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 4UL );
+
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 2nd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 3rd row (rvalue)
+      {
+         initialize();
+
+         clear( blaze::row( mat_, 3UL ) );
+
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 2UL );
+
+         if( mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != 0 || mat_(3,3) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n"
+                                        "( 0 1 0 0 )\n"
+                                        "( 0 0 3 0 )\n"
+                                        "( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 
 
@@ -3700,10 +3800,10 @@ void SparseSymmetricTest::testClear()
    {
       test_ = "Column-major clear() function";
 
-      initialize();
-
       // Clearing a single element in row 3
       {
+         initialize();
+
          ORT row3 = blaze::row( tmat_, 3UL );
          clear( row3[1] );
 
@@ -3720,6 +3820,54 @@ void SparseSymmetricTest::testClear()
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 4 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 2nd row (lvalue)
+      {
+         initialize();
+
+         ORT row2 = blaze::row( tmat_, 2UL );
+         clear( row2 );
+
+         checkSize    ( row2 , 4UL );
+         checkNonZeros( row2 , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 4UL );
+
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 2nd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row2 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 3rd row (rvalue)
+      {
+         initialize();
+
+         clear( blaze::row( tmat_, 3UL ) );
+
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 2UL );
+
+         if( tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 3rd row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n"
+                                        "( 0 1 0 0 )\n"
+                                        "( 0 0 3 0 )\n"
+                                        "( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
