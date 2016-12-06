@@ -968,10 +968,16 @@ template< typename MT, bool AF, bool SO, bool DF >
 inline void reset( Submatrix<MT,AF,SO,DF>& sm );
 
 template< typename MT, bool AF, bool SO, bool DF >
+inline void reset( Submatrix<MT,AF,SO,DF>&& sm );
+
+template< typename MT, bool AF, bool SO, bool DF >
 inline void reset( Submatrix<MT,AF,SO,DF>& sm, size_t i );
 
 template< typename MT, bool AF, bool SO, bool DF >
 inline void clear( Submatrix<MT,AF,SO,DF>& sm );
+
+template< typename MT, bool AF, bool SO, bool DF >
+inline void clear( Submatrix<MT,AF,SO,DF>&& sm );
 
 template< typename MT, bool AF, bool SO, bool DF >
 inline bool isDefault( const Submatrix<MT,AF,SO,DF>& sm );
@@ -1034,6 +1040,24 @@ inline void reset( Submatrix<MT,AF,SO,DF>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Resetting the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF >    // Density flag
+inline void reset( Submatrix<MT,AF,SO,DF>&& sm )
+{
+   sm.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Reset the specified row/column of the given submatrix.
 // \ingroup submatrix
 //
@@ -1071,6 +1095,26 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF >    // Density flag
 inline void clear( Submatrix<MT,AF,SO,DF>& sm )
+{
+   sm.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary matrix.
+// \ingroup submatrix
+//
+// \param sm The temporary matrix to be cleared.
+// \return void
+//
+// Clearing a submatrix is equivalent to resetting it via the reset() function.
+*/
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF >    // Density flag
+inline void clear( Submatrix<MT,AF,SO,DF>&& sm )
 {
    sm.reset();
 }

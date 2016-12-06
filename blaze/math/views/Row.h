@@ -507,7 +507,13 @@ template< typename MT, bool SO, bool DF, bool SF >
 inline void reset( Row<MT,SO,DF,SF>& row );
 
 template< typename MT, bool SO, bool DF, bool SF >
+inline void reset( Row<MT,SO,DF,SF>&& row );
+
+template< typename MT, bool SO, bool DF, bool SF >
 inline void clear( Row<MT,SO,DF,SF>& row );
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline void clear( Row<MT,SO,DF,SF>&& row );
 
 template< typename MT, bool SO, bool DF, bool SF >
 inline bool isDefault( const Row<MT,SO,DF,SF>& row );
@@ -540,6 +546,24 @@ inline void reset( Row<MT,SO,DF,SF>& row )
 
 
 //*************************************************************************************************
+/*!\brief Resetting the given temporary row.
+// \ingroup row
+//
+// \param row The temporary row to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void reset( Row<MT,SO,DF,SF>&& row )
+{
+   row.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Clearing the given row.
 // \ingroup row
 //
@@ -553,6 +577,26 @@ template< typename MT  // Type of the matrix
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
 inline void clear( Row<MT,SO,DF,SF>& row )
+{
+   row.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary row.
+// \ingroup row
+//
+// \param row The temporary row to be cleared.
+// \return void
+//
+// Clearing a row is equivalent to resetting it via the reset() function.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void clear( Row<MT,SO,DF,SF>&& row )
 {
    row.reset();
 }

@@ -510,7 +510,13 @@ template< typename MT, bool SO, bool DF, bool SF >
 inline void reset( Column<MT,SO,DF,SF>& column );
 
 template< typename MT, bool SO, bool DF, bool SF >
+inline void reset( Column<MT,SO,DF,SF>&& column );
+
+template< typename MT, bool SO, bool DF, bool SF >
 inline void clear( Column<MT,SO,DF,SF>& column );
+
+template< typename MT, bool SO, bool DF, bool SF >
+inline void clear( Column<MT,SO,DF,SF>&& column );
 
 template< typename MT, bool SO, bool DF, bool SF >
 inline bool isDefault( const Column<MT,SO,DF,SF>& column );
@@ -543,6 +549,24 @@ inline void reset( Column<MT,SO,DF,SF>& column )
 
 
 //*************************************************************************************************
+/*!\brief Resetting the given temporary column.
+// \ingroup column
+//
+// \param column The temporary column to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void reset( Column<MT,SO,DF,SF>&& column )
+{
+   column.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Clearing the given column.
 // \ingroup column
 //
@@ -556,6 +580,26 @@ template< typename MT  // Type of the dense matrix
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
 inline void clear( Column<MT,SO,DF,SF>& column )
+{
+   column.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary column.
+// \ingroup column
+//
+// \param column The temporary column to be cleared.
+// \return void
+//
+// Clearing a column is equivalent to resetting it via the reset() function.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline void clear( Column<MT,SO,DF,SF>&& column )
 {
    column.reset();
 }

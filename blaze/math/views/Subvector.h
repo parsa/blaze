@@ -805,7 +805,13 @@ template< typename VT, bool AF, bool TF, bool DF >
 inline void reset( Subvector<VT,AF,TF,DF>& sv );
 
 template< typename VT, bool AF, bool TF, bool DF >
+inline void reset( Subvector<VT,AF,TF,DF>&& sv );
+
+template< typename VT, bool AF, bool TF, bool DF >
 inline void clear( Subvector<VT,AF,TF,DF>& sv );
+
+template< typename VT, bool AF, bool TF, bool DF >
+inline void clear( Subvector<VT,AF,TF,DF>&& sv );
 
 template< typename VT, bool AF, bool TF, bool DF >
 inline bool isDefault( const Subvector<VT,AF,TF,DF>& sv );
@@ -844,6 +850,24 @@ inline void reset( Subvector<VT,AF,TF,DF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Resetting the given temporary subvector.
+// \ingroup subvector
+//
+// \param sv The temporary subvector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline void reset( Subvector<VT,AF,TF,DF>&& sv )
+{
+   sv.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Clearing the given subvector.
 // \ingroup subvector
 //
@@ -855,6 +879,24 @@ template< typename VT  // Type of the vector
         , bool TF      // Transpose flag
         , bool DF >    // Density flag
 inline void clear( Subvector<VT,AF,TF,DF>& sv )
+{
+   sv.reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary subvector.
+// \ingroup subvector
+//
+// \param sv The temporary subvector to be cleared.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline void clear( Subvector<VT,AF,TF,DF>&& sv )
 {
    sv.reset();
 }
