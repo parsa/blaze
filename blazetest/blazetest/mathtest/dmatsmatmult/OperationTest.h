@@ -3817,10 +3817,10 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
 
          try {
             initResults();
-            dres_   = declsym( olhs_ * rhs );
-            odres_  = declsym( olhs_ * rhs );
-            sres_   = declsym( olhs_ * rhs );
-            osres_  = declsym( olhs_ * rhs );
+            dres_   = declsym( olhs_ * orhs );
+            odres_  = declsym( olhs_ * orhs );
+            sres_   = declsym( olhs_ * orhs );
+            osres_  = declsym( olhs_ * orhs );
             refres_ = declsym( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
@@ -4248,10 +4248,10 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::FalseType )
 
          try {
             initResults();
-            dres_   = declsym( olhs * rhs_ );
-            odres_  = declsym( olhs * rhs_ );
-            sres_   = declsym( olhs * rhs_ );
-            osres_  = declsym( olhs * rhs_ );
+            dres_   = declsym( olhs * orhs_ );
+            odres_  = declsym( olhs * orhs_ );
+            sres_   = declsym( olhs * orhs_ );
+            osres_  = declsym( olhs * orhs_ );
             refres_ = declsym( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
@@ -4679,10 +4679,10 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
 
          try {
             initResults();
-            dres_   = declherm( olhs_ * rhs );
-            odres_  = declherm( olhs_ * rhs );
-            sres_   = declherm( olhs_ * rhs );
-            osres_  = declherm( olhs_ * rhs );
+            dres_   = declherm( olhs_ * orhs );
+            odres_  = declherm( olhs_ * orhs );
+            sres_   = declherm( olhs_ * orhs );
+            osres_  = declherm( olhs_ * orhs );
             refres_ = declherm( reflhs_ * refrhs );
          }
          catch( std::exception& ex ) {
@@ -5110,10 +5110,10 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::FalseType )
 
          try {
             initResults();
-            dres_   = declherm( olhs * rhs_ );
-            odres_  = declherm( olhs * rhs_ );
-            sres_   = declherm( olhs * rhs_ );
-            osres_  = declherm( olhs * rhs_ );
+            dres_   = declherm( olhs * orhs_ );
+            odres_  = declherm( olhs * orhs_ );
+            sres_   = declherm( olhs * orhs_ );
+            osres_  = declherm( olhs * orhs_ );
             refres_ = declherm( reflhs * refrhs_ );
          }
          catch( std::exception& ex ) {
@@ -5554,10 +5554,10 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
 
          try {
             initResults();
-            dres_   = decllow( olhs * rhs );
-            odres_  = decllow( olhs * rhs );
-            sres_   = decllow( olhs * rhs );
-            osres_  = decllow( olhs * rhs );
+            dres_   = decllow( olhs * orhs );
+            odres_  = decllow( olhs * orhs );
+            sres_   = decllow( olhs * orhs );
+            osres_  = decllow( olhs * orhs );
             refres_ = decllow( reflhs * refrhs );
          }
          catch( std::exception& ex ) {
@@ -5998,10 +5998,10 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 
          try {
             initResults();
-            dres_   = declupp( olhs * rhs );
-            odres_  = declupp( olhs * rhs );
-            sres_   = declupp( olhs * rhs );
-            osres_  = declupp( olhs * rhs );
+            dres_   = declupp( olhs * orhs );
+            odres_  = declupp( olhs * orhs );
+            sres_   = declupp( olhs * orhs );
+            osres_  = declupp( olhs * orhs );
             refres_ = declupp( reflhs * refrhs );
          }
          catch( std::exception& ex ) {
@@ -6450,10 +6450,10 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation()
 
          try {
             initResults();
-            dres_   = decldiag( olhs * rhs );
-            odres_  = decldiag( olhs * rhs );
-            sres_   = decldiag( olhs * rhs );
-            osres_  = decldiag( olhs * rhs );
+            dres_   = decldiag( olhs * orhs );
+            odres_  = decldiag( olhs * orhs );
+            sres_   = decldiag( olhs * orhs );
+            osres_  = decldiag( olhs * orhs );
             refres_ = decldiag( reflhs * refrhs );
          }
          catch( std::exception& ex ) {
