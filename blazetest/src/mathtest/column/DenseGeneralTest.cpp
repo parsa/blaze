@@ -5240,10 +5240,10 @@ void DenseGeneralTest::testReset()
    {
       test_ = "Row-major Column::reset()";
 
-      initialize();
-
       // Resetting a single element in column 3
       {
+         initialize();
+
          CT col3 = blaze::column( mat_, 3UL );
          reset( col3[1] );
 
@@ -5265,25 +5265,51 @@ void DenseGeneralTest::testReset()
          }
       }
 
-      // Resetting the 4th column
+      // Resetting the 3rd column (lvalue)
       {
-         CT col4 = blaze::column( mat_, 4UL );
-         reset( col4 );
+         initialize();
 
-         checkSize    ( col4, 4UL );
-         checkCapacity( col4, 4UL );
-         checkNonZeros( col4, 0UL );
+         CT col3 = blaze::column( mat_, 3UL );
+         reset( col3 );
+
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 0UL );
          checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 5UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 4th column (rvalue)
+      {
+         initialize();
+
+         reset( blaze::column( mat_, 4UL ) );
+
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 5UL );
+         checkNonZeros( mat_, 6UL );
+
+         if( mat_(0,4) != 0 || mat_(1,4) != 0 || mat_(2,4) != 0 || mat_(3,4) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 4th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  0 )\n"
+                                        "( 0  1  0  4  0 )\n"
+                                        "( 0  0 -3  5  0 )\n"
+                                        "( 0  0  0 -6  0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5297,10 +5323,10 @@ void DenseGeneralTest::testReset()
    {
       test_ = "Column-major Column::reset()";
 
-      initialize();
-
       // Resetting a single element in column 3
       {
+         initialize();
+
          OCT col3 = blaze::column( tmat_, 3UL );
          reset( col3[1] );
 
@@ -5322,25 +5348,51 @@ void DenseGeneralTest::testReset()
          }
       }
 
-      // Resetting the 4th column
+      // Resetting the 3rd column (lvalue)
       {
-         OCT col4 = blaze::column( tmat_, 4UL );
-         reset( col4 );
+         initialize();
 
-         checkSize    ( col4 , 4UL );
-         checkCapacity( col4 , 4UL );
-         checkNonZeros( col4 , 0UL );
+         OCT col3 = blaze::column( tmat_, 3UL );
+         reset( col3 );
+
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 0UL );
          checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 4th column (rvalue)
+      {
+         initialize();
+
+         reset( blaze::column( tmat_, 4UL ) );
+
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 6UL );
+
+         if( tmat_(0,4) != 0 || tmat_(1,4) != 0 || tmat_(2,4) != 0 || tmat_(3,4) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation of 4th column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  0 )\n"
+                                        "( 0  1  0  4  0 )\n"
+                                        "( 0  0 -3  5  0 )\n"
+                                        "( 0  0  0 -6  0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5370,10 +5422,10 @@ void DenseGeneralTest::testClear()
    {
       test_ = "Row-major clear() function";
 
-      initialize();
-
       // Clearing a single element in column 3
       {
+         initialize();
+
          CT col3 = blaze::column( mat_, 3UL );
          clear( col3[1] );
 
@@ -5394,6 +5446,55 @@ void DenseGeneralTest::testClear()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // Clearing the 3rd column (lvalue)
+      {
+         initialize();
+
+         CT col3 = blaze::column( mat_, 3UL );
+         clear( col3 );
+
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 0UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 5UL );
+         checkNonZeros( mat_, 7UL );
+
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 4th column (rvalue)
+      {
+         initialize();
+
+         clear( blaze::column( mat_, 4UL ) );
+
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 5UL );
+         checkNonZeros( mat_, 6UL );
+
+         if( mat_(0,4) != 0 || mat_(1,4) != 0 || mat_(2,4) != 0 || mat_(3,4) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 4th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  0 )\n"
+                                        "( 0  1  0  4  0 )\n"
+                                        "( 0  0 -3  5  0 )\n"
+                                        "( 0  0  0 -6  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 
 
@@ -5404,10 +5505,10 @@ void DenseGeneralTest::testClear()
    {
       test_ = "Column-major clear() function";
 
-      initialize();
-
       // Clearing a single element in column 3
       {
+         initialize();
+
          OCT col3 = blaze::column( tmat_, 3UL );
          clear( col3[1] );
 
@@ -5425,6 +5526,55 @@ void DenseGeneralTest::testClear()
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 0 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 3rd column (lvalue)
+      {
+         initialize();
+
+         OCT col3 = blaze::column( tmat_, 3UL );
+         clear( col3 );
+
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
+
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 3rd column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Clearing the 4th column (rvalue)
+      {
+         initialize();
+
+         clear( blaze::column( tmat_, 4UL ) );
+
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 6UL );
+
+         if( tmat_(0,4) != 0 || tmat_(1,4) != 0 || tmat_(2,4) != 0 || tmat_(3,4) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation of 4th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << tmat_ << "\n"
+                << "   Expected result:\n( 0  0 -2  0  0 )\n"
+                                        "( 0  1  0  4  0 )\n"
+                                        "( 0  0 -3  5  0 )\n"
+                                        "( 0  0  0 -6  0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
