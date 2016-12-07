@@ -157,7 +157,7 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
-   /*!\brief Iterator over the elements of the sparse matrix transposition expression.
+   /*!\brief Iterator over the elements of the sparse matrix.
    */
    class ConstIterator
    {
@@ -327,6 +327,28 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   //
+   // \param i The row index.
+   // \return Iterator to the first non-zero element of row \a i.
+   */
+   inline ConstIterator begin( size_t i ) const {
+      return ConstIterator( sm_.begin(i) );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   //
+   // \param i The row index.
+   // \return Iterator just past the last non-zero element of row \a i.
+   */
+   inline ConstIterator end( size_t i ) const {
+      return ConstIterator( sm_.end(i) );
+   }
+   //**********************************************************************************************
+
    //**Rows function*******************************************************************************
    /*!\brief Returns the current number of rows of the matrix.
    //
@@ -374,16 +396,6 @@ class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
    // \return The sparse matrix operand.
    */
    inline Operand operand() const noexcept {
-      return sm_;
-   }
-   //**********************************************************************************************
-
-   //**Conversion operator*************************************************************************
-   /*!\brief Conversion to the type of the sparse matrix operand.
-   //
-   // \return The sparse matrix operand.
-   */
-   inline operator Operand() const noexcept {
       return sm_;
    }
    //**********************************************************************************************
