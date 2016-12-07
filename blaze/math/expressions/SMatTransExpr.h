@@ -150,12 +150,12 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransExpr<MT,SO>  This;           //!< Type of this SMatTransExpr instance.
-   typedef TransposeType_<MT>    ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>       TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>      ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>       ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatTransExpr<MT,SO>       This;           //!< Type of this SMatTransExpr instance.
+   typedef TransposeType_<MT>         ResultType;     //!< Result type for expression template evaluations.
+   typedef OppositeType_<ResultType>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef ResultType_<MT>            TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>           ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>            ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef IfTrue_< useAssign, const ResultType, const SMatTransExpr& >  CompositeType;
