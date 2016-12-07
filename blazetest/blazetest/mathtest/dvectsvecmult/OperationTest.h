@@ -1792,7 +1792,162 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
       if( lhs_.size() != rhs_.size() )
          return;
 
-      testCustomOperation( blaze::DeclSym(), "declsym" );
+
+      //=====================================================================================
+      // Test-specific setup of the left-hand side operand
+      //=====================================================================================
+
+      VT1 lhs( lhs_ );
+      reset( lhs );
+
+      RT1 reflhs( lhs );
+
+
+      //=====================================================================================
+      // Test-specific setup of the right-hand side operand
+      //=====================================================================================
+
+      TVT2 rhs( rhs_ );
+      reset( rhs );
+
+      RT2 refrhs( rhs );
+
+
+      //=====================================================================================
+      // Declsym outer product
+      //=====================================================================================
+
+      // Declsym outer product with the given vectors
+      {
+         test_  = "Declsym outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declsym( lhs * rhs );
+            odres_  = declsym( lhs * rhs );
+            sres_   = declsym( lhs * rhs );
+            osres_  = declsym( lhs * rhs );
+            refres_ = declsym( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      /*
+      // Declsym outer product with evaluated vectors
+      {
+         test_  = "Declsym outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declsym( eval( lhs ) * eval( rhs ) );
+            odres_  = declsym( eval( lhs ) * eval( rhs ) );
+            sres_   = declsym( eval( lhs ) * eval( rhs ) );
+            osres_  = declsym( eval( lhs ) * eval( rhs ) );
+            refres_ = declsym( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declsym outer product with addition assignment
+      //=====================================================================================
+
+      // Declsym outer product with addition assignment with the given vectors
+      {
+         test_  = "Declsym outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declsym( lhs * rhs );
+            odres_  += declsym( lhs * rhs );
+            sres_   += declsym( lhs * rhs );
+            osres_  += declsym( lhs * rhs );
+            refres_ += declsym( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declsym outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Declsym outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declsym( eval( lhs ) * eval( rhs ) );
+            odres_  += declsym( eval( lhs ) * eval( rhs ) );
+            sres_   += declsym( eval( lhs ) * eval( rhs ) );
+            osres_  += declsym( eval( lhs ) * eval( rhs ) );
+            refres_ += declsym( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declsym outer product with subtraction assignment
+      //=====================================================================================
+
+      // Declsym outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Declsym outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declsym( lhs * rhs );
+            odres_  -= declsym( lhs * rhs );
+            sres_   -= declsym( lhs * rhs );
+            osres_  -= declsym( lhs * rhs );
+            refres_ -= declsym( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declsym outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Declsym outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declsym( eval( lhs ) * eval( rhs ) );
+            odres_  -= declsym( eval( lhs ) * eval( rhs ) );
+            sres_   -= declsym( eval( lhs ) * eval( rhs ) );
+            osres_  -= declsym( eval( lhs ) * eval( rhs ) );
+            refres_ -= declsym( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+      */
    }
 #endif
 }
@@ -1819,7 +1974,160 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
       if( lhs_.size() != rhs_.size() )
          return;
 
-      testCustomOperation( blaze::DeclHerm(), "declherm" );
+
+      //=====================================================================================
+      // Test-specific setup of the left-hand side operand
+      //=====================================================================================
+
+      VT1 lhs( lhs_ );
+      reset( lhs );
+
+      RT1 reflhs( lhs );
+
+
+      //=====================================================================================
+      // Test-specific setup of the right-hand side operand
+      //=====================================================================================
+
+      TVT2 rhs( rhs_ );
+      reset( rhs );
+
+      RT2 refrhs( rhs );
+
+
+      //=====================================================================================
+      // Declherm outer product
+      //=====================================================================================
+
+      // Declherm outer product with the given vectors
+      {
+         test_  = "Declherm outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declherm( lhs * rhs );
+            odres_  = declherm( lhs * rhs );
+            sres_   = declherm( lhs * rhs );
+            osres_  = declherm( lhs * rhs );
+            refres_ = declherm( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declherm outer product with evaluated vectors
+      {
+         test_  = "Declherm outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declherm( eval( lhs ) * eval( rhs ) );
+            odres_  = declherm( eval( lhs ) * eval( rhs ) );
+            sres_   = declherm( eval( lhs ) * eval( rhs ) );
+            osres_  = declherm( eval( lhs ) * eval( rhs ) );
+            refres_ = declherm( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declherm outer product with addition assignment
+      //=====================================================================================
+
+      // Declherm outer product with addition assignment with the given vectors
+      {
+         test_  = "Declherm outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declherm( lhs * rhs );
+            odres_  += declherm( lhs * rhs );
+            sres_   += declherm( lhs * rhs );
+            osres_  += declherm( lhs * rhs );
+            refres_ += declherm( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declherm outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Declherm outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declherm( eval( lhs ) * eval( rhs ) );
+            odres_  += declherm( eval( lhs ) * eval( rhs ) );
+            sres_   += declherm( eval( lhs ) * eval( rhs ) );
+            osres_  += declherm( eval( lhs ) * eval( rhs ) );
+            refres_ += declherm( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declherm outer product with subtraction assignment
+      //=====================================================================================
+
+      // Declherm outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Declherm outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( lhs * rhs );
+            odres_  -= declherm( lhs * rhs );
+            sres_   -= declherm( lhs * rhs );
+            osres_  -= declherm( lhs * rhs );
+            refres_ -= declherm( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declherm outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Declherm outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declherm( eval( lhs ) * eval( rhs ) );
+            odres_  -= declherm( eval( lhs ) * eval( rhs ) );
+            sres_   -= declherm( eval( lhs ) * eval( rhs ) );
+            osres_  -= declherm( eval( lhs ) * eval( rhs ) );
+            refres_ -= declherm( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -1846,7 +2154,150 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
       if( lhs_.size() != rhs_.size() )
          return;
 
-      testCustomOperation( blaze::DeclLow(), "decllow" );
+
+      //=====================================================================================
+      // Test-specific setup of the right-hand side operand
+      //=====================================================================================
+
+      TVT2 rhs( rhs_ );
+      reset( subvector( rhs, 1UL, rhs.size()-1UL ) );
+
+      RT2 refrhs( rhs );
+
+
+      //=====================================================================================
+      // Decllow outer product
+      //=====================================================================================
+
+      // Decllow outer product with the given vectors
+      {
+         test_  = "Decllow outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = decllow( lhs_ * rhs );
+            odres_  = decllow( lhs_ * rhs );
+            sres_   = decllow( lhs_ * rhs );
+            osres_  = decllow( lhs_ * rhs );
+            refres_ = decllow( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decllow outer product with evaluated vectors
+      {
+         test_  = "Decllow outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = decllow( eval( lhs_ ) * eval( rhs ) );
+            odres_  = decllow( eval( lhs_ ) * eval( rhs ) );
+            sres_   = decllow( eval( lhs_ ) * eval( rhs ) );
+            osres_  = decllow( eval( lhs_ ) * eval( rhs ) );
+            refres_ = decllow( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Decllow outer product with addition assignment
+      //=====================================================================================
+
+      // Decllow outer product with addition assignment with the given vectors
+      {
+         test_  = "Decllow outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += decllow( lhs_ * rhs );
+            odres_  += decllow( lhs_ * rhs );
+            sres_   += decllow( lhs_ * rhs );
+            osres_  += decllow( lhs_ * rhs );
+            refres_ += decllow( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decllow outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Decllow outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += decllow( eval( lhs_ ) * eval( rhs ) );
+            odres_  += decllow( eval( lhs_ ) * eval( rhs ) );
+            sres_   += decllow( eval( lhs_ ) * eval( rhs ) );
+            osres_  += decllow( eval( lhs_ ) * eval( rhs ) );
+            refres_ += decllow( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Decllow outer product with subtraction assignment
+      //=====================================================================================
+
+      // Decllow outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Decllow outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= decllow( lhs_ * rhs );
+            odres_  -= decllow( lhs_ * rhs );
+            sres_   -= decllow( lhs_ * rhs );
+            osres_  -= decllow( lhs_ * rhs );
+            refres_ -= decllow( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decllow outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Decllow outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= decllow( eval( lhs_ ) * eval( rhs ) );
+            odres_  -= decllow( eval( lhs_ ) * eval( rhs ) );
+            sres_   -= decllow( eval( lhs_ ) * eval( rhs ) );
+            osres_  -= decllow( eval( lhs_ ) * eval( rhs ) );
+            refres_ -= decllow( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -1873,7 +2324,150 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
       if( lhs_.size() != rhs_.size() )
          return;
 
-      testCustomOperation( blaze::DeclUpp(), "declupp" );
+
+      //=====================================================================================
+      // Test-specific setup of the left-hand side operand
+      //=====================================================================================
+
+      VT1 lhs( lhs_ );
+      reset( subvector( lhs, 1UL, lhs.size()-1UL ) );
+
+      RT1 reflhs( lhs );
+
+
+      //=====================================================================================
+      // Declupp outer product
+      //=====================================================================================
+
+      // Declupp outer product with the given vectors
+      {
+         test_  = "Declupp outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declupp( lhs * rhs_ );
+            odres_  = declupp( lhs * rhs_ );
+            sres_   = declupp( lhs * rhs_ );
+            osres_  = declupp( lhs * rhs_ );
+            refres_ = declupp( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declupp outer product with evaluated vectors
+      {
+         test_  = "Declupp outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = declupp( eval( lhs ) * eval( rhs_ ) );
+            odres_  = declupp( eval( lhs ) * eval( rhs_ ) );
+            sres_   = declupp( eval( lhs ) * eval( rhs_ ) );
+            osres_  = declupp( eval( lhs ) * eval( rhs_ ) );
+            refres_ = declupp( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declupp outer product with addition assignment
+      //=====================================================================================
+
+      // Declupp outer product with addition assignment with the given vectors
+      {
+         test_  = "Declupp outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declupp( lhs * rhs_ );
+            odres_  += declupp( lhs * rhs_ );
+            sres_   += declupp( lhs * rhs_ );
+            osres_  += declupp( lhs * rhs_ );
+            refres_ += declupp( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declupp outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Declupp outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += declupp( eval( lhs ) * eval( rhs_ ) );
+            odres_  += declupp( eval( lhs ) * eval( rhs_ ) );
+            sres_   += declupp( eval( lhs ) * eval( rhs_ ) );
+            osres_  += declupp( eval( lhs ) * eval( rhs_ ) );
+            refres_ += declupp( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Declupp outer product with subtraction assignment
+      //=====================================================================================
+
+      // Declupp outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Declupp outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declupp( lhs * rhs_ );
+            odres_  -= declupp( lhs * rhs_ );
+            sres_   -= declupp( lhs * rhs_ );
+            osres_  -= declupp( lhs * rhs_ );
+            refres_ -= declupp( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declupp outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Declupp outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= declupp( eval( lhs ) * eval( rhs_ ) );
+            odres_  -= declupp( eval( lhs ) * eval( rhs_ ) );
+            sres_   -= declupp( eval( lhs ) * eval( rhs_ ) );
+            osres_  -= declupp( eval( lhs ) * eval( rhs_ ) );
+            refres_ -= declupp( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -1900,7 +2494,160 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation()
       if( lhs_.size() != rhs_.size() )
          return;
 
-      testCustomOperation( blaze::DeclDiag(), "decldiag" );
+
+      //=====================================================================================
+      // Test-specific setup of the left-hand side operand
+      //=====================================================================================
+
+      VT1 lhs( lhs_ );
+      reset( lhs );
+
+      RT1 reflhs( lhs );
+
+
+      //=====================================================================================
+      // Test-specific setup of the right-hand side operand
+      //=====================================================================================
+
+      TVT2 rhs( rhs_ );
+      reset( rhs );
+
+      RT2 refrhs( rhs );
+
+
+      //=====================================================================================
+      // Decldiag outer product
+      //=====================================================================================
+
+      // Decldiag outer product with the given vectors
+      {
+         test_  = "Decldiag outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = decldiag( lhs * rhs );
+            odres_  = decldiag( lhs * rhs );
+            sres_   = decldiag( lhs * rhs );
+            osres_  = decldiag( lhs * rhs );
+            refres_ = decldiag( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decldiag outer product with evaluated vectors
+      {
+         test_  = "Decldiag outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = decldiag( eval( lhs ) * eval( rhs ) );
+            odres_  = decldiag( eval( lhs ) * eval( rhs ) );
+            sres_   = decldiag( eval( lhs ) * eval( rhs ) );
+            osres_  = decldiag( eval( lhs ) * eval( rhs ) );
+            refres_ = decldiag( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Decldiag outer product with addition assignment
+      //=====================================================================================
+
+      // Decldiag outer product with addition assignment with the given vectors
+      {
+         test_  = "Decldiag outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += decldiag( lhs * rhs );
+            odres_  += decldiag( lhs * rhs );
+            sres_   += decldiag( lhs * rhs );
+            osres_  += decldiag( lhs * rhs );
+            refres_ += decldiag( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decldiag outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Decldiag outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += decldiag( eval( lhs ) * eval( rhs ) );
+            odres_  += decldiag( eval( lhs ) * eval( rhs ) );
+            sres_   += decldiag( eval( lhs ) * eval( rhs ) );
+            osres_  += decldiag( eval( lhs ) * eval( rhs ) );
+            refres_ += decldiag( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Decldiag outer product with subtraction assignment
+      //=====================================================================================
+
+      // Decldiag outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Decldiag outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= decldiag( lhs * rhs );
+            odres_  -= decldiag( lhs * rhs );
+            sres_   -= decldiag( lhs * rhs );
+            osres_  -= decldiag( lhs * rhs );
+            refres_ -= decldiag( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decldiag outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Decldiag outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= decldiag( eval( lhs ) * eval( rhs ) );
+            odres_  -= decldiag( eval( lhs ) * eval( rhs ) );
+            sres_   -= decldiag( eval( lhs ) * eval( rhs ) );
+            osres_  -= decldiag( eval( lhs ) * eval( rhs ) );
+            refres_ -= decldiag( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
