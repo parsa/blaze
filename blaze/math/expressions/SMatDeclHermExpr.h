@@ -42,9 +42,10 @@
 
 #include <iterator>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/Hermitian.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DeclHermExpr.h>
@@ -878,6 +879,7 @@ class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
