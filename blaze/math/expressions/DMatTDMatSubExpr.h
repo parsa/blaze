@@ -53,6 +53,12 @@
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DeclDiagExprTrait.h>
+#include <blaze/math/traits/DeclLowExprTrait.h>
+#include <blaze/math/traits/DeclUppExprTrait.h>
+#include <blaze/math/traits/DMatDeclDiagExprTrait.h>
+#include <blaze/math/traits/DMatDeclLowExprTrait.h>
+#include <blaze/math/traits/DMatDeclUppExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -884,6 +890,128 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 
 //=================================================================================================
 //
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-lower matrix subtraction expression as lower.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix subtraction expression.
+// \return The redeclared matrix subtraction expression.
+// \exception std::invalid_argument Invalid lower matrix specification.
+//
+// The \a decllow function declares the given non-lower matrix subtraction expression
+// \a dm as lower. The function returns an expression representing the operation. In case
+// the given expression does not represent a square matrix, a \a std::invalid_argument
+// exception is thrown.\n
+// The following example demonstrates the use of the \a decllow function:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,columnMajor> B;
+   // ... Resizing and initialization
+   C = decllow( A - B );
+   \endcode
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline const DeclLowExprTrait_< DMatTDMatSubExpr<MT1,MT2> >
+   decllow( const DMatTDMatSubExpr<MT1,MT2>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return decllow( dm.leftOperand() ) - decllow( dm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-upper matrix subtraction expression as upper.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix subtraction expression.
+// \return The redeclared matrix subtraction expression.
+// \exception std::invalid_argument Invalid upper matrix specification.
+//
+// The \a declupp function declares the given non-upper matrix subtraction expression
+// \a dm as upper. The function returns an expression representing the operation. In case
+// the given expression does not represent a square matrix, a \a std::invalid_argument
+// exception is thrown.\n
+// The following example demonstrates the use of the \a declupp function:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,columnMajor> B;
+   // ... Resizing and initialization
+   C = declupp( A - B );
+   \endcode
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline const DeclUppExprTrait_< DMatTDMatSubExpr<MT1,MT2> >
+   declupp( const DMatTDMatSubExpr<MT1,MT2>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return declupp( dm.leftOperand() ) - declupp( dm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-diagonal matrix subtraction expression as diagonal.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix subtraction expression.
+// \return The redeclared matrix subtraction expression.
+// \exception std::invalid_argument Invalid diagonal matrix specification.
+//
+// The \a decldiag function declares the given non-diagonal matrix subtraction expression
+// \a dm as diagonal. The function returns an expression representing the operation. In case
+// the given expression does not represent a square matrix, a \a std::invalid_argument
+// exception is thrown.\n
+// The following example demonstrates the use of the \a decldiag function:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,columnMajor> B;
+   // ... Resizing and initialization
+   C = decldiag( A - B );
+   \endcode
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline const DeclDiagExprTrait_< DMatTDMatSubExpr<MT1,MT2> >
+   decldiag( const DMatTDMatSubExpr<MT1,MT2>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return decldiag( dm.leftOperand() ) - decldiag( dm.rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
@@ -1217,6 +1345,48 @@ struct IsStrictlyUpper< DMatTDMatSubExpr<MT1,MT2> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct DMatDeclLowExprTrait< DMatTDMatSubExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = SubExprTrait_< DeclLowExprTrait_<MT1>, DeclLowExprTrait_<MT2> >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct DMatDeclUppExprTrait< DMatTDMatSubExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = SubExprTrait_< DeclUppExprTrait_<MT1>, DeclUppExprTrait_<MT2> >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct DMatDeclDiagExprTrait< DMatTDMatSubExpr<MT1,MT2> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = SubExprTrait_< DeclDiagExprTrait_<MT1>, DeclDiagExprTrait_<MT2> >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
