@@ -298,7 +298,7 @@ inline SubmatrixExprTrait_<MT,unaligned>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline SubmatrixExprTrait_<MT,unaligned>
+inline const SubmatrixExprTrait_<const MT,unaligned>
    submatrix( const Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -541,8 +541,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                     , SubmatrixExprTrait_<MT,AF> >
+inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
+                           , SubmatrixExprTrait_<const MT,AF> >
    submatrix( const Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;

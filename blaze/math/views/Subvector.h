@@ -274,7 +274,7 @@ inline SubvectorExprTrait_<VT,unaligned>
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline SubvectorExprTrait_<VT,unaligned>
+inline const SubvectorExprTrait_<const VT,unaligned>
    subvector( const Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
@@ -504,7 +504,7 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<VT,AF> >
+inline const DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<const VT,AF> >
    subvector( const Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
