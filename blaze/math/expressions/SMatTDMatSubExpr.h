@@ -651,6 +651,70 @@ inline const SMatTDMatSubExpr<T1,T2>
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for the addition of a sparse matrix-transpose dense matrix
+//        subtraction expression and a dense matrix (\f$ A=(B-C)+D \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side sparse matrix-transpose dense matrix subtraction.
+// \param rhs The right-hand side dense matrix.
+// \return The sum of the two matrices.
+//
+// This operator implements a performance optimized treatment of the addition of a sparse
+// matrix-transpose dense matrix subtraction expression to a dense matrix.
+*/
+template< typename T1  // Type of the sparse matrix of the left-hand side expression
+        , typename T2  // Type of the dense matrix of the left-hand side expression
+        , typename T3  // Type of the right-hand side dense matrix
+        , bool SO >    // Storage order of the right-hand side dense matrix
+inline const AddExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
+   operator+( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ( (~rhs) - lhs.rightOperand() ) + lhs.leftOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction operator for the subtraction of a sparse matrix-dense matrix subtraction
+//        expression and a dense matrix (\f$ A=(B-C)-D \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side sparse matrix-dense matrix subtraction.
+// \param rhs The right-hand side dense matrix.
+// \return The difference of the two matrices.
+//
+// This operator implements a performance optimized treatment of the subtraction of a sparse
+// matrix-dense matrix subtraction expression and a dense matrix.
+*/
+template< typename T1  // Type of the sparse matrix of the left-hand side expression
+        , typename T2  // Type of the dense matrix of the left-hand side expression
+        , typename T3  // Type of the right-hand side dense matrix
+        , bool SO >    // Storage order of the right-hand side dense matrix
+inline const SubExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
+   operator-( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
@@ -767,70 +831,6 @@ inline const DeclDiagExprTrait_< SMatTDMatSubExpr<MT1,MT2> >
    BLAZE_FUNCTION_TRACE;
 
    return decldiag( dm.leftOperand() ) - decldiag( dm.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a sparse matrix-transpose dense matrix
-//        subtraction expression and a dense matrix (\f$ A=(B-C)+D \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side sparse matrix-transpose dense matrix subtraction.
-// \param rhs The right-hand side dense matrix.
-// \return The sum of the two matrices.
-//
-// This operator implements a performance optimized treatment of the addition of a sparse
-// matrix-transpose dense matrix subtraction expression to a dense matrix.
-*/
-template< typename T1  // Type of the sparse matrix of the left-hand side expression
-        , typename T2  // Type of the dense matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const AddExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
-   operator+( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~rhs) - lhs.rightOperand() ) + lhs.leftOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a sparse matrix-dense matrix subtraction
-//        expression and a dense matrix (\f$ A=(B-C)-D \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side sparse matrix-dense matrix subtraction.
-// \param rhs The right-hand side dense matrix.
-// \return The difference of the two matrices.
-//
-// This operator implements a performance optimized treatment of the subtraction of a sparse
-// matrix-dense matrix subtraction expression and a dense matrix.
-*/
-template< typename T1  // Type of the sparse matrix of the left-hand side expression
-        , typename T2  // Type of the dense matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
-   operator-( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) );
 }
 /*! \endcond */
 //*************************************************************************************************
