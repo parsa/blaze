@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
-#include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
 #include <blaze/math/views/row/Sparse.h>
@@ -78,7 +77,6 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
@@ -202,37 +200,6 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    row( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a row on a temporary matrix" );
-
-   return RowExprTrait_<MT>( ~matrix, index );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific row of the given temporary constant matrix.
-// \ingroup views
-//
-// \param matrix The temporary constant matrix containing the row.
-// \param index The index of the row.
-// \return View on the specified row of the matrix.
-// \exception std::invalid_argument Invalid row access index.
-//
-// This function returns an expression representing the specified row of the given temporary
-// constant matrix. In case the row is not properly specified (i.e. if the specified index
-// is greater than or equal to the total number of the rows in the given matrix) a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                       , RowExprTrait_<const MT> >
-   row( const Matrix<MT,SO>&& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a row on a temporary matrix" );
 
    return RowExprTrait_<MT>( ~matrix, index );
 }

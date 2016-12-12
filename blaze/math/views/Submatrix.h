@@ -81,7 +81,6 @@
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
-#include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/Dense.h>
 #include <blaze/math/views/submatrix/Sparse.h>
@@ -91,7 +90,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -270,40 +268,6 @@ inline SubmatrixExprTrait_<MT,unaligned>
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a submatrix on a temporary matrix" );
-
-   return submatrix<unaligned>( ~matrix, row, column, m, n );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific submatrix of the given temporary constant matrix.
-// \ingroup views
-//
-// \param matrix The temporary constant matrix containing the submatrix.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specific submatrix of the matrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing the specified submatrix of the given
-// temporary constant matrix. In case the submatrix is not properly specified (i.e. if the
-// specified row or column is greater than the total number of rows or columns of the given
-// matrix or the submatrix is specified beyond the number of rows or columns of the matrix)
-// a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline const SubmatrixExprTrait_<const MT,unaligned>
-   submatrix( const Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a submatrix on a temporary matrix" );
 
    return submatrix<unaligned>( ~matrix, row, column, m, n );
 }
@@ -511,43 +475,6 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a submatrix on a temporary matrix" );
-
-   return SubmatrixExprTrait_<MT,AF>( ~matrix, row, column, m, n );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific submatrix of the given temporary constant matrix.
-// \ingroup views
-//
-// \param matrix The temporary constant matrix containing the submatrix.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specific submatrix of the matrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing an aligned or unaligned submatrix of the
-// given temporary constant dense or sparse matrix, based on the specified alignment flag \a AF.
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) or any alignment restrictions are
-// violated, a \a std::invalid_argument exception is thrown.
-*/
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                           , SubmatrixExprTrait_<const MT,AF> >
-   submatrix( const Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a submatrix on a temporary matrix" );
 
    return SubmatrixExprTrait_<MT,AF>( ~matrix, row, column, m, n );
 }

@@ -69,7 +69,6 @@
 #include <blaze/math/typetraits/IsVecVecDivExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
-#include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
@@ -78,7 +77,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -249,37 +247,6 @@ inline SubvectorExprTrait_<VT,unaligned>
    subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<VT>::value, "Invalid setup of a subvector on a temporary vector" );
-
-   return subvector<unaligned>( ~vector, index, size );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given temporary constant vector.
-// \ingroup views
-//
-// \param vector The temporary constant vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing the specified subvector of the given
-// temporary constant vector. In case the subvector is not properly specified (i.e. if the
-// specified first index is greater than the total size of the given vector or the subvector
-// is specified beyond the size of the vector) a \a std::invalid_argument exception is thrown.
-*/
-template< typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const SubvectorExprTrait_<const VT,unaligned>
-   subvector( const Vector<VT,TF>&& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<VT>::value, "Invalid setup of a subvector on a temporary vector" );
 
    return subvector<unaligned>( ~vector, index, size );
 }
@@ -477,41 +444,7 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( IsView<VT>::value, "Invalid setup of a subvector on a temporary vector" );
-
    return SubvectorExprTrait_<VT,AF>( ~vector, index, size );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific subvector of the given temporary constant vector.
-// \ingroup views
-//
-// \param vector The temporary constant vector containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specific subvector of the vector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// This function returns an expression representing an aligned or unaligned subvector of the
-// given temporary constant dense or sparse vector, based on the specified alignment flag \a AF.
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) or any alignment restrictions are violated, a \a std::invalid_argument exception is
-// thrown.
-*/
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline const DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<const VT,AF> >
-   subvector( const Vector<VT,TF>&& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<VT>::value, "Invalid setup of a subvector on a temporary vector" );
-
-   return SubvectorExprTrait_<const VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 

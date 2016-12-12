@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
-#include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/column/Dense.h>
 #include <blaze/math/views/column/Sparse.h>
@@ -78,7 +77,6 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
@@ -202,37 +200,6 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    column( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a column on a temporary matrix" );
-
-   return ColumnExprTrait_<MT>( ~matrix, index );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Creating a view on a specific column of the given temporary constant matrix.
-// \ingroup views
-//
-// \param matrix The temporary constant matrix containing the column.
-// \param index The index of the column.
-// \return View on the specified column of the matrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified column of the given temporary
-// constant matrix. In case the column is not properly specified (i.e. if the specified index
-// is greater than or equal to the total number of the columns in the given matrix) a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                       , ColumnExprTrait_<const MT> >
-   column( const Matrix<MT,SO>&& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( IsView<MT>::value, "Invalid setup of a column on a temporary matrix" );
 
    return ColumnExprTrait_<MT>( ~matrix, index );
 }
