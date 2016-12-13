@@ -54,7 +54,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MCaMCa'..." << std::endl;
+   std::cout << "   Running 'MCaMCb'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
