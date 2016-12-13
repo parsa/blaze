@@ -1136,10 +1136,10 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
                const size_t i1( element->index() );
 
                const size_t jbegin( ( IsUpper<MT5>::value )
-                                    ?( ( SYM || HERM || UPP )
+                                    ?( ( UPP )
                                        ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                        :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
-                                    :( SYM || HERM || UPP ? max(i1,jj) : jj ) );
+                                    :( UPP ? max(i1,jj) : jj ) );
                const size_t jend( ( IsLower<MT5>::value )
                                   ?( ( LOW )
                                      ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
@@ -1506,10 +1506,10 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
                const size_t i1( element->index() );
 
                const size_t jbegin( ( IsUpper<MT5>::value )
-                                    ?( ( SYM || HERM || UPP )
+                                    ?( ( UPP )
                                        ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
                                        :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
-                                    :( SYM || HERM || UPP ? max(i1,jj) : jj ) );
+                                    :( UPP ? max(i1,jj) : jj ) );
                const size_t jend( ( IsLower<MT5>::value )
                                   ?( ( LOW )
                                      ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
