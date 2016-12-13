@@ -57,7 +57,9 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -66,6 +68,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blazetest/system/LAPACK.h>
@@ -184,9 +187,12 @@ class OperationTest
                           void testDeclSymOperation  ( blaze::FalseType );
                           void testDeclHermOperation ( blaze::TrueType  );
                           void testDeclHermOperation ( blaze::FalseType );
-                          void testDeclLowOperation  ();
-                          void testDeclUppOperation  ();
-                          void testDeclDiagOperation ();
+                          void testDeclLowOperation  ( blaze::TrueType  );
+                          void testDeclLowOperation  ( blaze::FalseType );
+                          void testDeclUppOperation  ( blaze::TrueType  );
+                          void testDeclUppOperation  ( blaze::FalseType );
+                          void testDeclDiagOperation ( blaze::TrueType  );
+                          void testDeclDiagOperation ( blaze::FalseType );
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -376,9 +382,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation( blaze::IsSame< blaze::LowType_<ET1,ET2>, ET1 >() );
    testDeclHermOperation( blaze::IsSame< blaze::LowType_<ET1,ET2>, ET1 >() );
-   testDeclLowOperation();
-   testDeclUppOperation();
-   testDeclDiagOperation();
+   testDeclLowOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclUppOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclDiagOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -5456,7 +5462,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::FalseType )
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testDeclLowOperation()
+void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
@@ -5889,6 +5895,21 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the lower sparse matrix/dense matrix multiplication.
+//
+// \return void
+//
+// This function is called in case the lower matrix/matrix multiplication operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the upper sparse matrix/dense matrix multiplication.
 //
 // \return void
@@ -5900,7 +5921,7 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testDeclUppOperation()
+void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
@@ -6333,6 +6354,21 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the upper sparse matrix/dense matrix multiplication.
+//
+// \return void
+//
+// This function is called in case the upper matrix/matrix multiplication operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the diagonal sparse matrix/dense matrix multiplication.
 //
 // \return void
@@ -6344,7 +6380,7 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testDeclDiagOperation()
+void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
@@ -6781,6 +6817,21 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the diagonal sparse matrix/dense matrix multiplication.
+//
+// \return void
+//
+// This function is called in case the diagonal matrix/matrix multiplication operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
