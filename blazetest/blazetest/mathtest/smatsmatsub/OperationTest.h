@@ -57,7 +57,9 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -65,7 +67,10 @@
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -177,11 +182,16 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testDeclSymOperation  ();
-                          void testDeclHermOperation ();
-                          void testDeclLowOperation  ();
-                          void testDeclUppOperation  ();
-                          void testDeclDiagOperation ();
+                          void testDeclSymOperation  ( blaze::TrueType  );
+                          void testDeclSymOperation  ( blaze::FalseType );
+                          void testDeclHermOperation ( blaze::TrueType  );
+                          void testDeclHermOperation ( blaze::FalseType );
+                          void testDeclLowOperation  ( blaze::TrueType  );
+                          void testDeclLowOperation  ( blaze::FalseType );
+                          void testDeclUppOperation  ( blaze::TrueType  );
+                          void testDeclUppOperation  ( blaze::FalseType );
+                          void testDeclDiagOperation ( blaze::TrueType  );
+                          void testDeclDiagOperation ( blaze::FalseType );
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -368,11 +378,11 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation();
-   testDeclHermOperation();
-   testDeclLowOperation();
-   testDeclUppOperation();
-   testDeclDiagOperation();
+   testDeclSymOperation( blaze::Or< blaze::IsSquare<SRE>, blaze::IsResizable<SRE> >() );
+   testDeclHermOperation( blaze::Or< blaze::IsSquare<SRE>, blaze::IsResizable<SRE> >() );
+   testDeclLowOperation( blaze::Or< blaze::IsSquare<SRE>, blaze::IsResizable<SRE> >() );
+   testDeclUppOperation( blaze::Or< blaze::IsSquare<SRE>, blaze::IsResizable<SRE> >() );
+   testDeclDiagOperation( blaze::Or< blaze::IsSquare<SRE>, blaze::IsResizable<SRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -3704,7 +3714,7 @@ void OperationTest<MT1,MT2>::testSerialOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testDeclSymOperation()
+void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
@@ -4127,6 +4137,21 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the symmetric sparse matrix/sparse matrix subtraction.
+//
+// \return void
+//
+// This function is called in case the symmetric matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the Hermitian sparse matrix/sparse matrix subtraction.
 //
 // \return void
@@ -4138,7 +4163,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testDeclHermOperation()
+void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
@@ -4561,6 +4586,21 @@ void OperationTest<MT1,MT2>::testDeclHermOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the Hermitian sparse matrix/sparse matrix subtraction.
+//
+// \return void
+//
+// This function is called in case the Hermitian matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the lower sparse matrix/sparse matrix subtraction.
 //
 // \return void
@@ -4572,7 +4612,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testDeclLowOperation()
+void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
@@ -5005,6 +5045,21 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the lower sparse matrix/sparse matrix subtraction.
+//
+// \return void
+//
+// This function is called in case the lower matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the upper sparse matrix/sparse matrix subtraction.
 //
 // \return void
@@ -5016,7 +5071,7 @@ void OperationTest<MT1,MT2>::testDeclLowOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testDeclUppOperation()
+void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
@@ -5449,6 +5504,21 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the upper sparse matrix/sparse matrix subtraction.
+//
+// \return void
+//
+// This function is called in case the upper matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the diagonal sparse matrix/sparse matrix subtraction.
 //
 // \return void
@@ -5460,7 +5530,7 @@ void OperationTest<MT1,MT2>::testDeclUppOperation()
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testDeclDiagOperation()
+void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
@@ -5897,6 +5967,21 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the diagonal sparse matrix/sparse matrix subtraction.
+//
+// \return void
+//
+// This function is called in case the diagonal matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
