@@ -3731,14 +3731,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
       // Test-specific setup of the left-hand side operand
       //=====================================================================================
 
-      MT1 lhs( lhs_ );
-
-      for( size_t i=1UL; i<lhs.rows(); ++i ) {
-         for( size_t j=0UL; j<i; ++j ) {
-            lhs(i,j) = lhs(j,i);
-         }
-      }
-
+      MT1  lhs   ( lhs_ * trans( lhs_ ) );
       OMT1 olhs  ( lhs );
       RT1  reflhs( lhs );
 
@@ -3747,14 +3740,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
       // Test-specific setup of the right-hand side operand
       //=====================================================================================
 
-      MT2 rhs( rhs_ );
-
-      for( size_t i=1UL; i<rhs.rows(); ++i ) {
-         for( size_t j=0UL; j<i; ++j ) {
-            rhs(i,j) = rhs(j,i);
-         }
-      }
-
+      MT2  rhs   ( rhs_ * trans( rhs_ ) );
       OMT2 orhs  ( rhs );
       RT2  refrhs( rhs );
 
@@ -4203,7 +4189,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
       // Test-specific setup of the right-hand side operand
       //=====================================================================================
 
-      MT2  rhs   ( rhs_ * ctrans( lhs_ ) );
+      MT2  rhs   ( rhs_ * ctrans( rhs_ ) );
       OMT2 orhs  ( rhs );
       RT2  refrhs( rhs );
 
