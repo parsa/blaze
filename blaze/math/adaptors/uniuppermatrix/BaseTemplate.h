@@ -463,15 +463,19 @@ namespace blaze {
    DynamicMatrix<double,rowMajor> G( 3, 3 );     // Initialized as strictly upper matrix
    CompressedMatrix<double,rowMajor> H( 3, 3 );  // Initialized as strictly upper matrix
 
-   E = A + B;     // Matrix addition and assignment to a row-major uniupper matrix
-   F = A - C;     // Matrix subtraction and assignment to a column-major uniupper matrix
-   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
+   E = A + B;     // Matrix addition and assignment to a row-major uniupper matrix (includes runtime check)
+   F = A - C;     // Matrix subtraction and assignment to a column-major uniupper matrix (only compile time check)
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
    E += G;      // Addition assignment (note that G is a strictly upper matrix)
    F -= H;      // Subtraction assignment (note that H is a strictly upper matrix)
-   F *= A * D;  // Multiplication assignment
+   F *= A * D;  // Multiplication assignment (includes runtime check)
    \endcode
 
+// Note that it is possible to assign any kind of matrix to an uniupper matrix. In case the matrix
+// to be assigned is not uniupper at compile time, a runtime check is performed.
+//
+//
 // \n \section uniuppermatrix_performance Performance Considerations
 //
 // The \b Blaze library tries to exploit the properties of upper (uni-)triangular matrices whenever

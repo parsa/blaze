@@ -412,19 +412,23 @@ namespace blaze {
    StrictlyUpperMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
    StrictlyUpperMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
 
-   E = A + B;   // Matrix addition and assignment to a row-major strictly upper matrix
-   F = A - C;   // Matrix subtraction and assignment to a column-major strictly upper matrix
-   F = A * D;   // Matrix multiplication between a dense and a sparse matrix
+   E = A + B;   // Matrix addition and assignment to a row-major strictly upper matrix (includes runtime check)
+   F = A - C;   // Matrix subtraction and assignment to a column-major strictly upper matrix (only compile time check)
+   F = A * D;   // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
    C *= 2.0;      // In-place scaling of matrix C
-   E  = 2.0 * B;  // Scaling of matrix B
-   F  = C * 2.0;  // Scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B (includes runtime check)
+   F  = C * 2.0;  // Scaling of matrix C (only compile time check)
 
-   E += A - B;  // Addition assignment
-   F -= C + D;  // Subtraction assignment
-   F *= A * D;  // Multiplication assignment
+   E += A - B;  // Addition assignment (includes runtime check)
+   F -= C + D;  // Subtraction assignment (only compile time check)
+   F *= A * D;  // Multiplication assignment (includes runtime check)
    \endcode
 
+// Note that it is possible to assign any kind of matrix to a strictly upper matrix. In case the
+// matrix to be assigned is not strictly upper at compile time, a runtime check is performed.
+//
+//
 // \n \section strictlyuppermatrix_block_structured Block-Structured Strictly Upper Matrices
 //
 // It is also possible to use block-structured strictly upper matrices:

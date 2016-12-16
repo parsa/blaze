@@ -458,19 +458,23 @@ namespace blaze {
    HermitianMatrix< HybridMatrix<cplx,3UL,3UL,rowMajor> > E;
    HermitianMatrix< StaticMatrix<cplx,3UL,3UL,columnMajor> > F;
 
-   E = A + B;     // Matrix addition and assignment to a row-major Hermitian matrix
-   F = C - D;     // Matrix subtraction and assignment to a column-major Hermitian matrix
-   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
+   E = A + B;     // Matrix addition and assignment to a row-major Hermitian matrix (includes runtime check)
+   F = C - D;     // Matrix subtraction and assignment to a column-major Hermitian matrix (only compile time check)
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
    C *= 2.0;      // In-place scaling of matrix C
-   E  = 2.0 * B;  // Scaling of matrix B
-   F  = C * 2.0;  // Scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B (includes runtime check)
+   F  = C * 2.0;  // Scaling of matrix C (only compile time check)
 
-   E += A - B;    // Addition assignment
-   F -= C + D;    // Subtraction assignment
-   F *= A * D;    // Multiplication assignment
+   E += A - B;    // Addition assignment (includes runtime check)
+   F -= C + D;    // Subtraction assignment (only compile time check)
+   F *= A * D;    // Multiplication assignment (includes runtime check)
    \endcode
 
+// Note that it is possible to assign any kind of matrix to a Hermitian matrix. In case the matrix
+// to be assigned is not Hermitian at compile time, a runtime check is performed.
+//
+//
 // \n \section hermitianmatrix_performance Performance Considerations
 //
 // When the Hermitian property of a matrix is known beforehands using the HermitianMatrix adaptor
