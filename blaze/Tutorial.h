@@ -4560,29 +4560,38 @@
    \code
    using blaze::SymmetricMatrix;
    using blaze::DynamicMatrix;
+   using blaze::HybridMatrix;
    using blaze::StaticMatrix;
    using blaze::CompressedMatrix;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   CompressedMatrix<float> E( 3, 3 );  // Empty row-major sparse single precision 3x3 matrix
+   DynamicMatrix<double,rowMajor> A( 3, 3 );
+   CompressedMatrix<double,rowMajor> B( 3, 3 );
 
-   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > F;
-   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > G;
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( 3 );
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
 
-   F = A + B;     // Matrix addition and assignment to a row-major symmetric matrix
-   G = A - C;     // Matrix subtraction and assignment to a column-major symmetric matrix
-   G = A * E;     // Matrix multiplication between a dense and a sparse matrix
+   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
+   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
 
-   A *= 2.0;      // In-place scaling of matrix A
-   F  = 2.0 * B;  // Scaling of matrix B
-   G  = E * 2.0;  // Scaling of matrix E
+   E = A + B;     // Matrix addition and assignment to a row-major symmetric matrix (includes runtime check)
+   F = C - D;     // Matrix subtraction and assignment to a column-major symmetric matrix (only compile time check)
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
-   F += A - B;    // Addition assignment
-   G -= A + C;    // Subtraction assignment
-   G *= A * E;    // Multiplication assignment
+   C *= 2.0;      // In-place scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B (includes runtime check)
+   F  = C * 2.0;  // Scaling of matrix C (only compile time check)
+
+   E += A - B;    // Addition assignment (includes runtime check)
+   F -= C + D;    // Subtraction assignment (only compile time check)
+   F *= A * D;    // Multiplication assignment (includes runtime check)
    \endcode
 
+// Note that it is possible to assign any kind of matrix to a symmetric matrix. In case the matrix
+// to be assigned is not symmetric at compile time, a runtime check is performed.
+//
+//
 // \n \section adaptors_symmetric_matrices_block_matrices Symmetric Block Matrices
 // <hr>
 //
@@ -5170,19 +5179,23 @@
    HermitianMatrix< HybridMatrix<cplx,3UL,3UL,rowMajor> > E;
    HermitianMatrix< StaticMatrix<cplx,3UL,3UL,columnMajor> > F;
 
-   E = A + B;     // Matrix addition and assignment to a row-major Hermitian matrix
-   F = C - D;     // Matrix subtraction and assignment to a column-major Hermitian matrix
-   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
+   E = A + B;     // Matrix addition and assignment to a row-major Hermitian matrix (includes runtime check)
+   F = C - D;     // Matrix subtraction and assignment to a column-major Hermitian matrix (only compile time check)
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
    C *= 2.0;      // In-place scaling of matrix C
-   E  = 2.0 * B;  // Scaling of matrix B
-   F  = C * 2.0;  // Scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B (includes runtime check)
+   F  = C * 2.0;  // Scaling of matrix C (only compile time check)
 
-   E += A - B;    // Addition assignment
-   F -= C + D;    // Subtraction assignment
-   F *= A * D;    // Multiplication assignment
+   E += A - B;    // Addition assignment (includes runtime check)
+   F -= C + D;    // Subtraction assignment (only compile time check)
+   F *= A * D;    // Multiplication assignment (includes runtime check)
    \endcode
 
+// Note that it is possible to assign any kind of matrix to a Hermitian matrix. In case the matrix
+// to be assigned is not Hermitian at compile time, a runtime check is performed.
+//
+//
 // \n \section adaptors_hermitian_matrices_performance Performance Considerations
 // <hr>
 //
@@ -6089,7 +6102,7 @@
 // A lower and upper triangular matrix can participate in numerical operations in any way any other
 // dense or sparse matrix can participate. It can also be combined with any other dense or sparse
 // vector or matrix. The following code example gives an impression of the use of blaze::LowerMatrix
-// and blaze::UpperMatrix within arithmetic operations:
+// within arithmetic operations:
 
    \code
    using blaze::LowerMatrix;
@@ -6104,26 +6117,29 @@
    CompressedMatrix<double,rowMajor> B( 3, 3 );
 
    LowerMatrix< DynamicMatrix<double,rowMajor> > C( 3 );
-   UpperMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
+   LowerMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
 
    LowerMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
-   UpperMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
+   LowerMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
 
-   E = A + B;     // Matrix addition and assignment to a row-major lower matrix
-   F = C - D;     // Matrix subtraction and assignment to a column-major upper matrix
-   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
+   E = A + B;     // Matrix addition and assignment to a row-major lower matrix (includes runtime check)
+   F = C - D;     // Matrix subtraction and assignment to a column-major lower matrix (only compile time check)
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix (includes runtime check)
 
    C *= 2.0;      // In-place scaling of matrix C
-   E  = 2.0 * B;  // Scaling of matrix B
-   F  = C * 2.0;  // Scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B (includes runtime check)
+   F  = C * 2.0;  // Scaling of matrix C (only compile time check)
 
-   E += A - B;    // Addition assignment
-   F -= C + D;    // Subtraction assignment
-   F *= A * D;    // Multiplication assignment
+   E += A - B;    // Addition assignment (includes runtime check)
+   F -= C + D;    // Subtraction assignment (only compile time check)
+   F *= A * D;    // Multiplication assignment (includes runtime check)
    \endcode
 
-// Note that diagonal, unitriangular and strictly triangular matrix types can be used in the same
-// way, but may pose some additional restrictions (see the according class documentations).
+// Note that it is possible to assign any kind of matrix to a triangular matrix. In case the
+// matrix to be assigned does not satisfy the invariants of the triangular matrix at compile
+// time, a runtime check is performed. Also note that upper triangular, diagonal, unitriangular
+// and strictly triangular matrix types can be used in the same way, but may pose some additional
+// restrictions (see the according class documentations).
 //
 //
 // \n \section adaptors_triangular_matrices_block_matrices Triangular Block Matrices
