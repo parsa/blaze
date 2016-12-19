@@ -5973,12 +5973,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          }
 
          {
-            const size_t jbegin( ( ( IsUpper<MT4>::value && IsUpper<MT5>::value ) || SYM || HERM || UPP )
+            const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
                                  ?( IsStrictlyUpper<MT4>::value || IsStrictlyUpper<MT5>::value ? i+1UL : i )
-                                 :( 0UL ) );
-            const size_t jend( ( ( IsLower<MT4>::value && IsLower<MT5>::value ) || LOW )
+                                 :( SYM || HERM || UPP ? i : 0UL ) );
+            const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
                                ?( IsStrictlyLower<MT4>::value || IsStrictlyLower<MT5>::value ? i : i+1UL )
-                               :( N ) );
+                               :( LOW ? i+1UL : N ) );
 
             if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) continue;
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -6101,12 +6101,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          }
 
          {
-            const size_t ibegin( ( ( IsLower<MT4>::value && IsLower<MT5>::value ) || SYM || HERM || LOW )
+            const size_t ibegin( ( ( IsLower<MT4>::value && IsLower<MT5>::value ) )
                                  ?( IsStrictlyLower<MT4>::value || IsStrictlyLower<MT5>::value ? j+1UL : j )
-                                 :( 0UL ) );
-            const size_t iend( ( ( IsUpper<MT4>::value && IsUpper<MT5>::value ) || UPP )
+                                 :( SYM || HERM || LOW ? j : 0UL ) );
+            const size_t iend( ( ( IsUpper<MT4>::value && IsUpper<MT5>::value ) )
                                ?( IsStrictlyUpper<MT4>::value || IsStrictlyUpper<MT5>::value ? j : j+1UL )
-                               :( M ) );
+                               :( UPP ? j+1UL : M ) );
 
             if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) continue;
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
