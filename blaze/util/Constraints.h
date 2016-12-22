@@ -66,6 +66,7 @@
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/constraints/Long.h>
 #include <blaze/util/constraints/LongDouble.h>
+#include <blaze/util/constraints/LValueReference.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Object.h>
 #include <blaze/util/constraints/Pod.h>

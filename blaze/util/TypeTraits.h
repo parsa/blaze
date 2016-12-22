@@ -79,6 +79,7 @@
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsLong.h>
 #include <blaze/util/typetraits/IsLongDouble.h>
+#include <blaze/util/typetraits/IsLValueReference.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsObject.h>
 #include <blaze/util/typetraits/IsPod.h>
