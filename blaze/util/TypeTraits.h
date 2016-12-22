@@ -85,6 +85,7 @@
 #include <blaze/util/typetraits/IsPod.h>
 #include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsRValueReference.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsShort.h>
 #include <blaze/util/typetraits/IsSigned.h>

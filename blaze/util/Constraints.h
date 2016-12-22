@@ -73,6 +73,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Rank.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/RValueReference.h>
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/constraints/Short.h>
