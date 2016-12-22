@@ -104,6 +104,7 @@ OperationTest::OperationTest()
    testIsIntegral();
    testIsLong();
    testIsLongDouble();
+   testIsLValueReference();
    testIsNumeric();
    testIsObject();
    testIsPod();
@@ -1017,8 +1018,8 @@ void OperationTest::testIsLong()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the \c IsLongDouble type trait. In case an error is
-// detected, a compilation error is created.
+// This function performs a compile time test of the \c IsLongDouble type trait. In case an error
+// is detected, a compilation error is created.
 */
 void OperationTest::testIsLongDouble()
 {
@@ -1030,6 +1031,29 @@ void OperationTest::testIsLongDouble()
    BLAZE_STATIC_ASSERT( IsLongDouble<float>::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLongDouble<const unsigned int>::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLongDouble<volatile const short>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsLValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsLValueReference type trait. In case
+// an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsLValueReference()
+{
+   using blaze::IsLValueReference;
+
+   BLAZE_STATIC_ASSERT( IsLValueReference<int&>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLValueReference<int (&)(int)>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLValueReference<const Type1&>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsLValueReference<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsLValueReference<const Type1&&>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsLValueReference<int (Type7::*)(int)>, blaze::FalseType );
 }
 //*************************************************************************************************
 
@@ -1147,8 +1171,8 @@ void OperationTest::testIsPointer()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the \c IsReference type trait. In case an error is
-// detected, a compilation error is created.
+// This function performs a compile time test of the \c IsReference type trait. In case an error
+// is detected, a compilation error is created.
 */
 void OperationTest::testIsReference()
 {
@@ -1160,6 +1184,30 @@ void OperationTest::testIsReference()
    BLAZE_STATIC_ASSERT( IsReference<int>::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsReference<double*>::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsReference<int (Type7::*)(long)>, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c IsRValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c IsRValueReference type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsRValueReference()
+{
+   using blaze::IsRValueReference;
+
+   BLAZE_STATIC_ASSERT( IsRValueReference<int&&>::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsRValueReference<const Type7&&>::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsRValueReference<volatile Type7&&>, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsRValueReference<int>::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsRValueReference<const Type7&>::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsRValueReference<int (&)(long)>, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsRValueReference<int (Type7::*)(int)>, blaze::FalseType );
 }
 //*************************************************************************************************
 

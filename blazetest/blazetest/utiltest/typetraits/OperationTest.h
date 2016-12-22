@@ -116,11 +116,13 @@ class OperationTest
    void testIsIntegral();
    void testIsLong();
    void testIsLongDouble();
+   void testIsLValueReference();
    void testIsNumeric();
    void testIsObject();
    void testIsPod();
    void testIsPointer();
    void testIsReference();
+   void testIsRValueReference();
    void testIsSame();
    void testIsStrictlySame();
    void testIsShort();
