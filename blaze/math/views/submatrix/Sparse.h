@@ -518,9 +518,6 @@ class Submatrix<MT,AF,false,false>
                               inline void       reset( size_t i );
                               inline Iterator   set( size_t i, size_t j, const ElementType& value );
                               inline Iterator   insert( size_t i, size_t j, const ElementType& value );
-                              inline void       erase( size_t i, size_t j );
-                              inline Iterator   erase( size_t i, Iterator pos );
-                              inline Iterator   erase( size_t i, Iterator first, Iterator last );
                               inline void       reserve( size_t nonzeros );
                                      void       reserve( size_t i, size_t nonzeros );
                               inline void       trim();
@@ -528,6 +525,21 @@ class Submatrix<MT,AF,false,false>
                               inline Submatrix& transpose();
                               inline Submatrix& ctranspose();
    template< typename Other > inline Submatrix& scale( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t i, size_t j );
+   inline Iterator erase( size_t i, Iterator pos );
+   inline Iterator erase( size_t i, Iterator first, Iterator last );
+
+   template< typename Pred >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1621,79 +1633,6 @@ inline typename Submatrix<MT,AF,false,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse submatrix.
-//
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,false,false>::erase( size_t i, size_t j )
-{
-   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-
-   matrix_.erase( row_ + i, column_ + j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse submatrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases an element from the sparse submatrix. In case the storage order is set
-// to \a rowMajor the function erases an element from row \a i, in case the storage flag is set
-// to \a columnMajor the function erases an element from column \a i.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,false,false>::Iterator
-   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator pos )
-{
-   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   return Iterator( matrix_.erase( row_+i, pos.base() ), column_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the sparse submatrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of element from the sparse submatrix. In case the storage order
-// is set to \a rowMajor the function erases a range of elements element from row \a i, in case
-// the storage flag is set to \a columnMajor the function erases a range of elements from column
-// \a i.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,false,false>::Iterator
-   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator first, Iterator last )
-{
-   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   return Iterator( matrix_.erase( row_+i, first.base(), last.base() ), column_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse submatrix.
 //
 // \param nonzeros The new minimum capacity of the sparse submatrix.
@@ -1928,6 +1867,169 @@ inline bool Submatrix<MT,AF,false,false>::hasOverlap() const noexcept
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
    else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse submatrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::erase( size_t i, size_t j )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   matrix_.erase( row_ + i, column_ + j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse submatrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases an element from the sparse submatrix. In case the storage order is set
+// to \a rowMajor the function erases an element from row \a i, in case the storage flag is set
+// to \a columnMajor the function erases an element from column \a i.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator pos )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   return Iterator( matrix_.erase( row_+i, pos.base() ), column_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse submatrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of element from the sparse submatrix. In case the storage order
+// is set to \a rowMajor the function erases a range of elements element from row \a i, in case
+// the storage flag is set to \a columnMajor the function erases a range of elements from column
+// \a i.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::erase( size_t i, Iterator first, Iterator last )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   return Iterator( matrix_.erase( row_+i, first.base(), last.base() ), column_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the sparse submatrix.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases all submatrix elements that adhere to the condition specified by the given
+// unary predicate \a predicate. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value and that have an even column index:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
+   sm.erase( []( const auto& element ){ return element.value() < 1E-8; } );
+   sm.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename MT      // Type of the sparse matrix
+        , bool AF >        // Alignment flag
+template< typename Pred >  // Type of the unary predicate
+inline void Submatrix<MT,AF,false,false>::erase( Pred predicate )
+{
+   for( size_t i=0UL; i<rows(); ++i ) {
+      matrix_.erase( row_+i, begin(i).base(), end(i).base(),
+                     [offset=column_,predicate=predicate]( const auto& element ) {
+                        using ElementType = RemoveReference_< decltype( element ) >;
+                        const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
+                        return predicate( tmp );
+                     } );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the sparse submatrix.
+//
+// \param i The row index of the elements to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void
+//
+// This function erases all submatrix elements in the given range that adhere to the condition
+// specified by the given unary predicate \a predicate. The following example demonstrates
+// how to remove all elements from a row of a row-major submatrix that are smaller than a
+// certain threshold value and that have an even column index:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+
+   auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
+             []( const auto& element ){ return element.value() < 1E-8; } );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
+             []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename MT      // Type of the sparse matrix
+        , bool AF >        // Alignment flag
+template< typename Pred >  // Type of the unary predicate
+inline void Submatrix<MT,AF,false,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+
+   matrix_.erase( row_+i, first.base(), last.base(),
+                  [offset=column_,predicate=predicate]( const auto& element ) {
+                     using ElementType = RemoveReference_< decltype( element ) >;
+                     const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
+                     return predicate( tmp );
+                  } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2970,9 +3072,7 @@ class Submatrix<MT,AF,true,false>
                               inline void       reset( size_t i );
                               inline Iterator   set( size_t i, size_t j, const ElementType& value );
                               inline Iterator   insert( size_t i, size_t j, const ElementType& value );
-                              inline void       erase( size_t i, size_t j );
-                              inline Iterator   erase( size_t i, Iterator pos );
-                              inline Iterator   erase( size_t i, Iterator first, Iterator last );
+
                               inline void       reserve( size_t nonzeros );
                                      void       reserve( size_t i, size_t nonzeros );
                               inline void       trim();
@@ -2980,6 +3080,21 @@ class Submatrix<MT,AF,true,false>
                               inline Submatrix& transpose();
                               inline Submatrix& ctranspose();
    template< typename Other > inline Submatrix& scale( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t i, size_t j );
+   inline Iterator erase( size_t i, Iterator pos );
+   inline Iterator erase( size_t i, Iterator first, Iterator last );
+
+   template< typename Pred >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -4028,74 +4143,6 @@ inline typename Submatrix<MT,AF,true,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse submatrix.
-//
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,true,false>::erase( size_t i, size_t j )
-{
-   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-
-   matrix_.erase( row_ + i, column_ + j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse submatrix.
-//
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases an element from column \a j of the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,true,false>::Iterator
-   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator pos )
-{
-   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-   return Iterator( matrix_.erase( column_+j, pos.base() ), row_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the sparse submatrix.
-//
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of element from column \a j of the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,true,false>::Iterator
-   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator first, Iterator last )
-{
-   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-   return Iterator( matrix_.erase( column_+j, first.base(), last.base() ), row_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse submatrix.
 //
 // \param nonzeros The new minimum capacity of the sparse submatrix.
@@ -4324,6 +4371,164 @@ inline bool Submatrix<MT,AF,true,false>::hasOverlap() const noexcept
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
    else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse submatrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,true,false>::erase( size_t i, size_t j )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   matrix_.erase( row_ + i, column_ + j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse submatrix.
+//
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases an element from column \a j of the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator pos )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   return Iterator( matrix_.erase( column_+j, pos.base() ), row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse submatrix.
+//
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of element from column \a j of the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::erase( size_t j, Iterator first, Iterator last )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   return Iterator( matrix_.erase( column_+j, first.base(), last.base() ), row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the sparse submatrix.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases all submatrix elements that adhere to the condition specified by the given
+// unary predicate \a predicate. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value and that have an even row index:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
+   sm.erase( []( const auto& element ){ return element.value() < 1E-8; } );
+   sm.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename MT      // Type of the sparse matrix
+        , bool AF >        // Alignment flag
+template< typename Pred >  // Type of the unary predicate
+inline void Submatrix<MT,AF,true,false>::erase( Pred predicate )
+{
+   for( size_t j=0UL; j<columns(); ++j ) {
+      matrix_.erase( column_+j, begin(j).base(), end(j).base(),
+                     [offset=row_,predicate=predicate]( const auto& element ) {
+                        using ElementType = RemoveReference_< decltype( element ) >;
+                        const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
+                        return predicate( tmp );
+                     } );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the sparse submatrix.
+//
+// \param j The column index of the elements to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void
+//
+// This function erases all submatrix elements in the given range that adhere to the condition
+// specified by the given unary predicate \a predicate. The following example demonstrates
+// how to remove all elements from a column of a column-major submatrix that are smaller than
+// a certain threshold value and that have an even row index:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
+             []( const auto& element ){ return element.value() < 1E-8; } );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
+             []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename MT      // Type of the sparse matrix
+        , bool AF >        // Alignment flag
+template< typename Pred >  // Type of the unary predicate
+inline void Submatrix<MT,AF,true,false>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
+{
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   matrix_.erase( column_+j, first.base(), last.base(),
+                  [offset=row_,predicate=predicate]( const auto& element ) {
+                     using ElementType = RemoveReference_< decltype( element ) >;
+                     const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
+                     return predicate( tmp );
+                  } );
 }
 /*! \endcond */
 //*************************************************************************************************
