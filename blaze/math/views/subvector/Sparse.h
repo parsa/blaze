@@ -66,13 +66,16 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -495,11 +498,23 @@ class Subvector<VT,AF,TF,false>
                               inline void       reset();
                               inline Iterator   set    ( size_t index, const ElementType& value );
                               inline Iterator   insert ( size_t index, const ElementType& value );
-                              inline void       erase  ( size_t index );
-                              inline Iterator   erase  ( Iterator pos );
-                              inline Iterator   erase  ( Iterator first, Iterator last );
                               inline void       reserve( size_t n );
    template< typename Other > inline Subvector& scale  ( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index );
+   inline Iterator erase( Iterator pos );
+   inline Iterator erase( Iterator first, Iterator last );
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1403,6 +1418,60 @@ inline typename Subvector<VT,AF,TF,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse subvector.
+//
+// \param n The new minimum capacity of the sparse subvector.
+// \return void
+//
+// This function increases the capacity of the sparse subvector to at least \a n elements. The
+// current values of the subvector elements are preserved.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+void Subvector<VT,AF,TF,false>::reserve( size_t n )
+{
+   const size_t current( capacity() );
+
+   if( n > current ) {
+      vector_.reserve( vector_.capacity() + n - current );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse subvector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the subvector scaling.
+// \return Reference to the sparse subvector.
+*/
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline Subvector<VT,AF,TF,false>& Subvector<VT,AF,TF,false>::scale( const Other& scalar )
+{
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse subvector.
 //
 // \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
@@ -1465,24 +1534,37 @@ inline typename Subvector<VT,AF,TF,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse subvector.
+/*!\brief Erasing specific elements from the sparse subvector.
 //
-// \param n The new minimum capacity of the sparse subvector.
-// \return void
+// \param predicate The unary predicate for the element selection.
+// \return void.
 //
-// This function increases the capacity of the sparse subvector to at least \a n elements. The
-// current values of the subvector elements are preserved.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-void Subvector<VT,AF,TF,false>::reserve( size_t n )
-{
-   const size_t current( capacity() );
+// This function erases all subvector elements that adhere to the condition specified by the given
+// unary predicate \a predicate. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value and have an even index:
 
-   if( n > current ) {
-      vector_.reserve( vector_.capacity() + n - current );
-   }
+   \code
+   blaze::CompressedVector<double,blaze::rowVector> a;
+   // ... Resizing and initialization
+
+   auto sv = subvector( a, 5UL, 7UL );
+   sv.erase( []( const auto& element ){ return element.value() < 1E-8; } );
+   sv.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename VT    // Type of the sparse vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void Subvector<VT,AF,TF,false>::erase( Pred predicate )
+{
+   vector_.erase( begin().base(), end().base(),
+                  [offset=offset_,predicate=predicate]( const auto& element ) {
+                     using ElementType = RemoveReference_< decltype( element ) >;
+                     const SubvectorElement< const VT, ElementType* > tmp( &element, offset );
+                     return predicate( tmp );
+                  } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1490,20 +1572,39 @@ void Subvector<VT,AF,TF,false>::reserve( size_t n )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse subvector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+/*!\brief Erasing specific elements from a range of the sparse subvector.
 //
-// \param scalar The scalar value for the subvector scaling.
-// \return Reference to the sparse subvector.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases all subvector elements in the given range that adhere to the condition
+// specified by the given unary predicate \a predicate. The following example demonstrates how
+// to remove all elements that are smaller than a certain threshold value and have an even
+// index:
+
+   \code
+   blaze::CompressedVector<double,blaze::rowVector> a;
+   // ... Resizing and initialization
+
+   auto sv = subvector( a, 5UL, 7UL );
+   sv.erase( sv.begin(), sv.end(), []( const auto& element ){ return element.value() < 1E-8; } );
+   sv.erase( sv.begin(), sv.end(), []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
 */
-template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline Subvector<VT,AF,TF,false>& Subvector<VT,AF,TF,false>::scale( const Other& scalar )
+template< typename VT      // Type of the sparse vector
+        , bool AF          // Alignment flag
+        , bool TF >        // Transpose flag
+template< typename Pred >  // Type of the unary predicate
+inline void Subvector<VT,AF,TF,false>::erase( Iterator first, Iterator last, Pred predicate )
 {
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
+   vector_.erase( first.base(), last.base(),
+                  [offset=offset_,predicate=predicate]( const auto& element ) {
+                     using ElementType = RemoveReference_< decltype( element ) >;
+                     const SubvectorElement< const VT, ElementType* > tmp( &element, offset );
+                     return predicate( tmp );
+                  } );
 }
 /*! \endcond */
 //*************************************************************************************************
