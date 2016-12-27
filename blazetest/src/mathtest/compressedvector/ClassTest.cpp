@@ -84,10 +84,10 @@ ClassTest::ClassTest()
    testSet();
    testInsert();
    testAppend();
-   testErase();
    testResize();
    testReserve();
    testSwap();
+   testErase();
    testFind();
    testLowerBound();
    testUpperBound();
@@ -2127,6 +2127,180 @@ void ClassTest::testAppend()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testResize()
+{
+   test_ = "CompressedVector::resize()";
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec;
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
+   // Resizing to 0
+   vec.resize( 0UL );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
+   // Resizing to 5
+   vec.resize( 5UL );
+
+   checkSize    ( vec, 5UL );
+   checkNonZeros( vec, 0UL );
+
+   // Resizing to 9 and preserving the elements
+   vec[0] = 1;
+   vec[2] = 2;
+   vec[4] = 3;
+   vec.resize( 9UL, true );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 3UL );
+
+   if( vec[0] != 1 || vec[2] != 2 || vec[4] != 3 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Resizing the vector failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 0 2 0 3 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Resizing to 2 and preserving the elements
+   vec.resize( 2UL, true );
+
+   checkSize    ( vec, 2UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 1UL );
+
+   if( vec[0] != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Resizing the vector failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Resizing to 1
+   vec.resize( 1UL );
+
+   checkSize( vec, 1UL );
+
+   // Resizing to 0
+   vec.resize( 0UL );
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testReserve()
+{
+   test_ = "CompressedVector::reserve()";
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec;
+
+   checkSize    ( vec, 0UL );
+   checkNonZeros( vec, 0UL );
+
+   // Increasing the capacity of the vector
+   vec.reserve( 10UL );
+
+   checkSize    ( vec,  0UL );
+   checkCapacity( vec, 10UL );
+   checkNonZeros( vec,  0UL );
+
+   // Further increasing the capacity of the vector
+   vec.reserve( 20UL );
+
+   checkSize    ( vec,  0UL );
+   checkCapacity( vec, 20UL );
+   checkNonZeros( vec,  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the CompressedVector class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSwap()
+{
+   test_ = "CompressedVector swap";
+
+   blaze::CompressedVector<int,blaze::rowVector> vec1( 12UL, 4UL );
+   vec1[ 1] = 1;
+   vec1[ 4] = 2;
+   vec1[ 7] = 3;
+   vec1[10] = 4;
+
+   blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
+   vec2[0] = 4;
+   vec2[4] = 2;
+
+   swap( vec1, vec2 );
+
+   checkSize    ( vec1, 5UL );
+   checkCapacity( vec1, 2UL );
+   checkNonZeros( vec1, 2UL );
+
+   if( vec1[0] != 4 || vec1[4] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Swapping the first vector failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec1 << "\n"
+          << "   Expected result:\n( 4 0 0 0 2 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   checkSize    ( vec2, 12UL );
+   checkCapacity( vec2,  4UL );
+   checkNonZeros( vec2,  4UL );
+
+   if( vec2[1] != 1 || vec2[4] != 2 || vec2[7] != 3 || vec2[10] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Swapping the second vector failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec1 << "\n"
+          << "   Expected result:\n( 0 1 0 0 2 0 0 3 0 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c erase() member function of the CompressedVector class template.
 //
 // \return void
@@ -2538,179 +2712,180 @@ void ClassTest::testErase()
          }
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the CompressedVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c resize() member function of the CompressedVector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testResize()
-{
-   test_ = "CompressedVector::resize()";
+   //=====================================================================================
+   //  erase() function with predicate
+   //=====================================================================================
 
-   // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec;
+   {
+      test_ = "CompressedVector::erase( Predicate )";
 
-   checkSize    ( vec, 0UL );
-   checkNonZeros( vec, 0UL );
+      // Initialization check
+      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 5UL );
+      vec[0] = 1;
+      vec[2] = 2;
+      vec[5] = 3;
+      vec[7] = 4;
+      vec[8] = 5;
 
-   // Resizing to 0
-   vec.resize( 0UL );
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
 
-   checkSize    ( vec, 0UL );
-   checkNonZeros( vec, 0UL );
+      if( vec[0] != 1 || vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 2 0 0 3 0 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
-   // Resizing to 5
-   vec.resize( 5UL );
+      // Erasing all elements with even value
+      vec.erase( []( const auto& element ){ return element.value() % 2 == 0; } );
 
-   checkSize    ( vec, 5UL );
-   checkNonZeros( vec, 0UL );
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 3UL );
 
-   // Resizing to 9 and preserving the elements
-   vec[0] = 1;
-   vec[2] = 2;
-   vec[4] = 3;
-   vec.resize( 9UL, true );
+      if( vec[0] != 1 || vec[5] != 3 || vec[8] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 0 0 0 3 0 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 3UL );
-   checkNonZeros( vec, 3UL );
+      // Erasing all elements with even index
+      vec.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
 
-   if( vec[0] != 1 || vec[2] != 2 || vec[4] != 3 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Resizing the vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 0 2 0 3 )\n";
-      throw std::runtime_error( oss.str() );
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 1UL );
+
+      if( vec[5] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 3 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 2
+      vec.erase( []( const auto& element ){ return element.value() == 2; } );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 1UL );
+
+      if( vec[5] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 2 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 3 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Resizing to 2 and preserving the elements
-   vec.resize( 2UL, true );
 
-   checkSize    ( vec, 2UL );
-   checkCapacity( vec, 1UL );
-   checkNonZeros( vec, 1UL );
+   //=====================================================================================
+   // Iterator-range-based erase() function with predicate
+   //=====================================================================================
 
-   if( vec[0] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Resizing the vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 1 0 )\n";
-      throw std::runtime_error( oss.str() );
-   }
+   {
+      test_ = "CompressedVector::erase( Iterator, Iterator, Predicate )";
 
-   // Resizing to 1
-   vec.resize( 1UL );
+      typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
+      typedef VectorType::Iterator  Iterator;
 
-   checkSize( vec, 1UL );
+      // Initialization check
+      VectorType vec( 9UL, 5UL );
+      vec[0] = 1;
+      vec[2] = 2;
+      vec[5] = 3;
+      vec[7] = 4;
+      vec[8] = 5;
 
-   // Resizing to 0
-   vec.resize( 0UL );
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
 
-   checkSize    ( vec, 0UL );
-   checkNonZeros( vec, 0UL );
-}
-//*************************************************************************************************
+      if( vec[0] != 1 || vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 2 0 0 3 0 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
+      // Erasing all elements with even value in the range from index 0 to index 5
+      {
+         vec.erase( vec.find( 0UL ), vec.find( 5UL ),
+                    []( const auto& element ){ return element.value() % 2 == 0; } );
 
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the CompressedVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the CompressedVector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testReserve()
-{
-   test_ = "CompressedVector::reserve()";
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 4UL );
 
-   // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec;
+         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing all elements with even value in the range [0..5) failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 1 0 0 0 0 3 0 4 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-   checkSize    ( vec, 0UL );
-   checkNonZeros( vec, 0UL );
+      // Erasing all elements with even index in the range from index 5 to the end
+      {
+         vec.erase( vec.find( 5UL ), vec.end(),
+                    []( const auto& element ){ return element.index() % 2 == 0; } );
 
-   // Increasing the capacity of the vector
-   vec.reserve( 10UL );
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 3UL );
 
-   checkSize    ( vec,  0UL );
-   checkCapacity( vec, 10UL );
-   checkNonZeros( vec,  0UL );
+         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing all elements with even value in the range [5..9) failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 1 0 0 0 0 3 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-   // Further increasing the capacity of the vector
-   vec.reserve( 20UL );
+      // Trying to erase within an empty range
+      {
+         vec.erase( vec.find( 5UL ), vec.find( 5UL ), []( const auto& ){ return true; } );
 
-   checkSize    ( vec,  0UL );
-   checkCapacity( vec, 20UL );
-   checkNonZeros( vec,  0UL );
-}
-//*************************************************************************************************
+         checkSize    ( vec, 9UL );
+         checkCapacity( vec, 5UL );
+         checkNonZeros( vec, 3UL );
 
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the CompressedVector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the CompressedVector class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testSwap()
-{
-   test_ = "CompressedVector swap";
-
-   blaze::CompressedVector<int,blaze::rowVector> vec1( 12UL, 4UL );
-   vec1[ 1] = 1;
-   vec1[ 4] = 2;
-   vec1[ 7] = 3;
-   vec1[10] = 4;
-
-   blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
-   vec2[0] = 4;
-   vec2[4] = 2;
-
-   swap( vec1, vec2 );
-
-   checkSize    ( vec1, 5UL );
-   checkCapacity( vec1, 2UL );
-   checkNonZeros( vec1, 2UL );
-
-   if( vec1[0] != 4 || vec1[4] != 2 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Swapping the first vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4 0 0 0 2 )\n";
-      throw std::runtime_error( oss.str() );
-   }
-
-   checkSize    ( vec2, 12UL );
-   checkCapacity( vec2,  4UL );
-   checkNonZeros( vec2,  4UL );
-
-   if( vec2[1] != 1 || vec2[4] != 2 || vec2[7] != 3 || vec2[10] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Swapping the second vector failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 0 1 0 0 2 0 0 3 0 0 4 0 )\n";
-      throw std::runtime_error( oss.str() );
+         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << vec << "\n"
+                << "   Expected result:\n( 1 0 0 0 0 3 0 4 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
