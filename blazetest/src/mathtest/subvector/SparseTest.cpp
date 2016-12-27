@@ -2721,6 +2721,110 @@ void SparseTest::testErase()
          }
       }
    }
+
+
+   //=====================================================================================
+   //  erase() function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Subvector::erase( Predicate )";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+
+      // Erasing all elements with odd value
+      sv.erase( []( const auto& element ){ return element.value() % 2 == 1; } );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != -2 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] !=  4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with odd value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 0 -2 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with even index
+      sv.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
+
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 0 0 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Iterator-range-based erase() function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Subvector::erase( Iterator, Iterator, Predicate )";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+
+      // Erasing all elements with odd value
+      sv.erase( sv.begin(), sv.find( 3UL ),
+                []( const auto& element ){ return element.value() % 2 == 1; } );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != -2 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] !=  4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with odd value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 0 -2 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with even index
+      sv.erase( sv.begin(), sv.end(),
+                []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 2UL );
+
+      if( sv[0] !=  0 || sv[1] != 0 || sv[2] != 0 ||
+          sv[3] != -3 || sv[4] != 0 || sv[5] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 0 0 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
