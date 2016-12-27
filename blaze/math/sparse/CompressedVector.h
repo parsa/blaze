@@ -74,11 +74,13 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
 
@@ -313,13 +315,25 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline void              clear();
                               inline Iterator          set   ( size_t index, const Type& value );
                               inline Iterator          insert( size_t index, const Type& value );
-                              inline void              erase ( size_t index );
-                              inline Iterator          erase ( Iterator pos );
-                              inline Iterator          erase ( Iterator first, Iterator last );
                               inline void              resize( size_t n, bool preserve=true );
                                      void              reserve( size_t n );
    template< typename Other > inline CompressedVector& scale( const Other& scalar );
                               inline void              swap( CompressedVector& sv ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index );
+   inline Iterator erase( Iterator pos );
+   inline Iterator erase( Iterator first, Iterator last );
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1300,73 +1314,6 @@ typename CompressedVector<Type,TF>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Erasing an element from the compressed vector.
-//
-// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the compressed vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::erase( size_t index )
-{
-   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
-
-   const Iterator pos( find( index ) );
-   if( pos != end_ )
-      end_ = std::move( pos+1, end_, pos );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Erasing an element from the compressed vector.
-//
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases an element from the compressed vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::erase( Iterator pos )
-{
-   BLAZE_USER_ASSERT( pos >= begin_ && pos <= end_, "Invalid compressed vector iterator" );
-
-   if( pos != end_ )
-      end_ = std::move( pos+1, end_, pos );
-   return pos;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Erasing a range of elements from the compressed vector.
-//
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of elements from the compressed vector.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator
-   CompressedVector<Type,TF>::erase( Iterator first, Iterator last )
-{
-   BLAZE_USER_ASSERT( first <= last, "Invalid iterator range" );
-   BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
-   BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
-
-   if( first != last )
-      end_ = std::move( last, end_, first );
-   return first;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Changing the size of the compressed vector.
 //
 // \param n The new size of the compressed vector.
@@ -1483,6 +1430,146 @@ inline size_t CompressedVector<Type,TF>::extendCapacity() const noexcept
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity_, "Invalid capacity value" );
 
    return nonzeros;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the compressed vector.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void CompressedVector<Type,TF>::erase( size_t index )
+{
+   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
+
+   const Iterator pos( find( index ) );
+   if( pos != end_ )
+      end_ = std::move( pos+1, end_, pos );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the compressed vector.
+//
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases an element from the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::erase( Iterator pos )
+{
+   BLAZE_USER_ASSERT( pos >= begin_ && pos <= end_, "Invalid compressed vector iterator" );
+
+   if( pos != end_ )
+      end_ = std::move( pos+1, end_, pos );
+   return pos;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing a range of elements from the compressed vector.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the compressed vector.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::erase( Iterator first, Iterator last )
+{
+   BLAZE_USER_ASSERT( first <= last, "Invalid iterator range" );
+   BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
+   BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
+
+   if( first != last )
+      end_ = std::move( last, end_, first );
+   return first;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing specific elements from the compressed vector.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases all vector elements that adhere to the condition specified by the given
+// unary predicate \a predicate. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value and have an even index:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+
+   a.erase( []( const auto& element ){ return element.value() < 1E-8; } );
+   a.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void CompressedVector<Type,TF>::erase( Pred predicate )
+{
+   end_ = std::remove_if( begin_, end_, predicate );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing specific elements from a range of the compressed vector.
+//
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases all vector elements in the given range that adhere to the condition
+// specified by the given unary predicate \a predicate. The following example demonstrates
+// how to remove all elements that are smaller than a certain threshold value and have an even
+// index:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+
+   a.erase( a.begin(), a.end(), []( const auto& element ){ return element.value() < 1E-8; } );
+   a.erase( a.begin(), a.end(), []( const auto& element ){ return element.index() % 2U == 0U; } );
+   \endcode
+*/
+template< typename Type    // Data type of the vector
+        , bool TF >        // Transpose flag
+template< typename Pred >  // Type of the unary predicate
+inline void CompressedVector<Type,TF>::erase( Iterator first, Iterator last, Pred predicate )
+{
+   BLAZE_USER_ASSERT( first <= last, "Invalid iterator range" );
+   BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
+   BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
+
+   end_ = std::move( last, end_, std::remove_if( first, last, predicate ) );
 }
 //*************************************************************************************************
 
