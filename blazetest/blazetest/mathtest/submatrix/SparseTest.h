@@ -100,11 +100,11 @@ class SparseTest
    void testSet         ();
    void testInsert      ();
    void testAppend      ();
-   void testErase       ();
    void testReserve     ();
    void testTrim        ();
    void testTranspose   ();
    void testCTranspose  ();
+   void testErase       ();
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();

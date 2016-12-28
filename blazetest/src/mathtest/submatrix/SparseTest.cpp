@@ -79,11 +79,11 @@ SparseTest::SparseTest()
    testSet();
    testInsert();
    testAppend();
-   testErase();
    testReserve();
    testTrim();
    testTranspose();
    testCTranspose();
+   testErase();
    testFind();
    testLowerBound();
    testUpperBound();
@@ -6720,805 +6720,6 @@ void SparseTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the Submatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c erase() member function of the Submatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testErase()
-{
-   //=====================================================================================
-   // Row-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Submatrix::erase( size_t, size_t )";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
-
-      // Erasing the non-zero element at the end of the 1st row
-      sm.erase( 1UL, 2UL );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 5UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
-
-      if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st row
-      sm.erase( 1UL, 0UL );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 4UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 8UL );
-
-      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st row
-      sm.erase( 1UL, 1UL );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 3UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase an already erased element
-      sm.erase( 1UL, 2UL );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 3UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Submatrix::erase( size_t, Iterator )";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
-
-      // Erasing the non-zero element at the end of the 1st row
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 3UL );
-         checkNonZeros( sm  , 5UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-             sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st row
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 0UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 3UL );
-         checkNonZeros( sm  , 4UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 8UL );
-
-         if( pos->value() != 9 || pos->index() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-             sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st row
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 3UL );
-         checkNonZeros( sm  , 3UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an already erased element
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 3UL );
-         checkNonZeros( sm  , 3UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
-             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Submatrix::erase( size_t, Iterator, Iterator )";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 3UL, 0UL, 2UL, 4UL );
-
-      // Erasing the 0th row
-      {
-         SMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 4UL );
-         checkNonZeros( sm  , 4UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != sm.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) !=  0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
-             sm(1,0) != 7 || sm(1,1) != -8 || sm(1,2) != 9 || sm(1,3) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the 0th row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0  0  0  0 )\n( 7 -8  9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the first half of the 1st row
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 1UL, 2UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 4UL );
-         checkNonZeros( sm  , 2UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 5UL );
-
-         if( pos->value() != 9 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
-             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 9 || sm(1,3) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the first half of the 1st row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0  0  0  0 )\n( 0  0  9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the second half of the 1st row
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ), sm.end( 1UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 4UL );
-         checkNonZeros( sm  , 0UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 3UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
-             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the second half of the 1st row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
-
-         checkRows    ( sm  , 2UL );
-         checkColumns ( sm  , 4UL );
-         checkNonZeros( sm  , 0UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 3UL );
-
-         if( pos != sm.begin( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the given end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
-             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing an empty range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Submatrix::erase( size_t, size_t )";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
-
-      // Erasing the non-zero element at the end of the 1st column
-      sm.erase( 2UL, 1UL );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 5UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 9UL );
-
-      if( sm(0,0) !=  4 || sm(0,1) != -8 ||
-          sm(1,0) !=  5 || sm(1,1) !=  9 ||
-          sm(2,0) != -6 || sm(2,1) !=  0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st column
-      sm.erase( 0UL, 1UL );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 4UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 8UL );
-
-      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-          sm(1,0) !=  5 || sm(1,1) != 9 ||
-          sm(2,0) != -6 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st column
-      sm.erase( 1UL, 1UL );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 3UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-          sm(1,0) !=  5 || sm(1,1) != 0 ||
-          sm(2,0) != -6 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase an already erased element
-      sm.erase( 2UL, 1UL );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 3UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-          sm(1,0) !=  5 || sm(1,1) != 0 ||
-          sm(2,0) != -6 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Submatrix::erase( size_t, Iterator )";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
-
-      // Erasing the non-zero element at the end of the 1st column
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
-
-         checkRows    ( sm   , 3UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 5UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 9UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) !=  4 || sm(0,1) != -8 ||
-             sm(1,0) !=  5 || sm(1,1) !=  9 ||
-             sm(2,0) != -6 || sm(2,1) !=  0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st column
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 0UL, 1UL ) );
-
-         checkRows    ( sm   , 3UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 4UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 8UL );
-
-         if( pos->value() != 9 || pos->index() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-             sm(1,0) !=  5 || sm(1,1) != 9 ||
-             sm(2,0) != -6 || sm(2,1) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the 1st column
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
-
-         checkRows    ( sm   , 3UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 3UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-             sm(1,0) !=  5 || sm(1,1) != 0 ||
-             sm(2,0) != -6 || sm(2,1) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an already erased element
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
-
-         checkRows    ( sm   , 3UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 3UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
-             sm(1,0) !=  5 || sm(1,1) != 0 ||
-             sm(2,0) != -6 || sm(2,1) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Submatrix::erase( size_t, Iterator, Iterator )";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 0UL, 3UL, 4UL, 2UL );
-
-      // Erasing the 0th column
-      {
-         OSMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
-
-         checkRows    ( sm   , 4UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 4UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != sm.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) !=  7 ||
-             sm(1,0) != 0 || sm(1,1) != -8 ||
-             sm(2,0) != 0 || sm(2,1) !=  9 ||
-             sm(3,0) != 0 || sm(3,1) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0  7 )\n( 0 -8 )\n( 0  9 )\n( 0 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the first half of the 1st column
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 2UL, 1UL ) );
-
-         checkRows    ( sm   , 4UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 2UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 5UL );
-
-         if( pos->value() != 9 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) !=  0 ||
-             sm(1,0) != 0 || sm(1,1) !=  0 ||
-             sm(2,0) != 0 || sm(2,1) !=  9 ||
-             sm(3,0) != 0 || sm(3,1) != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0  0 )\n( 0  0 )\n( 0  9 )\n( 0 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the second half of the 1st column
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ), sm.end( 1UL ) );
-
-         checkRows    ( sm   , 4UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 3UL );
-
-         if( pos != sm.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) != 0 ||
-             sm(1,0) != 0 || sm(1,1) != 0 ||
-             sm(2,0) != 0 || sm(2,1) != 0 ||
-             sm(3,0) != 0 || sm(3,1) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         OSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
-
-         checkRows    ( sm   , 4UL );
-         checkColumns ( sm   , 2UL );
-         checkNonZeros( sm   , 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 3UL );
-
-         if( pos != sm.begin( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the given end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sm(0,0) != 0 || sm(0,1) != 0 ||
-             sm(1,0) != 0 || sm(1,1) != 0 ||
-             sm(2,0) != 0 || sm(2,1) != 0 ||
-             sm(3,0) != 0 || sm(3,1) != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sm << "\n"
-                << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c reserve() member function of the Submatrix class template.
 //
 // \return void
@@ -8225,6 +7426,1125 @@ void SparseTest::testCTranspose()
                                      "(  0 -2  0 -3 -8 )\n"
                                      "(  0  0  4  5  9 )\n"
                                      "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c erase() member function of the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c erase() member function of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testErase()
+{
+   //=====================================================================================
+   // Row-major index-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::erase( size_t, size_t )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
+
+      // Erasing the non-zero element at the end of the 1st row
+      sm.erase( 1UL, 2UL );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 5UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
+
+      if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st row
+      sm.erase( 1UL, 0UL );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 4UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st row
+      sm.erase( 1UL, 1UL );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase an already erased element
+      sm.erase( 1UL, 2UL );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::erase( size_t, Iterator )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
+
+      // Erasing the non-zero element at the end of the 1st row
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 5UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) !=  4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  4  5 -6 )\n( -8  9  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st row
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 0UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 4UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 8UL );
+
+         if( pos->value() != 9 || pos->index() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 4  5 -6 )\n( 0  9  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st row
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 3UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an already erased element
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 3UL );
+         checkNonZeros( sm  , 3UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 4 || sm(0,1) != 5 || sm(0,2) != -6 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 4  5 -6 )\n( 0  0  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::erase( size_t, Iterator, Iterator )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 3UL, 0UL, 2UL, 4UL );
+
+      // Erasing the 0th row
+      {
+         SMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 4UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
+
+         if( pos != sm.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) !=  0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
+             sm(1,0) != 7 || sm(1,1) != -8 || sm(1,2) != 9 || sm(1,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the 0th row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0  0  0  0 )\n( 7 -8  9 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the first half of the 1st row
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 1UL, 2UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 5UL );
+
+         if( pos->value() != 9 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 9 || sm(1,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the first half of the 1st row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0  0  0  0 )\n( 0  0  9 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the second half of the 1st row
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 2UL ), sm.end( 1UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 3UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the second half of the 1st row failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         SMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
+
+         checkRows    ( sm  , 2UL );
+         checkColumns ( sm  , 4UL );
+         checkNonZeros( sm  , 0UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 3UL );
+
+         if( pos != sm.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the given end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 0 || sm(0,3) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 || sm(1,2) != 0 || sm(1,3) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::erase( Predicate )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
+
+      // Erasing all elements with even value
+      sm.erase( []( const auto& element ) {
+                   return element.value() > 0 && element.value() % 2 == 0;
+                } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 4UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  5 -6 )\n( -8  9  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with even index
+      sm.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 2UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 6UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 5 || sm(0,2) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  5  0 )\n( 0  9  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 2
+      sm.erase( []( const auto& element ){ return element.value() == 2; } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 2UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 6UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 5 || sm(0,2) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 2 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  5  0 )\n( 0  9  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-range-based erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::erase( size_t, Iterator, Iterator, Predicate )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
+
+      // Erasing all elements with even value in row 0
+      sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ),
+                []( const auto& element ) { return element.value() % 2 == 0; } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 4UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  5  0 )\n( -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with odd index in row 1
+      sm.erase( 1UL, sm.begin( 1UL ), sm.find( 1UL, 2UL ),
+                []( const auto& element ){ return element.index() % 2UL == 1UL; } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
+          sm(1,0) != -8 || sm(1,1) != 0 || sm(1,2) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with odd index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  5  0 )\n( -8  0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase from an empty range
+      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ),
+                []( const auto& ){ return true; } );
+
+      checkRows    ( sm  , 2UL );
+      checkColumns ( sm  , 3UL );
+      checkNonZeros( sm  , 3UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
+          sm(1,0) != -8 || sm(1,1) != 0 || sm(1,2) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing from an empty range failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  5  0 )\n( -8  0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major index-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::erase( size_t, size_t )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+      // Erasing the non-zero element at the end of the 1st column
+      sm.erase( 2UL, 1UL );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 5UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( sm(0,0) !=  4 || sm(0,1) != -8 ||
+          sm(1,0) !=  5 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st column
+      sm.erase( 0UL, 1UL );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 9 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st column
+      sm.erase( 1UL, 1UL );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 0 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase an already erased element
+      sm.erase( 2UL, 1UL );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+          sm(1,0) !=  5 || sm(1,1) != 0 ||
+          sm(2,0) != -6 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::erase( size_t, Iterator )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+      // Erasing the non-zero element at the end of the 1st column
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
+
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 5UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 9UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) !=  4 || sm(0,1) != -8 ||
+             sm(1,0) !=  5 || sm(1,1) !=  9 ||
+             sm(2,0) != -6 || sm(2,1) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  4 -8 )\n(  5  9 )\n( -6  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st column
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 0UL, 1UL ) );
+
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 4UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 8UL );
+
+         if( pos->value() != 9 || pos->index() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 9 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  4 0 )\n(  5 9 )\n( -6 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the non-zero element at the beginning of the 1st column
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 1UL, 1UL ) );
+
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 0 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an already erased element
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ) );
+
+         checkRows    ( sm   , 3UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) !=  4 || sm(0,1) != 0 ||
+             sm(1,0) !=  5 || sm(1,1) != 0 ||
+             sm(2,0) != -6 || sm(2,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  4 0 )\n(  5 0 )\n( -6 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::erase( size_t, Iterator, Iterator )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 3UL, 4UL, 2UL );
+
+      // Erasing the 0th column
+      {
+         OSMT::Iterator pos = sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ) );
+
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 4UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 7UL );
+
+         if( pos != sm.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) !=  7 ||
+             sm(1,0) != 0 || sm(1,1) != -8 ||
+             sm(2,0) != 0 || sm(2,1) !=  9 ||
+             sm(3,0) != 0 || sm(3,1) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the 0th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0  7 )\n( 0 -8 )\n( 0  9 )\n( 0 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the first half of the 1st column
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.find( 2UL, 1UL ) );
+
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 2UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 5UL );
+
+         if( pos->value() != 9 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 9\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) !=  0 ||
+             sm(2,0) != 0 || sm(2,1) !=  9 ||
+             sm(3,0) != 0 || sm(3,1) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the 0th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0  0 )\n( 0  0 )\n( 0  9 )\n( 0 10 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the second half of the 1st column
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.find( 2UL, 1UL ), sm.end( 1UL ) );
+
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 3UL );
+
+         if( pos != sm.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 0 ||
+             sm(3,0) != 0 || sm(3,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the 0th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         OSMT::Iterator pos = sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ) );
+
+         checkRows    ( sm   , 4UL );
+         checkColumns ( sm   , 2UL );
+         checkNonZeros( sm   , 0UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 5UL );
+         checkNonZeros( tmat_, 3UL );
+
+         if( pos != sm.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the given end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sm(0,0) != 0 || sm(0,1) != 0 ||
+             sm(1,0) != 0 || sm(1,1) != 0 ||
+             sm(2,0) != 0 || sm(2,1) != 0 ||
+             sm(3,0) != 0 || sm(3,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing the 0th column failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 0 )\n( 0 0 )\n( 0 0 )\n( 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::erase( Predicate )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+      // Erasing all elements with even value
+      sm.erase( []( const auto& element ) {
+                   return element.value() > 0 && element.value() % 2 == 0;
+                } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != -8 ||
+          sm(1,0) !=  5 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 -8 )\n(  5  9 )\n( -6  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with even index
+      sm.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 6UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 0 ||
+          sm(1,0) != 5 || sm(1,1) != 9 ||
+          sm(2,0) != 0 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 )\n( 5 9 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 2
+      sm.erase( []( const auto& element ){ return element.value() == 2; } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 6UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 0 ||
+          sm(1,0) != 5 || sm(1,1) != 9 ||
+          sm(2,0) != 0 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 2 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 )\n( 5 9 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::erase( size_t, Iterator, Iterator, Predicate )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
+
+      // Erasing all elements with even value in column 0
+      sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ),
+                []( const auto& element ) { return element.value() % 2 == 0; } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 4UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -8 ||
+          sm(1,0) != 5 || sm(1,1) !=  9 ||
+          sm(2,0) != 0 || sm(2,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with even value failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -8 )\n( 5  9 )\n( 0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing all elements with odd index in column 1
+      sm.erase( 1UL, sm.begin( 1UL ), sm.find( 2UL, 1UL ),
+                []( const auto& element ){ return element.index() % 2UL == 1UL; } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -8 ||
+          sm(1,0) != 5 || sm(1,1) !=  0 ||
+          sm(2,0) != 0 || sm(2,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with odd index failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -8 )\n( 5  0 )\n( 0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase from an empty range
+      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ),
+                []( const auto& ){ return true; } );
+
+      checkRows    ( sm   , 3UL );
+      checkColumns ( sm   , 2UL );
+      checkNonZeros( sm   , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -8 ||
+          sm(1,0) != 5 || sm(1,1) !=  0 ||
+          sm(2,0) != 0 || sm(2,1) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing from an empty range failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -8 )\n( 5  0 )\n( 0 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
