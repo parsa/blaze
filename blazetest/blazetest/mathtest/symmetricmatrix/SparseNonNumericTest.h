@@ -108,13 +108,13 @@ class SparseNonNumericTest
    void testSet         ();
    void testInsert      ();
    void testAppend      ();
-   void testErase       ();
    void testResize      ();
    void testReserve     ();
    void testTrim        ();
    void testTranspose   ();
    void testCTranspose  ();
    void testSwap        ();
+   void testErase       ();
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();

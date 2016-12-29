@@ -104,8 +104,8 @@ class SparseSymmetricTest
    void testSet         ();
    void testInsert      ();
    void testAppend      ();
-   void testErase       ();
    void testReserve     ();
+   void testErase       ();
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();
