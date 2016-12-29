@@ -1539,18 +1539,21 @@ inline typename Subvector<VT,AF,TF,false>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all subvector elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and have an even index:
+// This function erases specific elements from the sparse subvector. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove
+// all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedVector<double,blaze::rowVector> a;
    // ... Resizing and initialization
 
    auto sv = subvector( a, 5UL, 7UL );
-   sv.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   sv.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sv.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename VT    // Type of the sparse vector
         , bool AF        // Alignment flag
@@ -1559,12 +1562,7 @@ template< typename Pred  // Type of the unary predicate
         , typename >     // Type restriction on the unary predicate
 inline void Subvector<VT,AF,TF,false>::erase( Pred predicate )
 {
-   vector_.erase( begin().base(), end().base(),
-                  [offset=offset_,predicate=predicate]( const auto& element ) {
-                     using ElementType = RemoveReference_< decltype( element ) >;
-                     const SubvectorElement< const VT, ElementType* > tmp( &element, offset );
-                     return predicate( tmp );
-                  } );
+   vector_.erase( begin().base(), end().base(), predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1579,19 +1577,22 @@ inline void Subvector<VT,AF,TF,false>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all subvector elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates how
-// to remove all elements that are smaller than a certain threshold value and have an even
-// index:
+// This function erases specific elements from a range of elements of the sparse subvector.
+// The elements are selected by the given unary predicate \a predicate, which is expected
+// to accept a single argument of the type of the elements and to be pure. The following
+// example demonstrates how to remove all elements that are smaller than a certain threshold
+// value:
 
    \code
    blaze::CompressedVector<double,blaze::rowVector> a;
    // ... Resizing and initialization
 
    auto sv = subvector( a, 5UL, 7UL );
-   sv.erase( sv.begin(), sv.end(), []( const auto& element ){ return element.value() < 1E-8; } );
-   sv.erase( sv.begin(), sv.end(), []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sv.erase( sv.begin(), sv.end(), []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename VT      // Type of the sparse vector
         , bool AF          // Alignment flag
@@ -1599,12 +1600,7 @@ template< typename VT      // Type of the sparse vector
 template< typename Pred >  // Type of the unary predicate
 inline void Subvector<VT,AF,TF,false>::erase( Iterator first, Iterator last, Pred predicate )
 {
-   vector_.erase( first.base(), last.base(),
-                  [offset=offset_,predicate=predicate]( const auto& element ) {
-                     using ElementType = RemoveReference_< decltype( element ) >;
-                     const SubvectorElement< const VT, ElementType* > tmp( &element, offset );
-                     return predicate( tmp );
-                  } );
+   vector_.erase( first.base(), last.base(), predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
