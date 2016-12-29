@@ -80,11 +80,11 @@ SparseTest::SparseTest()
    testSet();
    testInsert();
    testAppend();
-   testErase();
    testResize();
    testReserve();
    testTrim();
    testSwap();
+   testErase();
    testFind();
    testLowerBound();
    testUpperBound();
@@ -6375,951 +6375,6 @@ void SparseTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the UniUpperMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c erase() member function of the UniUpperMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testErase()
-{
-   //=====================================================================================
-   // Row-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniUpperMatrix::erase( size_t, size_t )";
-
-      // Initialization check
-      UT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 3UL );
-      checkNonZeros( upper, 1UL, 3UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (1,2)
-      upper.erase( 1UL, 2UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 8UL );
-      checkNonZeros( upper, 0UL, 3UL );
-      checkNonZeros( upper, 1UL, 2UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (0,3)
-      upper.erase( 0UL, 3UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 7UL );
-      checkNonZeros( upper, 0UL, 2UL );
-      checkNonZeros( upper, 1UL, 2UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase a zero element
-      upper.erase( 0UL, 1UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 7UL );
-      checkNonZeros( upper, 0UL, 2UL );
-      checkNonZeros( upper, 1UL, 2UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase a diagonal element
-      try {
-         upper.erase( 3UL, 3UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator )";
-
-      typedef UT::Iterator  Iterator;
-
-      // Initialization check
-      UT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 3UL );
-      checkNonZeros( upper, 1UL, 3UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (1,2)
-      {
-         Iterator pos = upper.erase( 1UL, upper.find( 1UL, 2UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 8UL );
-         checkNonZeros( upper, 0UL, 3UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 5 || pos->index() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 5\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the element at (0,3)
-      {
-         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 3UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 7UL );
-         checkNonZeros( upper, 0UL, 2UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != upper.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a zero element
-      {
-         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 1UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 7UL );
-         checkNonZeros( upper, 0UL, 2UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != upper.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a diagonal element
-      try {
-         upper.erase( 3UL, upper.find( 3UL, 3UL ) );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
-
-      typedef UT::Iterator  Iterator;
-
-      // Initialization check
-      UT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 3UL );
-      checkNonZeros( upper, 1UL, 3UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 1UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the elements from (1,2) to (1,3)
-      {
-         Iterator pos = upper.erase( 1UL, upper.find( 1UL, 2UL ), upper.find( 1UL, 3UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 8UL );
-         checkNonZeros( upper, 0UL, 3UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a single-element range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 5 || pos->index() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 5\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the elements from (0,2) to the row end
-      {
-         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 2UL ), upper.end( 0UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 6UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a multi-element range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != upper.end( 0UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         Iterator pos = upper.erase( 3UL, upper.find( 3UL, 3UL ), upper.find( 3UL, 3UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 6UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 2UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing an empty range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 1 || pos->index() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a range including a diagonal element
-      try {
-         upper.erase( 2UL, upper.begin( 2UL ), upper.end( 2UL ) );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a range including a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniUpperMatrix::erase( size_t, size_t )";
-
-      // Initialization check
-      OUT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 3UL );
-      checkNonZeros( upper, 3UL, 4UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (1,2)
-      upper.erase( 1UL, 2UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 8UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 4UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (0,3)
-      upper.erase( 0UL, 3UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 7UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase a zero element
-      upper.erase( 0UL, 1UL );
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 7UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 2UL );
-      checkNonZeros( upper, 3UL, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 ||
-          upper(1,1) != 1 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase a diagonal element
-      try {
-         upper.erase( 0UL, 0UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator )";
-
-      typedef OUT::Iterator  Iterator;
-
-      // Initialization check
-      OUT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 3UL );
-      checkNonZeros( upper, 3UL, 4UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the element at (1,2)
-      {
-         Iterator pos = upper.erase( 2UL, upper.find( 1UL, 2UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 8UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 4UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 1 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the element at (0,3)
-      {
-         Iterator pos = upper.erase( 3UL, upper.find( 0UL, 3UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 7UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 3UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 5 || pos->index() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 5\n"
-                << "   Expected index: 1\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a zero element
-      {
-         Iterator pos = upper.erase( 1UL, upper.find( 0UL, 1UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 7UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 3UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos != upper.end( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a diagonal element
-      try {
-         upper.erase( 0UL, upper.find( 0UL, 0UL ) );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
-
-      typedef OUT::Iterator  Iterator;
-
-      // Initialization check
-      OUT upper( 4UL, 9UL );
-      upper(0,2) = 2;
-      upper(0,3) = 3;
-      upper(1,2) = 4;
-      upper(1,3) = 5;
-      upper(2,3) = 6;
-
-      checkRows    ( upper, 4UL );
-      checkColumns ( upper, 4UL );
-      checkCapacity( upper, 9UL );
-      checkNonZeros( upper, 9UL );
-      checkNonZeros( upper, 0UL, 1UL );
-      checkNonZeros( upper, 1UL, 1UL );
-      checkNonZeros( upper, 2UL, 3UL );
-      checkNonZeros( upper, 3UL, 4UL );
-
-      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
-          upper(2,2) != 1 || upper(2,3) != 6 ||
-          upper(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the elements from (1,2) to (2,2)
-      {
-         Iterator pos = upper.erase( 2UL, upper.find( 1UL, 2UL ), upper.find( 2UL, 2UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 8UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 4UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
-             upper(1,1) != 1 || upper(1,3) != 5 ||
-             upper(2,2) != 1 || upper(2,3) != 6 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a single-element range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 1 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the elements from the beginning of column 3 to (3,3)
-      {
-         Iterator pos = upper.erase( 3UL, upper.begin( 3UL ), upper.find( 3UL, 3UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 5UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 ||
-             upper(2,2) != 1 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a multi-element range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 1 || pos->index() != 3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         Iterator pos = upper.erase( 0UL, upper.begin( 0UL ), upper.find( 0UL, 0UL ) );
-
-         checkRows    ( upper, 4UL );
-         checkColumns ( upper, 4UL );
-         checkCapacity( upper, 9UL );
-         checkNonZeros( upper, 5UL );
-         checkNonZeros( upper, 0UL, 1UL );
-         checkNonZeros( upper, 1UL, 1UL );
-         checkNonZeros( upper, 2UL, 2UL );
-         checkNonZeros( upper, 3UL, 1UL );
-
-         if( upper(0,0) != 1 || upper(0,2) != 2 ||
-             upper(1,1) != 1 ||
-             upper(2,2) != 1 ||
-             upper(3,3) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing an empty range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( pos->value() != 1 || pos->index() != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase a diagonal element
-      try {
-         upper.erase( 1UL, upper.begin( 1UL ), upper.end( 1UL ) );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a diagonal element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c resize() member function of the UniUpperMatrix specialization.
 //
 // \return void
@@ -7968,6 +7023,1309 @@ void SparseTest::testSwap()
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 2 )\n( 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c erase() member function of the UniUpperMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c erase() member function of the UniUpperMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testErase()
+{
+   //=====================================================================================
+   // Row-major index-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniUpperMatrix::erase( size_t, size_t )";
+
+      // Initialization check
+      UT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (1,2)
+      upper.erase( 1UL, 2UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 8UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (0,3)
+      upper.erase( 0UL, 3UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase a zero element
+      upper.erase( 0UL, 1UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase a diagonal element
+      try {
+         upper.erase( 3UL, 3UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator )";
+
+      typedef UT::Iterator  Iterator;
+
+      // Initialization check
+      UT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (1,2)
+      {
+         Iterator pos = upper.erase( 1UL, upper.find( 1UL, 2UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 8UL );
+         checkNonZeros( upper, 0UL, 3UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 5 || pos->index() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the element at (0,3)
+      {
+         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 3UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 7UL );
+         checkNonZeros( upper, 0UL, 2UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != upper.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a zero element
+      {
+         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 1UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 7UL );
+         checkNonZeros( upper, 0UL, 2UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != upper.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a diagonal element
+      try {
+         upper.erase( 3UL, upper.find( 3UL, 3UL ) );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
+
+      typedef UT::Iterator  Iterator;
+
+      // Initialization check
+      UT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the elements from (1,2) to (1,3)
+      {
+         Iterator pos = upper.erase( 1UL, upper.find( 1UL, 2UL ), upper.find( 1UL, 3UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 8UL );
+         checkNonZeros( upper, 0UL, 3UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a single-element range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 5 || pos->index() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from (0,2) to the row end
+      {
+         Iterator pos = upper.erase( 0UL, upper.find( 0UL, 2UL ), upper.end( 0UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 6UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a multi-element range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != upper.end( 0UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         Iterator pos = upper.erase( 3UL, upper.find( 3UL, 3UL ), upper.find( 3UL, 3UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 6UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 2UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 1 || pos->index() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a range including a diagonal element
+      try {
+         upper.erase( 2UL, upper.begin( 2UL ), upper.end( 2UL ) );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a range including a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniUpperMatrix::erase( Predicate )";
+
+      // Initialization check
+      UT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing a selection of elements
+      upper.erase( []( int value ){ return value == 3 || value == 4 || value == 6; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 6UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 1
+      upper.erase( []( int value ){ return value == 1; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 6UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 1 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-range-based erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator, Iterator, Predicate )";
+
+      // Initialization check
+      UT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing a selection of elements
+      upper.erase( 0UL, upper.find( 0UL, 2UL ), upper.end( 0UL ),
+                   []( int value ){ return value == 2 || value == 3; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 7UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase from an empty range
+      upper.erase( 0UL, upper.begin( 0UL ), upper.begin( 0UL ), []( int ){ return true; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 7UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 3UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( upper(0,0) != 1 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 1 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major index-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniUpperMatrix::erase( size_t, size_t )";
+
+      // Initialization check
+      OUT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (1,2)
+      upper.erase( 1UL, 2UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 8UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (0,3)
+      upper.erase( 0UL, 3UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 3UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase a zero element
+      upper.erase( 0UL, 1UL );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 3UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase a diagonal element
+      try {
+         upper.erase( 0UL, 0UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator )";
+
+      typedef OUT::Iterator  Iterator;
+
+      // Initialization check
+      OUT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the element at (1,2)
+      {
+         Iterator pos = upper.erase( 2UL, upper.find( 1UL, 2UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 8UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 4UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 1 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the element at (0,3)
+      {
+         Iterator pos = upper.erase( 3UL, upper.find( 0UL, 3UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 7UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 3UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 5 || pos->index() != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a zero element
+      {
+         Iterator pos = upper.erase( 1UL, upper.find( 0UL, 1UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 7UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 3UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos != upper.end( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Expected result: the end() iterator\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a diagonal element
+      try {
+         upper.erase( 0UL, upper.find( 0UL, 0UL ) );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
+
+      typedef OUT::Iterator  Iterator;
+
+      // Initialization check
+      OUT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing the elements from (1,2) to (2,2)
+      {
+         Iterator pos = upper.erase( 2UL, upper.find( 1UL, 2UL ), upper.find( 2UL, 2UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 8UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 4UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+             upper(1,1) != 1 || upper(1,3) != 5 ||
+             upper(2,2) != 1 || upper(2,3) != 6 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a single-element range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 3 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 1 || pos->index() != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Erasing the elements from the beginning of column 3 to (3,3)
+      {
+         Iterator pos = upper.erase( 3UL, upper.begin( 3UL ), upper.find( 3UL, 3UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 5UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing a multi-element range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 1 || pos->index() != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase an empty range
+      {
+         Iterator pos = upper.erase( 0UL, upper.begin( 0UL ), upper.find( 0UL, 0UL ) );
+
+         checkRows    ( upper, 4UL );
+         checkColumns ( upper, 4UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 5UL );
+         checkNonZeros( upper, 0UL, 1UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+         checkNonZeros( upper, 3UL, 1UL );
+
+         if( upper(0,0) != 1 || upper(0,2) != 2 ||
+             upper(1,1) != 1 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Erasing an empty range failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( pos->value() != 1 || pos->index() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to erase a diagonal element
+      try {
+         upper.erase( 1UL, upper.begin( 1UL ), upper.end( 1UL ) );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a diagonal element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniUpperMatrix::erase( Predicate )";
+
+      // Initialization check
+      OUT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing a selection of elements
+      upper.erase( []( int value ){ return value == 3 || value == 4 || value == 6; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 6UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 2UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 1
+      upper.erase( []( int value ){ return value == 1; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 6UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 2UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 1 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 0 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major iterator-range-based erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator, Iterator, Predicate )";
+
+      // Initialization check
+      OUT upper( 4UL, 9UL );
+      upper(0,2) = 2;
+      upper(0,3) = 3;
+      upper(1,2) = 4;
+      upper(1,3) = 5;
+      upper(2,3) = 6;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 4UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 || upper(0,3) != 3 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 || upper(2,3) != 6 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 1 4 5 )\n( 0 0 1 6 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Erasing a selection of elements
+      upper.erase( 3UL, upper.begin( 3UL ), upper.find( 3UL, 3UL ),
+                   []( int value ){ return value == 3 || value == 6; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 7UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 2UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 4 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase from an empty range
+      upper.erase( 3UL, upper.begin( 3UL ), upper.begin( 3UL ), []( int ){ return true; } );
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkCapacity( upper, 7UL );
+      checkNonZeros( upper, 7UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 2UL );
+
+      if( upper(0,0) != 1 || upper(0,2) != 2 ||
+          upper(1,1) != 1 || upper(1,2) != 4 || upper(1,3) != 5 ||
+          upper(2,2) != 1 ||
+          upper(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing from an empty range failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 0 2 0 )\n( 0 1 4 5 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
