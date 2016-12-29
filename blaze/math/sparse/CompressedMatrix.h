@@ -2005,7 +2005,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases a range of element from the compressed matrix. In case the storage order
+// This function erases a range of elements from the compressed matrix. In case the storage order
 // is set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
 // flag is set to \a columnMajor the function erases a range of elements from column \a i.
 */
@@ -2033,17 +2033,20 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all matrix elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and that have an even column index:
+// This function erases specific elements from the compressed matrix. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove
+// all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
-   A.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   A.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   A.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type    // Data type of the matrix
         , bool SO >        // Storage order
@@ -2051,7 +2054,10 @@ template< typename Pred >  // Type of the unary predicate
 inline void CompressedMatrix<Type,SO>::erase( Pred predicate )
 {
    for( size_t i=0UL; i<m_; ++i ) {
-      end_[i] = std::remove_if( begin_[i], end_[i], predicate );
+      end_[i] = std::remove_if( begin_[i], end_[i],
+                                [predicate=predicate]( const Element& element) {
+                                   return predicate( element.value() );
+                                } );
    }
 }
 //*************************************************************************************************
@@ -2066,20 +2072,23 @@ inline void CompressedMatrix<Type,SO>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void
 //
-// This function erases all matrix elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates
-// how to remove all elements from a row of a row-major matrix that are smaller than a
-// certain threshold value and that have an even column index:
+// This function erases specific elements from a range of elements of the compressed matrix. The
+// elements are selected by the given unary predicate \a predicate, which is expected to accept
+// a single argument of the type of the elements and to be pure. In case the storage order is
+// set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
+// flag is set to \a columnMajor the function erases a range of elements from column \a i. The
+// following example demonstrates how to remove all elements that are smaller than a certain
+// threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
-   A.erase( 2UL, A.begin(2UL), A.end(2UL),
-            []( const auto& element ){ return element.value() < 1E-8; } );
-   A.erase( 2UL, A.begin(2UL), A.end(2UL),
-            []( const auto& element ){ return element.index() % 2U == 0U; } );
+   A.erase( 2UL, A.begin(2UL), A.end(2UL), []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type    // Data type of the matrix
         , bool SO >        // Storage order
@@ -2091,7 +2100,11 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, Iterator first, Iterator
    BLAZE_USER_ASSERT( first >= begin_[i] && first <= end_[i], "Invalid compressed matrix iterator" );
    BLAZE_USER_ASSERT( last  >= begin_[i] && last  <= end_[i], "Invalid compressed matrix iterator" );
 
-   end_[i] = std::move( last, end_[i], std::remove_if( first, last, predicate ) );
+   end_[i] = std::move( last, end_[i],
+                        std::remove_if( first, last,
+                                        [predicate=predicate]( const Element& element ) {
+                                           return predicate( element.value() );
+                                        } ) );
 }
 //*************************************************************************************************
 
@@ -4536,24 +4549,30 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all matrix elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and that have an even row index:
+// This function erases specific elements from the compressed matrix. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove
+// all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
-   A.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   A.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   A.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type >  // Data type of the matrix
 template< typename Pred >  // Type of the unary predicate
 inline void CompressedMatrix<Type,true>::erase( Pred predicate )
 {
    for( size_t j=0UL; j<n_; ++j ) {
-      end_[j] = std::remove_if( begin_[j], end_[j], predicate );
+      end_[j] = std::remove_if( begin_[j], end_[j],
+                                [predicate=predicate]( const Element& element ) {
+                                   return predicate( element.value() );
+                                } );
    }
 }
 /*! \endcond */
@@ -4570,20 +4589,20 @@ inline void CompressedMatrix<Type,true>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void
 //
-// This function erases all matrix elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates
-// how to remove all elements from a column of a column-major matrix that are smaller than
-// a certain threshold value and that have an even row index:
+// This function erases specific elements from a range of elements of the compressed matrix.
+// The elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. The following example
+// demonstrates how to remove all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
-   A.erase( 2UL, A.begin(2UL), A.end(2UL),
-            []( const auto& element ){ return element.value() < 1E-8; } );
-   A.erase( 2UL, A.begin(2UL), A.end(2UL),
-            []( const auto& element ){ return element.index() % 2U == 0U; } );
+   A.erase( 2UL, A.begin(2UL), A.end(2UL), []( double vaue ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type >  // Data type of the matrix
 template< typename Pred >  // Type of the unary predicate
@@ -4594,7 +4613,11 @@ inline void CompressedMatrix<Type,true>::erase( size_t j, Iterator first, Iterat
    BLAZE_USER_ASSERT( first >= begin_[j] && first <= end_[j], "Invalid compressed matrix iterator" );
    BLAZE_USER_ASSERT( last  >= begin_[j] && last  <= end_[j], "Invalid compressed matrix iterator" );
 
-   end_[j] = std::move( last, end_[j], std::remove_if( first, last, predicate ) );
+   end_[j] = std::move( last, end_[j],
+                        std::remove_if( first, last,
+                                        [predicate=predicate]( const Element& element ) {
+                                           return predicate( element.value() );
+                                        } ) );
 }
 /*! \endcond */
 //*************************************************************************************************
