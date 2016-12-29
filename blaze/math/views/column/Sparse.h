@@ -79,11 +79,13 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/Unused.h>
@@ -204,11 +206,23 @@ class Column<MT,true,false,SF>
                               inline void     reset();
                               inline Iterator set    ( size_t index, const ElementType& value );
                               inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     erase  ( size_t index );
-                              inline Iterator erase  ( Iterator pos );
-                              inline Iterator erase  ( Iterator first, Iterator last );
                               inline void     reserve( size_t n );
    template< typename Other > inline Column&  scale  ( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index );
+   inline Iterator erase( Iterator pos );
+   inline Iterator erase( Iterator first, Iterator last );
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1262,65 +1276,6 @@ inline typename Column<MT,true,false,SF>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse column.
-//
-// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the sparse column.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SF >    // Symmetry flag
-inline void Column<MT,true,false,SF>::erase( size_t index )
-{
-   matrix_.erase( index, col_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse column.
-//
-// \param pos Iterator to the element to be erased.
-// \return void
-//
-// This function erases an element from the sparse column.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SF >    // Symmetry flag
-inline typename Column<MT,true,false,SF>::Iterator Column<MT,true,false,SF>::erase( Iterator pos )
-{
-   return matrix_.erase( col_, pos );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the sparse column.
-//
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of elements from the sparse column.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SF >    // Symmetry flag
-inline typename Column<MT,true,false,SF>::Iterator
-   Column<MT,true,false,SF>::erase( Iterator first, Iterator last )
-{
-   return matrix_.erase( col_, first, last );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse column.
 //
 // \param n The new minimum capacity of the sparse column.
@@ -1388,6 +1343,144 @@ inline size_t Column<MT,true,false,SF>::extendCapacity() const noexcept
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
 
    return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse column.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SF >    // Symmetry flag
+inline void Column<MT,true,false,SF>::erase( size_t index )
+{
+   matrix_.erase( index, col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse column.
+//
+// \param pos Iterator to the element to be erased.
+// \return void
+//
+// This function erases an element from the sparse column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SF >    // Symmetry flag
+inline typename Column<MT,true,false,SF>::Iterator Column<MT,true,false,SF>::erase( Iterator pos )
+{
+   return matrix_.erase( col_, pos );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse column.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the sparse column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SF >    // Symmetry flag
+inline typename Column<MT,true,false,SF>::Iterator
+   Column<MT,true,false,SF>::erase( Iterator first, Iterator last )
+{
+   return matrix_.erase( col_, first, last );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the sparse column.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from the sparse column. The elements are selected by the
+// given unary predicate \a predicate, which is expected to accept a single argument of the type
+// of the elements and to be pure. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SF >      // Symmetry flag
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void Column<MT,true,false,SF>::erase( Pred predicate )
+{
+   matrix_.erase( col_, begin(), end(), predicate );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the sparse column.
+//
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from a range of elements of the sparse column. The
+// elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. The following example
+// demonstrates how to remove all elements that are smaller than a certain threshold value:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( col2.begin(), col2.end(), []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the sparse matrix
+        , bool SF >        // Symmetry flag
+template< typename Pred >  // Type of the unary predicate
+inline void Column<MT,true,false,SF>::erase( Iterator first, Iterator last, Pred predicate )
+{
+   matrix_.erase( col_, first, last, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2282,11 +2375,23 @@ class Column<MT,false,false,false>
                               inline void     reset();
                               inline Iterator set    ( size_t index, const ElementType& value );
                               inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     erase  ( size_t index );
-                              inline Iterator erase  ( Iterator pos );
-                              inline Iterator erase  ( Iterator first, Iterator last );
                               inline void     reserve( size_t n );
    template< typename Other > inline Column&  scale  ( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index );
+   inline Iterator erase( Iterator pos );
+   inline Iterator erase( Iterator first, Iterator last );
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -3133,6 +3238,60 @@ inline typename Column<MT,false,false,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse column.
+//
+// \param n The new minimum capacity of the sparse column.
+// \return void
+//
+// This function increases the capacity of the sparse column to at least \a n elements. The
+// current values of the column elements are preserved.
+*/
+template< typename MT >  // Type of the sparse matrix
+void Column<MT,false,false,false>::reserve( size_t n )
+{
+   UNUSED_PARAMETER( n );
+
+   return;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the column scaling.
+// \return Reference to the sparse column.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline Column<MT,false,false,false>& Column<MT,false,false,false>::scale( const Other& scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Erasing an element from the sparse column.
 //
 // \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
@@ -3199,20 +3358,36 @@ inline typename Column<MT,false,false,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse column.
+/*!\brief Erasing specific elements from the sparse column.
 //
-// \param n The new minimum capacity of the sparse column.
-// \return void
+// \param predicate The unary predicate for the element selection.
+// \return void.
 //
-// This function increases the capacity of the sparse column to at least \a n elements. The
-// current values of the column elements are preserved.
+// This function erases specific elements from the sparse column. The elements are selected by the
+// given unary predicate \a predicate, which is expected to accept a single argument of the type
+// of the elements and to be pure. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value:
+
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT >  // Type of the sparse matrix
-void Column<MT,false,false,false>::reserve( size_t n )
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void Column<MT,false,false,false>::erase( Pred predicate )
 {
-   UNUSED_PARAMETER( n );
-
-   return;
+   for( Iterator element=begin(); element!=end(); ++element ) {
+      if( predicate( element->value() ) )
+         matrix_.erase( element.row_, element.pos_ );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3220,24 +3395,38 @@ void Column<MT,false,false,false>::reserve( size_t n )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+/*!\brief Erasing specific elements from a range of the sparse column.
 //
-// \param scalar The scalar value for the column scaling.
-// \return Reference to the sparse column.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
-*/
-template< typename MT >     // Type of the sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline Column<MT,false,false,false>& Column<MT,false,false,false>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+// This function erases specific elements from a range of elements of the sparse column.
+// The elements are selected by the given unary predicate \a predicate, which is expected
+// to accept a single argument of the type of the elements and to be pure. The following
+// example demonstrates how to remove all elements that are smaller than a certain
+// threshold value:
 
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
+   \code
+   blaze::CompressedMatrix<double,blaze::columnMajor> A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( col2.begin(), col2.end(), []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT >    // Type of the sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void Column<MT,false,false,false>::erase( Iterator first, Iterator last, Pred predicate )
+{
+   for( ; first!=last; ++first ) {
+      if( predicate( first->value() ) )
+         matrix_.erase( first.row_, first.pos_ );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3759,11 +3948,23 @@ class Column<MT,false,false,true>
                               inline void     reset();
                               inline Iterator set    ( size_t index, const ElementType& value );
                               inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     erase  ( size_t index );
-                              inline Iterator erase  ( Iterator pos );
-                              inline Iterator erase  ( Iterator first, Iterator last );
                               inline void     reserve( size_t n );
    template< typename Other > inline Column&  scale  ( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index );
+   inline Iterator erase( Iterator pos );
+   inline Iterator erase( Iterator first, Iterator last );
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -4802,63 +5003,6 @@ inline typename Column<MT,false,false,true>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse column.
-//
-// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the sparse column.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline void Column<MT,false,false,true>::erase( size_t index )
-{
-   matrix_.erase( col_, index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the sparse column.
-//
-// \param pos Iterator to the element to be erased.
-// \return void
-//
-// This function erases an element from the sparse column.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline typename Column<MT,false,false,true>::Iterator
-   Column<MT,false,false,true>::erase( Iterator pos )
-{
-   return matrix_.erase( col_, pos );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the sparse column.
-//
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of elements from the sparse column.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline typename Column<MT,false,false,true>::Iterator
-   Column<MT,false,false,true>::erase( Iterator first, Iterator last )
-{
-   return matrix_.erase( col_, first, last );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse column.
 //
 // \param n The new minimum capacity of the sparse column.
@@ -4923,6 +5067,140 @@ inline size_t Column<MT,false,false,true>::extendCapacity() const noexcept
    BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
 
    return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse column.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void Column<MT,false,false,true>::erase( size_t index )
+{
+   matrix_.erase( col_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse column.
+//
+// \param pos Iterator to the element to be erased.
+// \return void
+//
+// This function erases an element from the sparse column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename Column<MT,false,false,true>::Iterator
+   Column<MT,false,false,true>::erase( Iterator pos )
+{
+   return matrix_.erase( col_, pos );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse column.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the sparse column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename Column<MT,false,false,true>::Iterator
+   Column<MT,false,false,true>::erase( Iterator first, Iterator last )
+{
+   return matrix_.erase( col_, first, last );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the sparse column.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from the sparse column. The elements are selected by the
+// given unary predicate \a predicate, which is expected to accept a single argument of the type
+// of the elements and to be pure. The following example demonstrates how to remove all elements
+// that are smaller than a certain threshold value:
+
+   \code
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void Column<MT,false,false,true>::erase( Pred predicate )
+{
+   matrix_.erase( col_, begin(), end(), predicate );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the sparse column.
+//
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from a range of elements of the sparse column. The
+// elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. The following example
+// demonstrates how to remove all elements that are smaller than a certain threshold value:
+
+   \code
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<double,blaze::columnMajor> > A;
+   // ... Resizing and initialization
+
+   auto col2 = column( A, 2UL );
+   col2.erase( col2.begin(), col2.end(), []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT >    // Type of the sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void Column<MT,false,false,true>::erase( Iterator first, Iterator last, Pred predicate )
+{
+   matrix_.erase( col_, first, last, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
