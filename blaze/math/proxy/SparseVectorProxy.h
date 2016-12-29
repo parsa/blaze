@@ -48,7 +48,9 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/Unused.h>
 
 
@@ -114,13 +116,25 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
    inline Iterator set( size_t index, const ElementType& value ) const;
    inline Iterator insert( size_t index, const ElementType& value ) const;
    inline void     append( size_t index, const ElementType& value, bool check=false ) const;
-   inline void     erase( size_t index ) const;
-   inline Iterator erase( Iterator pos ) const;
-   inline Iterator erase( Iterator first, Iterator last ) const;
    inline void     resize( size_t n, bool preserve=true ) const;
    inline void     reserve( size_t n ) const;
 
    template< typename Other > inline void scale( const Other& scalar ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t index ) const;
+   inline Iterator erase( Iterator pos ) const;
+   inline Iterator erase( Iterator first, Iterator last ) const;
+
+   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -359,7 +373,7 @@ inline void SparseVectorProxy<PT,VT>::clear() const
 // \param value The value of the element to be set.
 // \return Reference to the set value.
 // \exception std::invalid_argument Invalid access to restricted element.
-// \exception std::invalid_argument Invalid compressed vector access index.
+// \exception std::invalid_argument Invalid sparse vector access index.
 //
 // This function sets the value of an element of the sparse vector. In case the sparse vector
 // already contains an element with index \a index its value is modified, else a new element
@@ -386,7 +400,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 // \param value The value of the element to be inserted.
 // \return Reference to the inserted value.
 // \exception std::invalid_argument Invalid access to restricted element.
-// \exception std::invalid_argument Invalid compressed vector access index.
+// \exception std::invalid_argument Invalid sparse vector access index.
 //
 // This function inserts a new element into the sparse vector. However, duplicate elements are
 // not allowed. In case the sparse vector already contains an element with index \a index, a
@@ -415,12 +429,12 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 // \return void
 // \exception std::invalid_argument Invalid access to restricted element.
 //
-// This function provides a very efficient way to fill a compressed vector with elements. It
-// appends a new element to the end of the compressed vector without any memory allocation.
+// This function provides a very efficient way to fill a sparse vector with elements. It
+// appends a new element to the end of the sparse vector without any memory allocation.
 // Therefore it is strictly necessary to keep the following preconditions in mind:
 //
 //  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the compressed vector
+//    elements in the sparse vector
 //  - the current number of non-zero elements must be smaller than the capacity of the vector
 //
 // Ignoring these preconditions might result in undefined behavior! The optional \a check
@@ -443,6 +457,86 @@ inline void SparseVectorProxy<PT,VT>::append( size_t index, const ElementType& v
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Changing the size of the represented vector.
+//
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Invalid access to restricted element.
+//
+// This function changes the size of the vector. Depending on the type of the vector, during this
+// operation new dynamic memory may be allocated in case the capacity of the vector is too small.
+// Note that this function may invalidate all existing views (subvectors, ...) on the vector if
+// it is used to shrink the vector. Additionally, the resize() operation potentially
+// changes all vector elements. In order to preserve the old vector values, the \a preserve flag
+// can be set to \a true.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+inline void SparseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   (~*this).get().resize( n, preserve );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the minimum capacity of the represented vector.
+//
+// \param n The new minimum capacity of the vector.
+// \return void
+// \exception std::invalid_argument Invalid access to restricted element.
+//
+// This function increases the capacity of the sparse vector to at least \a n elements. The
+// current values of the vector elements are preserved.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+inline void SparseVectorProxy<PT,VT>::reserve( size_t n ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   (~*this).get().reserve( n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of the sparse vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return void
+// \exception std::invalid_argument Invalid access to restricted element.
+*/
+template< typename PT       // Type of the proxy
+        , typename VT >     // Type of the sparse vector
+template< typename Other >  // Data type of the scalar value
+inline void SparseVectorProxy<PT,VT>::scale( const Other& scalar ) const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   (~*this).get().scale( scalar );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Erasing an element from the sparse vector.
@@ -489,7 +583,7 @@ inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::era
 
 
 //*************************************************************************************************
-/*!\brief Erasing a range of elements from the compressed vector.
+/*!\brief Erasing a range of elements from the sparse vector.
 //
 // \param first Iterator to first element to be erased.
 // \param last Iterator just past the last element to be erased.
@@ -513,73 +607,58 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Changing the size of the represented vector.
+/*!\brief Erasing specific elements from the sparse vector.
 //
-// \param n The new size of the vector.
-// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
-// \return void
-// \exception std::invalid_argument Invalid access to restricted element.
+// \param predicate The unary predicate for the element selection.
+// \return void.
 //
-// This function changes the size of the vector. Depending on the type of the vector, during this
-// operation new dynamic memory may be allocated in case the capacity of the vector is too small.
-// Note that this function may invalidate all existing views (subvectors, ...) on the vector if
-// it is used to shrink the vector. Additionally, the resize() operation potentially
-// changes all vector elements. In order to preserve the old vector values, the \a preserve flag
-// can be set to \a true.
+// This function erases specific elements from the sparse vector. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument
+// of the type of the elements and to be pure.
+//
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
-inline void SparseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
+template< typename Pred  // Type of the unary predicate
+        , typename >     // Type restriction on the unary predicate
+inline void SparseVectorProxy<PT,VT>::erase( Pred predicate )
 {
    if( (~*this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().resize( n, preserve );
+   return (~*this).get().erase( predicate );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Setting the minimum capacity of the represented vector.
+/*!\brief Erasing specific elements from a range of the sparse vector.
 //
-// \param n The new minimum capacity of the vector.
-// \return void
-// \exception std::invalid_argument Invalid access to restricted element.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void.
 //
-// This function increases the capacity of the compressed vector to at least \a n elements. The
-// current values of the vector elements are preserved.
+// This function erases specific elements from a range of elements of the sparse vector. The
+// elements are selected by the given unary predicate \a predicate, which is expected to accept
+// a single argument of the type of the elements and to be pure.
+//
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename PT    // Type of the proxy
-        , typename VT >  // Type of the sparse vector
-inline void SparseVectorProxy<PT,VT>::reserve( size_t n ) const
+template< typename PT      // Type of the proxy
+        , typename VT >    // Type of the sparse vector
+template< typename Pred >  // Type of the unary predicate
+inline void SparseVectorProxy<PT,VT>::erase( Iterator first, Iterator last, Pred predicate )
 {
    if( (~*this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().reserve( n );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scaling of the sparse vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return void
-// \exception std::invalid_argument Invalid access to restricted element.
-*/
-template< typename PT       // Type of the proxy
-        , typename VT >     // Type of the sparse vector
-template< typename Other >  // Data type of the scalar value
-inline void SparseVectorProxy<PT,VT>::scale( const Other& scalar ) const
-{
-   if( (~*this).isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
-   }
-
-   (~*this).get().scale( scalar );
+   return (~*this).get().erase( first, last, predicate );
 }
 //*************************************************************************************************
 
@@ -601,9 +680,9 @@ inline void SparseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 // This function can be used to check whether a specific element is contained in the sparse
 // vector. It specifically searches for the element with index \a index. In case the element
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
-// the last non-zero element of the compressed vector (the end() iterator) is returned. Note
-// that the returned compressed vector iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
+// the last non-zero element of the sparse vector (the end() iterator) is returned. Note that
+// the returned sparse vector iterator is subject to invalidation due to inserting operations
+// via the subscript operator or the insert() function!
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
@@ -623,9 +702,9 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 //
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
-// pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// pair of iterators specifying a range of indices. Note that the returned sparse vector iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
@@ -645,9 +724,9 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 //
 // This function returns an iterator to the first element with an index greater then the given
 // index. In combination with the lowerBound() function this function can be used to create a
-// pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// pair of iterators specifying a range of indices. Note that the returned sparse vector iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
 */
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
