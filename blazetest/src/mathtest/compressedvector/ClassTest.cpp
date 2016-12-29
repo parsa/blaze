@@ -2743,54 +2743,37 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value
-      vec.erase( []( const auto& element ){ return element.value() % 2 == 0; } );
+      // Erasing a selection of elements
+      vec.erase( []( int value ){ return value == 1 || value == 3 || value == 5; } );
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 3UL );
+      checkNonZeros( vec, 2UL );
 
-      if( vec[0] != 1 || vec[5] != 3 || vec[8] != 5 ) {
+      if( vec[2] != 2 || vec[7] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 1 0 0 0 0 3 0 0 5 )\n";
+             << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even index
-      vec.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+      // Trying to erase all elements with value 1
+      vec.erase( []( int value ){ return value == 1; } );
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 1UL );
+      checkNonZeros( vec, 2UL );
 
-      if( vec[5] != 3 ) {
+      if( vec[2] != 2 || vec[7] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
+             << " Error: Erasing all elements with value 1 failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 3 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase all elements with value 2
-      vec.erase( []( const auto& element ){ return element.value() == 2; } );
-
-      checkSize    ( vec, 9UL );
-      checkCapacity( vec, 5UL );
-      checkNonZeros( vec, 1UL );
-
-      if( vec[5] != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with value 2 failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 3 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2828,61 +2811,41 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value in the range from index 0 to index 5
+      // Erasing a selection of elements
       {
-         vec.erase( vec.find( 0UL ), vec.find( 5UL ),
-                    []( const auto& element ){ return element.value() % 2 == 0; } );
-
-         checkSize    ( vec, 9UL );
-         checkCapacity( vec, 5UL );
-         checkNonZeros( vec, 4UL );
-
-         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing all elements with even value in the range [0..5) failed\n"
-                << " Details:\n"
-                << "   Result:\n" << vec << "\n"
-                << "   Expected result:\n( 1 0 0 0 0 3 0 4 5 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing all elements with even index in the range from index 5 to the end
-      {
-         vec.erase( vec.find( 5UL ), vec.end(),
-                    []( const auto& element ){ return element.index() % 2 == 0; } );
+         vec.erase( vec.find( 2UL ), vec.find( 8UL ),
+                    []( int value ){ return value == 2 || value == 4; } );
 
          checkSize    ( vec, 9UL );
          checkCapacity( vec, 5UL );
          checkNonZeros( vec, 3UL );
 
-         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 ) {
+         if( vec[0] != 1 || vec[5] != 3 || vec[8] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing all elements with even value in the range [5..9) failed\n"
+                << " Error: Erasing a selection of elements failed\n"
                 << " Details:\n"
                 << "   Result:\n" << vec << "\n"
-                << "   Expected result:\n( 1 0 0 0 0 3 0 4 0 )\n";
+                << "   Expected result:\n( 1 0 0 0 0 3 0 0 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Trying to erase within an empty range
       {
-         vec.erase( vec.find( 5UL ), vec.find( 5UL ), []( const auto& ){ return true; } );
+         vec.erase( vec.find( 5UL ), vec.find( 5UL ), []( int ){ return true; } );
 
          checkSize    ( vec, 9UL );
          checkCapacity( vec, 5UL );
          checkNonZeros( vec, 3UL );
 
-         if( vec[0] != 1 || vec[5] != 3 || vec[7] != 4 ) {
+         if( vec[0] != 1 || vec[5] != 3 || vec[8] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << vec << "\n"
-                << "   Expected result:\n( 1 0 0 0 0 3 0 4 0 )\n";
+                << "   Expected result:\n( 1 0 0 0 0 3 0 0 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
