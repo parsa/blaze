@@ -539,9 +539,6 @@ class SymmetricMatrix<MT,SO,false,false>
                               inline void             clear();
                               inline Iterator         set( size_t i, size_t j, const ElementType& value );
                               inline Iterator         insert( size_t i, size_t j, const ElementType& value );
-                              inline void             erase( size_t i, size_t j );
-                              inline Iterator         erase( size_t i, Iterator pos );
-                              inline Iterator         erase( size_t i, Iterator first, Iterator last );
                               inline void             resize ( size_t n, bool preserve=true );
                               inline void             reserve( size_t nonzeros );
                               inline void             reserve( size_t i, size_t nonzeros );
@@ -552,6 +549,21 @@ class SymmetricMatrix<MT,SO,false,false>
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
    template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
                               inline void             swap( SymmetricMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline void     erase( size_t i, size_t j );
+   inline Iterator erase( size_t i, Iterator pos );
+   inline Iterator erase( size_t i, Iterator first, Iterator last );
+
+   template< typename Pred >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1817,110 +1829,6 @@ inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the symmetric matrix.
-//
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases both elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ from the symmetric matrix.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline void SymmetricMatrix<MT,SO,false,false>::erase( size_t i, size_t j )
-{
-   matrix_.erase( i, j );
-   if( i != j )
-      matrix_.erase( j, i );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the symmetric matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases both the specified element and its according symmetric counterpart from
-// the symmetric matrix. In case the storage order is set to \a rowMajor the given index \a i
-// refers to a row, in case the storage flag is set to \a columnMajor \a i refers to a column.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
-   SymmetricMatrix<MT,SO,false,false>::erase( size_t i, Iterator pos )
-{
-   if( pos == end( i ) )
-      return pos;
-
-   const size_t j( pos->index() );
-
-   if( i == j )
-      return Iterator( matrix_.erase( i, pos.base() ) );
-
-   if( SO ) {
-      BLAZE_INTERNAL_ASSERT( matrix_.find( i, j ) != matrix_.end( j ), "Missing element detected" );
-      matrix_.erase( j, matrix_.find( i, j ) );
-      return Iterator( matrix_.erase( i, pos.base() ) );
-   }
-   else {
-      BLAZE_INTERNAL_ASSERT( matrix_.find( j, i ) != matrix_.end( j ), "Missing element detected" );
-      matrix_.erase( j, matrix_.find( j, i ) );
-      return Iterator( matrix_.erase( i, pos.base() ) );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the symmetric matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases both the range of elements specified by the iterator pair \a first and
-// \a last and their according symmetric counterparts from the symmetric matrix. In case the
-// storage order is set to \a rowMajor the given index \a i refers to a row, in case the storage
-// flag is set to \a columnMajor \a i refers to a column.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
-   SymmetricMatrix<MT,SO,false,false>::erase( size_t i, Iterator first, Iterator last )
-{
-   for( Iterator it=first; it!=last; ++it )
-   {
-      const size_t j( it->index() );
-
-      if( i == j )
-         continue;
-
-      if( SO ) {
-         BLAZE_INTERNAL_ASSERT( matrix_.find( i, j ) != matrix_.end( j ), "Missing element detected" );
-         matrix_.erase( i, j );
-      }
-      else {
-         BLAZE_INTERNAL_ASSERT( matrix_.find( j, i ) != matrix_.end( j ), "Missing element detected" );
-         matrix_.erase( j, i );
-      }
-   }
-
-   return Iterator( matrix_.erase( i, first.base(), last.base() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the symmetric matrix.
 //
 // \param n The new number of rows and columns of the matrix.
@@ -2135,6 +2043,193 @@ inline void SymmetricMatrix<MT,SO,false,false>::swap( SymmetricMatrix& m ) noexc
    using std::swap;
 
    swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the symmetric matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases both elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ from the symmetric matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void SymmetricMatrix<MT,SO,false,false>::erase( size_t i, size_t j )
+{
+   matrix_.erase( i, j );
+   if( i != j )
+      matrix_.erase( j, i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the symmetric matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases both the specified element and its according symmetric counterpart from
+// the symmetric matrix. In case the storage order is set to \a rowMajor the given index \a i
+// refers to a row, in case the storage flag is set to \a columnMajor \a i refers to a column.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
+   SymmetricMatrix<MT,SO,false,false>::erase( size_t i, Iterator pos )
+{
+   if( pos == end( i ) )
+      return pos;
+
+   const size_t j( pos->index() );
+
+   if( i == j )
+      return Iterator( matrix_.erase( i, pos.base() ) );
+
+   if( SO ) {
+      BLAZE_INTERNAL_ASSERT( matrix_.find( i, j ) != matrix_.end( j ), "Missing element detected" );
+      matrix_.erase( j, matrix_.find( i, j ) );
+      return Iterator( matrix_.erase( i, pos.base() ) );
+   }
+   else {
+      BLAZE_INTERNAL_ASSERT( matrix_.find( j, i ) != matrix_.end( j ), "Missing element detected" );
+      matrix_.erase( j, matrix_.find( j, i ) );
+      return Iterator( matrix_.erase( i, pos.base() ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the symmetric matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases both the range of elements specified by the iterator pair \a first and
+// \a last and their according symmetric counterparts from the symmetric matrix. In case the
+// storage order is set to \a rowMajor the given index \a i refers to a row, in case the storage
+// flag is set to \a columnMajor \a i refers to a column.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
+   SymmetricMatrix<MT,SO,false,false>::erase( size_t i, Iterator first, Iterator last )
+{
+   for( Iterator it=first; it!=last; ++it )
+   {
+      const size_t j( it->index() );
+
+      if( i == j )
+         continue;
+
+      if( SO ) {
+         BLAZE_INTERNAL_ASSERT( matrix_.find( i, j ) != matrix_.end( j ), "Missing element detected" );
+         matrix_.erase( i, j );
+      }
+      else {
+         BLAZE_INTERNAL_ASSERT( matrix_.find( j, i ) != matrix_.end( j ), "Missing element detected" );
+         matrix_.erase( j, i );
+      }
+   }
+
+   return Iterator( matrix_.erase( i, first.base(), last.base() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the symmetric matrix.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from the symmetric matrix. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure.
+//
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void SymmetricMatrix<MT,SO,false,false>::erase( Pred predicate )
+{
+   matrix_.erase( [predicate=predicate]( const SharedValue<ET>& value ) {
+                     return predicate( *value );
+                  } );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the symmetric matrix.
+//
+// \param i The row/column index of the elements to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void
+//
+// This function erases specific elements from a range of elements of the symmetric matrix. The
+// elements are selected by the given unary predicate \a predicate, which is expected to accept
+// a single argument of the type of the elements and to be pure. In case the storage order is
+// set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
+// flag is set to \a columnMajor the function erases a range of elements from column \a i.
+//
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void
+   SymmetricMatrix<MT,SO,false,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+{
+   for( Iterator it=first; it!=last; ++it ) {
+      const size_t j( it->index() );
+      if( i != j && predicate( it->value() ) ) {
+         if( SO )
+            matrix_.erase( i, j );
+         else
+            matrix_.erase( j, i );
+      }
+   }
+
+   matrix_.erase( i, first.base(), last.base(),
+                  [predicate=predicate]( const SharedValue<ET>& value ) {
+                     return predicate( *value );
+                  } );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
