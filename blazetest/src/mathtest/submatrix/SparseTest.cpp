@@ -7840,10 +7840,8 @@ void SparseTest::testErase()
 
       SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
-      // Erasing all elements with even value
-      sm.erase( []( const auto& element ) {
-                   return element.value() > 0 && element.value() % 2 == 0;
-                } );
+      // Erasing a selection of elements
+      sm.erase( []( int value ) { return value == 4 || value == 10; } );
 
       checkRows    ( sm  , 2UL );
       checkColumns ( sm  , 3UL );
@@ -7856,52 +7854,31 @@ void SparseTest::testErase()
           sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0  5 -6 )\n( -8  9  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even index
-      sm.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+      // Trying to erase all elements with value 1
+      sm.erase( []( int value ){ return value == 1; } );
 
       checkRows    ( sm  , 2UL );
       checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 2UL );
+      checkNonZeros( sm  , 4UL );
       checkRows    ( mat_, 5UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 6UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( sm(0,0) != 0 || sm(0,1) != 5 || sm(0,2) != 0 ||
-          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) != 0 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) != -6 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
+             << " Error: Erasing all elements with value 1 failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0  5  0 )\n( 0  9  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase all elements with value 2
-      sm.erase( []( const auto& element ){ return element.value() == 2; } );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 2UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 6UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != 5 || sm(0,2) != 0 ||
-          sm(1,0) != 0 || sm(1,1) != 9 || sm(1,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with value 2 failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0  5  0 )\n( 0  9  0 )\n";
+             << "   Expected result:\n(  0  5 -6 )\n( -8  9  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -7918,9 +7895,9 @@ void SparseTest::testErase()
 
       SMT sm = blaze::submatrix( mat_, 3UL, 1UL, 2UL, 3UL );
 
-      // Erasing all elements with even value in row 0
-      sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ),
-                []( const auto& element ) { return element.value() % 2 == 0; } );
+      // Erasing a selection of elements
+      sm.erase( 0UL, sm.begin( 0UL ), sm.find( 0UL, 2UL ),
+                []( int value ) { return value == 4 || value == 5; } );
 
       checkRows    ( sm  , 2UL );
       checkColumns ( sm  , 3UL );
@@ -7929,58 +7906,35 @@ void SparseTest::testErase()
       checkColumns ( mat_, 4UL );
       checkNonZeros( mat_, 8UL );
 
-      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
+      if( sm(0,0) !=  0 || sm(0,1) != 0 || sm(0,2) != -6 ||
           sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  5  0 )\n( -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing all elements with odd index in row 1
-      sm.erase( 1UL, sm.begin( 1UL ), sm.find( 1UL, 2UL ),
-                []( const auto& element ){ return element.index() % 2UL == 1UL; } );
-
-      checkRows    ( sm  , 2UL );
-      checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 3UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
-          sm(1,0) != -8 || sm(1,1) != 0 || sm(1,2) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with odd index failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  5  0 )\n( -8  0 10 )\n";
+             << "   Expected result:\n(  0  0 -6 )\n( -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase from an empty range
-      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ),
-                []( const auto& ){ return true; } );
+      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ), []( int ){ return true; } );
 
       checkRows    ( sm  , 2UL );
       checkColumns ( sm  , 3UL );
-      checkNonZeros( sm  , 3UL );
+      checkNonZeros( sm  , 4UL );
       checkRows    ( mat_, 5UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( sm(0,0) !=  0 || sm(0,1) != 5 || sm(0,2) !=  0 ||
-          sm(1,0) != -8 || sm(1,1) != 0 || sm(1,2) != 10 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != 0 || sm(0,2) != -6 ||
+          sm(1,0) != -8 || sm(1,1) != 9 || sm(1,2) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing from an empty range failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  5  0 )\n( -8  0 10 )\n";
+             << "   Expected result:\n(  0  0 -6 )\n( -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -8398,10 +8352,8 @@ void SparseTest::testErase()
 
       OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
-      // Erasing all elements with even value
-      sm.erase( []( const auto& element ) {
-                   return element.value() > 0 && element.value() % 2 == 0;
-                } );
+      // Erasing a selection of values
+      sm.erase( []( int value ) { return value == 4 || value == 10; } );
 
       checkRows    ( sm   , 3UL );
       checkColumns ( sm   , 2UL );
@@ -8415,54 +8367,32 @@ void SparseTest::testErase()
           sm(2,0) != -6 || sm(2,1) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
              << "   Expected result:\n(  0 -8 )\n(  5  9 )\n( -6  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even index
-      sm.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+      // Trying to erase all elements with value 1
+      sm.erase( []( int value ){ return value == 1; } );
 
       checkRows    ( sm   , 3UL );
       checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 2UL );
+      checkNonZeros( sm   , 4UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 6UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( sm(0,0) != 0 || sm(0,1) != 0 ||
-          sm(1,0) != 5 || sm(1,1) != 9 ||
-          sm(2,0) != 0 || sm(2,1) != 0 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != -8 ||
+          sm(1,0) !=  5 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
+             << " Error: Erasing all elements with value 1 failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 0 )\n( 5 9 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase all elements with value 2
-      sm.erase( []( const auto& element ){ return element.value() == 2; } );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 2UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 6UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != 0 ||
-          sm(1,0) != 5 || sm(1,1) != 9 ||
-          sm(2,0) != 0 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with value 2 failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 0 )\n( 5 9 )\n( 0 0 )\n";
+             << "   Expected result:\n(  0 -8 )\n(  5  9 )\n( -6  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -8479,9 +8409,9 @@ void SparseTest::testErase()
 
       OSMT sm = blaze::submatrix( tmat_, 1UL, 3UL, 3UL, 2UL );
 
-      // Erasing all elements with even value in column 0
-      sm.erase( 0UL, sm.begin( 0UL ), sm.end( 0UL ),
-                []( const auto& element ) { return element.value() % 2 == 0; } );
+      // Erasing a selection of elements
+      sm.erase( 0UL, sm.begin( 0UL ), sm.find( 2UL, 0UL ),
+                []( int value ) { return value == 4 || value == 5; } );
 
       checkRows    ( sm   , 3UL );
       checkColumns ( sm   , 2UL );
@@ -8490,61 +8420,37 @@ void SparseTest::testErase()
       checkColumns ( tmat_, 5UL );
       checkNonZeros( tmat_, 8UL );
 
-      if( sm(0,0) != 0 || sm(0,1) != -8 ||
-          sm(1,0) != 5 || sm(1,1) !=  9 ||
-          sm(2,0) != 0 || sm(2,1) != 10 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != -8 ||
+          sm(1,0) !=  0 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -8 )\n( 5  9 )\n( 0 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing all elements with odd index in column 1
-      sm.erase( 1UL, sm.begin( 1UL ), sm.find( 2UL, 1UL ),
-                []( const auto& element ){ return element.index() % 2UL == 1UL; } );
-
-      checkRows    ( sm   , 3UL );
-      checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 3UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -8 ||
-          sm(1,0) != 5 || sm(1,1) !=  0 ||
-          sm(2,0) != 0 || sm(2,1) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with odd index failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -8 )\n( 5  0 )\n( 0 10 )\n";
+             << "   Expected result:\n(  0 -8 )\n(  0  9 )\n( -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase from an empty range
-      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ),
-                []( const auto& ){ return true; } );
+      sm.erase( 1UL, sm.begin( 1UL ), sm.begin( 1UL ), []( int ){ return true; } );
 
       checkRows    ( sm   , 3UL );
       checkColumns ( sm   , 2UL );
-      checkNonZeros( sm   , 3UL );
+      checkNonZeros( sm   , 4UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( sm(0,0) != 0 || sm(0,1) != -8 ||
-          sm(1,0) != 5 || sm(1,1) !=  0 ||
-          sm(2,0) != 0 || sm(2,1) != 10 ) {
+      if( sm(0,0) !=  0 || sm(0,1) != -8 ||
+          sm(1,0) !=  0 || sm(1,1) !=  9 ||
+          sm(2,0) != -6 || sm(2,1) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing from an empty range failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -8 )\n( 5  0 )\n( 0 10 )\n";
+             << "   Expected result:\n(  0 -8 )\n(  0  9 )\n( -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
