@@ -1936,7 +1936,7 @@ inline typename Submatrix<MT,AF,false,false>::Iterator
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases a range of element from the sparse submatrix. In case the storage order
+// This function erases a range of elements from the sparse submatrix. In case the storage order
 // is set to \a rowMajor the function erases a range of elements element from row \a i, in case
 // the storage flag is set to \a columnMajor the function erases a range of elements from column
 // \a i.
@@ -1960,18 +1960,21 @@ inline typename Submatrix<MT,AF,false,false>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all submatrix elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and that have an even column index:
+// This function erases specific elements from the sparse submatrix. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove
+// all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
-   sm.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   sm.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sm.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
         , bool AF >        // Alignment flag
@@ -1979,12 +1982,7 @@ template< typename Pred >  // Type of the unary predicate
 inline void Submatrix<MT,AF,false,false>::erase( Pred predicate )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      matrix_.erase( row_+i, begin(i).base(), end(i).base(),
-                     [offset=column_,predicate=predicate]( const auto& element ) {
-                        using ElementType = RemoveReference_< decltype( element ) >;
-                        const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
-                        return predicate( tmp );
-                     } );
+      matrix_.erase( row_+i, begin(i).base(), end(i).base(), predicate );
    }
 }
 /*! \endcond */
@@ -2001,21 +1999,24 @@ inline void Submatrix<MT,AF,false,false>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void
 //
-// This function erases all submatrix elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates
-// how to remove all elements from a row of a row-major submatrix that are smaller than a
-// certain threshold value and that have an even column index:
+// This function erases specific elements from a range of elements of the sparse submatrix. The
+// elements are selected by the given unary predicate \a predicate, which is expected to accept
+// a single argument of the type of the elements and to be pure. In case the storage order is
+// set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
+// flag is set to \a columnMajor the function erases a range of elements from column \a i. The
+// following example demonstrates how to remove all elements that are smaller than a certain
+// threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
-   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
-             []( const auto& element ){ return element.value() < 1E-8; } );
-   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
-             []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL), []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
         , bool AF >        // Alignment flag
@@ -2023,13 +2024,7 @@ template< typename Pred >  // Type of the unary predicate
 inline void Submatrix<MT,AF,false,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-
-   matrix_.erase( row_+i, first.base(), last.base(),
-                  [offset=column_,predicate=predicate]( const auto& element ) {
-                     using ElementType = RemoveReference_< decltype( element ) >;
-                     const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
-                     return predicate( tmp );
-                  } );
+   matrix_.erase( row_+i, first.base(), last.base(), predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4438,7 +4433,7 @@ inline typename Submatrix<MT,AF,true,false>::Iterator
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases a range of element from column \a j of the sparse submatrix.
+// This function erases a range of elements from column \a j of the sparse submatrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
@@ -4459,18 +4454,21 @@ inline typename Submatrix<MT,AF,true,false>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all submatrix elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and that have an even row index:
+// This function erases specific elements from the sparse submatrix. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove
+// all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
    auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
-   sm.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   sm.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sm.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
         , bool AF >        // Alignment flag
@@ -4478,12 +4476,7 @@ template< typename Pred >  // Type of the unary predicate
 inline void Submatrix<MT,AF,true,false>::erase( Pred predicate )
 {
    for( size_t j=0UL; j<columns(); ++j ) {
-      matrix_.erase( column_+j, begin(j).base(), end(j).base(),
-                     [offset=row_,predicate=predicate]( const auto& element ) {
-                        using ElementType = RemoveReference_< decltype( element ) >;
-                        const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
-                        return predicate( tmp );
-                     } );
+      matrix_.erase( column_+j, begin(j).base(), end(j).base(), predicate );
    }
 }
 /*! \endcond */
@@ -4500,21 +4493,21 @@ inline void Submatrix<MT,AF,true,false>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void
 //
-// This function erases all submatrix elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates
-// how to remove all elements from a column of a column-major submatrix that are smaller than
-// a certain threshold value and that have an even row index:
+// This function erases specific elements from a range of elements of the sparse submatrix.
+// The elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. The following example
+// demonstrates how to remove all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
    auto sm = submatrix( A, 4UL, 3UL, 5UL, 7UL );
-   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
-             []( const auto& element ){ return element.value() < 1E-8; } );
-   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL),
-             []( const auto& element ){ return element.index() % 2U == 0U; } );
+   sm.erase( 2UL, sm.begin(2UL), sm.end(2UL), []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
         , bool AF >        // Alignment flag
@@ -4522,13 +4515,7 @@ template< typename Pred >  // Type of the unary predicate
 inline void Submatrix<MT,AF,true,false>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
-
-   matrix_.erase( column_+j, first.base(), last.base(),
-                  [offset=row_,predicate=predicate]( const auto& element ) {
-                     using ElementType = RemoveReference_< decltype( element ) >;
-                     const SubmatrixElement< const MT, ElementType* > tmp( &element, offset );
-                     return predicate( tmp );
-                  } );
+   matrix_.erase( column_+j, first.base(), last.base(), predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
