@@ -371,9 +371,6 @@ class UniLowerMatrix<MT,SO,false>
    inline void     clear();
    inline Iterator set( size_t i, size_t j, const ElementType& value );
    inline Iterator insert( size_t i, size_t j, const ElementType& value );
-   inline void     erase( size_t i, size_t j );
-   inline Iterator erase( size_t i, Iterator pos );
-   inline Iterator erase( size_t i, Iterator first, Iterator last );
    inline void     resize ( size_t n, bool preserve=true );
    inline void     reserve( size_t nonzeros );
    inline void     reserve( size_t i, size_t nonzeros );
@@ -383,6 +380,21 @@ class UniLowerMatrix<MT,SO,false>
 
    static inline constexpr size_t maxNonZeros() noexcept;
    static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t i, size_t j );
+   inline Iterator erase( size_t i, Iterator pos );
+   inline Iterator erase( size_t i, Iterator first, Iterator last );
+
+   template< typename Pred >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1543,93 +1555,6 @@ inline typename UniLowerMatrix<MT,SO,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the unilower matrix.
-//
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-// \exception std::invalid_argument Invalid access to diagonal matrix element.
-//
-// This function erases a non-diagonal element from the unilower matrix. The attempt to erase a
-// diagonal element will result in a \a std::invalid_argument exception.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline void UniLowerMatrix<MT,SO,false>::erase( size_t i, size_t j )
-{
-   if( i == j ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
-   }
-
-   matrix_.erase( i, j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the unilower matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-// \exception std::invalid_argument Invalid access to diagonal matrix element.
-//
-// This function erases a non-diagonal element from the unilower matrix. In case the unilower
-// matrix adapts a \a rowMajor sparse matrix the function erases an element from row \a i, in
-// case it adapts a \a columnMajor sparse matrix the function erases an element from column \a i.
-// The attempt to erase a diagonal element will result in a \a std::invalid_argument exception.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename UniLowerMatrix<MT,SO,false>::Iterator
-   UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
-{
-   if( pos != matrix_.end(i) && pos->index() == i ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
-   }
-
-   return Iterator( matrix_.erase( i, pos.base() ), i );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the unilower matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-// \exception std::invalid_argument Invalid access to diagonal matrix element.
-//
-// This function erases a range of elements from the unilower matrix. In case the unilower matrix
-// adapts a \a rowMajor sparse matrix the function erases a range of elements from row \a i, in
-// case it adapts a \a columnMajor matrix the function erases a range of elements from column \a i.
-// The attempt to erase a diagonal element will result in a \a std::invalid_argument exception.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename UniLowerMatrix<MT,SO,false>::Iterator
-   UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
-{
-   for( Iterator element=first; element!=last; ++element ) {
-      if( element->index() == i ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
-      }
-   }
-
-   return Iterator( matrix_.erase( i, first.base(), last.base() ), i );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the unilower matrix.
 //
 // \param n The new number of rows and columns of the matrix.
@@ -1832,6 +1757,199 @@ inline void UniLowerMatrix<MT,SO,false>::resetUpper()
       for( size_t i=0UL; i<rows(); ++i )
          matrix_.erase( i, matrix_.upperBound( i, i ), matrix_.end( i ) );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the unilower matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+// \exception std::invalid_argument Invalid access to diagonal matrix element.
+//
+// This function erases a non-diagonal element from the unilower matrix. The attempt to erase a
+// diagonal element will result in a \a std::invalid_argument exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void UniLowerMatrix<MT,SO,false>::erase( size_t i, size_t j )
+{
+   if( i == j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
+
+   matrix_.erase( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the unilower matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to diagonal matrix element.
+//
+// This function erases a non-diagonal element from the unilower matrix. In case the unilower
+// matrix adapts a \a rowMajor sparse matrix the function erases an element from row \a i, in
+// case it adapts a \a columnMajor sparse matrix the function erases an element from column \a i.
+// The attempt to erase a diagonal element will result in a \a std::invalid_argument exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename UniLowerMatrix<MT,SO,false>::Iterator
+   UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
+{
+   if( pos != matrix_.end(i) && pos->index() == i ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
+
+   return Iterator( matrix_.erase( i, pos.base() ), i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the unilower matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+// \exception std::invalid_argument Invalid access to diagonal matrix element.
+//
+// This function erases a range of elements from the unilower matrix. In case the unilower matrix
+// adapts a \a rowMajor sparse matrix the function erases a range of elements from row \a i, in
+// case it adapts a \a columnMajor matrix the function erases a range of elements from column \a i.
+// The attempt to erase a diagonal element will result in a \a std::invalid_argument exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename UniLowerMatrix<MT,SO,false>::Iterator
+   UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
+{
+   if( first == last )
+      return last;
+
+   if( ( !SO && last.base() == matrix_.end(i) ) ||
+       ( SO && first.base() == matrix_.begin(i) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
+
+   return Iterator( matrix_.erase( i, first.base(), last.base() ), i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the unilower matrix.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from the unilower matrix. The elements are selected by
+// the given unary predicate \a predicate, which is expected to accept a single argument of the
+// type of the elements and to be pure. The following example demonstrates how to remove all
+// elements that are smaller than a certain threshold value:
+
+   \code
+   blaze::UniLowerMatrix< CompressedMatrix<double,blaze::rowMajor> > A;
+   // ... Resizing and initialization
+
+   A.erase( []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void UniLowerMatrix<MT,SO,false>::erase( Pred predicate )
+{
+   if( SO ) {
+      for( size_t j=0UL; (j+1UL) < columns(); ++j ) {
+         matrix_.erase( j, matrix_.lowerBound(j+1UL,j), matrix_.end(j), predicate );
+      }
+   }
+   else {
+      for( size_t i=1UL; i<rows(); ++i ) {
+         matrix_.erase( i, matrix_.begin(i), matrix_.find(i,i), predicate );
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the unilower matrix.
+//
+// \param i The row/column index of the elements to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void
+// \exception std::invalid_argument Invalid access to diagonal matrix element.
+//
+// This function erases specific elements from a range of elements of the unilower matrix. The
+// elements are selected by the given unary predicate \a predicate, which is expected to accept
+// a single argument of the type of the elements and to be pure. In case the storage order is
+// set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
+// flag is set to \a columnMajor the function erases a range of elements from column \a i. The
+// following example demonstrates how to remove all elements that are smaller than a certain
+// threshold value:
+
+   \code
+   blaze::UniLowerMatrix< CompressedMatrix<double,blaze::rowMajor> > A;
+   // ... Resizing and initialization
+
+   A.erase( 2UL, A.begin(2UL), A.end(2UL), []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+// \note The attempt to erase a diagonal element will result in a \a std::invalid_argument
+// exception.
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+{
+   if( first == last )
+      return;
+
+   if( ( !SO && last.base() == matrix_.end(i) && predicate( ElementType(1) ) ) ||
+       ( SO && first.base() == matrix_.begin(i) && predicate( ElementType(1) ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
+
+   matrix_.erase( i, first.base(), last.base(), predicate );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
