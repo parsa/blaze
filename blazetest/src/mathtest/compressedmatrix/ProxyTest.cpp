@@ -76,7 +76,6 @@ ProxyTest::ProxyTest()
    testSet();
    testInsert();
    testAppend();
-   testErase();
    testResize();
    testExtend();
    testReserve();
@@ -85,6 +84,7 @@ ProxyTest::ProxyTest()
    testCTranspose();
    testInvert();
    testSwap();
+   testErase();
    testFind();
    testLowerBound();
    testUpperBound();
@@ -2539,305 +2539,6 @@ void ProxyTest::testAppend()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member functions of the MatrixAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c erase() member functions of the MatrixAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testErase()
-{
-   //=====================================================================================
-   // Row-major matrix tests with vector elements
-   //=====================================================================================
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( size_t )";
-
-      SVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).insert( 1UL, 5 );
-      mat(0,0).erase( 1UL );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
-
-      SVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).erase( mat(0,0).insert( 1UL, 5 ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( Iterator, Iterator )";
-
-      SVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).insert( 0UL, 1 );
-      mat(0,0).insert( 1UL, 2 );
-      mat(0,0).insert( 2UL, 3 );
-      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-
-   //=====================================================================================
-   // Row-major matrix tests with matrix elements
-   //=====================================================================================
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( size_t, size_t )";
-
-      SMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).insert( 0UL, 1UL, 5 );
-      mat(0,0).erase( 0UL, 1UL );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
-
-      SMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).erase( 0UL, mat(0,0).insert( 0UL, 1UL, 5 ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
-
-      SMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).insert( 0UL, 0UL, 1 );
-      mat(0,0).insert( 0UL, 1UL, 2 );
-      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests with vector elements
-   //=====================================================================================
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( size_t )";
-
-      OSVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).insert( 1UL, 5 );
-      mat(0,0).erase( 1UL );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
-
-      OSVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).erase( mat(0,0).insert( 1UL, 5 ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( Iterator, Iterator )";
-
-      OSVM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SV( 3UL, 1UL );
-      mat(0,0).insert( 0UL, 1 );
-      mat(0,0).insert( 1UL, 2 );
-      mat(0,0).insert( 2UL, 3 );
-      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkSize    ( mat(0,0), 3UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkSize    ( mat(0,1), 0UL );
-      checkSize    ( mat(1,0), 0UL );
-      checkSize    ( mat(1,1), 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests with matrix elements
-   //=====================================================================================
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( size_t, size_t )";
-
-      OSMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).insert( 0UL, 1UL, 5 );
-      mat(0,0).erase( 0UL, 1UL );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
-
-      OSMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).erase( 0UL, mat(0,0).insert( 0UL, 1UL, 5 ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-
-   {
-      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
-
-      OSMM mat( 2UL, 2UL, 1UL );
-      mat(0,0) = SM( 2UL, 2UL, 1UL );
-      mat(0,0).insert( 0UL, 0UL, 1 );
-      mat(0,0).insert( 0UL, 1UL, 2 );
-      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ) );
-
-      checkRows    ( mat, 2UL );
-      checkColumns ( mat, 2UL );
-      checkCapacity( mat, 1UL );
-      checkNonZeros( mat, 1UL );
-
-      checkRows    ( mat(0,0), 2UL );
-      checkColumns ( mat(0,0), 2UL );
-      checkNonZeros( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 0UL );
-      checkColumns ( mat(0,1), 0UL );
-      checkRows    ( mat(1,0), 0UL );
-      checkColumns ( mat(1,0), 0UL );
-      checkRows    ( mat(1,1), 0UL );
-      checkColumns ( mat(1,1), 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c resize() member functions of the MatrixAccessProxy class template.
 //
 // \return void
@@ -4059,6 +3760,483 @@ void ProxyTest::testSwap()
       checkSize    ( tmp     , 2UL );
       checkCapacity( tmp     , 2UL );
       checkNonZeros( tmp     , 2UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c erase() member functions of the MatrixAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c erase() member functions of the MatrixAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testErase()
+{
+   //=====================================================================================
+   // Row-major matrix tests with vector elements
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( size_t )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( 1UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).erase( mat(0,0).insert( 1UL, 5 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Iterator, Iterator )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 0UL, 1 );
+      mat(0,0).insert( 1UL, 2 );
+      mat(0,0).insert( 2UL, 3 );
+      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Predicate )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Iterator, Iterator, Predicate )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ), []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests with matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( 0UL, 1UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).erase( 0UL, mat(0,0).insert( 0UL, 1UL, 5 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Iterator )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 0UL, 1 );
+      mat(0,0).insert( 0UL, 1UL, 2 );
+      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( Predicate )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Row-major MatrixAccessProxy::erase( size_t, Iterator, Iterator, Predicate )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ),
+                      []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests with vector elements
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( size_t )";
+
+      OSVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( 1UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
+
+      OSVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).erase( mat(0,0).insert( 1UL, 5 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Iterator, Iterator )";
+
+      OSVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 0UL, 1 );
+      mat(0,0).insert( 1UL, 2 );
+      mat(0,0).insert( 2UL, 3 );
+      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Predicate )";
+
+      OSVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Iterator, Iterator, Predicate )";
+
+      OSVM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SV( 3UL, 1UL );
+      mat(0,0).insert( 1UL, 5 );
+      mat(0,0).erase( begin( mat(0,0) ), end( mat(0,0) ), []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests with matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( size_t, size_t )";
+
+      OSMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( 0UL, 1UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
+
+      OSMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).erase( 0UL, mat(0,0).insert( 0UL, 1UL, 5 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
+
+      OSMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 0UL, 1 );
+      mat(0,0).insert( 0UL, 1UL, 2 );
+      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( Predicate )";
+
+      OSMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+   }
+
+   {
+      test_ = "Column-major MatrixAccessProxy::erase( size_t, Iterator, Iterator, Predicate )";
+
+      OSMM mat( 2UL, 2UL, 1UL );
+      mat(0,0) = SM( 2UL, 2UL, 1UL );
+      mat(0,0).insert( 0UL, 1UL, 5 );
+      mat(0,0).erase( 0UL, begin( mat(0,0), 0UL ), end( mat(0,0), 0UL ),
+                      []( int value ){ return value == 5; } );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 2UL );
+      checkNonZeros( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
    }
 }
 //*************************************************************************************************

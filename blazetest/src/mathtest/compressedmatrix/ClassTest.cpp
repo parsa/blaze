@@ -9640,8 +9640,8 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value
-      mat.erase( []( const auto& element ){ return element.value() % 2 == 0; } );
+      // Erasing a selection of elements
+      mat.erase( []( int value ){ return value == 1 || value == 4 || value == 7; } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -9651,57 +9651,38 @@ void ClassTest::testErase()
       checkNonZeros( mat, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL );
 
-      if( mat(0,0) != 1 ||
+      if( mat(0,2) != 2 ||
           mat(1,1) != 3 || mat(1,4) != 5 ||
-          mat(2,4) != 7 ) {
+          mat(2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 0 0 )\n( 0 3 0 0 5 )\n( 0 0 0 0 7 )\n";
+             << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even index
-      mat.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+      // Trying to erase all elements with value 1
+      mat.erase( []( int value ){ return value == 1; } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 1UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
-      if( mat(1,1) != 3 ) {
+      if( mat(0,2) != 2 ||
+          mat(1,1) != 3 || mat(1,4) != 5 ||
+          mat(2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
+             << " Error: Erasing all elements with value 1 failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 3 0 0 0 )\n( 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase all elements with value 2
-      mat.erase( []( const auto& element ){ return element.value() == 2; } );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 1UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 0UL );
-
-      if( mat(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 0 0 )\n( 0 3 0 0 0 )\n( 0 0 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -9744,9 +9725,9 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value in row 1
+      // Erasing a selection of elements
       mat.erase( 1UL, mat.begin( 1UL ), mat.find( 1UL, 4UL ),
-                 []( const auto& element ){ return element.value() % 2 == 0; } );
+                 []( int value ){ return value == 4; } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -9761,57 +9742,33 @@ void ClassTest::testErase()
           mat(2,1) != 6 || mat(2,4) != 7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 7 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with odd index
-      mat.erase( 1UL, mat.begin( 1UL), mat.end( 1UL ),
-                 []( const auto& element ){ return element.index() % 2UL == 1UL; } );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(0,2) != 2 ||
-          mat(1,4) != 5 ||
-          mat(2,1) != 6 || mat(2,4) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with odd index failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 2 0 0 )\n( 0 0 0 0 5 )\n( 0 6 0 0 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       // Trying to erase from an empty range
-      mat.erase( 1UL, mat.begin( 1UL ), mat.begin( 1UL ), []( const auto& ){ return true; } );
+      mat.erase( 1UL, mat.begin( 1UL ), mat.begin( 1UL ), []( int ){ return true; } );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
       checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 6UL );
       checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(0,2) != 2 ||
-          mat(1,4) != 5 ||
+          mat(1,1) != 3 || mat(1,4) != 5 ||
           mat(2,1) != 6 || mat(2,4) != 7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing from an empty range failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 2 0 0 )\n( 0 0 0 0 5 )\n( 0 6 0 0 7 )\n";
+             << "   Expected result:\n( 1 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 7 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -10353,8 +10310,8 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value
-      mat.erase( []( const auto& element ){ return element.value() % 2 == 0; } );
+      // Erasing a selection of elements
+      mat.erase( []( int value ){ return value == 1 || value == 4 || value == 7; } );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -10364,57 +10321,38 @@ void ClassTest::testErase()
       checkNonZeros( mat, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL );
 
-      if( mat(0,0) != 1 ||
+      if( mat(2,0) != 2 ||
           mat(1,1) != 3 || mat(4,1) != 5 ||
-          mat(4,2) != 7 ) {
+          mat(1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 3 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
+             << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even index
-      mat.erase( []( const auto& element ){ return element.index() % 2UL == 0UL; } );
+      // Trying to erase all elements with value 1
+      mat.erase( []( int value ){ return value == 1; } );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 1UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
 
-      if( mat(1,1) != 3 ) {
+      if( mat(2,0) != 2 ||
+          mat(1,1) != 3 || mat(4,1) != 5 ||
+          mat(1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
+             << " Error: Erasing all elements with value 1 failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 3 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase all elements with value 2
-      mat.erase( []( const auto& element ){ return element.value() == 2; } );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 1UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 0UL );
-
-      if( mat(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 3 0 )\n( 0 0 0 )\n( 0 0 0 )\n( 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -10457,9 +10395,9 @@ void ClassTest::testErase()
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with even value in column 1
+      // Erasing a selection of elements
       mat.erase( 1UL, mat.begin( 1UL ), mat.find( 4UL, 1UL ),
-                 []( const auto& element ){ return element.value() % 2 == 0; } );
+                 []( int value ){ return value == 4; } );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -10474,57 +10412,33 @@ void ClassTest::testErase()
           mat(1,2) != 6 || mat(4,2) != 7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even value failed\n"
+             << " Error: Erasing a selection of elements failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Erasing all elements with odd index in column 1
-      mat.erase( 1UL, mat.begin( 1UL), mat.end( 1UL ),
-                 []( const auto& element ){ return element.index() % 2UL == 1UL; } );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 5UL );
-      checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(0,0) != 1 || mat(2,0) != 2 ||
-          mat(4,1) != 5 ||
-          mat(1,2) != 6 || mat(4,2) != 7 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing all elements with even index failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 0 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       // Trying to erase from an empty range
-      mat.erase( 1UL, mat.begin( 1UL ), mat.begin( 1UL ), []( const auto& ){ return true; } );
+      mat.erase( 1UL, mat.begin( 1UL ), mat.begin( 1UL ), []( int ){ return true; } );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
       checkCapacity( mat, 7UL );
-      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 6UL );
       checkNonZeros( mat, 0UL, 2UL );
-      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 2UL );
 
       if( mat(0,0) != 1 || mat(2,0) != 2 ||
-          mat(4,1) != 5 ||
+          mat(1,1) != 3 || mat(4,1) != 5 ||
           mat(1,2) != 6 || mat(4,2) != 7 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing from an empty range failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 0 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
+             << "   Expected result:\n( 1 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
