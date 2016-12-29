@@ -1516,17 +1516,20 @@ inline typename CompressedVector<Type,TF>::Iterator
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all vector elements that adhere to the condition specified by the given
-// unary predicate \a predicate. The following example demonstrates how to remove all elements
-// that are smaller than a certain threshold value and have an even index:
+// This function erases specific elements from the compressed vector. The elements are selected
+// by the given unary predicate \a predicate, which is expected to accept a single argument of
+// the type of the elements and to be pure. The following example demonstrates how to remove all
+// elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedVector<double> a;
    // ... Resizing and initialization
 
-   a.erase( []( const auto& element ){ return element.value() < 1E-8; } );
-   a.erase( []( const auto& element ){ return element.index() % 2U == 0U; } );
+   a.erase( []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1534,7 +1537,10 @@ template< typename Pred  // Type of the unary predicate
         , typename >     // Type restriction on the unary predicate
 inline void CompressedVector<Type,TF>::erase( Pred predicate )
 {
-   end_ = std::remove_if( begin_, end_, predicate );
+   end_ = std::remove_if( begin_, end_,
+                          [predicate=predicate]( const Element& element ) {
+                             return predicate( element.value() );
+                          } );
 }
 //*************************************************************************************************
 
@@ -1547,18 +1553,20 @@ inline void CompressedVector<Type,TF>::erase( Pred predicate )
 // \param predicate The unary predicate for the element selection.
 // \return void.
 //
-// This function erases all vector elements in the given range that adhere to the condition
-// specified by the given unary predicate \a predicate. The following example demonstrates
-// how to remove all elements that are smaller than a certain threshold value and have an even
-// index:
+// This function erases specific elements from a range of elements of the compressed vector.
+// The elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. The following example
+// demonstrates how to remove all elements that are smaller than a certain threshold value:
 
    \code
    blaze::CompressedVector<double> a;
    // ... Resizing and initialization
 
-   a.erase( a.begin(), a.end(), []( const auto& element ){ return element.value() < 1E-8; } );
-   a.erase( a.begin(), a.end(), []( const auto& element ){ return element.index() % 2U == 0U; } );
+   a.erase( a.begin(), a.end(), []( double value ){ return value < 1E-8; } );
    \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type    // Data type of the vector
         , bool TF >        // Transpose flag
@@ -1569,7 +1577,11 @@ inline void CompressedVector<Type,TF>::erase( Iterator first, Iterator last, Pre
    BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
    BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
 
-   end_ = std::move( last, end_, std::remove_if( first, last, predicate ) );
+   end_ = std::move( last, end_,
+                     std::remove_if( first, last,
+                                     [predicate=predicate]( const Element& element ) {
+                                        return predicate( element.value() );
+                                     } ) );
 }
 //*************************************************************************************************
 
