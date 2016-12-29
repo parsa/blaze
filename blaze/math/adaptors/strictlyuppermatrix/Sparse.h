@@ -229,9 +229,6 @@ class StrictlyUpperMatrix<MT,SO,false>
    inline void     clear();
    inline Iterator set( size_t i, size_t j, const ElementType& value );
    inline Iterator insert( size_t i, size_t j, const ElementType& value );
-   inline void     erase( size_t i, size_t j );
-   inline Iterator erase( size_t i, Iterator pos );
-   inline Iterator erase( size_t i, Iterator first, Iterator last );
    inline void     resize ( size_t n, bool preserve=true );
    inline void     reserve( size_t nonzeros );
    inline void     reserve( size_t i, size_t nonzeros );
@@ -245,6 +242,21 @@ class StrictlyUpperMatrix<MT,SO,false>
 
    static inline constexpr size_t maxNonZeros() noexcept;
    static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Erase functions*****************************************************************************
+   /*!\name Erase functions */
+   //@{
+   inline void     erase( size_t i, size_t j );
+   inline Iterator erase( size_t i, Iterator pos );
+   inline Iterator erase( size_t i, Iterator first, Iterator last );
+
+   template< typename Pred >
+   inline void erase( Pred predicate );
+
+   template< typename Pred >
+   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
@@ -1428,74 +1440,6 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the strictly upper matrix.
-//
-// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \return void
-//
-// This function erases an element from the strictly upper matrix.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline void StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, size_t j )
-{
-   matrix_.erase( i, j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing elements from the strictly upper matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases an element from the strictly upper matrix. In case the strictly upper
-// matrix adapts a \a rowMajor sparse matrix the function erases an element from row \a i, in
-// case it adapts a \a columnMajor sparse matrix the function erases an element from column \a i.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
-   StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
-{
-   return matrix_.erase( i, pos );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the strictly upper matrix.
-//
-// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of elements from the strictly upper matrix. In case the matrix
-// adapts a \a rowMajor sparse matrix the function erases a range of elements from row \a i, in
-// case it adapts a \a columnMajor matrix the function erases a range of elements from column
-// \a i.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
-   StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
-{
-   return matrix_.erase( i, first, last );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the strictly upper matrix.
 //
 // \param n The new number of rows and columns of the matrix.
@@ -1733,6 +1677,158 @@ inline void StrictlyUpperMatrix<MT,SO,false>::resetLower()
       for( size_t i=1UL; i<rows(); ++i )
          matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASE FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the strictly upper matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the strictly upper matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, size_t j )
+{
+   matrix_.erase( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing elements from the strictly upper matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases an element from the strictly upper matrix. In case the strictly upper
+// matrix adapts a \a rowMajor sparse matrix the function erases an element from row \a i, in
+// case it adapts a \a columnMajor sparse matrix the function erases an element from column \a i.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
+   StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
+{
+   return matrix_.erase( i, pos );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the strictly upper matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the strictly upper matrix. In case the matrix
+// adapts a \a rowMajor sparse matrix the function erases a range of elements from row \a i, in
+// case it adapts a \a columnMajor matrix the function erases a range of elements from column
+// \a i.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
+   StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
+{
+   return matrix_.erase( i, first, last );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from the strictly upper matrix.
+//
+// \param predicate The unary predicate for the element selection.
+// \return void.
+//
+// This function erases specific elements from the strictly upper matrix. The elements are
+// selected by the given unary predicate \a predicate, which is expected to accept a single
+// argument of the type of the elements and to be pure. The following example demonstrates
+// how to remove all elements that are smaller than a certain threshold value:
+
+   \code
+   blaze::StrictlyUpperMatrix< CompressedMatrix<double,blaze::rowMajor> > A;
+   // ... Resizing and initialization
+
+   A.erase( []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void StrictlyUpperMatrix<MT,SO,false>::erase( Pred predicate )
+{
+   matrix_.erase( predicate );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing specific elements from a range of the strictly upper matrix.
+//
+// \param i The row/column index of the elements to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element of the range.
+// \param last Iterator just past the last element of the range.
+// \param predicate The unary predicate for the element selection.
+// \return void
+//
+// This function erases specific elements from a range of elements of the strictly upper matrix.
+// The elements are selected by the given unary predicate \a predicate, which is expected to
+// accept a single argument of the type of the elements and to be pure. In case the storage
+// order is set to \a rowMajor the function erases a range of elements from row \a i, in case
+// the storage flag is set to \a columnMajor the function erases a range of elements from column
+// \a i. The following example demonstrates how to remove all elements that are smaller than a
+// certain threshold value:
+
+   \code
+   blaze::StrictlyUpperMatrix< CompressedMatrix<double,blaze::rowMajor> > A;
+   // ... Resizing and initialization
+
+   A.erase( 2UL, A.begin(2UL), A.end(2UL), []( double value ){ return value < 1E-8; } );
+   \endcode
+
+// \note The predicate is required to be pure, i.e. to produce deterministic results for elements
+// with the same value. The attempt to use an impure predicate leads to undefined behavior!
+*/
+template< typename MT      // Type of the adapted sparse matrix
+        , bool SO >        // Storage order of the adapted sparse matrix
+template< typename Pred >  // Type of the unary predicate
+inline void StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+{
+   matrix_.erase( i, first, last, predicate );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
