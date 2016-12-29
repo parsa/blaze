@@ -81,8 +81,8 @@ SparseGeneralTest::SparseGeneralTest()
    testSet();
    testInsert();
    testAppend();
-   testErase();
    testReserve();
+   testErase();
    testFind();
    testLowerBound();
    testUpperBound();
@@ -4606,6 +4606,73 @@ void SparseGeneralTest::testAppend()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the Column specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the Column specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseGeneralTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Column::reserve()";
+
+      MT mat( 20UL, 3UL );
+
+      CT col0 = blaze::column( mat, 0UL );
+
+      // Increasing the capacity of the column
+      col0.reserve( 10UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 10UL );
+      checkNonZeros( col0,  0UL );
+
+      // Further increasing the capacity of the column
+      col0.reserve( 15UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 15UL );
+      checkNonZeros( col0,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Column::reserve()";
+
+      OMT mat( 20UL, 3UL );
+
+      OCT col0 = blaze::column( mat, 0UL );
+
+      // Increasing the capacity of the column
+      col0.reserve( 10UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 10UL );
+      checkNonZeros( col0,  0UL );
+
+      // Further increasing the capacity of the column
+      col0.reserve( 15UL );
+
+      checkSize    ( col0, 20UL );
+      checkCapacity( col0, 15UL );
+      checkNonZeros( col0,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c erase() member function of the Column specialization.
 //
 // \return void
@@ -4984,6 +5051,109 @@ void SparseGeneralTest::testErase()
 
 
    //=====================================================================================
+   // Row-major erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Column::erase( Predicate )";
+
+      initialize();
+
+      CT col4 = blaze::column( mat_, 4UL );
+
+      // Erasing a selection of elements
+      col4.erase( []( int value ) { return value == 7 || value == 10; } );
+
+      checkSize    ( col4, 4UL );
+      checkNonZeros( col4, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 5UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase all elements with value 1
+      col4.erase( []( int value ){ return value == 1; } );
+
+      checkSize    ( col4, 4UL );
+      checkNonZeros( col4, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 5UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 1 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major iterator-range-based erase function with predicate
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Column::erase( Iterator, Iterator, Predicate )";
+
+      initialize();
+
+      CT col4 = blaze::column( mat_, 4UL );
+
+      // Erasing a selection of elements
+      col4.erase( col4.find( 1UL ), col4.end(),
+                  []( int value ) { return value == -8 || value == 10; } );
+
+      checkSize    ( col4, 4UL );
+      checkNonZeros( col4, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 5UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( col4[0] != 7 || col4[1] != 0 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 7 0 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to erase from an empty range
+      col4.erase( col4.begin(), col4.begin(), []( int ){ return true; } );
+
+      checkSize    ( col4, 4UL );
+      checkNonZeros( col4, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 5UL );
+      checkNonZeros( mat_, 8UL );
+
+      if( col4[0] != 7 || col4[1] != 0 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing from an empty range failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 7 0 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major index-based erase function
    //=====================================================================================
 
@@ -5348,75 +5518,112 @@ void SparseGeneralTest::testErase()
          }
       }
    }
-}
-//*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the Column specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the Column specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseGeneralTest::testReserve()
-{
    //=====================================================================================
-   // Row-major matrix tests
+   // Column-major erase function with predicate
    //=====================================================================================
 
    {
-      test_ = "Row-major Column::reserve()";
+      test_ = "Column-major Column::erase( Predicate )";
 
-      MT mat( 20UL, 3UL );
+      initialize();
 
-      CT col0 = blaze::column( mat, 0UL );
+      OCT col4 = blaze::column( tmat_, 4UL );
 
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
+      // Erasing a selection of elements
+      col4.erase( []( int value ) { return value == 7 || value == 10; } );
 
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
+      checkSize    ( col4 , 4UL );
+      checkNonZeros( col4 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
 
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
+      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
+      // Trying to erase all elements with value 1
+      col4.erase( []( int value ){ return value == 1; } );
+
+      checkSize    ( col4 , 4UL );
+      checkNonZeros( col4 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing all elements with value 1 failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major iterator-range-based erase function with predicate
    //=====================================================================================
 
    {
-      test_ = "Column-major Column::reserve()";
+      test_ = "Column-major Column::erase( Iterator, Iterator, Predicate )";
 
-      OMT mat( 20UL, 3UL );
+      initialize();
 
-      OCT col0 = blaze::column( mat, 0UL );
+      OCT col4 = blaze::column( tmat_, 4UL );
 
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
+      // Erasing a selection of elements
+      col4.erase( col4.find( 1UL ), col4.end(),
+                  []( int value ) { return value == -8 || value == 10; } );
 
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
+      checkSize    ( col4 , 4UL );
+      checkNonZeros( col4 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
 
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
+      if( col4[0] != 7 || col4[1] != 0 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing a selection of elements failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
 
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
+      // Trying to erase from an empty range
+      col4.erase( col4.begin(), col4.begin(), []( int ){ return true; } );
+
+      checkSize    ( col4 , 4UL );
+      checkNonZeros( col4 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 8UL );
+
+      if( col4[0] != 7 || col4[1] != 0 || col4[2] != 9 || col4[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Erasing from an empty range failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col4 << "\n"
+             << "   Expected result:\n( 0 -8 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
+
 
 
 //*************************************************************************************************
