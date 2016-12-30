@@ -173,6 +173,7 @@ class OperationTest
    //@{
                           void testInitialStatus     ();
                           void testAssignment        ();
+                          void testEvaluation        ();
                           void testElementAccess     ();
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
@@ -366,6 +367,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 
    testInitialStatus();
    testAssignment();
+   testEvaluation();
    testElementAccess();
    testBasicOperation();
    testNegatedOperation();
@@ -686,6 +688,228 @@ void OperationTest<MT1,MT2>::testAssignment()
           << "   Current initialization:\n" << orhs_ << "\n"
           << "   Expected initialization:\n" << refrhs_ << "\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the explicit evaluation.
+//
+// \return void
+// \exception std::runtime_error Evaluation error detected.
+//
+// This function tests the explicit evaluation. In case any error is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testEvaluation()
+{
+   using blaze::IsRowMajorMatrix;
+
+
+   //=====================================================================================
+   // Testing the evaluation with two row-major matrices
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    - rhs_    ) );
+      const auto refres( evaluate( reflhs_ - refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    - eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) - eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with a row-major matrix and a column-major matrix
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    - orhs_   ) );
+      const auto refres( evaluate( reflhs_ - refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    - eval( orhs_ )   ) );
+      const auto refres( evaluate( eval( reflhs_ ) - eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with a column-major matrix and a row-major matrix
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( olhs_   - rhs_    ) );
+      const auto refres( evaluate( reflhs_ - refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( olhs_ )   - eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) - eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with two column-major matrices
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( olhs_   - orhs_   ) );
+      const auto refres( evaluate( reflhs_ - refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( olhs_ )   - eval( orhs_ )   ) );
+      const auto refres( evaluate( eval( reflhs_ ) - eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrices\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT1>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT2>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
