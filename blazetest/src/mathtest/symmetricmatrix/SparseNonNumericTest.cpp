@@ -8510,7 +8510,7 @@ void SparseNonNumericTest::testErase()
       }
 
       // Erasing a selection of elements
-      sym.erase( []( const VT& vec ){ return vec[0] == 1 || vec[0] == 5 || vec[0] == 6; } );
+      sym.erase( []( const VT& v ){ return v[0] == 1 || v[0] == 5 || v[0] == 6; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -8538,7 +8538,7 @@ void SparseNonNumericTest::testErase()
       }
 
       // Trying to erase all elements with the value 1
-      sym.erase( []( const VT& vec ){ return vec[0] == 1; } );
+      sym.erase( []( const VT& v ){ return v[0] == 1; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -8611,7 +8611,7 @@ void SparseNonNumericTest::testErase()
 
       // Erasing a selection of elements
       sym.erase( 2UL, sym.begin( 2UL ), sym.find( 2UL, 3UL ),
-                 []( const VT& vec ){ return vec[0] == 2 || vec[0] == 6; } );
+                 []( const VT& v ){ return v[0] == 2 || v[0] == 6; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9280,7 +9280,7 @@ void SparseNonNumericTest::testErase()
       }
 
       // Erasing a selection of elements
-      sym.erase( []( const VT& vec ){ return vec[0] == 1 || vec[0] == 5 || vec[0] == 6; } );
+      sym.erase( []( const VT& v ){ return v[0] == 1 || v[0] == 5 || v[0] == 6; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9308,7 +9308,7 @@ void SparseNonNumericTest::testErase()
       }
 
       // Trying to erase all elements with the value 1
-      sym.erase( []( const VT& vec ){ return vec[0] == 1; } );
+      sym.erase( []( const VT& v ){ return v[0] == 1; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
@@ -9381,7 +9381,7 @@ void SparseNonNumericTest::testErase()
 
       // Erasing a selection of elements
       sym.erase( 2UL, sym.begin( 2UL ), sym.find( 3UL, 2UL ),
-                 []( const VT& vec ){ return vec[0] == 2 || vec[0] == 6; } );
+                 []( const VT& v ){ return v[0] == 2 || v[0] == 6; } );
 
       checkRows    ( sym,  4UL );
       checkColumns ( sym,  4UL );
