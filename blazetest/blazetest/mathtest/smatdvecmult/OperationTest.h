@@ -150,6 +150,7 @@ class OperationTest
    //@{
                           void testInitialStatus     ();
                           void testAssignment        ();
+                          void testEvaluation        ();
                           void testElementAccess     ();
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
@@ -295,6 +296,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
 
    testInitialStatus();
    testAssignment();
+   testEvaluation();
    testElementAccess();
    testBasicOperation();
    testNegatedOperation();
@@ -540,6 +542,126 @@ void OperationTest<MT,VT>::testAssignment()
           << "   Current initialization:\n" << olhs_ << "\n"
           << "   Expected initialization:\n" << reflhs_ << "\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the explicit evaluation.
+//
+// \return void
+// \exception std::runtime_error Evaluation error detected.
+//
+// This function tests the explicit evaluation. In case any error is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<MT,VT>::testEvaluation()
+{
+   using blaze::IsRowMajorMatrix;
+
+
+   //=====================================================================================
+   // Testing the evaluation with the given types
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    * rhs_    ) );
+      const auto refres( evaluate( reflhs_ * refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    * eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) * eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<MT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with the transpose types
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( olhs_   * rhs_    ) );
+      const auto refres( evaluate( reflhs_ * refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the transpose matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( olhs_ )   * eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) * eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated transpose matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side " << ( IsRowMajorMatrix<OMT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
+             << "     " << typeid( olhs_ ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
@@ -4231,7 +4353,7 @@ void OperationTest<MT,VT>::checkResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect dense result detected\n"
           << " Details:\n"
-          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
           << "     " << typeid( LT ).name() << "\n"
           << "   Right-hand side dense vector type:\n"
           << "     " << typeid( VT ).name() << "\n"
@@ -4246,7 +4368,7 @@ void OperationTest<MT,VT>::checkResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect sparse result detected\n"
           << " Details:\n"
-          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
           << "     " << typeid( LT ).name() << "\n"
           << "   Right-hand side dense vector type:\n"
           << "     " << typeid( VT ).name() << "\n"
@@ -4282,7 +4404,7 @@ void OperationTest<MT,VT>::checkTransposeResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect dense result detected\n"
           << " Details:\n"
-          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
           << "     " << typeid( LT ).name() << "\n"
           << "   Right-hand side dense vector type:\n"
           << "     " << typeid( VT ).name() << "\n"
@@ -4297,7 +4419,7 @@ void OperationTest<MT,VT>::checkTransposeResults()
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect sparse result detected\n"
           << " Details:\n"
-          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+          << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
           << "     " << typeid( LT ).name() << "\n"
           << "   Right-hand side dense vector type:\n"
           << "     " << typeid( VT ).name() << "\n"
@@ -4388,7 +4510,7 @@ void OperationTest<MT,VT>::convertException( const std::exception& ex )
    oss << " Test : " << test_ << "\n"
        << " Error: " << error_ << "\n"
        << " Details:\n"
-       << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+       << "   Left-hand side " << ( IsRowMajorMatrix<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " sparse matrix type:\n"
        << "     " << typeid( LT ).name() << "\n"
        << "   Right-hand side dense vector type:\n"
        << "     " << typeid( VT ).name() << "\n"
