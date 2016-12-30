@@ -162,6 +162,12 @@ template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix );
+
+template< typename MT, bool SO >
+inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
+
+template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
@@ -590,6 +596,68 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
 {
    (~matrix).ctranspose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluates the given matrix expression.
+// \ingroup matrix
+//
+// \param matrix The matrix to be evaluated.
+// \return The result of the evaluated matrix expression.
+//
+// This function forces an evaluation of the given matrix expression and enables an automatic
+// deduction of the correct result type of an operation. The following code example demonstrates
+// its intended use for the multiplication of a lower and a strictly lower dense matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::StrictlyLowerMatrix;
+
+   LowerMatrix< DynamicMatrix<double> > A;
+   StrictlyLowerMatrix< DynamicMatrix<double> > B;
+   // ... Resizing and initialization
+
+   auto C = evaluate( A * B );
+   \endcode
+
+// In this scenario, the \a evaluate() function assists in deducing the exact result type of
+// the operation via the 'auto' keyword. Please note that if \a evaluate() is used in this
+// way, no temporary matrix is created and no copy operation is performed. Instead, the result
+// is directly written to the target matrix due to the return value optimization (RVO). However,
+// if \a evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   StrictlyLowerMatrix< DynamicMatrix<double> > D( A * B );  // No temporary & no copy operation
+   LowerMatrix< DynamicMatrix<double> > E( A * B );          // Temporary & copy operation
+   DynamicMatrix<double> F( A * B );                         // Temporary & copy operation
+   D = evaluate( A * B );                                    // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \a evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \a eval() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C, D;
+
+   D = A + evaluate( B * C );  // Unnecessary creation of a temporary matrix
+   D = A + eval( B * C );      // No creation of a temporary matrix
+   \endcode
+
+// In contrast to the \a evaluate() function, \a eval() can take the complete expression into
+// account and therefore can guarantee the most efficient way to evaluate it.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix )
+{
+   const typename MT::ResultType tmp( ~matrix );
+   return tmp;
 }
 //*************************************************************************************************
 
