@@ -896,7 +896,7 @@ inline void SparseMatrixProxy<PT,MT>::erase( Pred predicate )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( predicate );
+   (~*this).get().erase( predicate );
 }
 //*************************************************************************************************
 
@@ -928,7 +928,7 @@ inline void SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator first, Iterator 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( i, first, last, predicate );
+   (~*this).get().erase( i, first, last, predicate );
 }
 //*************************************************************************************************
 

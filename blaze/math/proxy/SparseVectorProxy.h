@@ -629,7 +629,7 @@ inline void SparseVectorProxy<PT,VT>::erase( Pred predicate )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( predicate );
+   (~*this).get().erase( predicate );
 }
 //*************************************************************************************************
 
@@ -658,7 +658,7 @@ inline void SparseVectorProxy<PT,VT>::erase( Iterator first, Iterator last, Pred
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( first, last, predicate );
+   (~*this).get().erase( first, last, predicate );
 }
 //*************************************************************************************************
 
