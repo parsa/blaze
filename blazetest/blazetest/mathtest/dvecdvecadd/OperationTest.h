@@ -148,6 +148,7 @@ class OperationTest
    //@{
                           void testInitialStatus     ();
                           void testAssignment        ();
+                          void testEvaluation        ();
                           void testElementAccess     ();
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
@@ -299,6 +300,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
 
    testInitialStatus();
    testAssignment();
+   testEvaluation();
    testElementAccess();
    testBasicOperation();
    testNegatedOperation();
@@ -559,6 +561,126 @@ void OperationTest<VT1,VT2>::testAssignment()
           << "   Current initialization:\n" << trhs_ << "\n"
           << "   Expected initialization:\n" << trefrhs_ << "\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the explicit evaluation.
+//
+// \return void
+// \exception std::runtime_error Evaluation error detected.
+//
+// This function tests the explicit evaluation. In case any error is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testEvaluation()
+{
+   using blaze::IsRowVector;
+
+
+   //=====================================================================================
+   // Testing the evaluation with the given vectors
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    + rhs_    ) );
+      const auto refres( evaluate( reflhs_ + refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given vectors\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side dense " << ( IsRowVector<VT1>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side dense " << ( IsRowVector<VT2>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    + eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) + eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated vectors\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side dense " << ( IsRowVector<VT1>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side dense " << ( IsRowVector<VT2>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with the transpose types
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( tlhs_    + trhs_    ) );
+      const auto refres( evaluate( treflhs_ + trefrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the transpose vectors\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side dense " << ( IsRowVector<TVT1>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( tlhs_ ).name() << "\n"
+             << "   Right-hand side dense " << ( IsRowVector<TVT2>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( trhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( tlhs_ )    + eval( trhs_ )    ) );
+      const auto refres( evaluate( eval( treflhs_ ) + eval( trefrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated transpose vectors\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side dense " << ( IsRowVector<TVT1>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( tlhs_ ).name() << "\n"
+             << "   Right-hand side dense " << ( IsRowVector<TVT2>::value ? ( "row" ) : ( "column" ) ) << " vector type:\n"
+             << "     " << typeid( trhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
