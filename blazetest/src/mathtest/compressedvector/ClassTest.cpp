@@ -2787,7 +2787,6 @@ void ClassTest::testErase()
       test_ = "CompressedVector::erase( Iterator, Iterator, Predicate )";
 
       typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-      typedef VectorType::Iterator  Iterator;
 
       // Initialization check
       VectorType vec( 9UL, 5UL );
