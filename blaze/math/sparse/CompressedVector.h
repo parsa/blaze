@@ -192,25 +192,76 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the compressed vector element.
+   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed vector element.
+   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Value-index-pair for the CompressedVector class.
+   //
+   // This struct grants access to the data members of the base class and adapts the copy and
+   // move semantics of the value-index-pair.
    */
    struct Element : public ElementBase
    {
-      // This operator is required due to a bug in all versions of the the MSVC compiler.
-      // A simple 'using ElementBase::operator=;' statement results in ambiguity problems.
-      template< typename Other >
-      inline Element& operator=( const Other& rhs )
+      //**Constructors*****************************************************************************
+      explicit Element() = default;
+               Element( const Element& rhs ) = default;
+               Element( Element&& rhs ) = default;
+      //*******************************************************************************************
+
+      //**Assignment operators*********************************************************************
+      inline Element& operator=( const Element& rhs )
       {
-         ElementBase::operator=( rhs );
+         this->value_ = rhs.value_;
          return *this;
       }
 
+      inline Element& operator=( Element&& rhs )
+      {
+         this->value_ = std::move( rhs.value_ );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< IsSparseElement<Other>, Element& >
+         operator=( const Other& rhs )
+      {
+         this->value_ = rhs.value();
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& rhs )
+      {
+         this->value_ = std::move( rhs.value() );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+         operator=( const Other& v )
+      {
+         this->value_ = v;
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& v )
+      {
+         this->value_ = std::move( v );
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
       friend class CompressedVector;
+      //*******************************************************************************************
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -381,6 +432,9 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //@{
           Iterator insert( Iterator pos, size_t index, const Type& value );
    inline size_t   extendCapacity() const noexcept;
+
+   inline Iterator     castDown( IteratorBase it ) const noexcept;
+   inline IteratorBase castUp  ( Iterator     it ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -493,7 +547,7 @@ inline CompressedVector<Type,TF>::CompressedVector( const CompressedVector& sv )
    , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
    , end_     ( begin_+capacity_ )                // Pointer to the last non-zero element of the compressed vector
 {
-   std::copy( sv.begin_, sv.end_, begin_ );
+   std::copy( sv.begin_, sv.end_, castUp( begin_ ) );
 }
 //*************************************************************************************************
 
@@ -799,7 +853,7 @@ inline CompressedVector<Type,TF>&
 
    if( nonzeros > capacity_ ) {
       Iterator newBegin( allocate<Element>( nonzeros ) );
-      end_ = std::copy( rhs.begin_, rhs.end_, newBegin );
+      end_ = castDown( std::copy( rhs.begin_, rhs.end_, castUp( newBegin ) ) );
       std::swap( begin_, newBegin );
       deallocate( newBegin );
 
@@ -807,7 +861,7 @@ inline CompressedVector<Type,TF>&
       capacity_ = nonzeros;
    }
    else {
-      end_  = std::copy( rhs.begin_, rhs.end_, begin_ );
+      end_  = castDown( std::copy( rhs.begin_, rhs.end_, castUp( begin_ ) ) );
       size_ = rhs.size_;
    }
 
@@ -1287,7 +1341,7 @@ typename CompressedVector<Type,TF>::Iterator
    CompressedVector<Type,TF>::insert( Iterator pos, size_t index, const Type& value )
 {
     if( nonZeros() != capacity_ ) {
-      std::move_backward( pos, end_, end_+1 );
+      std::move_backward( pos, end_, castUp( end_+1 ) );
       pos->value_ = value;
       pos->index_ = index;
       ++end_;
@@ -1298,10 +1352,10 @@ typename CompressedVector<Type,TF>::Iterator
       size_t newCapacity( extendCapacity() );
 
       Iterator newBegin = allocate<Element>( newCapacity );
-      Iterator tmp      = std::move( begin_, pos, newBegin );
+      Iterator tmp = castDown( std::move( begin_, pos, castUp( newBegin ) ) );
       tmp->value_ = value;
       tmp->index_ = index;
-      end_ = std::move( pos, end_, tmp+1 );
+      end_ = castDown( std::move( pos, end_, castUp( tmp+1 ) ) );
 
       std::swap( newBegin, begin_ );
       deallocate( newBegin );
@@ -1363,7 +1417,7 @@ void CompressedVector<Type,TF>::reserve( size_t n )
       Iterator newBegin  = allocate<Element>( newCapacity );
 
       // Replacing the old data and index array
-      end_ = transfer( begin_, end_, newBegin );
+      end_ = castDown( transfer( begin_, end_, castUp( newBegin ) ) );
       std::swap( newBegin, begin_ );
       capacity_ = newCapacity;
       deallocate( newBegin );
@@ -1434,6 +1488,42 @@ inline size_t CompressedVector<Type,TF>::extendCapacity() const noexcept
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Performs a down-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs a down-cast of the given iterator to base elements to an iterator to
+// derived elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::castDown( IteratorBase it ) const noexcept
+{
+   return static_cast<Iterator>( it );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs an up-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs an up-cast of the given iterator to derived elements to an iterator
+// to base elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::IteratorBase
+   CompressedVector<Type,TF>::castUp( Iterator it ) const noexcept
+{
+   return static_cast<IteratorBase>( it );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1458,7 +1548,7 @@ inline void CompressedVector<Type,TF>::erase( size_t index )
 
    const Iterator pos( find( index ) );
    if( pos != end_ )
-      end_ = std::move( pos+1, end_, pos );
+      end_ = castDown( std::move( pos+1, end_, castUp( pos ) ) );
 }
 //*************************************************************************************************
 
@@ -1479,7 +1569,7 @@ inline typename CompressedVector<Type,TF>::Iterator
    BLAZE_USER_ASSERT( pos >= begin_ && pos <= end_, "Invalid compressed vector iterator" );
 
    if( pos != end_ )
-      end_ = std::move( pos+1, end_, pos );
+      end_ = castDown( std::move( pos+1, end_, castUp( pos ) ) );
    return pos;
 }
 //*************************************************************************************************
@@ -1504,7 +1594,7 @@ inline typename CompressedVector<Type,TF>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
 
    if( first != last )
-      end_ = std::move( last, end_, first );
+      end_ = castDown( std::move( last, end_, castUp( first ) ) );
    return first;
 }
 //*************************************************************************************************
@@ -1537,10 +1627,10 @@ template< typename Pred  // Type of the unary predicate
         , typename >     // Type restriction on the unary predicate
 inline void CompressedVector<Type,TF>::erase( Pred predicate )
 {
-   end_ = std::remove_if( begin_, end_,
-                          [predicate=predicate]( const Element& element ) {
-                             return predicate( element.value() );
-                          } );
+   end_ = castDown( std::remove_if( castUp( begin_ ), castUp( end_ ),
+                                    [predicate=predicate]( const ElementBase& element ) {
+                                       return predicate( element.value() );
+                                    } ) );
 }
 //*************************************************************************************************
 
@@ -1577,11 +1667,12 @@ inline void CompressedVector<Type,TF>::erase( Iterator first, Iterator last, Pre
    BLAZE_USER_ASSERT( first >= begin_ && first <= end_, "Invalid compressed vector iterator" );
    BLAZE_USER_ASSERT( last  >= begin_ && last  <= end_, "Invalid compressed vector iterator" );
 
-   end_ = std::move( last, end_,
-                     std::remove_if( first, last,
-                                     [predicate=predicate]( const Element& element ) {
-                                        return predicate( element.value() );
-                                     } ) );
+   const auto pos = std::remove_if( castUp( first ), castUp( last  ),
+                                    [predicate=predicate]( const ElementBase& element ) {
+                                       return predicate( element.value() );
+                                    } );
+
+   end_ = castDown( std::move( last, end_, pos ) );
 }
 //*************************************************************************************************
 
