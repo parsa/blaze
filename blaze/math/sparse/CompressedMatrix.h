@@ -209,25 +209,76 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the compressed matrix element.
+   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed matrix element.
+   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Value-index-pair for the CompressedMatrix class.
+   //
+   // This struct grants access to the data members of the base class and adapts the copy and
+   // move semantics of the value-index-pair.
    */
    struct Element : public ElementBase
    {
-      // This operator is required due to a bug in all versions of the MSVC compiler. A
-      // simple 'using ElementBase::operator=;' statement results in ambiguity problems.
-      template< typename Other >
-      inline Element& operator=( const Other& rhs )
+      //**Constructors*****************************************************************************
+      explicit Element() = default;
+               Element( const Element& rhs ) = default;
+               Element( Element&& rhs ) = default;
+      //*******************************************************************************************
+
+      //**Assignment operators*********************************************************************
+      inline Element& operator=( const Element& rhs )
       {
-         ElementBase::operator=( rhs );
+         this->value_ = rhs.value_;
          return *this;
       }
 
+      inline Element& operator=( Element&& rhs )
+      {
+         this->value_ = std::move( rhs.value_ );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< IsSparseElement<Other>, Element& >
+         operator=( const Other& rhs )
+      {
+         this->value_ = rhs.value();
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& rhs )
+      {
+         this->value_ = std::move( rhs.value() );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+         operator=( const Other& v )
+      {
+         this->value_ = v;
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& v )
+      {
+         this->value_ = std::move( v );
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
       friend class CompressedMatrix;
+      //*******************************************************************************************
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -409,6 +460,9 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
           Iterator insert( Iterator pos, size_t i, size_t j, const Type& value );
    inline size_t   extendCapacity() const noexcept;
           void     reserveElements( size_t nonzeros );
+
+   inline Iterator     castDown( IteratorBase it ) const noexcept;
+   inline IteratorBase castUp  ( Iterator     it ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -573,8 +627,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
    const size_t nonzeros( sm.nonZeros() );
 
    begin_[0UL] = allocate<Element>( nonzeros );
-   for( size_t i=0UL; i<m_; ++i )
-      begin_[i+1UL] = end_[i] = std::copy( sm.begin(i), sm.end(i), begin_[i] );
+   for( size_t i=0UL; i<m_; ++i ) {
+      end_[i] = castDown( std::copy( sm.begin(i), sm.end(i), castUp( begin_[i] ) ) );
+      begin_[i+1UL] = end_[i];
+   }
    end_[m_] = begin_[0UL]+nonzeros;
 }
 //*************************************************************************************************
@@ -965,7 +1021,8 @@ inline CompressedMatrix<Type,SO>&
 
       newBegin[0UL] = allocate<Element>( nonzeros );
       for( size_t i=0UL; i<rhs.m_; ++i ) {
-         newBegin[i+1UL] = newEnd[i] = std::copy( rhs.begin_[i], rhs.end_[i], newBegin[i] );
+         newEnd[i] = castDown( std::copy( rhs.begin_[i], rhs.end_[i], castUp( newBegin[i] ) ) );
+         newBegin[i+1UL] = newEnd[i];
       }
       newEnd[rhs.m_] = newBegin[0UL]+nonzeros;
 
@@ -980,7 +1037,8 @@ inline CompressedMatrix<Type,SO>&
    }
    else {
       for( size_t i=0UL; i<rhs.m_; ++i ) {
-         begin_[i+1UL] = end_[i] = std::copy( rhs.begin_[i], rhs.end_[i], begin_[i] );
+         end_[i] = castDown( std::copy( rhs.begin_[i], rhs.end_[i], castUp( begin_[i] ) ) );
+         begin_[i+1UL] = end_[i];
       }
    }
 
@@ -1489,7 +1547,7 @@ typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[i+1UL] - end_[i] != 0 ) {
-      std::move_backward( pos, end_[i], end_[i]+1UL );
+      std::move_backward( pos, end_[i], castUp( end_[i]+1UL ) );
       pos->value_ = value;
       pos->index_ = j;
       ++end_[i];
@@ -1497,7 +1555,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       return pos;
    }
    else if( end_[m_] - begin_[m_] != 0 ) {
-      std::move_backward( pos, end_[m_-1UL], end_[m_-1UL]+1UL );
+      std::move_backward( pos, end_[m_-1UL], castUp( end_[m_-1UL]+1UL ) );
 
       pos->value_ = value;
       pos->index_ = j;
@@ -1534,10 +1592,10 @@ typename CompressedMatrix<Type,SO>::Iterator
 
       newEnd[m_] = newEnd[capacity_] = newBegin[0UL]+newCapacity;
 
-      Iterator tmp = std::move( begin_[0UL], pos, newBegin[0UL] );
+      Iterator tmp = castDown( std::move( begin_[0UL], pos, castUp( newBegin[0UL] ) ) );
       tmp->value_ = value;
       tmp->index_ = j;
-      std::move( pos, end_[m_-1UL], tmp+1UL );
+      std::move( pos, end_[m_-1UL], castUp( tmp+1UL ) );
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
@@ -1711,13 +1769,13 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
       newEnd  [m_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<i; ++k ) {
-         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
-      newEnd  [i    ] = transfer( begin_[i], end_[i], newBegin[i] );
+      newEnd  [i    ] = castDown( transfer( begin_[i], end_[i], castUp( newBegin[i] ) ) );
       newBegin[i+1UL] = newBegin[i] + nonzeros;
       for( size_t k=i+1UL; k<m_; ++k ) {
-         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
 
@@ -1733,7 +1791,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
    {
       begin_[m_] += additional;
       for( size_t j=m_-1UL; j>i; --j ) {
-         begin_[j]  = std::move_backward( begin_[j], end_[j], end_[j]+additional );
+         begin_[j]  = castDown( std::move_backward( begin_[j], end_[j], castUp( end_[j]+additional ) ) );
          end_  [j] += additional;
       }
    }
@@ -1782,7 +1840,7 @@ inline void CompressedMatrix<Type,SO>::trim( size_t i )
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    if( i < ( m_ - 1UL ) )
-      end_[i+1] = std::move( begin_[i+1], end_[i+1], end_[i] );
+      end_[i+1] = castDown( std::move( begin_[i+1], end_[i+1], castUp( end_[i] ) ) );
    begin_[i+1] = end_[i];
 }
 //*************************************************************************************************
@@ -1922,7 +1980,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 
    for( size_t k=0UL; k<m_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid row pointers" );
-      newEnd  [k]     = transfer( begin_[k], end_[k], newBegin[k] );
+      newEnd  [k]     = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
       newBegin[k+1UL] = newBegin[k] + ( begin_[k+1UL] - begin_[k] );
    }
 
@@ -1935,6 +1993,42 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
       deallocate( newBegin[0UL] );
       delete[] newBegin;
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs a down-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs a down-cast of the given iterator to base elements to an iterator to
+// derived elements.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::castDown( IteratorBase it ) const noexcept
+{
+   return static_cast<Iterator>( it );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs an up-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs an up-cast of the given iterator to derived elements to an iterator
+// to base elements.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::IteratorBase
+   CompressedMatrix<Type,SO>::castUp( Iterator it ) const noexcept
+{
+   return static_cast<IteratorBase>( it );
 }
 //*************************************************************************************************
 
@@ -1965,7 +2059,7 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
 
    const Iterator pos( find( i, j ) );
    if( pos != end_[i] )
-      end_[i] = std::move( pos+1, end_[i], pos );
+      end_[i] = castDown( std::move( pos+1, end_[i], castUp( pos ) ) );
 }
 //*************************************************************************************************
 
@@ -1990,7 +2084,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
    BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed matrix iterator" );
 
    if( pos != end_[i] )
-      end_[i] = std::move( pos+1, end_[i], pos );
+      end_[i] = castDown( std::move( pos+1, end_[i], castUp( pos ) ) );
 
    return pos;
 }
@@ -2020,7 +2114,7 @@ inline typename CompressedMatrix<Type,SO>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_[i] && last  <= end_[i], "Invalid compressed matrix iterator" );
 
    if( first != last )
-      end_[i] = std::move( last, end_[i], first );
+      end_[i] = castDown( std::move( last, end_[i], castUp( first ) ) );
 
    return first;
 }
@@ -2054,10 +2148,10 @@ template< typename Pred >  // Type of the unary predicate
 inline void CompressedMatrix<Type,SO>::erase( Pred predicate )
 {
    for( size_t i=0UL; i<m_; ++i ) {
-      end_[i] = std::remove_if( begin_[i], end_[i],
-                                [predicate=predicate]( const Element& element) {
-                                   return predicate( element.value() );
-                                } );
+      end_[i] = castDown( std::remove_if( castUp( begin_[i] ), castUp( end_[i] ),
+                                          [predicate=predicate]( const ElementBase& element) {
+                                             return predicate( element.value() );
+                                          } ) );
    }
 }
 //*************************************************************************************************
@@ -2100,11 +2194,12 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, Iterator first, Iterator
    BLAZE_USER_ASSERT( first >= begin_[i] && first <= end_[i], "Invalid compressed matrix iterator" );
    BLAZE_USER_ASSERT( last  >= begin_[i] && last  <= end_[i], "Invalid compressed matrix iterator" );
 
-   end_[i] = std::move( last, end_[i],
-                        std::remove_if( first, last,
-                                        [predicate=predicate]( const Element& element ) {
-                                           return predicate( element.value() );
-                                        } ) );
+   const auto pos = std::remove_if( castUp( first ), castUp( last ),
+                                    [predicate=predicate]( const ElementBase& element ) {
+                                       return predicate( element.value() );
+                                    } );
+
+   end_[i] = castDown( std::move( last, end_[i], pos ) );
 }
 //*************************************************************************************************
 
@@ -2540,7 +2635,8 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
       return;
 
    for( size_t i=0UL; i<m_; ++i ) {
-      begin_[i+1UL] = end_[i] = std::copy( (~rhs).begin(i), (~rhs).end(i), begin_[i] );
+      end_[i] = castDown( std::copy( (~rhs).begin(i), (~rhs).end(i), castUp( begin_[i] ) ) );
+      begin_[i+1UL] = end_[i];
    }
 }
 //*************************************************************************************************
@@ -2721,25 +2817,76 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;  //!< Base class for the compressed matrix element.
+   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed matrix element.
+   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Value-index-pair for the CompressedMatrix class.
+   //
+   // This struct grants access to the data members of the base class and adapts the copy and
+   // move semantics of the value-index-pair.
    */
    struct Element : public ElementBase
    {
-      // This operator is required due to a bug in all versions of the the MSVC compiler.
-      // A simple 'using ElementBase::operator=;' statement results in ambiguity problems.
-      template< typename Other >
-      inline Element& operator=( const Other& rhs )
+      //**Constructors*****************************************************************************
+      explicit Element() = default;
+               Element( const Element& rhs ) = default;
+               Element( Element&& rhs ) = default;
+      //*******************************************************************************************
+
+      //**Assignment operators*********************************************************************
+      inline Element& operator=( const Element& rhs )
       {
-         ElementBase::operator=( rhs );
+         this->value_ = rhs.value_;
          return *this;
       }
 
+      inline Element& operator=( Element&& rhs )
+      {
+         this->value_ = std::move( rhs.value_ );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< IsSparseElement<Other>, Element& >
+         operator=( const Other& rhs )
+      {
+         this->value_ = rhs.value();
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& rhs )
+      {
+         this->value_ = std::move( rhs.value() );
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+         operator=( const Other& v )
+      {
+         this->value_ = v;
+         return *this;
+      }
+
+      template< typename Other >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+                           , IsRValueReference<Other&&> >, Element& >
+         operator=( Other&& v )
+      {
+         this->value_ = std::move( v );
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
       friend class CompressedMatrix;
+      //*******************************************************************************************
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2921,6 +3068,9 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
           Iterator insert( Iterator pos, size_t i, size_t j, const Type& value );
    inline size_t   extendCapacity() const noexcept;
           void     reserveElements( size_t nonzeros );
+
+   inline Iterator     castDown( IteratorBase it ) const noexcept;
+   inline IteratorBase castUp  ( Iterator     it ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3089,8 +3239,10 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm
    const size_t nonzeros( sm.nonZeros() );
 
    begin_[0UL] = allocate<Element>( nonzeros );
-   for( size_t j=0UL; j<n_; ++j )
-      begin_[j+1UL] = end_[j] = std::copy( sm.begin(j), sm.end(j), begin_[j] );
+   for( size_t j=0UL; j<n_; ++j ) {
+      end_[j] = castDown( std::copy( sm.begin(j), sm.end(j), castUp( begin_[j] ) ) );
+      begin_[j+1UL] = end_[j];
+   }
    end_[n_] = begin_[0UL]+nonzeros;
 }
 /*! \endcond */
@@ -3466,7 +3618,8 @@ inline CompressedMatrix<Type,true>&
 
       newBegin[0UL] = allocate<Element>( nonzeros );
       for( size_t j=0UL; j<rhs.n_; ++j ) {
-         newBegin[j+1UL] = newEnd[j] = std::copy( rhs.begin_[j], rhs.end_[j], newBegin[j] );
+         newEnd[j] = castDown( std::copy( rhs.begin_[j], rhs.end_[j], castUp( newBegin[j] ) ) );
+         newBegin[j+1UL] = newEnd[j];
       }
       newEnd[rhs.n_] = newBegin[0UL]+nonzeros;
 
@@ -3481,7 +3634,8 @@ inline CompressedMatrix<Type,true>&
    }
    else {
       for( size_t j=0UL; j<rhs.n_; ++j ) {
-         begin_[j+1UL] = end_[j] = std::copy( rhs.begin_[j], rhs.end_[j], begin_[j] );
+         end_[j] = castDown( std::copy( rhs.begin_[j], rhs.end_[j], castUp( begin_[j] ) ) );
+         begin_[j+1UL] = end_[j];
       }
    }
 
@@ -3997,7 +4151,7 @@ typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    if( begin_[j+1UL] - end_[j] != 0 ) {
-      std::move_backward( pos, end_[j], end_[j]+1UL );
+      std::move_backward( pos, end_[j], castUp( end_[j]+1UL ) );
       pos->value_ = value;
       pos->index_ = i;
       ++end_[j];
@@ -4005,7 +4159,7 @@ typename CompressedMatrix<Type,true>::Iterator
       return pos;
    }
    else if( end_[n_] - begin_[n_] != 0 ) {
-      std::move_backward( pos, end_[n_-1UL], end_[n_-1]+1UL );
+      std::move_backward( pos, end_[n_-1UL], castUp( end_[n_-1]+1UL ) );
 
       pos->value_ = value;
       pos->index_ = i;
@@ -4042,10 +4196,10 @@ typename CompressedMatrix<Type,true>::Iterator
 
       newEnd[n_] = newEnd[capacity_] = newBegin[0UL]+newCapacity;
 
-      Iterator tmp = std::move( begin_[0UL], pos, newBegin[0UL] );
+      Iterator tmp = castDown( std::move( begin_[0UL], pos, castUp( newBegin[0UL] ) ) );
       tmp->value_ = value;
       tmp->index_ = i;
-      std::move( pos, end_[n_-1UL], tmp+1UL );
+      std::move( pos, end_[n_-1UL], castUp( tmp+1UL ) );
 
       std::swap( newBegin, begin_ );
       end_ = newEnd;
@@ -4219,13 +4373,13 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
       newEnd  [n_ ] = newBegin[0UL]+newCapacity;
 
       for( size_t k=0UL; k<j; ++k ) {
-         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
-      newEnd  [j    ] = transfer( begin_[j], end_[j], newBegin[j] );
+      newEnd  [j    ] = castDown( transfer( begin_[j], end_[j], castUp( newBegin[j] ) ) );
       newBegin[j+1UL] = newBegin[j] + nonzeros;
       for( size_t k=j+1UL; k<n_; ++k ) {
-         newEnd  [k    ] = transfer( begin_[k], end_[k], newBegin[k] );
+         newEnd  [k    ] = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
          newBegin[k+1UL] = newBegin[k] + capacity(k);
       }
 
@@ -4241,7 +4395,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
    {
       begin_[n_] += additional;
       for( size_t k=n_-1UL; k>j; --k ) {
-         begin_[k]  = std::move_backward( begin_[k], end_[k], end_[k]+additional );
+         begin_[k]  = castDown( std::move_backward( begin_[k], end_[k], castUp( end_[k]+additional ) ) );
          end_  [k] += additional;
       }
    }
@@ -4290,7 +4444,7 @@ void CompressedMatrix<Type,true>::trim( size_t j )
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    if( j < ( n_ - 1UL ) )
-      end_[j+1] = std::move( begin_[j+1], end_[j+1], end_[j] );
+      end_[j+1] = castDown( std::move( begin_[j+1], end_[j+1], castUp( end_[j] ) ) );
    begin_[j+1] = end_[j];
 }
 /*! \endcond */
@@ -4437,7 +4591,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 
    for( size_t k=0UL; k<n_; ++k ) {
       BLAZE_INTERNAL_ASSERT( begin_[k] <= end_[k], "Invalid column pointers" );
-      newEnd  [k]     = transfer( begin_[k], end_[k], newBegin[k] );
+      newEnd  [k]     = castDown( transfer( begin_[k], end_[k], castUp( newBegin[k] ) ) );
       newBegin[k+1UL] = newBegin[k] + ( begin_[k+1UL] - begin_[k] );
    }
 
@@ -4452,6 +4606,40 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
    }
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs a down-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs a down-cast of the given iterator to base elements to an iterator to
+// derived elements.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::castDown( IteratorBase it ) const noexcept
+{
+   return static_cast<Iterator>( it );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs an up-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs an up-cast of the given iterator to derived elements to an iterator
+// to base elements.
+*/
+template< typename Type >  // Data type of the matrix
+inline typename CompressedMatrix<Type,true>::IteratorBase
+   CompressedMatrix<Type,true>::castUp( Iterator it ) const noexcept
+{
+   return static_cast<IteratorBase>( it );
+}
 //*************************************************************************************************
 
 
@@ -4481,7 +4669,7 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
 
    const Iterator pos( find( i, j ) );
    if( pos != end_[j] )
-      end_[j] = std::move( pos+1, end_[j], pos );
+      end_[j] = castDown( std::move( pos+1, end_[j], castUp( pos ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4505,7 +4693,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
    BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed matrix iterator" );
 
    if( pos != end_[j] )
-      end_[j] = std::move( pos+1, end_[j], pos );
+      end_[j] = castDown( std::move( pos+1, end_[j], castUp( pos ) ) );
 
    return pos;
 }
@@ -4534,7 +4722,7 @@ inline typename CompressedMatrix<Type,true>::Iterator
    BLAZE_USER_ASSERT( last  >= begin_[j] && last  <= end_[j], "Invalid compressed matrix iterator" );
 
    if( first != last )
-      end_[j] = std::move( last, end_[j], first );
+      end_[j] = castDown( std::move( last, end_[j], castUp( first ) ) );
 
    return first;
 }
@@ -4569,10 +4757,10 @@ template< typename Pred >  // Type of the unary predicate
 inline void CompressedMatrix<Type,true>::erase( Pred predicate )
 {
    for( size_t j=0UL; j<n_; ++j ) {
-      end_[j] = std::remove_if( begin_[j], end_[j],
-                                [predicate=predicate]( const Element& element ) {
-                                   return predicate( element.value() );
-                                } );
+      end_[j] = castDown( std::remove_if( castUp( begin_[j] ), castUp( end_[j] ),
+                                          [predicate=predicate]( const ElementBase& element ) {
+                                             return predicate( element.value() );
+                                          } ) );
    }
 }
 /*! \endcond */
@@ -4613,11 +4801,12 @@ inline void CompressedMatrix<Type,true>::erase( size_t j, Iterator first, Iterat
    BLAZE_USER_ASSERT( first >= begin_[j] && first <= end_[j], "Invalid compressed matrix iterator" );
    BLAZE_USER_ASSERT( last  >= begin_[j] && last  <= end_[j], "Invalid compressed matrix iterator" );
 
-   end_[j] = std::move( last, end_[j],
-                        std::remove_if( first, last,
-                                        [predicate=predicate]( const Element& element ) {
-                                           return predicate( element.value() );
-                                        } ) );
+   const auto pos = std::remove_if( castUp( first ), castUp( last ),
+                                    [predicate=predicate]( const ElementBase& element ) {
+                                       return predicate( element.value() );
+                                    } );
+
+   end_[j] = castDown( std::move( last, end_[j], pos ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5055,7 +5244,8 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rh
       return;
 
    for( size_t j=0UL; j<n_; ++j ) {
-      begin_[j+1UL] = end_[j] = std::copy( (~rhs).begin(j), (~rhs).end(j), begin_[j] );
+      end_[j] = castDown( std::copy( (~rhs).begin(j), (~rhs).end(j), castUp( begin_[j] ) ) );
+      begin_[j+1UL] = end_[j];
    }
 }
 /*! \endcond */
