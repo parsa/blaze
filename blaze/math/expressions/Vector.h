@@ -144,6 +144,9 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector );
 template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
+template< typename VT, bool TF >
+inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
+
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept;
 //@}
@@ -382,6 +385,66 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    resize_backend( vector, n, preserve );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluates the given vector expression.
+// \ingroup vector
+//
+// \param vector The vector to be evaluated.
+// \return The result of the evaluated vector expression.
+//
+// This function forces an evaluation of the given vector expression and enables an automatic
+// deduction of the correct result type of an operation. The following code example demonstrates
+// its intended use for the multiplication of a dense and a sparse vector:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
+   // ... Resizing and initialization
+
+   auto c = evaluate( a * b );
+   \endcode
+
+// In this scenario, the \a evaluate() function assists in deducing the exact result type of
+// the operation via the 'auto' keyword. Please note that if \a evaluate() is used in this
+// way, no temporary vector is created and no copy operation is performed. Instead, the result
+// is directly written to the target vector due to the return value optimization (RVO). However,
+// if \a evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   CompressedVector<double> d( a * b );  // No temporary & no copy operation
+   DynamicVector<double> e( a * b );     // Temporary & copy operation
+   d = evaluate( a * b );                // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \a evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \a eval() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c, d;
+
+   d = a + evaluate( b * c );  // Unnecessary creation of a temporary vector
+   d = a + eval( b * c );      // No creation of a temporary vector
+   \endcode
+
+// In contrast to the \a evaluate() function, \a eval() can take the complete expression into
+// account and therefore can guarantee the most efficient way to evaluate it.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
+{
+   const typename VT::ResultType tmp( ~vector );
+   return tmp;
 }
 //*************************************************************************************************
 
