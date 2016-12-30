@@ -95,7 +95,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsClass.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
@@ -472,7 +472,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    explicit inline CustomVector( Type* ptr, size_t n );
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    explicit inline CustomVector( Type* ptr, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -550,7 +550,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    inline void reset( Type* ptr, size_t n );
    inline void reset( Type* ptr, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_<IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    inline void reset( Type* ptr, size_t n, Deleter d );
 
    template< typename Deleter >

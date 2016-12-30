@@ -104,7 +104,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsClass.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -486,7 +486,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter D );
 
    template< typename Deleter >
@@ -572,7 +572,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -2144,7 +2144,7 @@ template< typename Deleter  // Type of the custom deleter
         , typename >        // Type restriction on the custom deleter
 inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, Deleter d )
 {
-   BLAZE_STATIC_ASSERT( !IsClass<Deleter>::value || PF == unpadded );
+   BLAZE_STATIC_ASSERT( IsIntegral<Deleter>::value || PF == unpadded );
 
    CustomMatrix tmp( ptr, m, n, d );
    swap( tmp );
@@ -3255,7 +3255,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -3341,7 +3341,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = EnableIf_< IsClass<Deleter> > >
+   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
    inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
 
    template< typename Deleter >
@@ -4914,7 +4914,7 @@ template< typename Deleter  // Type of the custom deleter
         , typename >        // Type restriction on the custom deleter
 inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, Deleter d )
 {
-   BLAZE_STATIC_ASSERT( !IsClass<Deleter>::value || PF == unpadded );
+   BLAZE_STATIC_ASSERT( IsIntegral<Deleter>::value || PF == unpadded );
 
    CustomMatrix tmp( ptr, m, n, d );
    swap( tmp );
