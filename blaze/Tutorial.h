@@ -1779,7 +1779,7 @@
 // Note that both functions can only be used for vectors with built-in or complex element type!
 //
 //
-// \n \subsection vector_operations_vector_transpose trans()
+// \n \subsection vector_operations_vector_transpose trans() / transpose()
 //
 // As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
 // (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
@@ -1796,7 +1796,7 @@
    v1 += trans( v2 );  // OK: Addition assignment of two column vectors
    \endcode
 
-// \n \subsection vector_operations_conjugate_transpose ctrans()
+// \n \subsection vector_operations_conjugate_transpose ctrans() / ctranspose()
 //
 // It is also possible to compute the conjugate transpose of a vector. This operation is available
 // via the \c ctrans() function:
@@ -1816,6 +1816,53 @@
    v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
    \endcode
 
+// \n \subsection vector_operations_evaluate eval() / evaluate()
+//
+// The \c evaluate() function forces an evaluation of the given vector expression and enables
+// an automatic deduction of the correct result type of an operation. The following code example
+// demonstrates its intended use for the multiplication of a dense and a sparse vector:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
+   // ... Resizing and initialization
+
+   auto c = evaluate( a * b );
+   \endcode
+
+// In this scenario, the \c evaluate() function assists in deducing the exact result type of
+// the operation via the 'auto' keyword. Please note that if \c evaluate() is used in this
+// way, no temporary vector is created and no copy operation is performed. Instead, the result
+// is directly written to the target vector due to the return value optimization (RVO). However,
+// if \c evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   CompressedVector<double> d( a * b );  // No temporary & no copy operation
+   DynamicVector<double> e( a * b );     // Temporary & copy operation
+   d = evaluate( a * b );                // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \c evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c, d;
+
+   d = a + evaluate( b * c );  // Unnecessary creation of a temporary vector
+   d = a + eval( b * c );      // No creation of a temporary vector
+   \endcode
+
+// In contrast to the \c evaluate() function, \c eval() can take the complete expression
+// into account and therefore can guarantee the most efficient way to evaluate it (see also
+// \ref intra_statement_optimization).
+//
+//
 // \n \subsection vector_operations_normalize normalize()
 //
 // The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
@@ -2770,8 +2817,8 @@
 
 // \note The \c finalize() function has to be explicitly called for each row or column, even
 // for empty ones!
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \note Although \c append() does not allocate new memory, it still invalidates all iterators
+// returned by the \c end() functions!
 //
 //
 // \n \section matrix_operations_member_functions Member Functions
@@ -3499,7 +3546,7 @@
 // \ref custom_operations for a detailed overview of the possibilities of custom operations.
 //
 //
-// \n \subsection matrix_operations_matrix_transpose trans()
+// \n \subsection matrix_operations_matrix_transpose trans() / transpose()
 //
 // Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
 // a column-major matrix and vice versa:
@@ -3530,7 +3577,7 @@
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
 //
 //
-// \n \subsection matrix_operations_conjugate_transpose ctrans()
+// \n \subsection matrix_operations_conjugate_transpose ctrans() / ctranspose()
 //
 // The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
 // conjugate, or transjugate) can be computed via the \c ctrans() function:
@@ -3565,6 +3612,56 @@
 //  - ... the given matrix is a triangular matrix;
 //  - ... the given submatrix affects the restricted parts of a triangular matrix;
 //  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
+// \n \subsection matrix_operations_matrix_evaluate eval() / evaluate()
+//
+// The \c evaluate() function forces an evaluation of the given matrix expression and enables
+// an automatic deduction of the correct result type of an operation. The following code example
+// demonstrates its intended use for the multiplication of a lower and a strictly lower dense
+// matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::StrictlyLowerMatrix;
+
+   LowerMatrix< DynamicMatrix<double> > A;
+   StrictlyLowerMatrix< DynamicMatrix<double> > B;
+   // ... Resizing and initialization
+
+   auto C = evaluate( A * B );
+   \endcode
+
+// In this scenario, the \c evaluate() function assists in deducing the exact result type of
+// the operation via the 'auto' keyword. Please note that if \c evaluate() is used in this
+// way, no temporary matrix is created and no copy operation is performed. Instead, the result
+// is directly written to the target matrix due to the return value optimization (RVO). However,
+// if \c evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   StrictlyLowerMatrix< DynamicMatrix<double> > D( A * B );  // No temporary & no copy operation
+   LowerMatrix< DynamicMatrix<double> > E( A * B );          // Temporary & copy operation
+   DynamicMatrix<double> F( A * B );                         // Temporary & copy operation
+   D = evaluate( A * B );                                    // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \c evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C, D;
+
+   D = A + evaluate( B * C );  // Unnecessary creation of a temporary matrix
+   D = A + eval( B * C );      // No creation of a temporary matrix
+   \endcode
+
+// In contrast to the \c evaluate() function, \c eval() can take the complete expression
+// into account and therefore can guarantee the most efficient way to evaluate it (see also
+// \ref intra_statement_optimization).
 //
 //
 // \n \subsection matrix_operations_matrix_determinant det()
