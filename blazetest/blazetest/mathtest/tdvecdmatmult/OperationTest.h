@@ -151,6 +151,7 @@ class OperationTest
    //@{
                           void testInitialStatus     ();
                           void testAssignment        ();
+                          void testEvaluation        ();
                           void testElementAccess     ();
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
@@ -296,6 +297,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
 
    testInitialStatus();
    testAssignment();
+   testEvaluation();
    testElementAccess();
    testBasicOperation();
    testNegatedOperation();
@@ -541,6 +543,126 @@ void OperationTest<VT,MT>::testAssignment()
           << "   Current initialization:\n" << orhs_ << "\n"
           << "   Expected initialization:\n" << refrhs_ << "\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the explicit evaluation.
+//
+// \return void
+// \exception std::runtime_error Evaluation error detected.
+//
+// This function tests the explicit evaluation. In case any error is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::testEvaluation()
+{
+   using blaze::IsRowMajorMatrix;
+
+
+   //=====================================================================================
+   // Testing the evaluation with the given types
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    * rhs_    ) );
+      const auto refres( evaluate( reflhs_ * refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the given matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side transpose dense vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    * eval( rhs_ )    ) );
+      const auto refres( evaluate( eval( reflhs_ ) * eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side transpose dense vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<MT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( rhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Testing the evaluation with the transpose types
+   //=====================================================================================
+
+   {
+      const auto res   ( evaluate( lhs_    * orhs_   ) );
+      const auto refres( evaluate( reflhs_ * refrhs_ ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with the transpose matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side transpose dense vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      const auto res   ( evaluate( eval( lhs_ )    * eval( orhs_ )   ) );
+      const auto refres( evaluate( eval( reflhs_ ) * eval( refrhs_ ) ) );
+
+      if( !isEqual( res, refres ) ) {
+         std::ostringstream oss;
+         oss << " Test: Evaluation with evaluated transpose matrix/vector\n"
+             << " Error: Failed evaluation\n"
+             << " Details:\n"
+             << "   Left-hand side transpose dense vector type:\n"
+             << "     " << typeid( lhs_ ).name() << "\n"
+             << "   Right-hand side " << ( IsRowMajorMatrix<OMT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense matrix type:\n"
+             << "     " << typeid( orhs_ ).name() << "\n"
+             << "   Deduced result type:\n"
+             << "     " << typeid( res ).name() << "\n"
+             << "   Deduced reference result type:\n"
+             << "     " << typeid( refres ).name() << "\n"
+             << "   Result:\n" << res << "\n"
+             << "   Expected result:\n" << refres << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
