@@ -766,6 +766,17 @@ BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( long double    );
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct LowType< complex<T>, complex<T> >
+{
+   using Type = complex< Decay_<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct LowType< complex<T1>, complex<T2> >
 {
