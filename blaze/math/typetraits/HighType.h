@@ -767,6 +767,17 @@ BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( long double    );
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct HighType< complex<T>, complex<T> >
+{
+   using Type = complex< Decay_<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct HighType< complex<T1>, complex<T2> >
 {
