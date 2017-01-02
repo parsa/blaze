@@ -50,6 +50,7 @@
 #include <blaze/math/traits/DVecDVecInnerExprTrait.h>
 #include <blaze/math/traits/DVecDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecScalarMultExprTrait.h>
+#include <blaze/math/traits/DVecSVecInnerExprTrait.h>
 #include <blaze/math/traits/DVecSVecMultExprTrait.h>
 #include <blaze/math/traits/DVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecTSVecMultExprTrait.h>
@@ -76,7 +77,6 @@
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
-#include <blaze/math/traits/TDVecSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
@@ -243,7 +243,7 @@ struct MultExprTrait
                                                      , DVecDVecInnerExprTrait<T1,T2> >
                                                 , If_< IsRowVector<T2>
                                                      , TDVecTSVecMultExprTrait<T1,T2>
-                                                     , TDVecSVecMultExprTrait<T1,T2> > >
+                                                     , DVecSVecInnerExprTrait<T1,T2> > >
                                            , If_< IsNumeric<T2>
                                                 , TDVecScalarMultExprTrait<T1,T2>
                                                 , Failure > > >
