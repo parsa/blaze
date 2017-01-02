@@ -517,9 +517,6 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
       return false;
 
-   if( (~sm).rows() < 2UL )
-      return true;
-
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {

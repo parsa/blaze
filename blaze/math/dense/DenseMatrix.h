@@ -767,12 +767,6 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
    if( !IsNumeric<ET>::value || !isSquare( ~dm ) )
       return false;
 
-   if( (~dm).rows() < 2UL )
-      return true;
-
-   if( IsTriangular<MT>::value )
-      return isDiagonal( ~dm );
-
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
