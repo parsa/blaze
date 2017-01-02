@@ -117,7 +117,6 @@ class Logger : private Singleton<Logger,SystemClock>
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   friend class FunctionTrace;
    friend class LogSection;
    BLAZE_BEFRIEND_SINGLETON;
    /*! \endcond */

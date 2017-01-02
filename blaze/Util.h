@@ -53,6 +53,7 @@
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Indices.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InputString.h>

@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/logging/FunctionTrace.h
+//  \file blaze/util/tracing/FunctionTrace.h
 //  \brief Header file for the FunctionTrace class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,24 +32,24 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_LOGGING_FUNCTIONTRACE_H_
-#define _BLAZE_UTIL_LOGGING_FUNCTIONTRACE_H_
+#ifndef _BLAZE_UTIL_TRACING_FUNCTIONTRACE_H_
+#define _BLAZE_UTIL_TRACING_FUNCTIONTRACE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
+#include <iostream>
 #include <new>
+#include <sstream>
 #include <string>
-#include <blaze/system/Logging.h>
+#include <blaze/system/Debugging.h>
 #include <blaze/system/Signature.h>
-#include <blaze/util/NonCopyable.h>
+#include <blaze/system/SMP.h>
 
 
 namespace blaze {
-
-namespace logging {
 
 //=================================================================================================
 //
@@ -59,32 +59,38 @@ namespace logging {
 
 //*************************************************************************************************
 /*!\brief RAII object for function tracing.
-// \ingroup logging
+// \ingroup util
 //
 // The FunctionTrace class is an auxiliary helper class for the tracing of function calls. It
-// is implemented as a wrapper around the Logger class and is responsible for the atomicity of
-// the logging operations of trace information.
+// is implemented as a wrapper around \c std::cerr and is responsible for the atomicity of the
+// output of trace information.
 */
-class FunctionTrace : private NonCopyable
+class FunctionTrace
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   FunctionTrace( const std::string& file, const std::string& function );
+   inline FunctionTrace( const std::string& file, const std::string& function );
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~FunctionTrace();
+   inline ~FunctionTrace();
    //@}
    //**********************************************************************************************
 
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
+   FunctionTrace( const FunctionTrace& ) = delete;
+   FunctionTrace( FunctionTrace&& ) = delete;
+
+   FunctionTrace& operator=( const FunctionTrace& ) = delete;
+   FunctionTrace& operator=( FunctionTrace&& ) = delete;
+
    void* operator new  ( std::size_t ) = delete;
    void* operator new[]( std::size_t ) = delete;
    void* operator new  ( std::size_t, const std::nothrow_t& ) noexcept = delete;
@@ -113,52 +119,61 @@ class FunctionTrace : private NonCopyable
 
 //=================================================================================================
 //
-//  BLAZE_FUNCTION_TRACE MACRO
+//  CONSTRUCTORS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Function trace macro.
-// \ingroup logging
+/*!\brief Constructor for the FunctionTrace class.
 //
-// This macro can be used to reliably trace function calls. In case function tracing is
-// activated, the traces are logged via the Logger class. The following, short example
-// demonstrates how the function trace macro is used:
-
-   \code
-   int main( int argc, char** argv )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      // ...
-   }
-   \endcode
-
-// The macro should be used as the very first statement inside the function in order to
-// guarantee that logging the function trace is the very first and last action of the
-// function call.\n
-// Function tracing can be enabled or disabled via the BLAZE_USE_FUNCTION_TRACES macro.
-// If function tracing is activated, the resulting log will contain trace information of
-// the following form:
-
-   \code
-   [TRACE   ][000:00:00] + Entering function 'int main()' in file 'TraceDemo.cpp'
-   [TRACE   ][000:00:10] - Leaving function 'int main()' in file 'TraceDemo.cpp'
-   \endcode
-
-// In case function tracing is deactivated, all function trace functionality is completely
-// removed from the code, i.e. no function traces are logged and no overhead results from
-// the BLAZE_FUNCTION_TRACE macro.
+// \param file The name of the file the traced function is contained in
+// \param function The name of the traced function
 */
-#if BLAZE_USE_FUNCTION_TRACES
-#  define BLAZE_FUNCTION_TRACE \
-   blaze::logging::FunctionTrace BLAZE_FUNCTION_TRACE_OBJECT( __FILE__, BLAZE_SIGNATURE )
+inline FunctionTrace::FunctionTrace( const std::string& file, const std::string& function )
+   : file_    ( file     )  // The file name the traced function is contained in
+   , function_( function )  // The name of the traced function
+{
+   std::ostringstream oss;
+   oss << " + ";
+
+#if BLAZE_OPENMP_PARALLEL_MODE
+   oss << "[Thread " << omp_get_thread_num() << "]";
 #else
-#  define BLAZE_FUNCTION_TRACE
+   oss << "[Thread " << std::this_thread::get_id() << "]";
 #endif
+
+   oss << " Entering function '" << function_ << "' in file '" << file_ << "'\n";
+   std::cerr << oss.str();
+}
 //*************************************************************************************************
 
-} // namespace logging
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Destructor for the FunctionTrace class.
+*/
+inline FunctionTrace::~FunctionTrace()
+{
+   std::ostringstream oss;
+   oss << " - ";
+
+#if BLAZE_OPENMP_PARALLEL_MODE
+   oss << "[Thread " << omp_get_thread_num() << "]";
+#else
+   oss << "[Thread " << std::this_thread::get_id() << "]";
+#endif
+
+   oss << " Leaving function '" << function_ << "' in file '" << file_ << "'\n";
+   std::cerr << oss.str();
+}
+//*************************************************************************************************
 
 } // namespace blaze
 

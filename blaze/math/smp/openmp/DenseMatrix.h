@@ -60,7 +60,7 @@
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -198,7 +198,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<threads; ++i )
+   for( size_t i=0; i<threads; ++i )
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -433,7 +433,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<threads; ++i )
+   for( size_t i=0; i<threads; ++i )
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -669,7 +669,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
 #pragma omp for schedule(dynamic,1) nowait
-   for( int i=0; i<threads; ++i )
+   for( size_t i=0; i<threads; ++i )
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );

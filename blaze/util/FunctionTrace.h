@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Logging.h
-//  \brief Header file for the logging functionality
+//  \file blaze/util/FunctionTrace.h
+//  \brief Header file for the function trace functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,66 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_LOGGING_H_
-#define _BLAZE_UTIL_LOGGING_H_
+#ifndef _BLAZE_UTIL_FUNCTIONTRACE_H_
+#define _BLAZE_UTIL_FUNCTIONTRACE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/logging/DebugSection.h>
-#include <blaze/util/logging/DetailSection.h>
-#include <blaze/util/logging/ErrorSection.h>
-#include <blaze/util/logging/InfoSection.h>
-#include <blaze/util/logging/ProgressSection.h>
-#include <blaze/util/logging/WarningSection.h>
+#if BLAZE_USE_FUNCTION_TRACES
+#  include <blaze/util/functiontrace/FunctionTrace.h>
+#endif
+
+
+
+
+//=================================================================================================
+//
+//  BLAZE_FUNCTION_TRACE MACRO
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Function trace macro.
+// \ingroup util
+//
+// This macro can be used to reliably trace function calls. In case function tracing is
+// activated, function traces are written to the console via \c std::cerr. The following
+// short example demonstrates how the function trace macro is used:
+
+   \code
+   int main( int argc, char** argv )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      // ...
+   }
+   \endcode
+
+// The macro should be used as the very first statement inside the function in order to
+// guarantee that writing the function trace is the very first and last action of the
+// function call.\n
+// Function tracing can be enabled or disabled via the BLAZE_USE_FUNCTION_TRACES macro.
+// If function tracing is activated, trace information of the following form will be written
+// to \c std::cerr:
+
+   \code
+   + [Thread 0] Entering function 'int main()' in file 'TraceDemo.cpp'
+   - [Thread 0] Leaving function 'int main()' in file 'TraceDemo.cpp'
+   \endcode
+
+// In case function tracing is deactivated, all function trace functionality is completely
+// removed from the code, i.e. no function traces are logged and no overhead results from
+// the BLAZE_FUNCTION_TRACE macro.
+*/
+#if BLAZE_USE_FUNCTION_TRACES
+#  define BLAZE_FUNCTION_TRACE \
+   blaze::FunctionTrace BLAZE_FUNCTION_TRACE_OBJECT( __FILE__, BLAZE_SIGNATURE )
+#else
+#  define BLAZE_FUNCTION_TRACE
+#endif
+//*************************************************************************************************
 
 #endif

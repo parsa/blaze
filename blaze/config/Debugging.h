@@ -49,7 +49,23 @@ namespace blaze {
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 */
-#define BLAZE_USE_DEBUG_MODE 0
+#define BLAZE_USE_DEBUG_MODE 1
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for function traces.
+// \ingroup config
+//
+// This compilation switch triggers the use of function traces. In case the switch is set to
+// 1, function traces via the BLAZE_FUNCTION_TRACE are enabled and trace information is written
+// to the console via \c std::cerr.
+//
+// Possible settings for the function trace switch:
+//  - Deactivated: \b 0 (default)
+//  - Activated  : \b 1
+*/
+#define BLAZE_USE_FUNCTION_TRACES 0
 //*************************************************************************************************
 
 } // namespace blaze
