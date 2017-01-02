@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/flens/TDVecDVecMult.cpp
+//  \file src/flens/DVecDVecInner.cpp
 //  \brief Source file for the FLENS dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -42,7 +42,7 @@
 #include <flens/flens.cxx>
 #include <blaze/util/Timing.h>
 #include <blazemark/flens/init/DenseVector.h>
-#include <blazemark/flens/TDVecDVecMult.h>
+#include <blazemark/flens/DVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
@@ -66,7 +66,7 @@ namespace flens {
 // This kernel function implements the dense vector/dense vector inner product by means of
 // the FLENS functionality.
 */
-double tdvecdvecmult( size_t N, size_t steps )
+double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
    using ::boost::numeric_cast;
@@ -101,7 +101,7 @@ double tdvecdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " FLENS kernel 'tdvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " FLENS kernel 'dvecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }

@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/main/TDVecDVecMult.cpp
+//  \file src/main/DVecDVecInner.cpp
 //  \brief Source file for the dense vector/dense vector inner product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -48,16 +48,16 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/armadillo/TDVecDVecMult.h>
+#include <blazemark/armadillo/DVecDVecInner.h>
 #include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/blaze/TDVecDVecMult.h>
-#include <blazemark/blitz/TDVecDVecMult.h>
-#include <blazemark/boost/TDVecDVecMult.h>
-#include <blazemark/classic/TDVecDVecMult.h>
-#include <blazemark/eigen/TDVecDVecMult.h>
-#include <blazemark/flens/TDVecDVecMult.h>
-#include <blazemark/gmm/TDVecDVecMult.h>
-#include <blazemark/mtl/TDVecDVecMult.h>
+#include <blazemark/blaze/DVecDVecInner.h>
+#include <blazemark/blitz/DVecDVecInner.h>
+#include <blazemark/boost/DVecDVecInner.h>
+#include <blazemark/classic/DVecDVecInner.h>
+#include <blazemark/eigen/DVecDVecInner.h>
+#include <blazemark/flens/DVecDVecInner.h>
+#include <blazemark/gmm/DVecDVecInner.h>
+#include <blazemark/mtl/DVecDVecInner.h>
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Blitz.h>
 #include <blazemark/system/Config.h>
@@ -187,7 +187,7 @@ void estimateFlops( Run& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
+void dvecdvecinner( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
@@ -213,7 +213,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setClassicResult( blazemark::classic::tdvecdvecmult( N, steps ) );
+         run->setClassicResult( blazemark::classic::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getClassicResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -224,7 +224,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setBlazeResult( blazemark::blaze::tdvecdvecmult( N, steps ) );
+         run->setBlazeResult( blazemark::blaze::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -235,7 +235,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setBoostResult( blazemark::boost::tdvecdvecmult( N, steps ) );
+         run->setBoostResult( blazemark::boost::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -247,7 +247,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setBlitzResult( blazemark::blitz::tdvecdvecmult( N, steps ) );
+         run->setBlitzResult( blazemark::blitz::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getBlitzResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -260,7 +260,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setArmadilloResult( blazemark::armadillo::tdvecdvecmult( N, steps ) );
+         run->setArmadilloResult( blazemark::armadillo::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -273,7 +273,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setGMMResult( blazemark::gmm::tdvecdvecmult( N, steps ) );
+         run->setGMMResult( blazemark::gmm::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getGMMResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -286,7 +286,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setFLENSResult( blazemark::flens::tdvecdvecmult( N, steps ) );
+         run->setFLENSResult( blazemark::flens::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -299,7 +299,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setMTLResult( blazemark::mtl::tdvecdvecmult( N, steps ) );
+         run->setMTLResult( blazemark::mtl::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getMTLResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -312,7 +312,7 @@ void tdvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
-         run->setEigenResult( blazemark::eigen::tdvecdvecmult( N, steps ) );
+         run->setEigenResult( blazemark::eigen::dvecdvecinner( N, steps ) );
          const double mflops( run->getFlops() * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
@@ -356,7 +356,7 @@ int main( int argc, char** argv )
    }
 
    const std::string installPath( INSTALL_PATH );
-   const std::string parameterFile( installPath + "/params/tdvecdvecmult.prm" );
+   const std::string parameterFile( installPath + "/params/dvecdvecinner.prm" );
    Parser<Run> parser;
    std::vector<Run> runs;
 
@@ -369,7 +369,7 @@ int main( int argc, char** argv )
    }
 
    try {
-      tdvecdvecmult( runs, benchmarks );
+      dvecdvecinner( runs, benchmarks );
    }
    catch( std::exception& ex ) {
       std::cerr << "   Error during benchmark execution: " << ex.what() << "\n";

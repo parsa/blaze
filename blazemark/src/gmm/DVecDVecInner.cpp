@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/armadillo/TDVecDVecMult.cpp
-//  \brief Source file for the Armadillo dense vector/dense vector inner product kernel
+//  \file src/gmm/DVecDVecInner.cpp
+//  \brief Source file for the GMM++ dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,16 +38,16 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <armadillo>
+#include <gmm/gmm.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/armadillo/init/Col.h>
-#include <blazemark/armadillo/TDVecDVecMult.h>
+#include <blazemark/gmm/init/Vector.h>
+#include <blazemark/gmm/DVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace armadillo {
+namespace gmm {
 
 //=================================================================================================
 //
@@ -56,22 +56,22 @@ namespace armadillo {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Armadillo dense vector/dense vector inner product kernel.
+/*!\brief GMM++ dense vector/dense vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param steps The number of iteration steps to perform.
 // \return Minimum runtime of the kernel function.
 //
 // This kernel function implements the dense vector/dense vector inner product by means of
-// the Armadillo functionality.
+// the GMM++ functionality.
 */
-double tdvecdvecmult( size_t N, size_t steps )
+double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::arma::Col<element_t> a( N ), b( N );
+   ::std::vector<element_t> a( N ), b( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -82,7 +82,7 @@ double tdvecdvecmult( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += dot( a, b );
+         scalar += ::gmm::vect_sp( a, b );
       }
       timer.end();
 
@@ -97,12 +97,12 @@ double tdvecdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Armadillo kernel 'tdvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " GMM++ kernel 'dvecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace armadillo
+} // namespace gmm
 
 } // namespace blazemark

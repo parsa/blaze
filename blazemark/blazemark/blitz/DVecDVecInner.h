@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/gmm/TDVecDVecMult.h
-//  \brief Header file for the GMM++ dense vector/dense vector inner product kernel
+//  \file blazemark/blitz/DVecDVecInner.h
+//  \brief Header file for the Blitz++ dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_GMM_TDVECDVECMULT_H_
-#define _BLAZEMARK_GMM_TDVECDVECMULT_H_
+#ifndef _BLAZEMARK_BLITZ_DVECDVECINNER_H_
+#define _BLAZEMARK_BLITZ_DVECDVECINNER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace gmm {
+namespace blitz {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace gmm {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name GMM++ kernel functions */
+/*!\name Blitz++ kernel functions */
 //@{
-double tdvecdvecmult( size_t N, size_t steps );
+double dvecdvecinner( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace gmm
+} // namespace blitz
 
 } // namespace blazemark
 

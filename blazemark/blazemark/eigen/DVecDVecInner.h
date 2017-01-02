@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/flens/TDVecDVecMult.h
-//  \brief Header file for the FLENS dense vector/dense vector inner product kernel
+//  \file blazemark/eigen/DVecDVecInner.h
+//  \brief Header file for the Eigen dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_FLENS_TDVECDVECMULT_H_
-#define _BLAZEMARK_FLENS_TDVECDVECMULT_H_
+#ifndef _BLAZEMARK_EIGEN_DVECDVECINNER_H_
+#define _BLAZEMARK_EIGEN_DVECDVECINNER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace flens {
+namespace eigen {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace flens {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name FLENS kernel functions */
+/*!\name Eigen kernel functions */
 //@{
-double tdvecdvecmult( size_t N, size_t steps );
+double dvecdvecinner( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace flens
+} // namespace eigen
 
 } // namespace blazemark
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/eigen/TDVecDVecMult.cpp
-//  \brief Source file for the Eigen dense vector/dense vector inner product kernel
+//  \file blazemark/flens/DVecDVecInner.h
+//  \brief Header file for the FLENS dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,22 +32,20 @@
 */
 //=================================================================================================
 
+#ifndef _BLAZEMARK_FLENS_DVECDVECINNER_H_
+#define _BLAZEMARK_FLENS_DVECDVECINNER_H_
+
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iostream>
-#include <Eigen/Dense>
-#include <blaze/util/Timing.h>
-#include <blazemark/eigen/init/Matrix.h>
-#include <blazemark/eigen/TDVecDVecMult.h>
-#include <blazemark/system/Config.h>
+#include <blazemark/system/Types.h>
 
 
 namespace blazemark {
 
-namespace eigen {
+namespace flens {
 
 //=================================================================================================
 //
@@ -56,54 +54,14 @@ namespace eigen {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Eigen dense vector/dense vector inner product kernel.
-//
-// \param N The size of the vectors for the inner product.
-// \param steps The number of iteration steps to perform.
-// \return Minimum runtime of the kernel function.
-//
-// This kernel function implements the dense vector/dense vector inner product by means of
-// the Eigen functionality.
-*/
-double tdvecdvecmult( size_t N, size_t steps )
-{
-   using ::blazemark::element_t;
-   using ::Eigen::Dynamic;
-
-   ::blaze::setSeed( seed );
-
-   ::Eigen::Matrix<element_t,Dynamic,1> a( N ), b( N );
-   element_t scalar( 0 );
-   ::blaze::timing::WcTimer timer;
-
-   init( a );
-   init( b );
-
-   for( size_t rep=0UL; rep<reps; ++rep )
-   {
-      timer.start();
-      for( size_t step=0UL; step<steps; ++step ) {
-         scalar += a.transpose() * b;
-      }
-      timer.end();
-
-      if( scalar < element_t(0) )
-         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
-
-      if( timer.last() > maxtime )
-         break;
-   }
-
-   const double minTime( timer.min()     );
-   const double avgTime( timer.average() );
-
-   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Eigen kernel 'tdvecdvecmult': Time deviation too large!!!\n";
-
-   return minTime;
-}
+/*!\name FLENS kernel functions */
+//@{
+double dvecdvecinner( size_t N, size_t steps );
+//@}
 //*************************************************************************************************
 
-} // namespace boost
+} // namespace flens
 
 } // namespace blazemark
+
+#endif

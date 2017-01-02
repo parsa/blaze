@@ -511,26 +511,26 @@ fi
 DVECNORM="$DVECNORM \$(OBJECT_PATH)/MAIN_DVecNorm.o"
 
 # Configuration of the dense vector/dense vector inner product benchmark
-TDVECDVECMULT="\$(OBJECT_PATH)/CLASSIC_TDVecDVecMult.o \$(OBJECT_PATH)/BLAZE_TDVecDVecMult.o \$(OBJECT_PATH)/BOOST_TDVecDVecMult.o"
+DVECDVECINNER="\$(OBJECT_PATH)/CLASSIC_DVecDVecInner.o \$(OBJECT_PATH)/BLAZE_DVecDVecInner.o \$(OBJECT_PATH)/BOOST_DVecDVecInner.o"
 if [ "$BLITZ" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/BLITZ_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/BLITZ_DVecDVecInner.o"
 fi
 if [ "$GMM" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/GMM_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/GMM_DVecDVecInner.o"
 fi
 if [ "$ARMADILLO" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/ARMADILLO_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/ARMADILLO_DVecDVecInner.o"
 fi
 if [ "$FLENS" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/FLENS_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/FLENS_DVecDVecInner.o"
 fi
 if [ "$MTL" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/MTL_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/MTL_DVecDVecInner.o"
 fi
 if [ "$EIGEN" = "yes" ]; then
-   TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/EIGEN_TDVecDVecMult.o"
+   DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/EIGEN_DVecDVecInner.o"
 fi
-TDVECDVECMULT="$TDVECDVECMULT \$(OBJECT_PATH)/MAIN_TDVecDVecMult.o"
+DVECDVECINNER="$DVECDVECINNER \$(OBJECT_PATH)/MAIN_DVecDVecInner.o"
 
 # Configuration of the dense vector/sparse vector inner product benchmark
 TDVECSVECMULT="\$(OBJECT_PATH)/BLAZE_TDVecSVecMult.o \$(OBJECT_PATH)/BOOST_TDVecSVecMult.o"
@@ -2103,8 +2103,8 @@ binaries: $MODULES
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsveccross $SVECSVECCROSS \$(LIBRARIES)
 	@echo "  Building dense vector norm (dvecnorm) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecnorm $DVECNORM \$(LIBRARIES)
-	@echo "  Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
-	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
+	@echo "  Building dense vector/dense vector inner product (dvecdvecinner) binary..."
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecinner $DVECDVECINNER \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector inner product (tdvecsvecmult) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tdvecsvecmult $TDVECSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector inner product (tsvecdvecmult) binary..."
@@ -3054,76 +3054,76 @@ EOF
 # Dense vector/dense vector inner product
 cat >> Makefile <<EOF
 
-tdvecdvecmult: \$(BINARY_PATH)/tdvecdvecmult
-\$(BINARY_PATH)/tdvecdvecmult: $TDVECDVECMULT
-	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tdvecdvecmult $TDVECDVECMULT \$(LIBRARIES)
+dvecdvecinner: \$(BINARY_PATH)/dvecdvecinner
+\$(BINARY_PATH)/dvecdvecinner: $DVECDVECINNER
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdvecinner $DVECDVECINNER \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/CLASSIC_TDVecDVecMult.o:
+\$(OBJECT_PATH)/CLASSIC_DVecDVecInner.o:
 	@echo
-	@echo "Building dense vector/dense vector inner product (tdvecdvecmult) binary..."
+	@echo "Building dense vector/dense vector inner product (dvecdvecinner) binary..."
 	@echo "  Building the classic kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLASSIC_TDVecDVecMult.o \$(INSTALL_PATH)/src/classic/TDVecDVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BLAZE_TDVecDVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLASSIC_DVecDVecInner.o \$(INSTALL_PATH)/src/classic/DVecDVecInner.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BLAZE_DVecDVecInner.o:
 	@echo "  Building the Blaze kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_TDVecDVecMult.o \$(INSTALL_PATH)/src/blaze/TDVecDVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BOOST_TDVecDVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecDVecInner.o \$(INSTALL_PATH)/src/blaze/DVecDVecInner.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BOOST_DVecDVecInner.o:
 	@echo "  Building the Boost uBLAS kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_TDVecDVecMult.o \$(INSTALL_PATH)/src/boost/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_DVecDVecInner.o \$(INSTALL_PATH)/src/boost/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 
 if [ "$BLITZ" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/BLITZ_TDVecDVecMult.o:
+\$(OBJECT_PATH)/BLITZ_DVecDVecInner.o:
 	@echo "  Building the Blitz++ kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_TDVecDVecMult.o \$(INSTALL_PATH)/src/blitz/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_DVecDVecInner.o \$(INSTALL_PATH)/src/blitz/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$GMM" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/GMM_TDVecDVecMult.o:
+\$(OBJECT_PATH)/GMM_DVecDVecInner.o:
 	@echo "  Building the GMM++ kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_TDVecDVecMult.o \$(INSTALL_PATH)/src/gmm/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_DVecDVecInner.o \$(INSTALL_PATH)/src/gmm/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$ARMADILLO" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/ARMADILLO_TDVecDVecMult.o:
+\$(OBJECT_PATH)/ARMADILLO_DVecDVecInner.o:
 	@echo "  Building the Armadillo kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_TDVecDVecMult.o \$(INSTALL_PATH)/src/armadillo/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/ARMADILLO_DVecDVecInner.o \$(INSTALL_PATH)/src/armadillo/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$FLENS" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/FLENS_TDVecDVecMult.o:
+\$(OBJECT_PATH)/FLENS_DVecDVecInner.o:
 	@echo "  Building the FLENS kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_TDVecDVecMult.o \$(INSTALL_PATH)/src/flens/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/FLENS_DVecDVecInner.o \$(INSTALL_PATH)/src/flens/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$MTL" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/MTL_TDVecDVecMult.o:
+\$(OBJECT_PATH)/MTL_DVecDVecInner.o:
 	@echo "  Building the MTL kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/MTL_TDVecDVecMult.o \$(INSTALL_PATH)/src/mtl/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/MTL_DVecDVecInner.o \$(INSTALL_PATH)/src/mtl/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/EIGEN_TDVecDVecMult.o:
+\$(OBJECT_PATH)/EIGEN_DVecDVecInner.o:
 	@echo "  Building the Eigen kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_TDVecDVecMult.o \$(INSTALL_PATH)/src/eigen/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_DVecDVecInner.o \$(INSTALL_PATH)/src/eigen/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/MAIN_TDVecDVecMult.o:
+\$(OBJECT_PATH)/MAIN_DVecDVecInner.o:
 	@echo "  Building the benchmark..."
-	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_TDVecDVecMult.o \$(INSTALL_PATH)/src/main/TDVecDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecDVecInner.o \$(INSTALL_PATH)/src/main/DVecDVecInner.cpp \$(INCLUDES)
 EOF
 
 
@@ -8038,7 +8038,7 @@ clean:
         bin/svecdveccross $SVECDVECCROSS \\
         bin/svecsveccross $SVECSVECCROSS \\
         bin/dvecnorm $DVECNORM \\
-        bin/tdvecdvecmult $TDVECDVECMULT \\
+        bin/dvecdvecinner $DVECDVECINNER \\
         bin/tdvecsvecmult $TDVECSVECMULT \\
         bin/tsvecdvecmult $TSVECDVECMULT \\
         bin/tsvecsvecmult $TSVECSVECMULT \\

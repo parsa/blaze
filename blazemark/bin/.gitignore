@@ -25,6 +25,7 @@ dmattsmatadd
 dmattsmatmult
 dvecdvecadd
 dvecdveccross
+dvecdvecinner
 dvecdvecmult
 dvecdvecsub
 dvecnorm
@@ -75,7 +76,6 @@ tdmattdmatmult
 tdmattsmatadd
 tdmattsmatmult
 tdvecdmatmult
-tdvecdvecmult
 tdvecsmatmult
 tdvecsvecmult
 tdvectdmatmult

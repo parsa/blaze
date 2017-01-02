@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/classic/TDVecDVecMult.cpp
-//  \brief Source file for the classic dense vector/dense vector inner product kernel
+//  \file blazemark/classic/DVecDVecInner.h
+//  \brief Header file for the classic dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,15 @@
 */
 //=================================================================================================
 
+#ifndef _BLAZEMARK_CLASSIC_DVECDVECINNER_H_
+#define _BLAZEMARK_CLASSIC_DVECDVECINNER_H_
+
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iostream>
-#include <blaze/util/Timing.h>
-#include <blazemark/classic/init/Vector.h>
-#include <blazemark/classic/TDVecDVecMult.h>
-#include <blazemark/classic/Vector.h>
-#include <blazemark/system/Config.h>
+#include <blazemark/system/Types.h>
 
 
 namespace blazemark {
@@ -56,53 +54,14 @@ namespace classic {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Classic dense vector/dense vector inner product kernel.
-//
-// \param N The size of the vectors for the inner product.
-// \param steps The number of iteration steps to perform.
-// \return Minimum runtime of the kernel function.
-//
-// This kernel function implements the dense vector/dense vector inner product by means of
-// classic C++ operator overloading.
-*/
-double tdvecdvecmult( size_t N, size_t steps )
-{
-   using ::blazemark::element_t;
-
-   ::blaze::setSeed( seed );
-
-   ::blazemark::classic::Vector<element_t> a( N ), b( N );
-   element_t scalar( 0 );
-   ::blaze::timing::WcTimer timer;
-
-   init( a );
-   init( b );
-
-   for( size_t rep=0UL; rep<reps; ++rep )
-   {
-      timer.start();
-      for( size_t step=0UL; step<steps; ++step ) {
-         scalar += inner( a, b );
-      }
-      timer.end();
-
-      if( scalar < element_t(0) )
-         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
-
-      if( timer.last() > maxtime )
-         break;
-   }
-
-   const double minTime( timer.min()     );
-   const double avgTime( timer.average() );
-
-   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Classic kernel 'tdvecdvecmult': Time deviation too large!!!\n";
-
-   return minTime;
-}
+/*!\name Classic kernel functions */
+//@{
+double dvecdvecinner( size_t N, size_t steps );
+//@}
 //*************************************************************************************************
 
 } // namespace classic
 
 } // namespace blazemark
+
+#endif

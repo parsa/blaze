@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mtl/TDVecDVecMult.cpp
-//  \brief Source file for the MTL dense vector/dense vector inner product kernel
+//  \file src/boost/DVecDVecInner.cpp
+//  \brief Source file for the Boost dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,16 +38,17 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/numeric/mtl/mtl.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 #include <blaze/util/Timing.h>
-#include <blazemark/mtl/init/DenseVector.h>
-#include <blazemark/mtl/TDVecDVecMult.h>
+#include <blazemark/boost/init/Vector.h>
+#include <blazemark/boost/DVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace mtl {
+namespace boost {
 
 //=================================================================================================
 //
@@ -56,22 +57,22 @@ namespace mtl {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief MTL dense vector/dense vector inner product kernel.
+/*!\brief Boost uBLAS dense vector/dense vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param steps The number of iteration steps to perform.
 // \return Minimum runtime of the kernel function.
 //
-// This kernel function implements the dense vector/dense vector inner product by means of the
-// MTL functionality.
+// This kernel function implements the dense vector/dense vector inner product by means of
+// the Boost uBLAS functionality.
 */
-double tdvecdvecmult( size_t N, size_t steps )
+double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::mtl::dense_vector<element_t> a( N ), b( N );
+   ::boost::numeric::ublas::vector<element_t> a( N ), b( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -82,7 +83,7 @@ double tdvecdvecmult( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += dot( a, b );
+         scalar += inner_prod( a, b );
       }
       timer.end();
 
@@ -97,12 +98,12 @@ double tdvecdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " MTL kernel 'tdvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'dvecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace mtl
+} // namespace boost
 
 } // namespace blazemark

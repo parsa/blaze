@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TDVecDVecMult.cpp
-//  \brief Source file for the Blaze dense vector/dense vector inner product kernel
+//  \file src/armadillo/DVecDVecInner.cpp
+//  \brief Source file for the Armadillo dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,16 +38,16 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/math/DynamicVector.h>
+#include <armadillo>
 #include <blaze/util/Timing.h>
-#include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/blaze/TDVecDVecMult.h>
+#include <blazemark/armadillo/init/Col.h>
+#include <blazemark/armadillo/DVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace blaze {
+namespace armadillo {
 
 //=================================================================================================
 //
@@ -56,25 +56,22 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Blaze dense vector/dense vector inner product kernel.
+/*!\brief Armadillo dense vector/dense vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param steps The number of iteration steps to perform.
 // \return Minimum runtime of the kernel function.
 //
 // This kernel function implements the dense vector/dense vector inner product by means of
-// the Blaze functionality.
+// the Armadillo functionality.
 */
-double tdvecdvecmult( size_t N, size_t steps )
+double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::blaze::rowVector;
-   using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicVector<element_t,rowVector> a( N );
-   ::blaze::DynamicVector<element_t,columnVector> b( N );
+   ::arma::Col<element_t> a( N ), b( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -85,7 +82,7 @@ double tdvecdvecmult( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += a * b;
+         scalar += dot( a, b );
       }
       timer.end();
 
@@ -100,12 +97,12 @@ double tdvecdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'tdvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Armadillo kernel 'dvecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace armadillo
 
 } // namespace blazemark

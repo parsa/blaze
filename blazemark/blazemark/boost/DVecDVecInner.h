@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/eigen/TDVecDVecMult.h
-//  \brief Header file for the Eigen dense vector/dense vector inner product kernel
+//  \file blazemark/boost/DVecDVecInner.hh
+//  \brief Header file for the Boost dense vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_EIGEN_TDVECDVECMULT_H_
-#define _BLAZEMARK_EIGEN_TDVECDVECMULT_H_
+#ifndef _BLAZEMARK_BOOST_DVECDVECINNER_H_
+#define _BLAZEMARK_BOOST_DVECDVECINNER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace eigen {
+namespace boost {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace eigen {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Eigen kernel functions */
+/*!\name Boost uBLAS kernel functions */
 //@{
-double tdvecdvecmult( size_t N, size_t steps );
+double dvecdvecinner( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace eigen
+} // namespace boost
 
 } // namespace blazemark
 
