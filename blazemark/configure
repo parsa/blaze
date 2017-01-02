@@ -248,7 +248,7 @@ fi
 INCLUDES=${INCLUDES%" "}
 
 # Configuration of the library path and link libraries
-LIBRARIES="$LIBRARY_DIRECTIVES -L$BLAZE_PATH/lib -lblaze"
+LIBRARIES="$LIBRARY_DIRECTIVES"
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
 if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
