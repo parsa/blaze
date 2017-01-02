@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/TDVecDVecMultExpr.h
+//  \file blaze/math/expressions/DVecDVecInnerExpr.h
 //  \brief Header file for the dense vector/dense vector inner product expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_TDVECDVECMULTEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_TDVECDVECMULTEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DVECDVECINNEREXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DVECDVECINNEREXPR_H_
 
 
 //*************************************************************************************************
@@ -72,7 +72,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
-struct TDVecDVecMultExprHelper
+struct DVecDVecInnerExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
@@ -131,7 +131,7 @@ struct TDVecDVecMultExprHelper
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
-inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
+inline DisableIf_< DVecDVecInnerExprHelper<T1,T2>
                  , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
@@ -204,7 +204,7 @@ inline DisableIf_< TDVecDVecMultExprHelper<T1,T2>
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side dense vector
-inline EnableIf_< TDVecDVecMultExprHelper<T1,T2>
+inline EnableIf_< DVecDVecInnerExprHelper<T1,T2>
                , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
    operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
 {
