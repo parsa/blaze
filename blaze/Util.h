@@ -59,7 +59,6 @@
 #include <blaze/util/InputString.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Limits.h>
-#include <blaze/util/Logging.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/MemoryPool.h>
 #include <blaze/util/MPL.h>
