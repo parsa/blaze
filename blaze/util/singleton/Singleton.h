@@ -458,8 +458,8 @@ struct HasCyclicDependency<T,TL,true>
 //     The first template parameter has to be the class itself. The following template parameters
 //     define lifetime dependencies of this class, i.e., specify on which singleton instances the
 //     class depends. It is possible to specify up to 8 lifetime dependencies. The example below
-//     demonstrates this for the MySingleton class, which is solely depending on the Logger class,
-//     which represents the core of the Blaze logging functionality.
+//     demonstrates this for the MySingleton class, which is solely depending on another singleton
+//     called Logger.
 //  -# The class needs to befriend the Singleton via the blaze::BLAZE_BEFRIEND_SINGLETON macro.
 //     This macro provides a convenient way to express this friendship relation and works both in
 //     case the class derives publicly or non-publicly from the Singleton class. This friendship
@@ -513,8 +513,7 @@ struct HasCyclicDependency<T,TL,true>
 // functionality cannot be used!\n
 // When using the Singleton base class, lifetime dependencies between classes can be expressed
 // very conveniently. The following example demonstrates this by means of the MySingleton class,
-// which defines a lifetime dependency on the Logger class, which represents the core of the
-// \b Blaze logging functionality:
+// which defines a lifetime dependency on another singleton called Logger:
 
    \code
    // Definition of the MySingleton class
@@ -540,8 +539,8 @@ struct HasCyclicDependency<T,TL,true>
 //     The first template parameter has to be the class itself. The following template parameters
 //     define lifetime dependencies of this class, i.e., specify on which singleton instances the
 //     class depends. It is possible to specify up to 8 lifetime dependencies. The example above
-//     demonstrates this for the MySingleton class, which is solely depending on the Logger class,
-//     which represents the core of the Blaze logging functionality.
+//     demonstrates this for the MySingleton class, which is solely depending on another singleton
+//     called Logger.
 //  -# The class needs to befriend the Singleton via the blaze::BLAZE_BEFRIEND_SINGLETON macro.
 //     This macro provides a convenient way to express this friendship relation and works both in
 //     case the class derives publicly or non-publicly from the Singleton class. This friendship
