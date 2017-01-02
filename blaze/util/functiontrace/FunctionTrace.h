@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/tracing/FunctionTrace.h
+//  \file blaze/util/functiontrace/FunctionTrace.h
 //  \brief Header file for the FunctionTrace class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
