@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/blaze/TDVecSVecMult.h
-//  \brief Header file for the Blaze dense vector/sparse vector inner product kernel
+//  \file blazemark/gmm/DVecSVecInner.h
+//  \brief Header file for the GMM++ dense vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_BLAZE_TDVECSVECMULT_H_
-#define _BLAZEMARK_BLAZE_TDVECSVECMULT_H_
+#ifndef _BLAZEMARK_GMM_DVECSVECINNER_H_
+#define _BLAZEMARK_GMM_DVECSVECINNER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace blaze {
+namespace gmm {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Blaze kernel functions */
+/*!\name GMM++ kernel functions */
 //@{
-double tdvecsvecmult( size_t N, size_t F, size_t steps );
+double dvecsvecinner( size_t N, size_t F, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace gmm
 
 } // namespace blazemark
 

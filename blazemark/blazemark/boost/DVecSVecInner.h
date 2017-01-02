@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TDVecSVecMult.cpp
-//  \brief Source file for the Blaze dense vector/sparse vector inner product kernel
+//  \file blazemark/boost/DVecSVecInner.h
+//  \brief Header file for the Boost dense vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,24 +32,20 @@
 */
 //=================================================================================================
 
+#ifndef _BLAZEMARK_BOOST_DVECSVECINNER_H_
+#define _BLAZEMARK_BOOST_DVECSVECINNER_H_
+
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iostream>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/DynamicVector.h>
-#include <blaze/util/Timing.h>
-#include <blazemark/blaze/init/CompressedVector.h>
-#include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/blaze/TDVecSVecMult.h>
-#include <blazemark/system/Config.h>
+#include <blazemark/system/Types.h>
 
 
 namespace blazemark {
 
-namespace blaze {
+namespace boost {
 
 //=================================================================================================
 //
@@ -58,57 +54,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Blaze dense vector/sparse vector inner product kernel.
-//
-// \param N The size of the vectors for the inner product.
-// \param F The number of non-zero elements for the sparse vector.
-// \param steps The number of iteration steps to perform.
-// \return Minimum runtime of the kernel function.
-//
-// This kernel function implements the dense vector/sparse vector inner product by means of
-// the Blaze functionality.
-*/
-double tdvecsvecmult( size_t N, size_t F, size_t steps )
-{
-   using ::blazemark::element_t;
-   using ::blaze::rowVector;
-   using ::blaze::columnVector;
-
-   ::blaze::setSeed( seed );
-
-   ::blaze::DynamicVector<element_t,rowVector> a( N );
-   ::blaze::CompressedVector<element_t,columnVector> b( N );
-   element_t scalar( 0 );
-   ::blaze::timing::WcTimer timer;
-
-   init( a );
-   init( b, F );
-
-   for( size_t rep=0UL; rep<reps; ++rep )
-   {
-      timer.start();
-      for( size_t step=0UL; step<steps; ++step ) {
-         scalar += a * b;
-      }
-      timer.end();
-
-      if( scalar < element_t(0) )
-         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
-
-      if( timer.last() > maxtime )
-         break;
-   }
-
-   const double minTime( timer.min()     );
-   const double avgTime( timer.average() );
-
-   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'tdvecsvecmult': Time deviation too large!!!\n";
-
-   return minTime;
-}
+/*!\name Boost uBLAS kernel functions */
+//@{
+double dvecsvecinner( size_t N, size_t F, size_t steps );
+//@}
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace boost
 
 } // namespace blazemark
+
+#endif

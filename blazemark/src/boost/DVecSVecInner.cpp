@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/boost/TDVecSVecMult.cpp
+//  \file src/boost/DVecSVecInner.cpp
 //  \brief Source file for the Boost dense vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -44,7 +44,7 @@
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/init/CompressedVector.h>
 #include <blazemark/boost/init/Vector.h>
-#include <blazemark/boost/TDVecSVecMult.h>
+#include <blazemark/boost/DVecSVecInner.h>
 #include <blazemark/system/Config.h>
 
 
@@ -69,7 +69,7 @@ namespace boost {
 // This kernel function implements the dense vector/sparse vector inner product by means of
 // the Boost uBLAS functionality.
 */
-double tdvecsvecmult( size_t N, size_t F, size_t steps )
+double dvecsvecinner( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
@@ -102,7 +102,7 @@ double tdvecsvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Boost uBLAS kernel 'tdvecsvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'dvecsvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/gmm/TDVecSVecMult.h
-//  \brief Header file for the GMM++ dense vector/sparse vector inner product kernel
+//  \file src/blaze/DVecSVecInner.cpp
+//  \brief Source file for the Blaze dense vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,18 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_GMM_TDVECSVECMULT_H_
-#define _BLAZEMARK_GMM_TDVECSVECMULT_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blazemark/system/Types.h>
+#include <iostream>
+#include <gmm/gmm.h>
+#include <blaze/util/Timing.h>
+#include <blazemark/gmm/init/RSVector.h>
+#include <blazemark/gmm/init/Vector.h>
+#include <blazemark/gmm/DVecSVecInner.h>
+#include <blazemark/system/Config.h>
 
 
 namespace blazemark {
@@ -54,14 +57,55 @@ namespace gmm {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name GMM++ kernel functions */
-//@{
-double tdvecsvecmult( size_t N, size_t F, size_t steps );
-//@}
+/*!\brief GMM++ dense vector/sparse vector inner product kernel.
+//
+// \param N The size of the vectors for the inner product.
+// \param F The number of non-zero elements for the sparse vector.
+// \param steps The number of iteration steps to perform.
+// \return Minimum runtime of the kernel function.
+//
+// This kernel function implements the dense vector/sparse vector inner product by means of
+// the GMM++ functionality.
+*/
+double dvecsvecinner( size_t N, size_t F, size_t steps )
+{
+   using ::blazemark::element_t;
+
+   ::blaze::setSeed( seed );
+
+   ::std::vector<element_t> a( N );
+   ::gmm::rsvector<element_t> b( N );
+   element_t scalar( 0 );
+   ::blaze::timing::WcTimer timer;
+
+   init( a );
+   init( b, F );
+
+   for( size_t rep=0UL; rep<reps; ++rep )
+   {
+      timer.start();
+      for( size_t step=0UL; step<steps; ++step ) {
+         scalar += vect_sp( a, b );
+      }
+      timer.end();
+
+      if( scalar < element_t(0) )
+         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
+
+      if( timer.last() > maxtime )
+         break;
+   }
+
+   const double minTime( timer.min()     );
+   const double avgTime( timer.average() );
+
+   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
+      std::cerr << " GMM++ kernel 'dvecsvecinner': Time deviation too large!!!\n";
+
+   return minTime;
+}
 //*************************************************************************************************
 
 } // namespace gmm
 
 } // namespace blazemark
-
-#endif

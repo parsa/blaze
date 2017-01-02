@@ -32,6 +32,7 @@ dvecnorm
 dvecscalarmult
 dvecsvecadd
 dvecsveccross
+dvecsvecinner
 dvecsvecmult
 dvectdvecmult
 dvectsvecmult
@@ -77,7 +78,6 @@ tdmattsmatadd
 tdmattsmatmult
 tdvecdmatmult
 tdvecsmatmult
-tdvecsvecmult
 tdvectdmatmult
 tdvectsmatmult
 tmat3mat3mult
