@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/TSVecDVecMultExprTrait.h
-//  \brief Header file for the TSVecDVecMultExprTrait class template
+//  \file blaze/math/traits/SVecDVecInnerExprTrait.h
+//  \brief Header file for the SVecDVecInnerExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_TSVECDVECMULTEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_TSVECDVECMULTEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_SVECDVECINNEREXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_SVECDVECINNEREXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -66,13 +66,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the TSVecDVecMultExprTrait.
+/*!\brief Auxiliary helper struct for the SVecDVecInnerExprTrait.
 // \ingroup math_traits
 */
 template< typename VT1
         , typename VT2
         , bool Valid >
-struct TSVecDVecMultExprTraitHelper
+struct SVecDVecInnerExprTraitHelper
 {
    //**********************************************************************************************
    using Type = INVALID_TYPE;
@@ -84,12 +84,12 @@ struct TSVecDVecMultExprTraitHelper
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the TSVecDVecMultExprTrait auxiliary helper struct.
+/*!\brief Specialization of the SVecDVecInnerExprTrait auxiliary helper struct.
 // \ingroup math_traits
 */
 template< typename VT1
         , typename VT2 >
-struct TSVecDVecMultExprTraitHelper<VT1,VT2,true>
+struct SVecDVecInnerExprTraitHelper<VT1,VT2,true>
 {
    //**********************************************************************************************
    using Type = MultTrait_< ElementType_<VT1>, ElementType_<VT2> >;
@@ -112,7 +112,7 @@ struct TSVecDVecMultExprTraitHelper<VT1,VT2,true>
 */
 template< typename VT1    // Type of the left-hand side transpose sparse vector
         , typename VT2 >  // Type of the right-hand side non-transpose dense vector
-struct TSVecDVecMultExprTrait
+struct SVecDVecInnerExprTrait
 {
  private:
    //**********************************************************************************************
@@ -127,8 +127,8 @@ struct TSVecDVecMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
                                 , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                            , TSVecDVecMultExprTrait< Decay_<VT1>, Decay_<VT2> >
-                            , TSVecDVecMultExprTraitHelper<VT1,VT2,valid> >::Type;
+                            , SVecDVecInnerExprTrait< Decay_<VT1>, Decay_<VT2> >
+                            , SVecDVecInnerExprTraitHelper<VT1,VT2,valid> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -136,22 +136,22 @@ struct TSVecDVecMultExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the TSVecDVecMultExprTrait class template.
+/*!\brief Auxiliary alias declaration for the SVecDVecInnerExprTrait class template.
 // \ingroup math_traits
 //
-// The TSVecDVecMultExprTrait_ alias declaration provides a convenient shortcut to access
-// the nested \a Type of the TSVecDVecMultExprTrait class template. For instance, given
+// The SVecDVecInnerExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the SVecDVecInnerExprTrait class template. For instance, given
 // the transpose sparse vector type \a VT1 and non-transpose dense vector type \a VT2 the
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename TSVecDVecMultExprTrait<VT1,VT2>::Type;
-   using Type2 = TSVecDVecMultExprTrait_<VT1,VT2>;
+   using Type1 = typename SVecDVecInnerExprTrait<VT1,VT2>::Type;
+   using Type2 = SVecDVecInnerExprTrait_<VT1,VT2>;
    \endcode
 */
 template< typename VT1    // Type of the left-hand side transpose sparse vector
         , typename VT2 >  // Type of the right-hand side non-transpose dense vector
-using TSVecDVecMultExprTrait_ = typename TSVecDVecMultExprTrait<VT1,VT2>::Type;
+using SVecDVecInnerExprTrait_ = typename SVecDVecInnerExprTrait<VT1,VT2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

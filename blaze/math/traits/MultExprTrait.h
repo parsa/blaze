@@ -56,6 +56,7 @@
 #include <blaze/math/traits/DVecTSVecMultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
+#include <blaze/math/traits/SVecDVecInnerExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/SMatSMatMultExprTrait.h>
@@ -89,7 +90,6 @@
 #include <blaze/math/traits/TSMatTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatTSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
-#include <blaze/math/traits/TSVecDVecMultExprTrait.h>
 #include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecSVecMultExprTrait.h>
@@ -271,7 +271,7 @@ struct MultExprTrait
                                            , If_< IsDenseVector<T2>
                                                 , If_< IsRowVector<T2>
                                                      , TSVecTDVecMultExprTrait<T1,T2>
-                                                     , TSVecDVecMultExprTrait<T1,T2> >
+                                                     , SVecDVecInnerExprTrait<T1,T2> >
                                                 , If_< IsRowVector<T2>
                                                      , TSVecTSVecMultExprTrait<T1,T2>
                                                      , TSVecSVecMultExprTrait<T1,T2> > >

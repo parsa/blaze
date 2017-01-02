@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/TSVecDVecMultExpr.h
+//  \file blaze/math/expressions/SVecDVecInnerExpr.h
 //  \brief Header file for the sparse vector/dense vector inner product expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_TSVECDVECMULTEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_TSVECDVECMULTEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SVECDVECINNEREXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SVECDVECINNEREXPR_H_
 
 
 //*************************************************************************************************
