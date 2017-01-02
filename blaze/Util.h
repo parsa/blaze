@@ -74,8 +74,6 @@
 #include <blaze/util/Singleton.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Suffix.h>
-#include <blaze/util/SystemClock.h>
-#include <blaze/util/SystemClockID.h>
 #include <blaze/util/Thread.h>
 #include <blaze/util/ThreadPool.h>
 #include <blaze/util/Time.h>
