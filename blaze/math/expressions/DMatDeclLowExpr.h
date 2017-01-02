@@ -89,6 +89,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/HasMember.h>
 
 
 namespace blaze {
@@ -146,6 +147,22 @@ class DMatDeclLowExpr : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure to acquire the type of constant iterators of the given matrix type.
+   /*! The GetConstIterator struct helps to acquire the constant iterator type of the given
+       matrix type. In case the given matrix has a nested \a ConstIterator type, the nested
+       type definition \a Type is set to that type. Otherwise \a Type is set to INVALID_TYPE. */
+   template< typename MT2 >
+   struct GetConstIterator {
+      BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasConstIterator, ConstIterator );
+      struct Success { using Type = typename MT2::ConstIterator; };
+      struct Failure { using Type = INVALID_TYPE; };
+      using Type = typename If_< HasConstIterator<MT2>, Success, Failure >::Type;
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    typedef DMatDeclLowExpr<MT,SO>  This;           //!< Type of this DMatDeclLowExpr instance.
@@ -158,248 +175,11 @@ class DMatDeclLowExpr : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
    //! Data type for composite expression templates.
    typedef If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclLowExpr& >  CompositeType;
 
+   //! Iterator over the elements of the dense matrix.
+   typedef typename GetConstIterator<MT>::Type  ConstIterator;
+
    //! Composite data type of the dense matrix expression.
    typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
-   //**********************************************************************************************
-
-   //**ConstIterator class definition**************************************************************
-   /*!\brief Iterator over the elements of the dense matrix.
-   */
-   class ConstIterator
-   {
-    public:
-      //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
-      typedef ElementType*                     PointerType;       //!< Pointer return type.
-      typedef ElementType&                     ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
-
-      // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
-
-      //! ConstIterator type of the dense matrix expression.
-      typedef ConstIterator_<MT>  IteratorType;
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the ConstIterator class.
-      //
-      // \param iterator Iterator to the initial element.
-      */
-      explicit inline ConstIterator( IteratorType iterator )
-         : iterator_( iterator )  // Iterator to the current element
-      {}
-      //*******************************************************************************************
-
-      //**Addition assignment operator*************************************************************
-      /*!\brief Addition assignment operator.
-      //
-      // \param inc The increment of the iterator.
-      // \return The incremented iterator.
-      */
-      inline ConstIterator& operator+=( size_t inc ) {
-         iterator_ += inc;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Subtraction assignment operator**********************************************************
-      /*!\brief Subtraction assignment operator.
-      //
-      // \param dec The decrement of the iterator.
-      // \return The decremented iterator.
-      */
-      inline ConstIterator& operator-=( size_t dec ) {
-         iterator_ -= dec;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Prefix increment operator****************************************************************
-      /*!\brief Pre-increment operator.
-      //
-      // \return Reference to the incremented iterator.
-      */
-      inline ConstIterator& operator++() {
-         ++iterator_;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix increment operator***************************************************************
-      /*!\brief Post-increment operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_++ );
-      }
-      //*******************************************************************************************
-
-      //**Prefix decrement operator****************************************************************
-      /*!\brief Pre-decrement operator.
-      //
-      // \return Reference to the decremented iterator.
-      */
-      inline ConstIterator& operator--() {
-         --iterator_;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix decrement operator***************************************************************
-      /*!\brief Post-decrement operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const ConstIterator operator--( int ) {
-         return ConstIterator( iterator_-- );
-      }
-      //*******************************************************************************************
-
-      //**Element access operator******************************************************************
-      /*!\brief Direct access to the element at the current iterator position.
-      //
-      // \return The resulting value.
-      */
-      inline ReturnType operator*() const {
-         return *iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Load function****************************************************************************
-      /*!\brief Access to the SIMD elements of the matrix.
-      //
-      // \return The resulting SIMD element.
-      */
-      inline auto load() const noexcept {
-         return iterator_.load();
-      }
-      //*******************************************************************************************
-
-      //**Equality operator************************************************************************
-      /*!\brief Equality comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators refer to the same element, \a false if not.
-      */
-      inline bool operator==( const ConstIterator& rhs ) const {
-         return iterator_ == rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators don't refer to the same element, \a false if they do.
-      */
-      inline bool operator!=( const ConstIterator& rhs ) const {
-         return iterator_ != rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller, \a false if not.
-      */
-      inline bool operator<( const ConstIterator& rhs ) const {
-         return iterator_ < rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater, \a false if not.
-      */
-      inline bool operator>( const ConstIterator& rhs ) const {
-         return iterator_ > rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
-      */
-      inline bool operator<=( const ConstIterator& rhs ) const {
-         return iterator_ <= rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two ConstIterator objects.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
-      */
-      inline bool operator>=( const ConstIterator& rhs ) const {
-         return iterator_ >= rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two iterators.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return The number of elements between the two iterators.
-      */
-      inline DifferenceType operator-( const ConstIterator& rhs ) const {
-         return iterator_ - rhs.iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between a ConstIterator and an integral value.
-      //
-      // \param it The iterator to be incremented.
-      // \param inc The number of elements the iterator is incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.iterator_ + inc );
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between an integral value and a ConstIterator.
-      //
-      // \param inc The number of elements the iterator is incremented.
-      // \param it The iterator to be incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.iterator_ + inc );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between a ConstIterator and an integral value.
-      //
-      // \param it The iterator to be decremented.
-      // \param dec The number of elements the iterator is decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.iterator_ - dec );
-      }
-      //*******************************************************************************************
-
-    private:
-      //**Member variables*************************************************************************
-      IteratorType iterator_;  //!< Iterator to the current element.
-      //*******************************************************************************************
-   };
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
