@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazemark/boost/SVecTDVecMult.h
+//  \file blazemark/boost/SVecDVecOuter.h
 //  \brief Header file for the Boost sparse vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_BOOST_SVECTDVECMULT_H_
-#define _BLAZEMARK_BOOST_SVECTDVECMULT_H_
+#ifndef _BLAZEMARK_BOOST_SVECDVECOUTER_H_
+#define _BLAZEMARK_BOOST_SVECDVECOUTER_H_
 
 
 //*************************************************************************************************
@@ -56,7 +56,7 @@ namespace boost {
 //*************************************************************************************************
 /*!\name Boost uBLAS kernel functions */
 //@{
-double svectdvecmult( size_t N, size_t F, size_t steps );
+double svecdvecouter( size_t N, size_t F, size_t steps );
 //@}
 //*************************************************************************************************
 

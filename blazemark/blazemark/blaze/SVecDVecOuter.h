@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/boost/SVecTDVecMult.cpp
-//  \brief Source file for the Boost sparse vector/dense vector inner product kernel
+//  \file blazemark/blaze/SVecDVecOuter.h
+//  \brief Header file for the Blaze sparse vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,26 +32,20 @@
 */
 //=================================================================================================
 
+#ifndef _BLAZEMARK_BLAZE_SVECDVECOUTER_H_
+#define _BLAZEMARK_BLAZE_SVECDVECOUTER_H_
+
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iostream>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/vector_sparse.hpp>
-#include <blaze/util/Timing.h>
-#include <blazemark/boost/init/CompressedVector.h>
-#include <blazemark/boost/init/Vector.h>
-#include <blazemark/boost/SVecTDVecMult.h>
-#include <blazemark/system/Config.h>
+#include <blazemark/system/Types.h>
 
 
 namespace blazemark {
 
-namespace boost {
+namespace blaze {
 
 //=================================================================================================
 //
@@ -60,58 +54,14 @@ namespace boost {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Boost uBLAS sparse vector/dense vector outer product kernel.
-//
-// \param N The size of the vectors for the outer product.
-// \param F The number of non-zero elements for the sparse vector.
-// \param steps The number of iteration steps to perform.
-// \return Minimum runtime of the kernel function.
-//
-// This kernel function implements the sparse vector/dense vector outer product by means of
-// the Boost uBLAS functionality.
-*/
-double svectdvecmult( size_t N, size_t F, size_t steps )
-{
-   using ::blazemark::element_t;
-   using ::boost::numeric::ublas::row_major;
-
-   ::blaze::setSeed( seed );
-
-   ::boost::numeric::ublas::compressed_vector<element_t> a( N );
-   ::boost::numeric::ublas::vector<element_t> b( N );
-   ::boost::numeric::ublas::compressed_matrix<element_t,row_major> A( N, N );
-   ::blaze::timing::WcTimer timer;
-
-   init( a, F );
-   init( b );
-
-   noalias( A ) = outer_prod( a, b );
-
-   for( size_t rep=0UL; rep<reps; ++rep )
-   {
-      timer.start();
-      for( size_t step=0UL; step<steps; ++step ) {
-         noalias( A ) = outer_prod( a, b );
-      }
-      timer.end();
-
-      if( A.size1() != N )
-         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
-
-      if( timer.last() > maxtime )
-         break;
-   }
-
-   const double minTime( timer.min()     );
-   const double avgTime( timer.average() );
-
-   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Boost uBLAS kernel 'svectdvecmult': Time deviation too large!!!\n";
-
-   return minTime;
-}
+/*!\name Blaze kernel functions */
+//@{
+double svecdvecouter( size_t N, size_t F, size_t steps );
+//@}
 //*************************************************************************************************
 
-} // namespace boost
+} // namespace blaze
 
 } // namespace blazemark
+
+#endif

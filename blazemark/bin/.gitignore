@@ -61,12 +61,12 @@ svecdvecadd
 svecdveccross
 svecdvecinner
 svecdvecmult
+svecdvecouter
 svecscalarmult
 svecsvecadd
 svecsveccross
 svecsvecinner
 svecsvecmult
-svectdvecmult
 svectsvecmult
 tdmatdmatadd
 tdmatdmatmult
