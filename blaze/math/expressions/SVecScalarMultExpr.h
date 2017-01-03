@@ -1814,21 +1814,21 @@ struct SVecSVecMultExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultE
 
 //=================================================================================================
 //
-//  SVECTSVECMULTEXPRTRAIT SPECIALIZATIONS
+//  SVECSVECOUTEREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST, typename VT2 >
-struct SVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
+struct SVecSVecOuterExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, ST >
+                   , SMatScalarMultExprTrait_< SVecSVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1839,14 +1839,14 @@ struct SVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename ST >
-struct SVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
+struct SVecSVecOuterExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, ST >
+                   , SMatScalarMultExprTrait_< SVecSVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -1857,14 +1857,14 @@ struct SVecTSVecMultExprTrait< VT1, SVecScalarMultExpr<VT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST1, typename VT2, typename ST2 >
-struct SVecTSVecMultExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >
+struct SVecSVecOuterExprTrait< SVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , SMatScalarMultExprTrait_< SVecTSVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
+                   , SMatScalarMultExprTrait_< SVecSVecOuterExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
