@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/eigen/DVecDVecMult.h
-//  \brief Header file for the Eigen dense vector/dense vector outer product kernel
+//  \file src/blitz/DVecDVecOuter.cpp
+//  \brief Source file for the Blitz++ dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,20 +32,23 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_EIGEN_DVECTDVECMULT_H_
-#define _BLAZEMARK_EIGEN_DVECTDVECMULT_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blazemark/system/Types.h>
+#include <iostream>
+#include <blitz/array.h>
+#include <boost/cast.hpp>
+#include <blaze/util/Timing.h>
+#include <blazemark/blitz/DVecDVecOuter.h>
+#include <blazemark/blitz/init/Array.h>
+#include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace eigen {
+namespace blitz {
 
 //=================================================================================================
 //
@@ -54,14 +57,58 @@ namespace eigen {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Eigen kernel functions */
-//@{
-double dvectdvecmult( size_t N, size_t steps );
-//@}
+/*!\brief Blitz++ dense vector/dense vector outer product kernel.
+//
+// \param N The size of the vectors for the outer product.
+// \param steps The number of iteration steps to perform.
+// \return Minimum runtime of the kernel function.
+//
+// This kernel function implements the dense vector/dense vector outer product by means of
+// the Blitz++ functionality.
+*/
+double dvecdvecouter( size_t N, size_t steps )
+{
+   using ::blazemark::element_t;
+   using ::boost::numeric_cast;
+
+   ::blaze::setSeed( seed );
+
+   ::blitz::Array<element_t,1> a( N ), b( N );
+   ::blitz::Array<element_t,2> A( N, N );
+   ::blitz::firstIndex i;
+   ::blitz::secondIndex j;
+   ::blaze::timing::WcTimer timer;
+
+   init( a );
+   init( b );
+
+   A = a(i) * b(j);
+
+   for( size_t rep=0UL; rep<reps; ++rep )
+   {
+      timer.start();
+      for( size_t step=0UL; step<steps; ++step ) {
+         A = a(i) * b(j);
+      }
+      timer.end();
+
+      if( numeric_cast<size_t>( A.rows() ) != N )
+         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
+
+      if( timer.last() > maxtime )
+         break;
+   }
+
+   const double minTime( timer.min()     );
+   const double avgTime( timer.average() );
+
+   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
+      std::cerr << " Blitz++ kernel 'dvecdvecouter': Time deviation too large!!!\n";
+
+   return minTime;
+}
 //*************************************************************************************************
 
-} // namespace eigen
+} // namespace blitz
 
 } // namespace blazemark
-
-#endif

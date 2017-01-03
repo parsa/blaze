@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/classic/DVecDVecMult.h
-//  \brief Header file for the classic dense vector/dense vector outer product kernel
+//  \file blazemark/boost/DVecDVecOuter.h
+//  \brief Header file for the Boost dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_CLASSIC_DVECTDVECMULT_H_
-#define _BLAZEMARK_CLASSIC_DVECTDVECMULT_H_
+#ifndef _BLAZEMARK_BOOST_DVECDVECOUTER_H_
+#define _BLAZEMARK_BOOST_DVECDVECOUTER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace classic {
+namespace boost {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace classic {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Classic kernel functions */
+/*!\name Boost uBLAS kernel functions */
 //@{
-double dvectdvecmult( size_t N, size_t steps );
+double dvecdvecouter( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace classic
+} // namespace boost
 
 } // namespace blazemark
 

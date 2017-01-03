@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/boost/DVecTDVecMult.cpp
+//  \file src/boost/DVecDVecOuter.cpp
 //  \brief Source file for the Boost dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -42,7 +42,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <blaze/util/Timing.h>
-#include <blazemark/boost/DVecTDVecMult.h>
+#include <blazemark/boost/DVecDVecOuter.h>
 #include <blazemark/boost/init/Vector.h>
 #include <blazemark/system/Config.h>
 
@@ -67,7 +67,7 @@ namespace boost {
 // This kernel function implements the dense vector/dense vector outer product by means of
 // the Boost uBLAS functionality.
 */
-double dvectdvecmult( size_t N, size_t steps )
+double dvecdvecouter( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
@@ -102,7 +102,7 @@ double dvectdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Boost uBLAS kernel 'dvectdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'dvecdvecouter': Time deviation too large!!!\n";
 
    return minTime;
 }

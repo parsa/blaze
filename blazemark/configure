@@ -554,14 +554,14 @@ fi
 SVECSVECINNER="$SVECSVECINNER \$(OBJECT_PATH)/MAIN_SVecSVecInner.o"
 
 # Configuration of the dense vector/dense vector outer product benchmark
-DVECTDVECMULT="\$(OBJECT_PATH)/CLASSIC_DVecTDVecMult.o \$(OBJECT_PATH)/BLAZE_DVecTDVecMult.o \$(OBJECT_PATH)/BOOST_DVecTDVecMult.o"
+DVECDVECOUTER="\$(OBJECT_PATH)/CLASSIC_DVecDVecOuter.o \$(OBJECT_PATH)/BLAZE_DVecDVecOuter.o \$(OBJECT_PATH)/BOOST_DVecDVecOuter.o"
 if [ "$BLITZ" = "yes" ]; then
-   DVECTDVECMULT="$DVECTDVECMULT \$(OBJECT_PATH)/BLITZ_DVecTDVecMult.o"
+   DVECDVECOUTER="$DVECDVECOUTER \$(OBJECT_PATH)/BLITZ_DVecDVecOuter.o"
 fi
 if [ "$EIGEN" = "yes" ]; then
-   DVECTDVECMULT="$DVECTDVECMULT \$(OBJECT_PATH)/EIGEN_DVecTDVecMult.o"
+   DVECDVECOUTER="$DVECDVECOUTER \$(OBJECT_PATH)/EIGEN_DVecDVecOuter.o"
 fi
-DVECTDVECMULT="$DVECTDVECMULT \$(OBJECT_PATH)/MAIN_DVecTDVecMult.o"
+DVECDVECOUTER="$DVECDVECOUTER \$(OBJECT_PATH)/MAIN_DVecDVecOuter.o"
 
 # Configuration of the dense vector/sparse vector outer product benchmark
 DVECTSVECMULT="\$(OBJECT_PATH)/BLAZE_DVecTSVecMult.o \$(OBJECT_PATH)/BOOST_DVecTSVecMult.o \$(OBJECT_PATH)/MAIN_DVecTSVecMult.o"
@@ -2111,8 +2111,8 @@ binaries: $MODULES
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdvecinner $SVECDVECINNER \$(LIBRARIES)
 	@echo "  Building sparse vector/sparse vector inner product (svecsvecinner) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsvecinner $SVECSVECINNER \$(LIBRARIES)
-	@echo "  Building dense vector/dense vector outer product (dvectdvecmult) binary..."
-	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
+	@echo "  Building dense vector/dense vector outer product (dvecdvecouter) binary..."
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecouter $DVECDVECOUTER \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector outer product (dvectsvecmult) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvectsvecmult $DVECTSVECMULT \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector outer product (svectdvecmult) binary..."
@@ -3229,44 +3229,44 @@ EOF
 # Dense vector/dense vector outer product
 cat >> Makefile <<EOF
 
-dvectdvecmult: \$(BINARY_PATH)/dvectdvecmult
-\$(BINARY_PATH)/dvectdvecmult: $DVECTDVECMULT
-	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
+dvecdvecouter: \$(BINARY_PATH)/dvecdvecouter
+\$(BINARY_PATH)/dvecdvecouter: $DVECDVECOUTER
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdvecouter $DVECDVECOUTER \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/CLASSIC_DVecTDVecMult.o:
+\$(OBJECT_PATH)/CLASSIC_DVecDVecOuter.o:
 	@echo
-	@echo "Building dense vector/dense vector outer product (dvectdvecmult) binary..."
+	@echo "Building dense vector/dense vector outer product (dvecdvecouter) binary..."
 	@echo "  Building the classic kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLASSIC_DVecTDVecMult.o \$(INSTALL_PATH)/src/classic/DVecTDVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BLAZE_DVecTDVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLASSIC_DVecDVecOuter.o \$(INSTALL_PATH)/src/classic/DVecDVecOuter.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BLAZE_DVecDVecOuter.o:
 	@echo "  Building the Blaze kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecTDVecMult.o \$(INSTALL_PATH)/src/blaze/DVecTDVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BOOST_DVecTDVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecDVecOuter.o \$(INSTALL_PATH)/src/blaze/DVecDVecOuter.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BOOST_DVecDVecOuter.o:
 	@echo "  Building the Boost uBLAS kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_DVecTDVecMult.o \$(INSTALL_PATH)/src/boost/DVecTDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_DVecDVecOuter.o \$(INSTALL_PATH)/src/boost/DVecDVecOuter.cpp \$(INCLUDES)
 EOF
 
 if [ "$BLITZ" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/BLITZ_DVecTDVecMult.o:
+\$(OBJECT_PATH)/BLITZ_DVecDVecOuter.o:
 	@echo "  Building the Blitz++ kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_DVecTDVecMult.o \$(INSTALL_PATH)/src/blitz/DVecTDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLITZ_DVecDVecOuter.o \$(INSTALL_PATH)/src/blitz/DVecDVecOuter.cpp \$(INCLUDES)
 EOF
 fi
 
 if [ "$EIGEN" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/EIGEN_DVecTDVecMult.o:
+\$(OBJECT_PATH)/EIGEN_DVecDVecOuter.o:
 	@echo "  Building the Eigen kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_DVecTDVecMult.o \$(INSTALL_PATH)/src/eigen/DVecTDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/EIGEN_DVecDVecOuter.o \$(INSTALL_PATH)/src/eigen/DVecDVecOuter.cpp \$(INCLUDES)
 EOF
 fi
 
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/MAIN_DVecTDVecMult.o:
+\$(OBJECT_PATH)/MAIN_DVecDVecOuter.o:
 	@echo "  Building the benchmark..."
-	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecTDVecMult.o \$(INSTALL_PATH)/src/main/DVecTDVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_DVecDVecOuter.o \$(INSTALL_PATH)/src/main/DVecDVecOuter.cpp \$(INCLUDES)
 EOF
 
 
@@ -8042,7 +8042,7 @@ clean:
         bin/dvecsvecinner $DVECSVECINNER \\
         bin/svecdvecinner $SVECDVECINNER \\
         bin/svecsvecinner $SVECSVECINNER \\
-        bin/dvectdvecmult $DVECTDVECMULT \\
+        bin/dvecdvecouter $DVECDVECOUTER \\
         bin/dvectsvecmult $DVECTSVECMULT \\
         bin/svectdvecmult $SVECTDVECMULT \\
         bin/svectsvecmult $SVECTSVECMULT \\

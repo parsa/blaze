@@ -27,6 +27,7 @@ dvecdvecadd
 dvecdveccross
 dvecdvecinner
 dvecdvecmult
+dvecdvecouter
 dvecdvecsub
 dvecnorm
 dvecscalarmult
@@ -34,7 +35,6 @@ dvecsvecadd
 dvecsveccross
 dvecsvecinner
 dvecsvecmult
-dvectdvecmult
 dvectsvecmult
 mat3mat3add
 mat3mat3mult

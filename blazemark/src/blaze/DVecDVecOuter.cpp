@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecTDVecMult.cpp
+//  \file src/blaze/DVecDVecOuter.cpp
 //  \brief Source file for the Blaze dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -41,7 +41,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/blaze/DVecTDVecMult.h>
+#include <blazemark/blaze/DVecDVecOuter.h>
 #include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/system/Config.h>
 
@@ -66,7 +66,7 @@ namespace blaze {
 // This kernel function implements the dense vector/dense vector outer product by means of
 // the Blaze functionality.
 */
-double dvectdvecmult( size_t N, size_t steps )
+double dvecdvecouter( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
    using ::blaze::rowVector;
@@ -104,7 +104,7 @@ double dvectdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'dvectdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Blaze kernel 'dvecdvecouter': Time deviation too large!!!\n";
 
    return minTime;
 }

@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/eigen/DVecTDVecMult.cpp
+//  \file src/eigen/DVecDVecOuter.cpp
 //  \brief Source file for the Eigen dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -41,7 +41,7 @@
 #include <boost/cast.hpp>
 #include <Eigen/Dense>
 #include <blaze/util/Timing.h>
-#include <blazemark/eigen/DVecTDVecMult.h>
+#include <blazemark/eigen/DVecDVecOuter.h>
 #include <blazemark/eigen/init/Matrix.h>
 #include <blazemark/system/Config.h>
 
@@ -66,7 +66,7 @@ namespace eigen {
 // This kernel function implements the dense vector/dense vector outer product by means of
 // the Eigen functionality.
 */
-double dvectdvecmult( size_t N, size_t steps )
+double dvecdvecouter( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
    using ::boost::numeric_cast;
@@ -103,7 +103,7 @@ double dvectdvecmult( size_t N, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Eigen kernel 'dvectdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Eigen kernel 'dvecdvecouter': Time deviation too large!!!\n";
 
    return minTime;
 }

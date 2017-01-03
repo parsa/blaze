@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/mtl/DVecTDVecMult.h
-//  \brief Header file for the MTL dense vector/dense vector outer product kernel
+//  \file blazemark/blaze/DVecDVecOuter.h
+//  \brief Header file for the Blaze dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_MTL_DVECTDVECMULT_H_
-#define _BLAZEMARK_MTL_DVECTDVECMULT_H_
+#ifndef _BLAZEMARK_BLAZE_DVECDVECOUTER_H_
+#define _BLAZEMARK_BLAZE_DVECDVECOUTER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace mtl {
+namespace blaze {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace mtl {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name MTL kernel functions */
+/*!\name Blaze kernel functions */
 //@{
-double dvectdvecmult( size_t N, size_t steps );
+double dvecdvecouter( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace mtl
+} // namespace blaze
 
 } // namespace blazemark
 

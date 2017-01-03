@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazemark/blitz/DVecDVecMult.h
+//  \file blazemark/blitz/DVecDVecOuter.h
 //  \brief Header file for the Blitz++ dense vector/dense vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_BLITZ_DVECTDVECMULT_H_
-#define _BLAZEMARK_BLITZ_DVECTDVECMULT_H_
+#ifndef _BLAZEMARK_BLITZ_DVECDVECOUTER_H_
+#define _BLAZEMARK_BLITZ_DVECDVECOUTER_H_
 
 
 //*************************************************************************************************
@@ -56,7 +56,7 @@ namespace blitz {
 //*************************************************************************************************
 /*!\name Blitz++ kernel functions */
 //@{
-double dvectdvecmult( size_t N, size_t steps );
+double dvecdvecouter( size_t N, size_t steps );
 //@}
 //*************************************************************************************************
 
