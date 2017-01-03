@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/tsvecsvecmult/VCaVCb.cpp
-//  \brief Source file for the VCaVCb sparse vector/sparse vector inner product math test
+//  \file src/mathtest/svecsvecinner/VCbVCb.cpp
+//  \brief Source file for the VCbVCb sparse vector/sparse vector inner product math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/tsvecsvecmult/OperationTest.h>
+#include <blazetest/mathtest/svecsvecinner/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -54,33 +54,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VCaVCb'..." << std::endl;
+   std::cout << "   Running 'VCbVCb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Vector type definitions
-      typedef blaze::CompressedVector<TypeA>  VCa;
       typedef blaze::CompressedVector<TypeB>  VCb;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCa>  CVCa;
       typedef blazetest::Creator<VCb>  CVCb;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
             for( size_t k=0UL; k<=i; ++k ) {
-               RUN_TSVECSVECMULT_OPERATION_TEST( CVCa( i, j ), CVCb( i, k ) );
+               RUN_SVECSVECINNER_OPERATION_TEST( CVCb( i, j ), CVCb( i, k ) );
             }
          }
       }
 
       // Running tests with large vectors
-      RUN_TSVECSVECMULT_OPERATION_TEST( CVCa( 127UL, 13UL ), CVCb( 127UL, 13UL ) );
-      RUN_TSVECSVECMULT_OPERATION_TEST( CVCa( 128UL, 16UL ), CVCb( 128UL, 16UL ) );
+      RUN_SVECSVECINNER_OPERATION_TEST( CVCb( 127UL, 13UL ), CVCb( 127UL, 13UL ) );
+      RUN_SVECSVECINNER_OPERATION_TEST( CVCb( 128UL, 16UL ), CVCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/sparse vector inner product:\n"

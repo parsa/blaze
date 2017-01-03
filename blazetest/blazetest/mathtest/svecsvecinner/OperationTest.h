@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/tsvecsvecmult/OperationTest.h
+//  \file blazetest/mathtest/svecsvecinner/OperationTest.h
 //  \brief Header file for the sparse vector/sparse vector inner product operation test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_TSVECSVECMULT_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_TSVECSVECMULT_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SVECSVECINNER_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_SVECSVECINNER_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -63,7 +63,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace tsvecsvecmult {
+namespace svecsvecinner {
 
 //=================================================================================================
 //
@@ -612,8 +612,8 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the definition of a sparse vector/sparse vector inner product test case.
 */
-#define DEFINE_TSVECSVECMULT_OPERATION_TEST( VT1, VT2 ) \
-   extern template class blazetest::mathtest::tsvecsvecmult::OperationTest<VT1,VT2>
+#define DEFINE_SVECSVECINNER_OPERATION_TEST( VT1, VT2 ) \
+   extern template class blazetest::mathtest::svecsvecinner::OperationTest<VT1,VT2>
 /*! \endcond */
 //*************************************************************************************************
 
@@ -622,12 +622,12 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a sparse vector/sparse vector inner product test case.
 */
-#define RUN_TSVECSVECMULT_OPERATION_TEST( C1, C2 ) \
-   blazetest::mathtest::tsvecsvecmult::runTest( C1, C2 )
+#define RUN_SVECSVECINNER_OPERATION_TEST( C1, C2 ) \
+   blazetest::mathtest::svecsvecinner::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace tsvecsvecmult
+} // namespace svecsvecinner
 
 } // namespace mathtest
 

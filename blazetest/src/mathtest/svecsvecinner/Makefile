@@ -1,9 +1,8 @@
-#!/bin/bash
 #==================================================================================================
 #
-#  Run script for the tsvecsvecmult module of the Blaze test suite
+#  Makefile for the svecsvecinner module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,11 +32,52 @@
 #==================================================================================================
 
 
-PATH_TSVECSVECMULT=$( dirname "${BASH_SOURCE[0]}" )
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
 
-echo " Running sparse vector/sparse vector inner product tests...";
 
-EXE=$PATH_TSVECSVECMULT/VCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_TSVECSVECMULT/VCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_TSVECSVECMULT/VCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_TSVECSVECMULT/VCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
+# General rules
+default: VCaVCa VCaVCb VCbVCa VCbVCb
+all: $(BIN)
+essential: VCaVCa
+single: VCaVCa
+
+
+# Build rules
+VCaVCa: VCaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVCb: VCaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVCa: VCbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVCb: VCbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+
+# Cleanup
+clean:
+	@$(RM) $(DEP) $(OBJ) $(BIN)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
+
+
+# Setting the independent commands
+.PHONY: default all essential single clean
