@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/DVecTSVecMult.cpp
-//  \brief Source file for the Blaze dense vector/sparse vector outer product kernel
+//  \file src/boost/DVecSVecOuter.cpp
+//  \brief Source file for the Boost dense vector/sparse vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,19 +38,20 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/DynamicVector.h>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/vector_sparse.hpp>
 #include <blaze/util/Timing.h>
-#include <blazemark/blaze/DVecTSVecMult.h>
-#include <blazemark/blaze/init/CompressedVector.h>
-#include <blazemark/blaze/init/DynamicVector.h>
+#include <blazemark/boost/DVecSVecOuter.h>
+#include <blazemark/boost/init/CompressedVector.h>
+#include <blazemark/boost/init/Vector.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace blaze {
+namespace boost {
 
 //=================================================================================================
 //
@@ -59,7 +60,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Blaze dense vector/sparse vector outer product kernel.
+/*!\brief Boost uBLAS dense vector/sparse vector outer product kernel.
 //
 // \param N The size of the vectors for the outer product.
 // \param F The number of non-zero elements for the sparse vector.
@@ -67,36 +68,34 @@ namespace blaze {
 // \return Minimum runtime of the kernel function.
 //
 // This kernel function implements the dense vector/sparse vector outer product by means of
-// the Blaze functionality.
+// the Boost uBLAS functionality.
 */
-double dvectsvecmult( size_t N, size_t F, size_t steps )
+double dvecsvecouter( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::blaze::rowVector;
-   using ::blaze::columnVector;
-   using ::blaze::rowMajor;
+   using ::boost::numeric::ublas::row_major;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::DynamicVector<element_t,columnVector> a( N );
-   ::blaze::CompressedVector<element_t,rowVector> b( N );
-   ::blaze::CompressedMatrix<element_t,rowMajor> A( N, N );
+   ::boost::numeric::ublas::vector<element_t> a( N );
+   ::boost::numeric::ublas::compressed_vector<element_t> b( N );
+   ::boost::numeric::ublas::matrix<element_t,row_major> A( N, N );
    ::blaze::timing::WcTimer timer;
 
    init( a );
    init( b, F );
 
-   A = a * b;
+   noalias( A ) = outer_prod( a, b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         A = a * b;
+         noalias( A ) = outer_prod( a, b );
       }
       timer.end();
 
-      if( A.rows() != N )
+      if( A.size1() != N )
          std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
       if( timer.last() > maxtime )
@@ -107,12 +106,12 @@ double dvectsvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'dvectsvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'dvecsvecouter': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace boost
 
 } // namespace blazemark

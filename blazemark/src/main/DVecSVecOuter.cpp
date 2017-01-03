@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/main/DVecTSVecMult.cpp
+//  \file src/main/DVecSVecOuter.cpp
 //  \brief Source file for the dense vector/sparse vector outer product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -50,10 +50,10 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/blaze/DVecTSVecMult.h>
+#include <blazemark/blaze/DVecSVecOuter.h>
 #include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/boost/DVecTSVecMult.h>
+#include <blazemark/boost/DVecSVecOuter.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
@@ -180,7 +180,7 @@ void estimateFlops( Run& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void dvectsvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
+void dvecsvecouter( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
@@ -211,7 +211,7 @@ void dvectsvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t N    ( run->getSize()     );
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
-            run->setBlazeResult( blazemark::blaze::dvectsvecmult( N, F, steps ) );
+            run->setBlazeResult( blazemark::blaze::dvecsvecouter( N, F, steps ) );
             const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
@@ -228,7 +228,7 @@ void dvectsvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t N    ( run->getSize()     );
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
-            run->setBoostResult( blazemark::boost::dvectsvecmult( N, F, steps ) );
+            run->setBoostResult( blazemark::boost::dvecsvecouter( N, F, steps ) );
             const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
@@ -272,7 +272,7 @@ int main( int argc, char** argv )
    }
 
    const std::string installPath( INSTALL_PATH );
-   const std::string parameterFile( installPath + "/params/dvectsvecmult.prm" );
+   const std::string parameterFile( installPath + "/params/dvecsvecouter.prm" );
    Parser<Run> parser;
    std::vector<Run> runs;
 
@@ -285,7 +285,7 @@ int main( int argc, char** argv )
    }
 
    try {
-      dvectsvecmult( runs, benchmarks );
+      dvecsvecouter( runs, benchmarks );
    }
    catch( std::exception& ex ) {
       std::cerr << "   Error during benchmark execution: " << ex.what() << "\n";

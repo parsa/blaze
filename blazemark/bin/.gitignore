@@ -35,7 +35,7 @@ dvecsvecadd
 dvecsveccross
 dvecsvecinner
 dvecsvecmult
-dvectsvecmult
+dvecsvecouter
 mat3mat3add
 mat3mat3mult
 mat3tmat3mult
