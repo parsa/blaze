@@ -53,10 +53,10 @@
 #include <blaze/math/expressions/SVecScalarMultExpr.h>
 #include <blaze/math/expressions/SVecSerialExpr.h>
 #include <blaze/math/expressions/SVecSVecAddExpr.h>
+#include <blaze/math/expressions/SVecSVecInnerExpr.h>
 #include <blaze/math/expressions/SVecSVecMultExpr.h>
 #include <blaze/math/expressions/SVecSVecSubExpr.h>
 #include <blaze/math/expressions/SVecTransExpr.h>
-#include <blaze/math/expressions/TSVecSVecMultExpr.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/sparse/SparseVector.h>
