@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/svectsvecmult/AliasingTest.h
+//  \file blazetest/mathtest/svecsvecouter/AliasingTest.h
 //  \brief Header file for the sparse vector/sparse vector outer product aliasing test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_SVECTSVECMULT_ALIASINGTEST_H_
-#define _BLAZETEST_MATHTEST_SVECTSVECMULT_ALIASINGTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SVECSVECOUTER_ALIASINGTEST_H_
+#define _BLAZETEST_MATHTEST_SVECSVECOUTER_ALIASINGTEST_H_
 
 
 //*************************************************************************************************
@@ -52,7 +52,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace svectsvecmult {
+namespace svecsvecouter {
 
 //=================================================================================================
 //
@@ -93,7 +93,7 @@ class AliasingTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testSVecTSVecMult();
+   void testSVecSVecOuter();
 
    template< typename T1, typename T2 >
    void checkResult( const T1& computedResult, const T2& expectedResult );
@@ -225,12 +225,12 @@ void runTest()
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of the sparse vector/sparse vector outer product aliasing test.
 */
-#define RUN_SVECTSVECMULT_ALIASING_TEST \
-   blazetest::mathtest::svectsvecmult::runTest()
+#define RUN_SVECSVECOUTER_ALIASING_TEST \
+   blazetest::mathtest::svecsvecouter::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace svectsvecmult
+} // namespace svecsvecouter
 
 } // namespace mathtest
 

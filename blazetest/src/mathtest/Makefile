@@ -49,7 +49,7 @@ all: functions simd blas lapack typetraits \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
      dvecdveccross dvecsveccross svecdveccross svecsveccross \
      dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
-     dvecdvecouter dvecsvecouter svecdvecouter svectsvecmult \
+     dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
      dvecdvecdiv svecdvecdiv \
      dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
@@ -352,10 +352,10 @@ svecdvecouter:
 	@echo "Building the sparse vector/dense vector outer product tests..."
 	@$(MAKE) --no-print-directory -C ./svecdvecouter $(MAKECMDGOALS)
 
-svectsvecmult:
+svecsvecouter:
 	@echo
 	@echo "Building the sparse vector/sparse vector outer product tests..."
-	@$(MAKE) --no-print-directory -C ./svectsvecmult $(MAKECMDGOALS)
+	@$(MAKE) --no-print-directory -C ./svecsvecouter $(MAKECMDGOALS)
 
 dvecdvecdiv:
 	@echo
@@ -550,7 +550,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecdvecouter clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecouter clean
 	@$(MAKE) --no-print-directory -C ./svecdvecouter clean
-	@$(MAKE) --no-print-directory -C ./svectsvecmult clean
+	@$(MAKE) --no-print-directory -C ./svecsvecouter clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult clean
@@ -597,7 +597,7 @@ clean:
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
         dvecdveccross dvecsveccross svecdveccross svecsveccross \
         dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
-        dvecdvecouter dvecsvecouter svecdvecouter svectsvecmult \
+        dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
         dvecdvecdiv svecdvecdiv \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \

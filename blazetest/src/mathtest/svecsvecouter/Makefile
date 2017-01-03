@@ -1,9 +1,8 @@
-#!/bin/bash
 #==================================================================================================
 #
-#  Run script for the svectsvecmult module of the Blaze test suite
+#  Makefile for the svecsvecouter module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,13 +32,55 @@
 #==================================================================================================
 
 
-PATH_SVECTSVECMULT=$( dirname "${BASH_SOURCE[0]}" )
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
 
-echo " Running sparse vector/sparse vector outer product tests...";
 
-EXE=$PATH_SVECTSVECMULT/VCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SVECTSVECMULT/VCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SVECTSVECMULT/VCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SVECTSVECMULT/VCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
 
-EXE=$PATH_SVECTSVECMULT/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+# General rules
+default: VCaVCa VCaVCb VCbVCa VCbVCb AliasingTest
+all: $(BIN)
+essential: VCaVCa AliasingTest
+single: VCaVCa
+
+
+# Build rules
+VCaVCa: VCaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVCb: VCaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVCa: VCbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVCb: VCbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+AliasingTest: AliasingTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+
+# Cleanup
+clean:
+	@$(RM) $(DEP) $(OBJ) $(BIN)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
+
+
+# Setting the independent commands
+.PHONY: default all essential single clean

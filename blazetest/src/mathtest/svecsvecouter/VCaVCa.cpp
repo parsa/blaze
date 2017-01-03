@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/svectsvecmult/VCaVCa.cpp
+//  \file src/mathtest/svecsvecouter/VCaVCa.cpp
 //  \brief Source file for the VCaVCa sparse vector/sparse vector outer product math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
-#include <blazetest/mathtest/svectsvecmult/OperationTest.h>
+#include <blazetest/mathtest/svecsvecouter/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
 
@@ -71,21 +71,21 @@ int main()
          for( size_t j=0UL; j<=6UL; ++j ) {
             for( size_t k=0UL; k<=i; ++k ) {
                for( size_t l=0UL; l<=j; ++l ) {
-                  RUN_SVECTSVECMULT_OPERATION_TEST( CVCa( i, k ), CVCa( j, l ) );
+                  RUN_SVECSVECOUTER_OPERATION_TEST( CVCa( i, k ), CVCa( j, l ) );
                }
             }
          }
       }
 
       // Running tests with large vectors
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa(  67UL,  7UL ), CVCa(  67UL,  7UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa(  67UL, 13UL ), CVCa( 127UL, 13UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa( 127UL,  7UL ), CVCa(  67UL,  7UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa( 127UL, 13UL ), CVCa( 127UL, 13UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa(  64UL,  8UL ), CVCa(  64UL,  8UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa(  64UL, 16UL ), CVCa( 128UL, 16UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa( 128UL,  8UL ), CVCa(  64UL,  8UL ) );
-      RUN_SVECTSVECMULT_OPERATION_TEST( CVCa( 128UL, 16UL ), CVCa( 128UL, 16UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa(  67UL,  7UL ), CVCa(  67UL,  7UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa(  67UL, 13UL ), CVCa( 127UL, 13UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa( 127UL,  7UL ), CVCa(  67UL,  7UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa( 127UL, 13UL ), CVCa( 127UL, 13UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa(  64UL,  8UL ), CVCa(  64UL,  8UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa(  64UL, 16UL ), CVCa( 128UL, 16UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa( 128UL,  8UL ), CVCa(  64UL,  8UL ) );
+      RUN_SVECSVECOUTER_OPERATION_TEST( CVCa( 128UL, 16UL ), CVCa( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/sparse vector outer product:\n"

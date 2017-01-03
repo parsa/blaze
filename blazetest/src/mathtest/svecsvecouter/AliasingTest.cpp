@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/svectsvecmult/AliasingTest.cpp
+//  \file src/mathtest/svecsvecouter/AliasingTest.cpp
 //  \brief Source file for the sparse vector/sparse vector outer product aliasing test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -39,14 +39,14 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/svectsvecmult/AliasingTest.h>
+#include <blazetest/mathtest/svecsvecouter/AliasingTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace svectsvecmult {
+namespace svecsvecouter {
 
 //=================================================================================================
 //
@@ -68,7 +68,7 @@ AliasingTest::AliasingTest()
    , result_()
    , test_  ()
 {
-   testSVecTSVecMult();
+   testSVecSVecOuter();
 }
 //*************************************************************************************************
 
@@ -90,7 +90,7 @@ AliasingTest::AliasingTest()
 // This function performs aliasing tests for the sparse vector/sparse vector outer product.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void AliasingTest::testSVecTSVecMult()
+void AliasingTest::testSVecSVecOuter()
 {
    //=====================================================================================
    // Outer product
@@ -98,7 +98,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Assignment to left-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Assignment to left-hand side compound operand";
+      test_ = "SVecSVecOuter - Assignment to left-hand side compound operand";
 
       initialize();
 
@@ -110,7 +110,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Assignment to right-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Assignment to right-hand side compound operand";
+      test_ = "SVecSVecOuter - Assignment to right-hand side compound operand";
 
       initialize();
 
@@ -127,7 +127,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Addition assignment to left-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Addition assignment to left-hand side compound operand";
+      test_ = "SVecSVecOuter - Addition assignment to left-hand side compound operand";
 
       initialize();
 
@@ -140,7 +140,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Addition assignment to right-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Addition assignment to right-hand side compound operand";
+      test_ = "SVecSVecOuter - Addition assignment to right-hand side compound operand";
 
       initialize();
 
@@ -158,7 +158,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Subtraction assignment to left-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Subtraction assignment to left-hand side compound operand";
+      test_ = "SVecSVecOuter - Subtraction assignment to left-hand side compound operand";
 
       initialize();
 
@@ -171,7 +171,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Subtraction assignment to right-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Subtraction assignment to right-hand side compound operand";
+      test_ = "SVecSVecOuter - Subtraction assignment to right-hand side compound operand";
 
       initialize();
 
@@ -189,7 +189,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Multiplication assignment to left-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Multiplication assignment to left-hand side compound operand";
+      test_ = "SVecSVecOuter - Multiplication assignment to left-hand side compound operand";
 
       initialize();
 
@@ -202,7 +202,7 @@ void AliasingTest::testSVecTSVecMult()
 
    // Multiplication assignment to right-hand side compound operand
    {
-      test_ = "SVecTSVecMult - Multiplication assignment to right-hand side compound operand";
+      test_ = "SVecSVecOuter - Multiplication assignment to right-hand side compound operand";
 
       initialize();
 
@@ -280,7 +280,7 @@ void AliasingTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace svectsvecmult
+} // namespace svecsvecouter
 
 } // namespace mathtest
 
@@ -302,7 +302,7 @@ int main()
 
    try
    {
-      RUN_SVECTSVECMULT_ALIASING_TEST;
+      RUN_SVECSVECOUTER_ALIASING_TEST;
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during aliasing test:\n"
