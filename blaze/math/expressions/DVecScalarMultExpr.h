@@ -2228,21 +2228,21 @@ struct DVecSVecMultExprTrait< DVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultE
 
 //=================================================================================================
 //
-//  DVECTSVECMULTEXPRTRAIT SPECIALIZATIONS
+//  DVECSVECOUTEREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST, typename VT2 >
-struct DVecTSVecMultExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
+struct DVecSVecOuterExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , SMatScalarMultExprTrait_< DVecTSVecMultExprTrait_<VT1,VT2>, ST >
+                   , SMatScalarMultExprTrait_< DVecSVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2253,14 +2253,14 @@ struct DVecTSVecMultExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST1, typename VT2, typename ST2 >
-struct DVecTSVecMultExprTrait< DVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >
+struct DVecSVecOuterExprTrait< DVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsSparseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , SMatScalarMultExprTrait_< DVecTSVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
+                   , SMatScalarMultExprTrait_< DVecSVecOuterExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

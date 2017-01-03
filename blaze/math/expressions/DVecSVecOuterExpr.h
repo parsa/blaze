@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/DVecTSVecMultExpr.h
+//  \file blaze/math/expressions/DVecSVecOuterExpr.h
 //  \brief Header file for the dense vector/sparse vector outer product expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_DVECTSVECMULTEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_DVECTSVECMULTEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DVECSVECOUTEREXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DVECSVECOUTEREXPR_H_
 
 
 //*************************************************************************************************
@@ -88,7 +88,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DVECTSVECMULTEXPR
+//  CLASS DVECSVECOUTEREXPR
 //
 //=================================================================================================
 
@@ -96,12 +96,12 @@ namespace blaze {
 /*!\brief Expression object for dense vector-sparse vector outer products.
 // \ingroup sparse_matrix_expression
 //
-// The DVecTSVecMultExpr class represents the compile time expression for dense vector-sparse
+// The DVecSVecOuterExpr class represents the compile time expression for dense vector-sparse
 // vector outer products
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false >
+class DVecSVecOuterExpr : public SparseMatrix< DVecSVecOuterExpr<VT1,VT2>, false >
                         , private VecTVecMultExpr
                         , private Computation
 {
@@ -181,7 +181,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTSVecMultExpr<VT1,VT2>  This;           //!< Type of this DVecTSVecMultExpr instance.
+   typedef DVecSVecOuterExpr<VT1,VT2>  This;           //!< Type of this DVecSVecOuterExpr instance.
    typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
@@ -191,7 +191,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DVecTSVecMultExpr& >  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecSVecOuterExpr& >  CompositeType;
 
    //! Composite type of the left-hand side dense vector expression.
    typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
@@ -348,12 +348,12 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DVecTSVecMultExpr class.
+   /*!\brief Constructor for the DVecSVecOuterExpr class.
    //
    // \param lhs The left-hand side dense vector operand of the multiplication expression.
    // \param rhs The right-hand side sparse vector operand of the multiplication expression.
    */
-   explicit inline DVecTSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   explicit inline DVecSVecOuterExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse vector of the multiplication expression
    {}
@@ -563,7 +563,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename MT >  // Type of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      assign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
+      assign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -606,7 +606,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // vector outer product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline void assign( DenseMatrix<MT,true>& lhs, const DVecTSVecMultExpr& rhs )
+   friend inline void assign( DenseMatrix<MT,true>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -623,7 +623,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      DVecTSVecMultExpr::selectAssignKernel( ~lhs, x, y );
+      DVecSVecOuterExpr::selectAssignKernel( ~lhs, x, y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -728,7 +728,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename MT >  // Type of the target sparse matrix
    friend inline EnableIf_< UseAssign<MT> >
-      assign( SparseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
+      assign( SparseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -778,7 +778,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // vector outer product expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT,true>& lhs, const DVecTSVecMultExpr& rhs )
+   friend inline void assign( SparseMatrix<MT,true>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -844,7 +844,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename MT >  // Type of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      addAssign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
+      addAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -887,7 +887,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // sparse vector outer product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,true>& lhs, const DVecTSVecMultExpr& rhs )
+   friend inline void addAssign( DenseMatrix<MT,true>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -904,7 +904,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      DVecTSVecMultExpr::selectAddAssignKernel( ~lhs, x, y );
+      DVecSVecOuterExpr::selectAddAssignKernel( ~lhs, x, y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1014,7 +1014,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    */
    template< typename MT >  // Type of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      subAssign( DenseMatrix<MT,false>& lhs, const DVecTSVecMultExpr& rhs )
+      subAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1057,7 +1057,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    // sparse vector outer product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,true>& lhs, const DVecTSVecMultExpr& rhs )
+   friend inline void subAssign( DenseMatrix<MT,true>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1074,7 +1074,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      DVecTSVecMultExpr::selectSubAssignKernel( ~lhs, x, y );
+      DVecSVecOuterExpr::selectSubAssignKernel( ~lhs, x, y );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1226,12 +1226,12 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 */
 template< typename T1    // Type of the left-hand side dense vector
         , typename T2 >  // Type of the right-hand side sparse vector
-inline const DVecTSVecMultExpr<T1,T2>
+inline const DVecSVecOuterExpr<T1,T2>
    operator*( const DenseVector<T1,false>& lhs, const SparseVector<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecTSVecMultExpr<T1,T2>( ~lhs, ~rhs );
+   return DVecSVecOuterExpr<T1,T2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -1247,7 +1247,7 @@ inline const DVecTSVecMultExpr<T1,T2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Rows< DVecTSVecMultExpr<VT1,VT2> > : public Size<VT1>
+struct Rows< DVecSVecOuterExpr<VT1,VT2> > : public Size<VT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1264,7 +1264,7 @@ struct Rows< DVecTSVecMultExpr<VT1,VT2> > : public Size<VT1>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Columns< DVecTSVecMultExpr<VT1,VT2> > : public Size<VT2>
+struct Columns< DVecSVecOuterExpr<VT1,VT2> > : public Size<VT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1281,7 +1281,7 @@ struct Columns< DVecTSVecMultExpr<VT1,VT2> > : public Size<VT2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool AF >
-struct SubmatrixExprTrait< DVecTSVecMultExpr<VT1,VT2>, AF >
+struct SubmatrixExprTrait< DVecSVecOuterExpr<VT1,VT2>, AF >
 {
  public:
    //**********************************************************************************************
@@ -1296,7 +1296,7 @@ struct SubmatrixExprTrait< DVecTSVecMultExpr<VT1,VT2>, AF >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct RowExprTrait< DVecTSVecMultExpr<VT1,VT2> >
+struct RowExprTrait< DVecSVecOuterExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************
@@ -1310,7 +1310,7 @@ struct RowExprTrait< DVecTSVecMultExpr<VT1,VT2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct ColumnExprTrait< DVecTSVecMultExpr<VT1,VT2> >
+struct ColumnExprTrait< DVecSVecOuterExpr<VT1,VT2> >
 {
  public:
    //**********************************************************************************************

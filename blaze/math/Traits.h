@@ -98,9 +98,9 @@
 #include <blaze/math/traits/DVecSVecCrossExprTrait.h>
 #include <blaze/math/traits/DVecSVecInnerExprTrait.h>
 #include <blaze/math/traits/DVecSVecMultExprTrait.h>
+#include <blaze/math/traits/DVecSVecOuterExprTrait.h>
 #include <blaze/math/traits/DVecSVecSubExprTrait.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
-#include <blaze/math/traits/DVecTSVecMultExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ForEachTrait.h>

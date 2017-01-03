@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/DVecTSVecMultExprTrait.h
-//  \brief Header file for the DVecTSVecMultExprTrait class template
+//  \file blaze/math/traits/DVecSVecOuterExprTrait.h
+//  \brief Header file for the DVecSVecOuterExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_DVECTSVECMULTEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_DVECTSVECMULTEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_DVECSVECOUTEREXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_DVECSVECOUTEREXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -76,14 +76,14 @@ namespace blaze {
 */
 template< typename VT1    // Type of the left-hand side non-transpose dense vector
         , typename VT2 >  // Type of the right-hand side transpose sparse vector
-struct DVecTSVecMultExprTrait
+struct DVecSVecOuterExprTrait
 {
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseVector<VT1> , IsColumnVector<VT1>
                       , IsSparseVector<VT2>, IsRowVector<VT2> >
-                 , DVecTSVecMultExpr<VT1,VT2>
+                 , DVecSVecOuterExpr<VT1,VT2>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
@@ -93,7 +93,7 @@ struct DVecTSVecMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
                                 , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
-                            , DVecTSVecMultExprTrait< Decay_<VT1>, Decay_<VT2> >
+                            , DVecSVecOuterExprTrait< Decay_<VT1>, Decay_<VT2> >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -102,22 +102,22 @@ struct DVecTSVecMultExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the DVecTSVecMultExprTrait class template.
+/*!\brief Auxiliary alias declaration for the DVecSVecOuterExprTrait class template.
 // \ingroup math_traits
 //
-// The DVecTSVecMultExprTrait_ alias declaration provides a convenient shortcut to access
-// the nested \a Type of the DVecTSVecMultExprTrait class template. For instance, given the
+// The DVecSVecOuterExprTrait_ alias declaration provides a convenient shortcut to access
+// the nested \a Type of the DVecSVecOuterExprTrait class template. For instance, given the
 // non-transpose dense vector type \a VT1 and the transpose sparse vector type \a VT2 the
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename DVecTSVecMultExprTrait<VT1,VT2>::Type;
-   using Type2 = DVecTSVecMultExprTrait_<VT1,VT2>;
+   using Type1 = typename DVecSVecOuterExprTrait<VT1,VT2>::Type;
+   using Type2 = DVecSVecOuterExprTrait_<VT1,VT2>;
    \endcode
 */
 template< typename VT1    // Type of the left-hand side non-transpose dense vector
         , typename VT2 >  // Type of the right-hand side transpose sparse vector
-using DVecTSVecMultExprTrait_ = typename DVecTSVecMultExprTrait<VT1,VT2>::Type;
+using DVecSVecOuterExprTrait_ = typename DVecSVecOuterExprTrait<VT1,VT2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
