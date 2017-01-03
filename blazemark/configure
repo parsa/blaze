@@ -547,11 +547,11 @@ fi
 SVECDVECINNER="$SVECDVECINNER \$(OBJECT_PATH)/MAIN_SVecDVecInner.o"
 
 # Configuration of the sparse vector/sparse vector inner product benchmark
-TSVECSVECMULT="\$(OBJECT_PATH)/BLAZE_TSVecSVecMult.o \$(OBJECT_PATH)/BOOST_TSVecSVecMult.o"
+SVECSVECINNER="\$(OBJECT_PATH)/BLAZE_SVecSVecInner.o \$(OBJECT_PATH)/BOOST_SVecSVecInner.o"
 if [ "$GMM" = "yes" ]; then
-   TSVECSVECMULT="$TSVECSVECMULT \$(OBJECT_PATH)/GMM_TSVecSVecMult.o"
+   SVECSVECINNER="$SVECSVECINNER \$(OBJECT_PATH)/GMM_SVecSVecInner.o"
 fi
-TSVECSVECMULT="$TSVECSVECMULT \$(OBJECT_PATH)/MAIN_TSVecSVecMult.o"
+SVECSVECINNER="$SVECSVECINNER \$(OBJECT_PATH)/MAIN_SVecSVecInner.o"
 
 # Configuration of the dense vector/dense vector outer product benchmark
 DVECTDVECMULT="\$(OBJECT_PATH)/CLASSIC_DVecTDVecMult.o \$(OBJECT_PATH)/BLAZE_DVecTDVecMult.o \$(OBJECT_PATH)/BOOST_DVecTDVecMult.o"
@@ -2109,8 +2109,8 @@ binaries: $MODULES
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecsvecinner $DVECSVECINNER \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector inner product (svecdvecinner) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdvecinner $SVECDVECINNER \$(LIBRARIES)
-	@echo "  Building sparse vector/sparse vector inner product (tsvecsvecmult) binary..."
-	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
+	@echo "  Building sparse vector/sparse vector inner product (svecsvecinner) binary..."
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsvecinner $SVECSVECINNER \$(LIBRARIES)
 	@echo "  Building dense vector/dense vector outer product (dvectdvecmult) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvectdvecmult $DVECTDVECMULT \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector outer product (dvectsvecmult) binary..."
@@ -3196,33 +3196,33 @@ EOF
 # Sparse vector/sparse vector inner product
 cat >> Makefile <<EOF
 
-tsvecsvecmult: \$(BINARY_PATH)/tsvecsvecmult
-\$(BINARY_PATH)/tsvecsvecmult: $TSVECSVECMULT
-	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tsvecsvecmult $TSVECSVECMULT \$(LIBRARIES)
+svecsvecinner: \$(BINARY_PATH)/svecsvecinner
+\$(BINARY_PATH)/svecsvecinner: $SVECSVECINNER
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecsvecinner $SVECSVECINNER \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/BLAZE_TSVecSVecMult.o:
+\$(OBJECT_PATH)/BLAZE_SVecSVecInner.o:
 	@echo
-	@echo "Building sparse vector/sparse vector inner product (tsvecsvecmult) binary..."
+	@echo "Building sparse vector/sparse vector inner product (svecsvecinner) binary..."
 	@echo "  Building the Blaze kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_TSVecSVecMult.o \$(INSTALL_PATH)/src/blaze/TSVecSVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BOOST_TSVecSVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_SVecSVecInner.o \$(INSTALL_PATH)/src/blaze/SVecSVecInner.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BOOST_SVecSVecInner.o:
 	@echo "  Building the Boost uBLAS kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_TSVecSVecMult.o \$(INSTALL_PATH)/src/boost/TSVecSVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_SVecSVecInner.o \$(INSTALL_PATH)/src/boost/SVecSVecInner.cpp \$(INCLUDES)
 EOF
 
 if [ "$GMM" = "yes" ]; then
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/GMM_TSVecSVecMult.o:
+\$(OBJECT_PATH)/GMM_SVecSVecInner.o:
 	@echo "  Building the GMM++ kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_TSVecSVecMult.o \$(INSTALL_PATH)/src/gmm/TSVecSVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/GMM_SVecSVecInner.o \$(INSTALL_PATH)/src/gmm/SVecSVecInner.cpp \$(INCLUDES)
 EOF
 fi
 
 cat >> Makefile <<EOF
-\$(OBJECT_PATH)/MAIN_TSVecSVecMult.o:
+\$(OBJECT_PATH)/MAIN_SVecSVecInner.o:
 	@echo "  Building the benchmark..."
-	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_TSVecSVecMult.o \$(INSTALL_PATH)/src/main/TSVecSVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SVecSVecInner.o \$(INSTALL_PATH)/src/main/SVecSVecInner.cpp \$(INCLUDES)
 EOF
 
 
@@ -8041,7 +8041,7 @@ clean:
         bin/dvecdvecinner $DVECDVECINNER \\
         bin/dvecsvecinner $DVECSVECINNER \\
         bin/svecdvecinner $SVECDVECINNER \\
-        bin/tsvecsvecmult $TSVECSVECMULT \\
+        bin/svecsvecinner $SVECSVECINNER \\
         bin/dvectdvecmult $DVECTDVECMULT \\
         bin/dvectsvecmult $DVECTSVECMULT \\
         bin/svectdvecmult $SVECTDVECMULT \\

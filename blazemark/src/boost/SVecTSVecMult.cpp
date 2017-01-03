@@ -43,7 +43,7 @@
 #include <boost/numeric/ublas/vector_sparse.hpp>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/init/CompressedVector.h>
-#include <blazemark/boost/TSVecSVecMult.h>
+#include <blazemark/boost/SVecTSVecMult.h>
 #include <blazemark/system/Config.h>
 
 

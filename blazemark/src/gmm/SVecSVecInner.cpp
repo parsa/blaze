@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/boost/TSVecSVecMult.cpp
-//  \brief Source file for the Boost sparse vector/sparse vector inner product kernel
+//  \file src/gmm/SVecSVecInner.cpp
+//  \brief Source file for the GMM++ sparse vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,17 +38,16 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/vector_sparse.hpp>
+#include <gmm/gmm.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/boost/init/CompressedVector.h>
-#include <blazemark/boost/TSVecSVecMult.h>
+#include <blazemark/gmm/init/RSVector.h>
+#include <blazemark/gmm/SVecSVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace boost {
+namespace gmm {
 
 //=================================================================================================
 //
@@ -57,7 +56,7 @@ namespace boost {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Boost uBLAS sparse vector/sparse vector inner product kernel.
+/*!\brief GMM++ sparse vector/sparse vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param F The number of non-zero elements for the sparse vectors.
@@ -65,15 +64,15 @@ namespace boost {
 // \return Minimum runtime of the kernel function.
 //
 // This kernel function implements the sparse vector/sparse vector inner product by means of
-// the Boost uBLAS functionality.
+// the GMM++ functionality.
 */
-double tsvecsvecmult( size_t N, size_t F, size_t steps )
+double svecsvecinner( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::boost::numeric::ublas::compressed_vector<element_t> a( N ), b( N );
+   ::gmm::rsvector<element_t> a( N ), b( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -84,7 +83,7 @@ double tsvecsvecmult( size_t N, size_t F, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += inner_prod( a, b );
+         scalar += vect_sp( a, b );
       }
       timer.end();
 
@@ -99,12 +98,12 @@ double tsvecsvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Boost uBLAS kernel 'tsvecsvecmult': Time deviation too large!!!\n";
+      std::cerr << " GMM++ kernel 'svecsvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace boost
+} // namespace gmm
 
 } // namespace blazemark

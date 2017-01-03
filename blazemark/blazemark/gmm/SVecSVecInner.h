@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazemark/gmm/TSVecSVecMult.h
+//  \file blazemark/gmm/SVecSVecInner.h
 //  \brief Header file for the GMM++ sparse vector/sparse vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_GMM_TSVECSVECMULT_H_
-#define _BLAZEMARK_GMM_TSVECSVECMULT_H_
+#ifndef _BLAZEMARK_GMM_SVECSVECINNER_H_
+#define _BLAZEMARK_GMM_SVECSVECINNER_H_
 
 
 //*************************************************************************************************
@@ -56,7 +56,7 @@ namespace gmm {
 //*************************************************************************************************
 /*!\name GMM++ kernel functions */
 //@{
-double tsvecsvecmult( size_t N, size_t F, size_t steps );
+double svecsvecinner( size_t N, size_t F, size_t steps );
 //@}
 //*************************************************************************************************
 

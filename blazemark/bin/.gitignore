@@ -64,6 +64,7 @@ svecdvecmult
 svecscalarmult
 svecsvecadd
 svecsveccross
+svecsvecinner
 svecsvecmult
 svectdvecmult
 svectsvecmult
@@ -101,7 +102,6 @@ tsmattsmatadd
 tsmattsmatmult
 tsvecdmatmult
 tsvecsmatmult
-tsvecsvecmult
 tsvectdmatmult
 tsvectsmatmult
 tvec3mat3mult
