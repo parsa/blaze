@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/SVecTSVecMult.cpp
-//  \brief Source file for the Blaze sparse vector/sparse vector outer product kernel
+//  \file blazemark/blaze/SVecSVecOuter.h
+//  \brief Header file for the Blaze sparse vector/sparse vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,18 +32,15 @@
 */
 //=================================================================================================
 
+#ifndef _BLAZEMARK_BLAZE_SVECSVECOUTER_H_
+#define _BLAZEMARK_BLAZE_SVECSVECOUTER_H_
+
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iostream>
-#include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/util/Timing.h>
-#include <blazemark/blaze/init/CompressedVector.h>
-#include <blazemark/blaze/SVecTSVecMult.h>
-#include <blazemark/system/Config.h>
+#include <blazemark/system/Types.h>
 
 
 namespace blazemark {
@@ -57,60 +54,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Blaze sparse vector/sparse vector outer product kernel.
-//
-// \param N The size of the vectors for the outer product.
-// \param F The number of non-zero elements for the sparse vectors.
-// \param steps The number of iteration steps to perform.
-// \return Minimum runtime of the kernel function.
-//
-// This kernel function implements the sparse vector/sparse vector outer product by means of
-// the Blaze functionality.
-*/
-double svectsvecmult( size_t N, size_t F, size_t steps )
-{
-   using ::blazemark::element_t;
-   using ::blaze::rowVector;
-   using ::blaze::columnVector;
-   using ::blaze::rowMajor;
-
-   ::blaze::setSeed( seed );
-
-   ::blaze::CompressedVector<element_t,columnVector> a( N );
-   ::blaze::CompressedVector<element_t,rowVector> b( N );
-   ::blaze::CompressedMatrix<element_t,rowMajor> A( N, N );
-   ::blaze::timing::WcTimer timer;
-
-   init( a, F );
-   init( b, F );
-
-   A = a * b;
-
-   for( size_t rep=0UL; rep<reps; ++rep )
-   {
-      timer.start();
-      for( size_t step=0UL; step<steps; ++step ) {
-         A = a * b;
-      }
-      timer.end();
-
-      if( A.rows() != N )
-         std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
-
-      if( timer.last() > maxtime )
-         break;
-   }
-
-   const double minTime( timer.min()     );
-   const double avgTime( timer.average() );
-
-   if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'svectsvecmult': Time deviation too large!!!\n";
-
-   return minTime;
-}
+/*!\name Blaze kernel functions */
+//@{
+double svecsvecouter( size_t N, size_t F, size_t steps );
+//@}
 //*************************************************************************************************
 
 } // namespace blaze
 
 } // namespace blazemark
+
+#endif

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/blaze/SVecTSVecMult.h
-//  \brief Header file for the Blaze sparse vector/sparse vector outer product kernel
+//  \file blazemark/boost/SVecSVecOuter.h
+//  \brief Header file for the Boost sparse vector/sparse vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_BLAZE_SVECTSVECMULT_H_
-#define _BLAZEMARK_BLAZE_SVECTSVECMULT_H_
+#ifndef _BLAZEMARK_BOOST_SVECSVECOUTER_H_
+#define _BLAZEMARK_BOOST_SVECSVECOUTER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace blaze {
+namespace boost {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Blaze kernel functions */
+/*!\name Boost uBLAS kernel functions */
 //@{
-double svectsvecmult( size_t N, size_t F, size_t steps );
+double svecsvecouter( size_t N, size_t F, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace boost
 
 } // namespace blazemark
 

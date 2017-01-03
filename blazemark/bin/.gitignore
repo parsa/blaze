@@ -67,7 +67,7 @@ svecsvecadd
 svecsveccross
 svecsvecinner
 svecsvecmult
-svectsvecmult
+svecsvecouter
 tdmatdmatadd
 tdmatdmatmult
 tdmatdvecmult

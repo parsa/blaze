@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/boost/SVecTSVecMult.cpp
+//  \file src/boost/SVecSVecOuter.cpp
 //  \brief Source file for the Boost sparse vector/sparse vector outer product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -43,7 +43,7 @@
 #include <boost/numeric/ublas/vector_sparse.hpp>
 #include <blaze/util/Timing.h>
 #include <blazemark/boost/init/CompressedVector.h>
-#include <blazemark/boost/SVecTSVecMult.h>
+#include <blazemark/boost/SVecSVecOuter.h>
 #include <blazemark/system/Config.h>
 
 
@@ -68,7 +68,7 @@ namespace boost {
 // This kernel function implements the sparse vector/sparse vector outer product by means of
 // the Boost uBLAS functionality.
 */
-double svectsvecmult( size_t N, size_t F, size_t steps )
+double svecsvecouter( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
    using ::boost::numeric::ublas::row_major;
@@ -103,7 +103,7 @@ double svectsvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Boost uBLAS kernel 'svectsvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'svecsvecouter': Time deviation too large!!!\n";
 
    return minTime;
 }

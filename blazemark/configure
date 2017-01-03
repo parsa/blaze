@@ -570,7 +570,7 @@ DVECSVECOUTER="\$(OBJECT_PATH)/BLAZE_DVecSVecOuter.o \$(OBJECT_PATH)/BOOST_DVecS
 SVECDVECOUTER="\$(OBJECT_PATH)/BLAZE_SVecDVecOuter.o \$(OBJECT_PATH)/BOOST_SVecDVecOuter.o \$(OBJECT_PATH)/MAIN_SVecDVecOuter.o"
 
 # Configuration of the sparse vector/sparse vector outer product benchmark
-SVECTSVECMULT="\$(OBJECT_PATH)/BLAZE_SVecTSVecMult.o \$(OBJECT_PATH)/BOOST_SVecTSVecMult.o \$(OBJECT_PATH)/MAIN_SVecTSVecMult.o"
+SVECSVECOUTER="\$(OBJECT_PATH)/BLAZE_SVecSVecOuter.o \$(OBJECT_PATH)/BOOST_SVecSVecOuter.o \$(OBJECT_PATH)/MAIN_SVecSVecOuter.o"
 
 # Configuration of the dense matrix/dense vector multiplication benchmark
 DMATDVECMULT="\$(OBJECT_PATH)/CLASSIC_DMatDVecMult.o"
@@ -2117,8 +2117,8 @@ binaries: $MODULES
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecsvecouter $DVECSVECOUTER \$(LIBRARIES)
 	@echo "  Building sparse vector/dense vector outer product (svecdvecouter) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecdvecouter $SVECDVECOUTER \$(LIBRARIES)
-	@echo "  Building sparse vector/sparse vector outer product (svectsvecmult) binary..."
-	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
+	@echo "  Building sparse vector/sparse vector outer product (svecsvecouter) binary..."
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/svecsvecouter $SVECSVECOUTER \$(LIBRARIES)
 	@echo "  Building dense matrix/dense vector multiplication (dmatdvecmult) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dmatdvecmult $DMATDVECMULT \$(LIBRARIES)
 	@echo "  Building transpose dense matrix/dense vector multiplication (tdmatdvecmult) binary..."
@@ -3317,22 +3317,22 @@ EOF
 # Sparse vector/sparse vector outer product
 cat >> Makefile <<EOF
 
-svectsvecmult: \$(BINARY_PATH)/svectsvecmult
-\$(BINARY_PATH)/svectsvecmult: $SVECTSVECMULT
-	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svectsvecmult $SVECTSVECMULT \$(LIBRARIES)
+svecsvecouter: \$(BINARY_PATH)/svecsvecouter
+\$(BINARY_PATH)/svecsvecouter: $SVECSVECOUTER
+	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/svecsvecouter $SVECSVECOUTER \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/BLAZE_SVecTSVecMult.o:
+\$(OBJECT_PATH)/BLAZE_SVecSVecOuter.o:
 	@echo
-	@echo "Building sparse vector/sparse vector outer product (svectsvecmult) binary..."
+	@echo "Building sparse vector/sparse vector outer product (svecsvecouter) binary..."
 	@echo "  Building the Blaze kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_SVecTSVecMult.o \$(INSTALL_PATH)/src/blaze/SVecTSVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/BOOST_SVecTSVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_SVecSVecOuter.o \$(INSTALL_PATH)/src/blaze/SVecSVecOuter.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BOOST_SVecSVecOuter.o:
 	@echo "  Building the Boost uBLAS kernel..."
-	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_SVecTSVecMult.o \$(INSTALL_PATH)/src/boost/SVecTSVecMult.cpp \$(INCLUDES)
-\$(OBJECT_PATH)/MAIN_SVecTSVecMult.o:
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BOOST_SVecSVecOuter.o \$(INSTALL_PATH)/src/boost/SVecSVecOuter.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/MAIN_SVecSVecOuter.o:
 	@echo "  Building the benchmark..."
-	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SVecTSVecMult.o \$(INSTALL_PATH)/src/main/SVecTSVecMult.cpp \$(INCLUDES)
+	@\$(CXX) \$(CXXFLAGS) -DINSTALL_PATH='"\$(INSTALL_PATH)"' -c -o \$(OBJECT_PATH)/MAIN_SVecSVecOuter.o \$(INSTALL_PATH)/src/main/SVecSVecOuter.cpp \$(INCLUDES)
 EOF
 
 
@@ -8045,7 +8045,7 @@ clean:
         bin/dvecdvecouter $DVECDVECOUTER \\
         bin/dvecsvecouter $DVECSVECOUTER \\
         bin/svecdvecouter $SVECDVECOUTER \\
-        bin/svectsvecmult $SVECTSVECMULT \\
+        bin/svecsvecouter $SVECSVECOUTER \\
         bin/dmatdvecmult $DMATDVECMULT \\
         bin/tdmatdvecmult $TDMATDVECMULT \\
         bin/dmatsvecmult $DMATSVECMULT \\
