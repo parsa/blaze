@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazemark/blaze/TSVecDVecMult.h
-//  \brief Header file for the Blaze sparse vector/dense vector inner product kernel
+//  \file blazemark/boost/SVecDVecInner.h
+//  \brief Header file for the Boost sparse vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZEMARK_BLAZE_TSVECDVECMULT_H_
-#define _BLAZEMARK_BLAZE_TSVECDVECMULT_H_
+#ifndef _BLAZEMARK_BOOST_SVECDVECINNER_H_
+#define _BLAZEMARK_BOOST_SVECDVECINNER_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 
 namespace blazemark {
 
-namespace blaze {
+namespace boost {
 
 //=================================================================================================
 //
@@ -54,13 +54,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Blaze kernel functions */
+/*!\name Boost uBLAS kernel functions */
 //@{
-double tsvecdvecmult( size_t N, size_t F, size_t steps );
+double svecdvecinner( size_t N, size_t F, size_t steps );
 //@}
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace boost
 
 } // namespace blazemark
 

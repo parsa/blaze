@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TSVecDVecMult.cpp
-//  \brief Source file for the Blaze sparse vector/dense vector inner product kernel
+//  \file src/boost/SVecDVecInner.cpp
+//  \brief Source file for the Boost transpose sparse vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -38,17 +38,19 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <gmm/gmm.h>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/vector_sparse.hpp>
 #include <blaze/util/Timing.h>
-#include <blazemark/gmm/init/RSVector.h>
-#include <blazemark/gmm/init/Vector.h>
-#include <blazemark/gmm/TSVecDVecMult.h>
+#include <blazemark/boost/init/CompressedVector.h>
+#include <blazemark/boost/init/Vector.h>
+#include <blazemark/boost/SVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace gmm {
+namespace boost {
 
 //=================================================================================================
 //
@@ -57,24 +59,24 @@ namespace gmm {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief GMM++ sparse vector/dense vector inner product kernel.
+/*!\brief Boost uBLAS transpose sparse vector/dense vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param F The number of non-zero elements for the sparse vector.
 // \param steps The number of iteration steps to perform.
 // \return Minimum runtime of the kernel function.
 //
-// This kernel function implements the sparse vector/dense vector inner product by means of the
-// GMM++ functionality.
+// This kernel function implements the transpose sparse vector/dense vector inner product by
+// means of the Boost uBLAS functionality.
 */
-double tsvecdvecmult( size_t N, size_t F, size_t steps )
+double svecdvecinner( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
    ::blaze::setSeed( seed );
 
-   ::gmm::rsvector<element_t> a( N );
-   ::std::vector<element_t> b( N );
+   ::boost::numeric::ublas::compressed_vector<element_t> a( N );
+   ::boost::numeric::ublas::vector<element_t> b( N ), c( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -85,7 +87,7 @@ double tsvecdvecmult( size_t N, size_t F, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += vect_sp( a, b );
+         scalar += inner_prod( a, b );
       }
       timer.end();
 
@@ -100,12 +102,12 @@ double tsvecdvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " GMM++ kernel 'tsvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " Boost uBLAS kernel 'svecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace gmm
+} // namespace boost
 
 } // namespace blazemark

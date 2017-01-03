@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/main/TSVecDVecMult.cpp
+//  \file src/main/SVecDVecInner.cpp
 //  \brief Source file for the sparse vector/dense vector inner product benchmark
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -51,9 +51,9 @@
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/blaze/TSVecDVecMult.h>
-#include <blazemark/boost/TSVecDVecMult.h>
-#include <blazemark/gmm/TSVecDVecMult.h>
+#include <blazemark/blaze/SVecDVecInner.h>
+#include <blazemark/boost/SVecDVecInner.h>
+#include <blazemark/gmm/SVecDVecInner.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/Types.h>
@@ -179,7 +179,7 @@ void estimateFlops( Run& run )
 // \param benchmarks The selection of benchmarks.
 // \return void
 */
-void tsvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
+void svecdvecinner( std::vector<Run>& runs, Benchmarks benchmarks )
 {
    std::cout << std::left;
 
@@ -210,7 +210,7 @@ void tsvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t N    ( run->getSize()     );
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
-            run->setBlazeResult( blazemark::blaze::tsvecdvecmult( N, F, steps ) );
+            run->setBlazeResult( blazemark::blaze::svecdvecinner( N, F, steps ) );
             const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
@@ -227,7 +227,7 @@ void tsvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t N    ( run->getSize()     );
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
-            run->setBoostResult( blazemark::boost::tsvecdvecmult( N, F, steps ) );
+            run->setBoostResult( blazemark::boost::svecdvecinner( N, F, steps ) );
             const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
@@ -245,7 +245,7 @@ void tsvecdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
             const size_t N    ( run->getSize()     );
             const size_t F    ( run->getNonZeros() );
             const size_t steps( run->getSteps()    );
-            run->setGMMResult( blazemark::gmm::tsvecdvecmult( N, F, steps ) );
+            run->setGMMResult( blazemark::gmm::svecdvecinner( N, F, steps ) );
             const double mflops( run->getFlops() * steps / run->getGMMResult() / 1E6 );
             std::cout << "     " << std::setw(12) << N << mflops << std::endl;
          }
@@ -290,7 +290,7 @@ int main( int argc, char** argv )
    }
 
    const std::string installPath( INSTALL_PATH );
-   const std::string parameterFile( installPath + "/params/tsvecdvecmult.prm" );
+   const std::string parameterFile( installPath + "/params/svecdvecinner.prm" );
    Parser<Run> parser;
    std::vector<Run> runs;
 
@@ -303,7 +303,7 @@ int main( int argc, char** argv )
    }
 
    try {
-      tsvecdvecmult( runs, benchmarks );
+      svecdvecinner( runs, benchmarks );
    }
    catch( std::exception& ex ) {
       std::cerr << "   Error during benchmark execution: " << ex.what() << "\n";

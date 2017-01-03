@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/blaze/TSVecDVecMult.cpp
+//  \file src/blaze/SVecDVecInner.cpp
 //  \brief Source file for the Blaze sparse vector/dense vector inner product kernel
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -38,18 +38,17 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/DynamicVector.h>
+#include <gmm/gmm.h>
 #include <blaze/util/Timing.h>
-#include <blazemark/blaze/init/CompressedVector.h>
-#include <blazemark/blaze/init/DynamicVector.h>
-#include <blazemark/blaze/TSVecDVecMult.h>
+#include <blazemark/gmm/init/RSVector.h>
+#include <blazemark/gmm/init/Vector.h>
+#include <blazemark/gmm/SVecDVecInner.h>
 #include <blazemark/system/Config.h>
 
 
 namespace blazemark {
 
-namespace blaze {
+namespace gmm {
 
 //=================================================================================================
 //
@@ -58,7 +57,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Blaze sparse vector/dense vector inner product kernel.
+/*!\brief GMM++ sparse vector/dense vector inner product kernel.
 //
 // \param N The size of the vectors for the inner product.
 // \param F The number of non-zero elements for the sparse vector.
@@ -66,18 +65,16 @@ namespace blaze {
 // \return Minimum runtime of the kernel function.
 //
 // This kernel function implements the sparse vector/dense vector inner product by means of the
-// Blaze functionality.
+// GMM++ functionality.
 */
-double tsvecdvecmult( size_t N, size_t F, size_t steps )
+double svecdvecinner( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::blaze::rowVector;
-   using ::blaze::columnVector;
 
    ::blaze::setSeed( seed );
 
-   ::blaze::CompressedVector<element_t,rowVector> a( N );
-   ::blaze::DynamicVector<element_t,columnVector> b( N );
+   ::gmm::rsvector<element_t> a( N );
+   ::std::vector<element_t> b( N );
    element_t scalar( 0 );
    ::blaze::timing::WcTimer timer;
 
@@ -88,7 +85,7 @@ double tsvecdvecmult( size_t N, size_t F, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         scalar += a * b;
+         scalar += vect_sp( a, b );
       }
       timer.end();
 
@@ -103,12 +100,12 @@ double tsvecdvecmult( size_t N, size_t F, size_t steps )
    const double avgTime( timer.average() );
 
    if( minTime * ( 1.0 + deviation*0.01 ) < avgTime )
-      std::cerr << " Blaze kernel 'tsvecdvecmult': Time deviation too large!!!\n";
+      std::cerr << " GMM++ kernel 'svecdvecinner': Time deviation too large!!!\n";
 
    return minTime;
 }
 //*************************************************************************************************
 
-} // namespace blaze
+} // namespace gmm
 
 } // namespace blazemark
