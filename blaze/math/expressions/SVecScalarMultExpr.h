@@ -1700,21 +1700,21 @@ struct SVecDVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
 
 //=================================================================================================
 //
-//  SVECTDVECMULTEXPRTRAIT SPECIALIZATIONS
+//  SVECDVECOUTEREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST, typename VT2 >
-struct SVecTDVecMultExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
+struct SVecDVecOuterExprTrait< SVecScalarMultExpr<VT1,ST,false>, VT2 >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , TSMatScalarMultExprTrait_< SVecTDVecMultExprTrait_<VT1,VT2>, ST >
+                   , TSMatScalarMultExprTrait_< SVecDVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

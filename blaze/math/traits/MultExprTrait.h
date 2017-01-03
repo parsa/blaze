@@ -56,18 +56,18 @@
 #include <blaze/math/traits/DVecSVecOuterExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
-#include <blaze/math/traits/SVecDVecInnerExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/SMatSMatMultExprTrait.h>
 #include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/SMatTDMatMultExprTrait.h>
 #include <blaze/math/traits/SMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/SVecDVecInnerExprTrait.h>
 #include <blaze/math/traits/SVecDVecMultExprTrait.h>
+#include <blaze/math/traits/SVecDVecOuterExprTrait.h>
 #include <blaze/math/traits/SVecScalarMultExprTrait.h>
 #include <blaze/math/traits/SVecSVecInnerExprTrait.h>
 #include <blaze/math/traits/SVecSVecMultExprTrait.h>
-#include <blaze/math/traits/SVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/SVecTSVecMultExprTrait.h>
 #include <blaze/math/traits/TDMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TDMatDVecMultExprTrait.h>
@@ -281,7 +281,7 @@ struct MultExprTrait
                                  , If_< IsVector<T2>
                                       , If_< IsDenseVector<T2>
                                            , If_< IsRowVector<T2>
-                                                , SVecTDVecMultExprTrait<T1,T2>
+                                                , SVecDVecOuterExprTrait<T1,T2>
                                                 , SVecDVecMultExprTrait<T1,T2> >
                                            , If_< IsRowVector<T2>
                                                 , SVecTSVecMultExprTrait<T1,T2>
