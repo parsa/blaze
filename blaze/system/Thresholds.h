@@ -898,13 +898,13 @@ constexpr size_t SMP_TSMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 /*!\brief SMP dense vector/dense vector outer product threshold.
 // \ingroup config
 //
-// This debug value is used instead of the blaze::SMP_DVECTDVECMULT_USER_THRESHOLD while the Blaze
+// This debug value is used instead of the blaze::SMP_DVECDVECOUTER_USER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/dense vector outer product can be executed
 // in parallel. In case the number of elements of the target matrix is larger or equal to this
 // threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
 */
-constexpr size_t SMP_DVECTDVECMULT_DEBUG_THRESHOLD = 256UL;
+constexpr size_t SMP_DVECDVECOUTER_DEBUG_THRESHOLD = 256UL;
 //*************************************************************************************************
 
 
@@ -954,7 +954,7 @@ constexpr size_t SMP_SMATSMATMULT_THRESHOLD   = ( BLAZE_DEBUG_MODE ? SMP_SMATSMA
 constexpr size_t SMP_SMATTSMATMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_SMATTSMATMULT_DEBUG_THRESHOLD  : SMP_SMATTSMATMULT_USER_THRESHOLD  );
 constexpr size_t SMP_TSMATSMATMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_TSMATSMATMULT_DEBUG_THRESHOLD  : SMP_TSMATSMATMULT_USER_THRESHOLD  );
 constexpr size_t SMP_TSMATTSMATMULT_THRESHOLD = ( BLAZE_DEBUG_MODE ? SMP_TSMATTSMATMULT_DEBUG_THRESHOLD : SMP_TSMATTSMATMULT_USER_THRESHOLD );
-constexpr size_t SMP_DVECTDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_DVECTDVECMULT_DEBUG_THRESHOLD  : SMP_DVECTDVECMULT_USER_THRESHOLD  );
+constexpr size_t SMP_DVECDVECOUTER_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_DVECDVECOUTER_DEBUG_THRESHOLD  : SMP_DVECDVECOUTER_USER_THRESHOLD  );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1025,7 +1025,7 @@ BLAZE_STATIC_ASSERT( blaze::SMP_SMATSMATMULT_THRESHOLD   >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_SMATTSMATMULT_THRESHOLD  >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_TSMATSMATMULT_THRESHOLD  >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_TSMATTSMATMULT_THRESHOLD >= 0UL );
-BLAZE_STATIC_ASSERT( blaze::SMP_DVECTDVECMULT_THRESHOLD  >= 0UL );
+BLAZE_STATIC_ASSERT( blaze::SMP_DVECDVECOUTER_THRESHOLD  >= 0UL );
 
 }
 /*! \endcond */

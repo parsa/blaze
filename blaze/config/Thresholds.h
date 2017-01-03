@@ -1325,7 +1325,7 @@ constexpr size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 22500UL;
 // \f$ 290 \times 290 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 */
-constexpr size_t SMP_DVECTDVECMULT_USER_THRESHOLD = 84100UL;
+constexpr size_t SMP_DVECDVECOUTER_USER_THRESHOLD = 84100UL;
 //*************************************************************************************************
 
 } // namespace blaze

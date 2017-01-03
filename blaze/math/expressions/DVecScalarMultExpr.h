@@ -2060,21 +2060,21 @@ struct DVecDVecMultExprTrait< DVecScalarMultExpr<VT1,ST1,false>, DVecScalarMultE
 
 //=================================================================================================
 //
-//  DVECTDVECMULTEXPRTRAIT SPECIALIZATIONS
+//  DVECDVECOUTEREXPRTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST, typename VT2 >
-struct DVecTDVecMultExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
+struct DVecDVecOuterExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , DMatScalarMultExprTrait_< DVecTDVecMultExprTrait_<VT1,VT2>, ST >
+                   , DMatScalarMultExprTrait_< DVecDVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2085,14 +2085,14 @@ struct DVecTDVecMultExprTrait< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename ST >
-struct DVecTDVecMultExprTrait< VT1, DVecScalarMultExpr<VT2,ST,true> >
+struct DVecDVecOuterExprTrait< VT1, DVecScalarMultExpr<VT2,ST,true> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST> >
-                   , DMatScalarMultExprTrait_< DVecTDVecMultExprTrait_<VT1,VT2>, ST >
+                   , DMatScalarMultExprTrait_< DVecDVecOuterExprTrait_<VT1,VT2>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2103,14 +2103,14 @@ struct DVecTDVecMultExprTrait< VT1, DVecScalarMultExpr<VT2,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename ST1, typename VT2, typename ST2 >
-struct DVecTDVecMultExprTrait< DVecScalarMultExpr<VT1,ST1,false>, DVecScalarMultExpr<VT2,ST2,true> >
+struct DVecDVecOuterExprTrait< DVecScalarMultExpr<VT1,ST1,false>, DVecScalarMultExpr<VT2,ST2,true> >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
                         , IsDenseVector<VT2>, IsRowVector<VT2>
                         , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , DMatScalarMultExprTrait_< DVecTDVecMultExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
+                   , DMatScalarMultExprTrait_< DVecDVecOuterExprTrait_<VT1,VT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };

@@ -87,6 +87,7 @@
 #include <blaze/math/traits/DVecDVecDivExprTrait.h>
 #include <blaze/math/traits/DVecDVecInnerExprTrait.h>
 #include <blaze/math/traits/DVecDVecMultExprTrait.h>
+#include <blaze/math/traits/DVecDVecOuterExprTrait.h>
 #include <blaze/math/traits/DVecDVecSubExprTrait.h>
 #include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/DVecForEachExprTrait.h>
@@ -98,7 +99,6 @@
 #include <blaze/math/traits/DVecSVecInnerExprTrait.h>
 #include <blaze/math/traits/DVecSVecMultExprTrait.h>
 #include <blaze/math/traits/DVecSVecSubExprTrait.h>
-#include <blaze/math/traits/DVecTDVecMultExprTrait.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/DVecTSVecMultExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
