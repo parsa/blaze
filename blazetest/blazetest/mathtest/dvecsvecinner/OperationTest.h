@@ -631,7 +631,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of a dense vector/sparse vector inner product test case.
 */
-#define RUN_DVECSVEC_OPERATION_TEST( C1, C2 ) \
+#define RUN_DVECSVECINNER_OPERATION_TEST( C1, C2 ) \
    blazetest::mathtest::dvecsvecinner::runTest( C1, C2 )
 /*! \endcond */
 //*************************************************************************************************
