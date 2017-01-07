@@ -303,6 +303,28 @@ void LowerTest::testIsHermitian()
          }
       }
 
+      // Non-real diagonal element
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(1,1).imag( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Diagonal lower matrix
       {
          blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
@@ -374,6 +396,28 @@ void LowerTest::testIsHermitian()
          checkNonZeros( mat, 2UL, 0UL );
 
          if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-real diagonal element
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(1,1).imag( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isHermitian evaluation\n"
