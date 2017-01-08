@@ -376,56 +376,56 @@ $BLAZETEST_PATH/src/mathtest/svecsveccross/run; if [ $? != 0 ]; then exit 1; fi
 # Dense vector/dense vector inner product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/tdvecdvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/dvecdvecinner/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Dense vector/sparse vector inner product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/tdvecsvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/dvecsvecinner/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Sparse vector/dense vector inner product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/tsvecdvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/svecdvecinner/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Sparse vector/sparse vector inner product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/tsvecsvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/svecsvecinner/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Dense vector/dense vector outer product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/dvectdvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/dvecdvecouter/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Dense vector/sparse vector outer product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/dvectsvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/dvecsvecouter/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Sparse vector/dense vector outer product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/svectdvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/svecdvecouter/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
 # Sparse vector/sparse vector outer product
 #==================================================================================================
 
-$BLAZETEST_PATH/src/mathtest/svectsvecmult/run; if [ $? != 0 ]; then exit 1; fi
+$BLAZETEST_PATH/src/mathtest/svecsvecouter/run; if [ $? != 0 ]; then exit 1; fi
 
 
 #==================================================================================================
