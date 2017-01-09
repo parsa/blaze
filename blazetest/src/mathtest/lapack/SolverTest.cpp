@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/lapack/OperationTest.cpp
-//  \brief Source file for the LAPACK operation test
+//  \file src/mathtest/lapack/SolverTest.cpp
+//  \brief Source file for the LAPACK solver test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/lapack/OperationTest.h>
+#include <blazetest/mathtest/lapack/SolverTest.h>
 
 
 namespace blazetest {
@@ -56,11 +56,11 @@ namespace lapack {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the OperationTest class test.
+/*!\brief Constructor for the SolverTest class test.
 //
-// \exception std::runtime_error Operation error detected.
+// \exception std::runtime_error Solver error detected.
 */
-OperationTest::OperationTest()
+SolverTest::SolverTest()
 {
    using blaze::complex;
 
@@ -69,140 +69,42 @@ OperationTest::OperationTest()
    // Single precision tests
    //=====================================================================================
 
-   //testGetrf< float >();
-   //testSytrf< float >();
-   //testPotrf< float >();
-   //testGetri< float >();
-   //testSytri< float >();
-   //testPotri< float >();
-   //testTrtri< float >();
-   //testGetrs< float >();
-   //testSytrs< float >();
-   //testPotrs< float >();
-   //testTrtrs< float >();
-   //testGesv < float >();
-   //testSysv < float >();
-   //testPosv < float >();
-   //testTrsv < float >();
-   //testGeqrf< float >();
-   //testOrgqr< float >();
-   //testOrmqr< float >();
-   //testGerqf< float >();
-   //testOrgrq< float >();
-   //testOrmrq< float >();
-   //testGeqlf< float >();
-   //testOrgql< float >();
-   //testOrmql< float >();
-   //testGelqf< float >();
-   //testOrglq< float >();
-   //testOrmlq< float >();
+   //testGesv< float >();
+   //testSysv< float >();
+   //testPosv< float >();
+   //testTrsv< float >();
 
 
    //=====================================================================================
    // Double precision tests
    //=====================================================================================
 
-   testGetrf< double >();
-   testSytrf< double >();
-   testPotrf< double >();
-   testGetri< double >();
-   testSytri< double >();
-   testPotri< double >();
-   testTrtri< double >();
-   testGetrs< double >();
-   testSytrs< double >();
-   testPotrs< double >();
-   testTrtrs< double >();
-   testGesv < double >();
-   testSysv < double >();
-   testPosv < double >();
-   testTrsv < double >();
-   testGeqrf< double >();
-   testOrgqr< double >();
-   testOrmqr< double >();
-   testGerqf< double >();
-   testOrgrq< double >();
-   testOrmrq< double >();
-   testGeqlf< double >();
-   testOrgql< double >();
-   testOrmql< double >();
-   testGelqf< double >();
-   testOrglq< double >();
-   testOrmlq< double >();
+   testGesv< double >();
+   testSysv< double >();
+   testPosv< double >();
+   testTrsv< double >();
 
 
    //=====================================================================================
    // Single precision complex tests
    //=====================================================================================
 
-   //testGetrf< complex<float> >();
-   //testSytrf< complex<float> >();
-   //testHetrf< complex<float> >();
-   //testPotrf< complex<float> >();
-   //testGetri< complex<float> >();
-   //testSytri< complex<float> >();
-   //testHetri< complex<float> >();
-   //testPotri< complex<float> >();
-   //testTrtri< complex<float> >();
-   //testGetrs< complex<float> >();
-   //testSytrs< complex<float> >();
-   //testHetrs< complex<float> >();
-   //testPotrs< complex<float> >();
-   //testTrtrs< complex<float> >();
-   //testGesv < complex<float> >();
-   //testSysv < complex<float> >();
-   //testHesv < complex<float> >();
-   //testPosv < complex<float> >();
-   //testTrsv < complex<float> >();
-   //testGeqrf< complex<float> >();
-   //testUngqr< complex<float> >();
-   //testUnmqr< complex<float> >();
-   //testGerqf< complex<float> >();
-   //testUngrq< complex<float> >();
-   //testUnmrq< complex<float> >();
-   //testGeqlf< complex<float> >();
-   //testUngql< complex<float> >();
-   //testUnmql< complex<float> >();
-   //testGelqf< complex<float> >();
-   //testUnglq< complex<float> >();
-   //testUnmlq< complex<float> >();
+   //testGesv< complex<float> >();
+   //testSysv< complex<float> >();
+   //testHesv< complex<float> >();
+   //testPosv< complex<float> >();
+   //testTrsv< complex<float> >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGetrf< complex<double> >();
-   testSytrf< complex<double> >();
-   testHetrf< complex<double> >();
-   testPotrf< complex<double> >();
-   testGetri< complex<double> >();
-   testSytri< complex<double> >();
-   testHetri< complex<double> >();
-   testPotri< complex<double> >();
-   testTrtri< complex<double> >();
-   testGetrs< complex<double> >();
-   testSytrs< complex<double> >();
-   testHetrs< complex<double> >();
-   testPotrs< complex<double> >();
-   testTrtrs< complex<double> >();
-   testGesv < complex<double> >();
-   testSysv < complex<double> >();
-   testHesv < complex<double> >();
-   testPosv < complex<double> >();
-   testTrsv < complex<double> >();
-   testGeqrf< complex<double> >();
-   testUngqr< complex<double> >();
-   testUnmqr< complex<double> >();
-   testGerqf< complex<double> >();
-   testUngrq< complex<double> >();
-   testUnmrq< complex<double> >();
-   testGeqlf< complex<double> >();
-   testUngql< complex<double> >();
-   testUnmql< complex<double> >();
-   testGelqf< complex<double> >();
-   testUnglq< complex<double> >();
-   testUnmlq< complex<double> >();
+   testGesv< complex<double> >();
+   testSysv< complex<double> >();
+   testHesv< complex<double> >();
+   testPosv< complex<double> >();
+   testTrsv< complex<double> >();
 }
 //*************************************************************************************************
 
@@ -224,14 +126,14 @@ OperationTest::OperationTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running LAPACK operation test..." << std::endl;
+   std::cout << "   Running LAPACK solver test..." << std::endl;
 
    try
    {
-      RUN_LAPACK_OPERATION_TEST;
+      RUN_LAPACK_SOLVER_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during LAPACK operation test:\n"
+      std::cerr << "\n\n ERROR DETECTED during LAPACK solver test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

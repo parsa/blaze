@@ -54,7 +54,16 @@ noop: $(BIN)
 
 
 # Build rules
-OperationTest: OperationTest.o
+DecompositionTest: DecompositionTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+InversionTest: InversionTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SolverTest: SolverTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SubstitutionTest: SubstitutionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

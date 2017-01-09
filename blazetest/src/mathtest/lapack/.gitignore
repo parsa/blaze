@@ -1,4 +1,7 @@
 *.d
 *.o
-OperationTest
+DecompositionTest
+InversionTest
+SolverTest
+SubstitutionTest
 

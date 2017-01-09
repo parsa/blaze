@@ -37,4 +37,7 @@ PATH_LAPACK=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running LAPACK tests..."
 
-EXE=$PATH_LAPACK/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LAPACK/DecompositionTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LAPACK/InversionTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LAPACK/SubstitutionTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LAPACK/SolverTest;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
