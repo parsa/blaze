@@ -935,7 +935,7 @@ inline bool isReal( const Proxy<PT,RT>& proxy );
 template< bool RF, typename PT, typename RT >
 inline bool isZero( const Proxy<PT,RT>& proxy );
 
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isOne( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -1759,12 +1759,12 @@ inline bool isZero( const Proxy<PT,RT>& proxy )
 // This function checks whether the element represented by the proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isOne( const Proxy<PT,RT>& proxy )
 {
    using blaze::isOne;
 
-   return isOne( (~proxy).get() );
+   return isOne<RF>( (~proxy).get() );
 }
 //*************************************************************************************************
 

@@ -589,7 +589,7 @@ inline bool isReal( const UniLowerValue<MT>& value );
 template< bool RF, typename MT >
 inline bool isZero( const UniLowerValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const UniLowerValue<MT>& value );
 
 template< typename MT >
@@ -719,12 +719,12 @@ inline bool isZero( const UniLowerValue<MT>& value )
 // This function checks whether the unilower value represents the numeric value 1. In case it
 // is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const UniLowerValue<MT>& value )
 {
    using blaze::isOne;
 
-   return isOne( value.get() );
+   return isOne<RF>( value.get() );
 }
 //*************************************************************************************************
 

@@ -461,7 +461,7 @@ inline bool isReal( const VectorAccessProxy<VT>& proxy );
 template< bool RF, typename VT >
 inline bool isZero( const VectorAccessProxy<VT>& proxy );
 
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isOne( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -585,12 +585,12 @@ inline bool isZero( const VectorAccessProxy<VT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isOne( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isOne;
 
-   return isOne( proxy.get() );
+   return isOne<RF>( proxy.get() );
 }
 //*************************************************************************************************
 

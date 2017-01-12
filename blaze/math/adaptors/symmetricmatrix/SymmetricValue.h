@@ -603,7 +603,7 @@ inline bool isReal( const SymmetricValue<MT>& value );
 template< bool RF, typename MT >
 inline bool isZero( const SymmetricValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const SymmetricValue<MT>& value );
 
 template< typename MT >
@@ -733,12 +733,12 @@ inline bool isZero( const SymmetricValue<MT>& value )
 // This function checks whether the symmetric value represents the numeric value 1. In case it
 // is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const SymmetricValue<MT>& value )
 {
    using blaze::isOne;
 
-   return isOne( value.get() );
+   return isOne<RF>( value.get() );
 }
 //*************************************************************************************************
 

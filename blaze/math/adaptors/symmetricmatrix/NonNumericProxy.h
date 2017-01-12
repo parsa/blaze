@@ -492,7 +492,7 @@ inline bool isReal( const NonNumericProxy<MT>& proxy );
 template< bool RF, typename MT >
 inline bool isZero( const NonNumericProxy<MT>& proxy );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
@@ -616,12 +616,12 @@ inline bool isZero( const NonNumericProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isOne( const NonNumericProxy<MT>& proxy )
 {
    using blaze::isOne;
 
-   return isOne( proxy.get() );
+   return isOne<RF>( proxy.get() );
 }
 //*************************************************************************************************
 
