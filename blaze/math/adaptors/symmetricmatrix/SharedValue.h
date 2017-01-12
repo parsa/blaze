@@ -284,7 +284,7 @@ inline bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs )
 //*************************************************************************************************
 /*!\name SharedValue global functions */
 //@{
-template< typename Type >
+template< bool RF, typename Type >
 inline bool isDefault( const SharedValue<Type>& value );
 //@}
 //*************************************************************************************************
@@ -300,12 +300,12 @@ inline bool isDefault( const SharedValue<Type>& value );
 // This function checks whether the given shared value is in default state. In case it is in
 // default state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename Type >
+template< bool RF, typename Type >
 inline bool isDefault( const SharedValue<Type>& value )
 {
    using blaze::isDefault;
 
-   return isDefault( *value );
+   return isDefault<RF>( *value );
 }
 //*************************************************************************************************
 

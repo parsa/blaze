@@ -105,7 +105,7 @@ inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m, size_t i );
 template< typename MT, bool SO, bool DF, bool NF >
 inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m );
 
-template< typename MT, bool SO, bool DF, bool NF >
+template< bool RF, typename MT, bool SO, bool DF, bool NF >
 inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< typename MT, bool SO, bool DF, bool NF >
@@ -195,13 +195,14 @@ inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m )
    if( isDefault( A ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF      // Density flag
         , bool NF >    // Numeric flag
 inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m )
 {
-   return isDefault( m.matrix_ );
+   return isDefault<RF>( m.matrix_ );
 }
 //*************************************************************************************************
 
