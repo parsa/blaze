@@ -235,9 +235,19 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a HybridMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef HybridMatrix<ET,M,N,SO>  Other;  //!< The type of the other HybridMatrix.
+      typedef HybridMatrix<NewType,M,N,SO>  Other;  //!< The type of the other HybridMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a HybridMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef HybridMatrix<Type,NewM,NewN,SO>  Other;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -3143,9 +3153,19 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a HybridMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef HybridMatrix<ET,M,N,true>  Other;  //!< The type of the other HybridMatrix.
+      typedef HybridMatrix<NewType,M,N,true>  Other;  //!< The type of the other HybridMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a HybridMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef HybridMatrix<Type,NewM,NewN,true>  Other;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
