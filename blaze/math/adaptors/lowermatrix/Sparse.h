@@ -313,7 +313,7 @@ class LowerMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2 >
+   template< bool RF, typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const LowerMatrix<MT2,SO2,DF2>& m );
 
    template< typename MT2, bool SO2, bool DF2 >
