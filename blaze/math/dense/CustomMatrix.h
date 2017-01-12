@@ -458,9 +458,19 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CustomMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CustomMatrix<ET,AF,PF,SO>  Other;  //!< The type of the other CustomMatrix.
+      typedef CustomMatrix<NewType,AF,PF,SO>  Other;  //!< The type of the other CustomMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CustomMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef CustomMatrix<Type,AF,PF,SO>  Other;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -3227,9 +3237,19 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CustomMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CustomMatrix<ET,AF,PF,true>  Other;  //!< The type of the other CustomMatrix.
+      typedef CustomMatrix<NewType,AF,PF,true>  Other;  //!< The type of the other CustomMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CustomMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef CustomMatrix<Type,AF,PF,true>  Other;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
