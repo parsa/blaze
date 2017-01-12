@@ -2555,7 +2555,7 @@ inline void reset( HybridVector<Type,N,TF>& v );
 template< typename Type, size_t N, bool TF >
 inline void clear( HybridVector<Type,N,TF>& v );
 
-template< typename Type, size_t N, bool TF >
+template< bool RF, typename Type, size_t N, bool TF >
 inline bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
@@ -2618,7 +2618,8 @@ inline void clear( HybridVector<Type,N,TF>& v )
    if( isDefault( a ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
+template< bool RF        // Relaxation flag
+        , typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline bool isDefault( const HybridVector<Type,N,TF>& v )
