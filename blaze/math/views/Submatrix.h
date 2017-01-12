@@ -979,7 +979,7 @@ inline void clear( Submatrix<MT,AF,SO,DF>& sm );
 template< typename MT, bool AF, bool SO, bool DF >
 inline void clear( Submatrix<MT,AF,SO,DF>&& sm );
 
-template< typename MT, bool AF, bool SO, bool DF >
+template< bool RF, typename MT, bool AF, bool SO, bool DF >
 inline bool isDefault( const Submatrix<MT,AF,SO,DF>& sm );
 
 template< typename MT, bool AF, bool SO, bool DF >
@@ -1139,7 +1139,8 @@ inline void clear( Submatrix<MT,AF,SO,DF>&& sm )
    if( isDefault( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the matrix
         , bool AF      // Alignment flag
         , bool SO      // Storage order
         , bool DF >    // Density flag
@@ -1150,13 +1151,13 @@ inline bool isDefault( const Submatrix<MT,AF,SO,DF>& sm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<(~sm).rows(); ++i )
          for( size_t j=0UL; j<(~sm).columns(); ++j )
-            if( !isDefault( (~sm)(i,j) ) )
+            if( !isDefault<RF>( (~sm)(i,j) ) )
                return false;
    }
    else {
       for( size_t j=0UL; j<(~sm).columns(); ++j )
          for( size_t i=0UL; i<(~sm).rows(); ++i )
-            if( !isDefault( (~sm)(i,j) ) )
+            if( !isDefault<RF>( (~sm)(i,j) ) )
                return false;
    }
 
@@ -1184,7 +1185,8 @@ inline bool isDefault( const Submatrix<MT,AF,SO,DF>& sm )
    if( isDefault( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
 inline bool isDefault( const Submatrix<MT,AF,SO,false>& sm )
@@ -1197,7 +1199,7 @@ inline bool isDefault( const Submatrix<MT,AF,SO,false>& sm )
 
    for( size_t i=0UL; i<iend; ++i ) {
       for( ConstIterator element=sm.begin(i); element!=sm.end(i); ++element )
-         if( !isDefault( element->value() ) ) return false;
+         if( !isDefault<RF>( element->value() ) ) return false;
    }
 
    return true;
