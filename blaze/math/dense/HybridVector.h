@@ -195,9 +195,18 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a HybridVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef HybridVector<ET,N,TF>  Other;  //!< The type of the other HybridVector.
+      typedef HybridVector<NewType,N,TF>  Other;  //!< The type of the other HybridVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a HybridVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef HybridVector<Type,NewN,TF>  Other;  //!< The type of the other HybridVector.
    };
    //**********************************************************************************************
 
