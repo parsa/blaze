@@ -452,7 +452,7 @@ inline void reset( const VectorAccessProxy<VT>& proxy );
 template< typename VT >
 inline void clear( const VectorAccessProxy<VT>& proxy );
 
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isDefault( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -523,12 +523,12 @@ inline void clear( const VectorAccessProxy<VT>& proxy )
 // This function checks whether the element represented by the access proxy is in default state.
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isDefault( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isDefault;
 
-   return isDefault( proxy.get() );
+   return isDefault<RF>( proxy.get() );
 }
 //*************************************************************************************************
 
