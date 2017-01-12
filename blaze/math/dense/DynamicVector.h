@@ -199,9 +199,18 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a DynamicVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef DynamicVector<ET,TF>  Other;  //!< The type of the other DynamicVector.
+      typedef DynamicVector<NewType,TF>  Other;  //!< The type of the other DynamicVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a DynamicVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef DynamicVector<Type,TF>  Other;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
