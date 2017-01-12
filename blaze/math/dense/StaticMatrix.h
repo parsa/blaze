@@ -235,9 +235,19 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a StaticMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef StaticMatrix<ET,M,N,SO>  Other;  //!< The type of the other StaticMatrix.
+      typedef StaticMatrix<NewType,M,N,SO>  Other;  //!< The type of the other StaticMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a StaticMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef StaticMatrix<Type,NewM,NewN,SO>  Other;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
@@ -2960,9 +2970,19 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a StaticMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef StaticMatrix<ET,M,N,true>  Other;  //!< The type of the other StaticMatrix.
+      typedef StaticMatrix<NewType,M,N,true>  Other;  //!< The type of the other StaticMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a StaticMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef StaticMatrix<Type,NewM,NewN,true>  Other;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
