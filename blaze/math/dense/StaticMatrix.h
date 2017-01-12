@@ -5770,7 +5770,7 @@ inline void reset( StaticMatrix<Type,M,N,SO>& m, size_t i );
 template< typename Type, size_t M, size_t N, bool SO >
 inline void clear( StaticMatrix<Type,M,N,SO>& m );
 
-template< typename Type, size_t M, size_t N, bool SO >
+template< bool RF, typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -5861,7 +5861,8 @@ inline void clear( StaticMatrix<Type,M,N,SO>& m )
    if( isDefault( A ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
+template< bool RF        // Relaxation flag
+        , typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
@@ -5870,12 +5871,12 @@ inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<M; ++i )
          for( size_t j=0UL; j<N; ++j )
-            if( !isDefault( m(i,j) ) ) return false;
+            if( !isDefault<RF>( m(i,j) ) ) return false;
    }
    else {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=0UL; i<M; ++i )
-            if( !isDefault( m(i,j) ) ) return false;
+            if( !isDefault<RF>( m(i,j) ) ) return false;
    }
 
    return true;
