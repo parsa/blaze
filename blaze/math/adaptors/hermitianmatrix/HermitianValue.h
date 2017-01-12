@@ -638,7 +638,7 @@ inline void clear( const HermitianValue<MT>& value );
 template< typename MT >
 inline void invert( const HermitianValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const HermitianValue<MT>& value );
 
 template< typename MT >
@@ -715,12 +715,12 @@ inline void invert( const HermitianValue<MT>& value )
 // This function checks whether the Hermitian value is in default state. In case it is in
 // default state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const HermitianValue<MT>& value )
 {
    using blaze::isDefault;
 
-   return isDefault( value.get() );
+   return isDefault<RF>( value.get() );
 }
 //*************************************************************************************************
 
