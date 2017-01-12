@@ -284,9 +284,18 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CompressedVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CompressedVector<ET,TF>  Other;  //!< The type of the other CompressedVector.
+      typedef CompressedVector<NewType,TF>  Other;  //!< The type of the other CompressedVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CompressedVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef CompressedVector<Type,TF>  Other;  //!< The type of the other CompressedVector.
    };
    //**********************************************************************************************
 
