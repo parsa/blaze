@@ -99,7 +99,7 @@ inline void reset( StrictlyUpperMatrix<MT,SO,DF>& m, size_t i );
 template< typename MT, bool SO, bool DF >
 inline void clear( StrictlyUpperMatrix<MT,SO,DF>& m );
 
-template< typename MT, bool SO, bool DF >
+template< bool RF, typename MT, bool SO, bool DF >
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
@@ -232,7 +232,8 @@ inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, FalseType
    if( isDefault( A ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Density flag
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m )
