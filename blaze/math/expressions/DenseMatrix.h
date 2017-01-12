@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
@@ -69,6 +70,39 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 struct DenseMatrix : public Matrix<MT,SO>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name DenseMatrix global functions */
+//@{
+template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the spacing between the beginning of two rows/columns.
+// \ingroup matrix
+//
+// \param dm The given matrix.
+// \return The spacing between the beginning of two rows/columns.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
+{
+   return (~dm).spacing();
+}
 //*************************************************************************************************
 
 } // namespace blaze
