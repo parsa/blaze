@@ -227,9 +227,19 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a DynamicMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef DynamicMatrix<ET,SO>  Other;  //!< The type of the other DynamicMatrix.
+      typedef DynamicMatrix<NewType,SO>  Other;  //!< The type of the other DynamicMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a DynamicMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef DynamicMatrix<Type,SO>  Other;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -2977,9 +2987,19 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a DynamicMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef DynamicMatrix<ET,true>  Other;  //!< The type of the other DynamicMatrix.
+      typedef DynamicMatrix<NewType,true>  Other;  //!< The type of the other DynamicMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a DynamicMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef DynamicMatrix<Type,true>  Other;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
