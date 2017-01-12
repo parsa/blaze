@@ -501,7 +501,7 @@ inline void reset( const DiagonalProxy<MT>& proxy );
 template< typename MT >
 inline void clear( const DiagonalProxy<MT>& proxy );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const DiagonalProxy<MT>& proxy );
 
 template< typename MT >
@@ -569,12 +569,12 @@ inline void clear( const DiagonalProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy is in default state.
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const DiagonalProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
-   return isDefault( proxy.get() );
+   return isDefault<RF>( proxy.get() );
 }
 //*************************************************************************************************
 
