@@ -455,7 +455,7 @@ inline void clear( const VectorAccessProxy<VT>& proxy );
 template< bool RF, typename VT >
 inline bool isDefault( const VectorAccessProxy<VT>& proxy );
 
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isReal( const VectorAccessProxy<VT>& proxy );
 
 template< bool RF, typename VT >
@@ -545,12 +545,12 @@ inline bool isDefault( const VectorAccessProxy<VT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is equal
 // to 0. Otherwise it returns \a false.
 */
-template< typename VT >
+template< bool RF, typename VT >
 inline bool isReal( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isReal;
 
-   return isReal( proxy.get() );
+   return isReal<RF>( proxy.get() );
 }
 //*************************************************************************************************
 

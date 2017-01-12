@@ -504,7 +504,7 @@ inline void clear( const UpperProxy<MT>& proxy );
 template< bool RF, typename MT >
 inline bool isDefault( const UpperProxy<MT>& proxy );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isReal( const UpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
@@ -591,12 +591,12 @@ inline bool isDefault( const UpperProxy<MT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is equal
 // to 0. Otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isReal( const UpperProxy<MT>& proxy )
 {
    using blaze::isReal;
 
-   return isReal( proxy.get() );
+   return isReal<RF>( proxy.get() );
 }
 //*************************************************************************************************
 

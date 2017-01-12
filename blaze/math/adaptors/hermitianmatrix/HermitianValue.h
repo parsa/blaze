@@ -641,7 +641,7 @@ inline void invert( const HermitianValue<MT>& value );
 template< bool RF, typename MT >
 inline bool isDefault( const HermitianValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isReal( const HermitianValue<MT>& value );
 
 template< bool RF, typename MT >
@@ -737,12 +737,12 @@ inline bool isDefault( const HermitianValue<MT>& value )
 // type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
 // \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isReal( const HermitianValue<MT>& value )
 {
    using blaze::isReal;
 
-   return isReal( value.get() );
+   return isReal<RF>( value.get() );
 }
 //*************************************************************************************************
 

@@ -929,7 +929,7 @@ inline void invert( const Proxy<PT,RT>& proxy );
 template< InversionFlag IF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy );
 
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy );
 
 template< bool RF, typename PT, typename RT >
@@ -1719,12 +1719,12 @@ inline void invert( const Proxy<PT,RT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is
 // equal to 0. Otherwise it returns \a false.
 */
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy )
 {
    using blaze::isReal;
 
-   return isReal( (~proxy).get() );
+   return isReal<RF>( (~proxy).get() );
 }
 //*************************************************************************************************
 
