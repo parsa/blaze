@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
@@ -65,22 +66,29 @@ namespace blaze {
 //
 // The \a isOne shim provides an abstract interface for testing a value/object of any type
 // whether it represents the numeric value 1. In case the value/object is 1, the function
-// returns \a true, otherwise it returns \a false.
+// returns \a true, otherwise it returns \a false. For floating point built-in data types,
+// the function returns either \a true in case the current value is 1 (strict semantics)
+// or \a true in case the current value is close to 1 within a certain accuracy (relaxed
+// semantics).
 
    \code
-   const int i1 = 1;                // isOne( i1 ) returns true
-   double    d1 = 1.0;              // isOne( d1 ) returns true
-   complex<double> c1( 1.0, 0.0 );  // isOne( c1 ) returns true
-
-   const int i2 = 2;                // isOne( i2 ) returns false
-   double    d2 = -1.0;             // isOne( d2 ) returns false
-   complex<double> c2( 0.0, 1.0 );  // isOne( c2 ) returns false
+                                         // isOne<strict>( ... ) | isOne<relaxed>( ... )
+   int i1 = 0;                           //     false            |     false
+   int i2 = 1;                           //     true             |     true
+   double d1 = 0.0;                      //     false            |     false
+   double d2 = 1.0 + 1E-9;               //     false            |     true
+   double d3 = 1.0;                      //     true             |     true
+   complex<double> c1( 0.0, 0.0 );       //     false            |     false
+   complex<double> c2( 1.0+1E-9, 0.0 );  //     false            |     true
+   complex<double> c3( 1.0, 0.0 );       //     true             |     true
+   complex<double> c4( 0.0, 1.0 );       //     false            |     false
    \endcode
 */
-template< typename Type >
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isOne( const Type& v )
 {
-   return equal( v, Type(1) );
+   return equal<RF>( v, Type(1) );
 }
 //*************************************************************************************************
 
@@ -93,7 +101,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isOne( const Type& v )
 // \param v The value/object to be tested.
 // \return \a false.
 */
-template< typename Type >
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isOne( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
@@ -101,6 +110,37 @@ BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isOne( const Type& v ) n
    return false;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given value/object represents the numeric value 1.
+// \ingroup math_shims
+//
+// \param v The value to be tested.
+// \return \a true in case the given value is 1, \a false otherwise.
+//
+// The \a isOne shim provides an abstract interface for testing a value/object of any type
+// whether it represents the numeric value 1. In case the value/object is 1, the function
+// returns \a true, otherwise it returns \a false. For floating point built-in data types,
+// the function returns \a true in case the current value is close to 1 within a certain
+// accuracy (relaxed semantics).
+
+   \code
+   const int i1 = 1;                // isOne( i1 ) returns true
+   double    d1 = 1.0;              // isOne( d1 ) returns true
+   complex<double> c1( 1.0, 0.0 );  // isOne( c1 ) returns true
+
+   const int i2 = 2;                // isOne( i2 ) returns false
+   double    d2 = -1.0;             // isOne( d2 ) returns false
+   complex<double> c2( 0.0, 1.0 );  // isOne( c2 ) returns false
+   \endcode
+*/
+template< typename Type >
+BLAZE_ALWAYS_INLINE bool isOne( const Type& v )
+{
+   return isOne<relaxed>( v );
+}
 //*************************************************************************************************
 
 } // namespace blaze
