@@ -132,10 +132,21 @@ class UniUpperMatrix<MT,SO,false>
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain an UniUpperMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
       //! The type of the other UniUpperMatrix.
-      typedef UniUpperMatrix< typename MT::template Rebind<ET>::Other >  Other;
+      typedef UniUpperMatrix< typename MT::template Rebind<NewType>::Other >  Other;
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a UniUpperMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      //! The type of the other UniUpperMatrix.
+      typedef UniUpperMatrix< typename MT::template Resize<NewM,NewN>::Other >  Other;
    };
    //**********************************************************************************************
 
