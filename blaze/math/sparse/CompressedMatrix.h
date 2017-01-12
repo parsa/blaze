@@ -302,9 +302,19 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CompressedMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CompressedMatrix<ET,SO>  Other;  //!< The type of the other CompressedMatrix.
+      typedef CompressedMatrix<NewType,SO>  Other;  //!< The type of the other CompressedMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CompressedMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef CompressedMatrix<Type,SO>  Other;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -2910,9 +2920,19 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CompressedMatrix with different data/element type.
    */
-   template< typename ET >  // Data type of the other matrix
+   template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CompressedMatrix<ET,true>  Other;  //!< The type of the other CompressedMatrix.
+      typedef CompressedMatrix<NewType,true>  Other;  //!< The type of the other CompressedMatrix.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CompressedMatrix with different fixed dimensions.
+   */
+   template< size_t NewM    // Number of rows of the other matrix
+           , size_t NewN >  // Number of columns of the other matrix
+   struct Resize {
+      typedef CompressedMatrix<Type,true>  Other;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
