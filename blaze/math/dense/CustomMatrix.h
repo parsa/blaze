@@ -6014,7 +6014,7 @@ inline void reset( CustomMatrix<Type,AF,PF,SO>& m, size_t i );
 template< typename Type, bool AF, bool PF, bool SO >
 inline void clear( CustomMatrix<Type,AF,PF,SO>& m );
 
-template< typename Type, bool AF, bool PF, bool SO >
+template< bool RF, typename Type, bool AF, bool PF, bool SO >
 inline bool isDefault( const CustomMatrix<Type,AF,PF,SO>& m );
 
 template< typename Type, bool AF, bool PF, bool SO >
@@ -6107,7 +6107,8 @@ inline void clear( CustomMatrix<Type,AF,PF,SO>& m )
    if( isDefault( A ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
+template< bool RF        // Relaxation flag
+        , typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool SO >      // Storage order
