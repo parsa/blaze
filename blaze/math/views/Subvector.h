@@ -813,7 +813,7 @@ inline void clear( Subvector<VT,AF,TF,DF>& sv );
 template< typename VT, bool AF, bool TF, bool DF >
 inline void clear( Subvector<VT,AF,TF,DF>&& sv );
 
-template< typename VT, bool AF, bool TF, bool DF >
+template< bool RF, typename VT, bool AF, bool TF, bool DF >
 inline bool isDefault( const Subvector<VT,AF,TF,DF>& sv );
 
 template< typename VT, bool AF, bool TF, bool DF >
@@ -922,14 +922,15 @@ inline void clear( Subvector<VT,AF,TF,DF>&& sv )
    if( isDefault( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< typename VT  // Type of the vector
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the vector
         , bool AF      // Alignment flag
         , bool TF      // Transpose flag
         , bool DF >    // Density flag
 inline bool isDefault( const Subvector<VT,AF,TF,DF>& sv )
 {
    for( size_t i=0UL; i<sv.size(); ++i )
-      if( !isDefault( sv[i] ) ) return false;
+      if( !isDefault<RF>( sv[i] ) ) return false;
    return true;
 }
 //*************************************************************************************************
@@ -954,7 +955,8 @@ inline bool isDefault( const Subvector<VT,AF,TF,DF>& sv )
    if( isDefault( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< typename VT  // Type of the sparse vector
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 inline bool isDefault( const Subvector<VT,AF,TF,false>& sv )
@@ -963,7 +965,7 @@ inline bool isDefault( const Subvector<VT,AF,TF,false>& sv )
 
    const ConstIterator end( sv.end() );
    for( ConstIterator element=sv.begin(); element!=end; ++element )
-      if( !isDefault( element->value() ) ) return false;
+      if( !isDefault<RF>( element->value() ) ) return false;
    return true;
 }
 /*! \endcond */
