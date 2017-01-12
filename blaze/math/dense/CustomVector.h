@@ -444,9 +444,18 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CustomVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CustomVector<ET,AF,PF,TF>  Other;  //!< The type of the other CustomVector.
+      typedef CustomVector<NewType,AF,PF,TF>  Other;  //!< The type of the other CustomVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CustomVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef CustomVector<Type,AF,PF,TF>  Other;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
@@ -2769,9 +2778,18 @@ class CustomVector<Type,AF,padded,TF>
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a CustomVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CustomVector<ET,AF,padded,TF>  Other;  //!< The type of the other CustomVector.
+      typedef CustomVector<NewType,AF,padded,TF>  Other;  //!< The type of the other CustomVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a CustomVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef CustomVector<Type,AF,padded,TF>  Other;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
