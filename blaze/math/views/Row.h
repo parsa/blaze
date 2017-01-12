@@ -515,7 +515,7 @@ inline void clear( Row<MT,SO,DF,SF>& row );
 template< typename MT, bool SO, bool DF, bool SF >
 inline void clear( Row<MT,SO,DF,SF>&& row );
 
-template< typename MT, bool SO, bool DF, bool SF >
+template< bool RF, typename MT, bool SO, bool DF, bool SF >
 inline bool isDefault( const Row<MT,SO,DF,SF>& row );
 
 template< typename MT, bool SO, bool DF, bool SF >
@@ -621,14 +621,15 @@ inline void clear( Row<MT,SO,DF,SF>&& row )
    if( isDefault( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Row<MT,SO,DF,SF>& row )
 {
    for( size_t i=0UL; i<row.size(); ++i )
-      if( !isDefault( row[i] ) ) return false;
+      if( !isDefault<RF>( row[i] ) ) return false;
    return true;
 }
 //*************************************************************************************************
@@ -653,7 +654,8 @@ inline bool isDefault( const Row<MT,SO,DF,SF>& row )
    if( isDefault( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Row<MT,SO,false,SF>& row )
@@ -662,7 +664,7 @@ inline bool isDefault( const Row<MT,SO,false,SF>& row )
 
    const ConstIterator end( row.end() );
    for( ConstIterator element=row.begin(); element!=end; ++element )
-      if( !isDefault( element->value() ) ) return false;
+      if( !isDefault<RF>( element->value() ) ) return false;
    return true;
 }
 /*! \endcond */
