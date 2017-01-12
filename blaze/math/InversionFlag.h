@@ -40,13 +40,13 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  DECOMPOSITION FLAG VALUES
+//  INVERSION FLAG VALUES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Inversion flag.
-// \ingroup dense_matrix
+// \ingroup math
 //
 // The InversionFlag type enumeration represents the different types of matrix inversion algorithms
 // that are available within the Blaze library. The following flags are available:
