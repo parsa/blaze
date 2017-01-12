@@ -201,9 +201,18 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Rebind struct definition********************************************************************
    /*!\brief Rebind mechanism to obtain a StaticVector with different data/element type.
    */
-   template< typename ET >  // Data type of the other vector
+   template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef StaticVector<ET,N,TF>  Other;  //!< The type of the other StaticVector.
+      typedef StaticVector<NewType,N,TF>  Other;  //!< The type of the other StaticVector.
+   };
+   //**********************************************************************************************
+
+   //**Resize struct definition********************************************************************
+   /*!\brief Resize mechanism to obtain a StaticVector with a different fixed number of elements.
+   */
+   template< size_t NewN >  // Number of elements of the other vector
+   struct Resize {
+      typedef StaticVector<Type,NewN,TF>  Other;  //!< The type of the other StaticVector.
    };
    //**********************************************************************************************
 
