@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
@@ -54,6 +55,61 @@ namespace blaze {
 //  ISREAL SHIM
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the given value/object represents a real number.
+// \ingroup math_shims
+//
+// \param v The value to be tested.
+// \return \a true in case the given value represents a real number, \a false otherwise.
+//
+// The \a isReal shim provides an abstract interface for testing a value/object of any type
+// whether it represents the a real number. In case the value/object is of built-in type, the
+// function returns \a true. In case the value/object is of complex type, the function either
+// returns \a true if the imaginary part is equal to 0 (strict semantics) or if the imaginary
+// part is close to 0 (relaxed semantics). Otherwise it returns \a false.
+
+   \code
+                                      // isReal<strict>( ... ) | isReal<relaxed>( ... )
+   int    i = 1;                      //     true              |     true
+   double d = 1.0;                    //     true              |     true
+
+   complex<double> c1( 1.0, 0.0 );    //     true              |     true
+   complex<double> c2( 1.0, 1E-9 );   //     false             |     true (below 1E-8)
+   complex<double> c3( 0.0, 1.0 );    //     false             |     false
+
+   blaze::DynamicVector<int> vec;     //     false             |     false
+   blaze::DynamicMatrix<double> mat;  //     false             |     false
+   \endcode
+*/
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value
+BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
+{
+   UNUSED_PARAMETER( v );
+
+   return IsBuiltin<Type>::value;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Overload of the \a isReal function for complex data types.
+// \ingroup math_shims
+//
+// \param v The complex number to be tested.
+// \return \a true in case the imaginary part is equal to 0, \a false if not.
+*/
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value
+BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin<Type>::value )
+{
+   return IsBuiltin<Type>::value && isZero<RF>( v.imag() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Returns whether the given value/object represents a real number.
@@ -81,27 +137,8 @@ namespace blaze {
 template< typename Type >
 BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
-
-   return IsBuiltin<Type>::value;
+   return isReal<relaxed>( v );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Overload of the \a isReal function for complex data types.
-// \ingroup math_shims
-//
-// \param v The complex number to be tested.
-// \return \a true in case the imaginary part is equal to 0, \a false if not.
-*/
-template< typename Type >
-BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin<Type>::value )
-{
-   return IsBuiltin<Type>::value && isZero( v.imag() );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
