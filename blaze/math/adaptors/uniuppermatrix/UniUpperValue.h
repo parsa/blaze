@@ -586,7 +586,7 @@ inline bool isDefault( const UniUpperValue<MT>& value );
 template< typename MT >
 inline bool isReal( const UniUpperValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isZero( const UniUpperValue<MT>& value );
 
 template< typename MT >
@@ -699,12 +699,12 @@ inline bool isReal( const UniUpperValue<MT>& value )
 // This function checks whether the uniupper value represents the numeric value 0. In case it
 // is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isZero( const UniUpperValue<MT>& value )
 {
    using blaze::isZero;
 
-   return isZero( value.get() );
+   return isZero<RF>( value.get() );
 }
 //*************************************************************************************************
 

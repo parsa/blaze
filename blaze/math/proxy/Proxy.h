@@ -932,7 +932,7 @@ inline void invert( const Proxy<PT,RT>& proxy );
 template< typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy );
 
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isZero( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -1739,12 +1739,12 @@ inline bool isReal( const Proxy<PT,RT>& proxy )
 // This function checks whether the element represented by the proxy represents the numeric
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< typename PT, typename RT >
+template< bool RF, typename PT, typename RT >
 inline bool isZero( const Proxy<PT,RT>& proxy )
 {
    using blaze::isZero;
 
-   return isZero( (~proxy).get() );
+   return isZero<RF>( (~proxy).get() );
 }
 //*************************************************************************************************
 

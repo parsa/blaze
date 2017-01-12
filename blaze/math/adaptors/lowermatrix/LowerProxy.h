@@ -507,7 +507,7 @@ inline bool isDefault( const LowerProxy<MT>& proxy );
 template< typename MT >
 inline bool isReal( const LowerProxy<MT>& proxy );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isZero( const LowerProxy<MT>& proxy );
 
 template< typename MT >
@@ -611,12 +611,12 @@ inline bool isReal( const LowerProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isZero( const LowerProxy<MT>& proxy )
 {
    using blaze::isZero;
 
-   return isZero( proxy.get() );
+   return isZero<RF>( proxy.get() );
 }
 //*************************************************************************************************
 
