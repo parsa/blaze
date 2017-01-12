@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <blaze/math/Accuracy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -64,18 +65,30 @@ namespace blaze {
 //
 // The \a isDefault shim represents an abstract interface for testing a value/object whether
 // it is in its default state or not. In case the value/object is in its default state, the
-// function returns \a true, otherwise it returns \a false. For built-in data types, the
-// function returns \a true in case the current value is zero.
+// function returns \a true, otherwise it returns \a false. For integral built-in data types,
+// the function returns \a true in case the current value is zero. For floating point built-in
+// data types, the function returns either \a true in case the current value is zero (strict
+// semantics) or \a true in case the current value is close to zero within a certain accuracy
+// (relaxed semantics).
 
    \code
-   const int i = 0;          // isDefault( i ) returns true
-   double    d = 2.0;        // isDefault( d ) returns false
-   Vec3      v1;             // isDefault( v1 ) returns true
-   Vec3      v2( 0, 0, 0 );  // isDefault( v2 ) returns true since (0,0,0) is the default state
-   Vec3      v3( 1, 2, 3 );  // isDefault( v3 ) returns false
+   using Vec3i = blaze::StaticVector<int,2UL>;
+   using Vec3d = blaze::StaticVector<double,2UL>;
+
+                            // isDefault<strict>( ... ) | isDefault<relaxed>( ... )
+   int    i = 0;            //     true                 |     true
+   double d1 = 2.0;         //     false                |     false
+   double d2 = 0.0;         //     true                 |     true
+   double d3 = 1E-9;        //     false                |     true (below 1E-8)
+   Vec3i  v1;               //     true                 |     true
+   Vec3i  v2( 0, 0 );       //     true                 |     true
+   Vec3i  v3( 1, 2 );       //     false                |     false
+   Vec3d  v4( 0.0, 0.0 );   //     true                 |     true
+   Vec3d  v4( 0.0, 1E-9 );  //     false                |     true (below 1E-8)
    \endcode
 */
-template< typename Type >
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
 {
    return v == Type();
@@ -95,9 +108,13 @@ BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::v
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
+template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( float v ) noexcept
 {
-   return std::fabs( v ) <= accuracy;
+   if( RF == relaxed )
+      return std::fabs( v ) <= accuracy;
+   else
+      return v == 0.0F;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -115,9 +132,13 @@ BLAZE_ALWAYS_INLINE bool isDefault( float v ) noexcept
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
+template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( double v ) noexcept
 {
-   return std::fabs( v ) <= accuracy;
+   if( RF == relaxed )
+      return std::fabs( v ) <= accuracy;
+   else
+      return v == 0.0;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -135,9 +156,13 @@ BLAZE_ALWAYS_INLINE bool isDefault( double v ) noexcept
 // point value is exactly zero or within an epsilon range to zero. In case the value is zero or
 // close to zero the function returns \a true, otherwise it returns \a false.
 */
+template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 {
-   return std::fabs( v ) <= accuracy;
+   if( RF == relaxed )
+      return std::fabs( v ) <= accuracy;
+   else
+      return v == 0.0L;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -155,12 +180,45 @@ BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 // the given complex number are exactly zero or within an epsilon range to zero. In case the both
 // parts are zero or close to zero the function returns \a true, otherwise it returns \a false.
 */
-template< typename T >
+template< bool RF       // Relaxation flag
+        , typename T >  // Value type of the complex number
 BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>::value )
 {
-   return isDefault( real( v ) ) && isDefault( imag( v ) );
+   return isDefault<RF>( real( v ) ) && isDefault<RF>( imag( v ) );
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given value/object is in default state.
+// \ingroup math_shims
+//
+// \param v The value/object to be tested for its default state.
+// \return \a true in case the given value/object is in its default state, \a false otherwise.
+//
+// The \a isDefault shim represents an abstract interface for testing a value/object whether
+// it is in its default state or not. In case the value/object is in its default state, the
+// function returns \a true, otherwise it returns \a false. For integral built-in data types,
+// the function returns \a true in case the current value is zero. For floating point built-in
+// data types, the function returns either \a true in case the current value is close to zero
+// within a certain accuracy (relaxed semantics).
+
+   \code
+   using Vec3i = blaze::StaticVector<int,2UL>;
+
+   int    i = 0;       // isDefault( i ) returns true
+   double d = 2.0;     // isDefault( d ) returns false
+   Vec3i  v1;          // isDefault( v1 ) returns true
+   Vec3i  v2( 0, 0 );  // isDefault( v2 ) returns true since (0,0) is the default state
+   Vec3i  v3( 1, 2 );  // isDefault( v3 ) returns false
+   \endcode
+*/
+template< typename Type >  // Type of the given value/object
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
+{
+   return isDefault<relaxed>( v );
+}
 //*************************************************************************************************
 
 } // namespace blaze
