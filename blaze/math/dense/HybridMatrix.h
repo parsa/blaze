@@ -6147,7 +6147,7 @@ inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
 template< typename Type, size_t M, size_t N, bool SO >
 inline void clear( HybridMatrix<Type,M,N,SO>& m );
 
-template< typename Type, size_t M, size_t N, bool SO >
+template< bool RF, typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -6237,7 +6237,8 @@ inline void clear( HybridMatrix<Type,M,N,SO>& m )
    if( isDefault( A ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
+template< bool RF        // Relaxation flag
+        , typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
