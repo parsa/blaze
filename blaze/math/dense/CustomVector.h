@@ -5027,7 +5027,7 @@ inline void reset( CustomVector<Type,AF,PF,TF>& v );
 template< typename Type, bool AF, bool PF, bool TF >
 inline void clear( CustomVector<Type,AF,PF,TF>& v );
 
-template< typename Type, bool AF, bool PF, bool TF >
+template< bool RF, typename Type, bool AF, bool PF, bool TF >
 inline bool isDefault( const CustomVector<Type,AF,PF,TF>& v );
 
 template< typename Type, bool AF, bool PF, bool TF >
@@ -5096,7 +5096,8 @@ inline void clear( CustomVector<Type,AF,PF,TF>& v )
    if( isDefault( a ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
+template< bool RF        // Relaxation flag
+        , typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
