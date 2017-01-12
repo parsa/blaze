@@ -580,7 +580,7 @@ inline void clear( const UniUpperValue<MT>& value );
 template< typename MT >
 inline void invert( const UniUpperValue<MT>& value );
 
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const UniUpperValue<MT>& value );
 
 template< typename MT >
@@ -657,12 +657,12 @@ inline void invert( const UniUpperValue<MT>& value )
 // This function checks whether the uniupper value is in default state. In case it is in
 // default state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT >
+template< bool RF, typename MT >
 inline bool isDefault( const UniUpperValue<MT>& value )
 {
    using blaze::isDefault;
 
-   return isDefault( value.get() );
+   return isDefault<RF>( value.get() );
 }
 //*************************************************************************************************
 
