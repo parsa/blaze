@@ -179,7 +179,8 @@ inline void clear( StrictlyUpperMatrix<MT,SO,DF>& m )
 // This function checks whether the resizable strictly upper triangular matrix is in default
 // state.
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Density flag
 inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, TrueType )
@@ -201,12 +202,30 @@ inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, TrueType 
 // This function checks whether the fixed-size strictly upper triangular matrix is in default
 // state.
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Density flag
 inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, FalseType )
 {
-   return isIdentity( m );
+   if( SO ) {
+      for( size_t j=1UL; j<m.columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !isDefault<RF>( m(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t i=0UL; i<m.rows(); ++i ) {
+         for( size_t j=i+1UL; j<m.columns(); ++j ) {
+            if( !isDefault<RF>( m(i,j) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -238,7 +257,7 @@ template< bool RF      // Relaxation flag
         , bool DF >    // Density flag
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m )
 {
-   return isDefault_backend( m, typename IsResizable<MT>::Type() );
+   return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );
 }
 //*************************************************************************************************
 
