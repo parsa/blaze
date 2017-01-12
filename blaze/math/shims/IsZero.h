@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
@@ -65,22 +66,28 @@ namespace blaze {
 //
 // The \a isZero shim provides an abstract interface for testing a value/object of any type
 // whether it represents the numeric value 0. In case the value/object is 0, the function
-// returns \a true, otherwise it returns \a false.
+// returns \a true, otherwise it returns \a false. For floating point built-in data types,
+// the function returns either \a true in case the current value is zero (strict semantics)
+// or \a true in case the current value is close to zero within a certain accuracy (relaxed
+// semantics).
 
    \code
-   const int i1 = 0;                // isZero( i1 ) returns true
-   double    d1 = 0.0;              // isZero( d1 ) returns true
-   complex<double> c1( 0.0, 0.0 );  // isZero( c1 ) returns true
-
-   const int i2 = 1;                // isZero( i2 ) returns false
-   double    d2 = -1.0;             // isZero( d2 ) returns false
-   complex<double> c2( 1.0, 0.0 );  // isZero( c2 ) returns false
+                                     // isZero<strict>( ... ) | isZero<relaxed>( ... )
+   int i1 = 0;                       //     true              |     true
+   int i2 = 1;                       //     false             |     false
+   double d1 = 0.0;                  //     true              |     true
+   double d2 = 1E-9;                 //     false             |     true (below 1E-8)
+   double d3 =  1.0;                 //     false             |     false
+   complex<double> c1( 0.0, 0.0 );   //     true              |     true
+   complex<double> c2( 0.0, 1E-9 );  //     false             |     true (below 1E-8)
+   complex<double> c3( 1.0, 0.0 );   //     false             |     false
    \endcode
 */
-template< typename Type >
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
 {
-   return isDefault( v );
+   return isDefault<RF>( v );
 }
 //*************************************************************************************************
 
@@ -93,7 +100,8 @@ BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) n
 // \param v The value/object to be tested.
 // \return \a false.
 */
-template< typename Type >
+template< bool RF          // Relaxation flag
+        , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
@@ -101,6 +109,37 @@ BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) 
    return false;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the given value/object represents the numeric value 0.
+// \ingroup math_shims
+//
+// \param v The value to be tested.
+// \return \a true in case the given value is 0, \a false otherwise.
+//
+// The \a isZero shim provides an abstract interface for testing a value/object of any type
+// whether it represents the numeric value 0. In case the value/object is 0, the function
+// returns \a true, otherwise it returns \a false. For floating point built-in data types,
+// the function returns \a true in case the current value is close to zero within a certain
+// accuracy (relaxed semantics).
+
+   \code
+   const int i1 = 0;                // isZero( i1 ) returns true
+   double    d1 = 0.0;              // isZero( d1 ) returns true
+   complex<double> c1( 0.0, 0.0 );  // isZero( c1 ) returns true
+
+   const int i2 = 1;                // isZero( i2 ) returns false
+   double    d2 = -1.0;             // isZero( d2 ) returns false
+   complex<double> c2( 1.0, 0.0 );  // isZero( c2 ) returns false
+   \endcode
+*/
+template< typename Type >  // Type of the given value/object
+BLAZE_ALWAYS_INLINE bool isZero( const Type& v ) noexcept
+{
+   return isZero<relaxed>( v );
+}
 //*************************************************************************************************
 
 } // namespace blaze
