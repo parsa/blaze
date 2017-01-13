@@ -65,22 +65,33 @@ namespace blaze {
 //
 // The \a isReal shim provides an abstract interface for testing a value/object of any type
 // whether it represents the a real number. In case the value/object is of built-in type, the
-// function returns \a true. In case the value/object is of complex type, the function either
-// returns \a true if the imaginary part is equal to 0 (strict semantics) or if the imaginary
-// part is close to 0 (relaxed semantics). Otherwise it returns \a false.
+// function returns \a true:
 
    \code
-                                      // isReal<strict>( ... ) | isReal<relaxed>( ... )
-   int    i = 1;                      //     true              |     true
-   double d = 1.0;                    //     true              |     true
-
-   complex<double> c1( 1.0, 0.0 );    //     true              |     true
-   complex<double> c2( 1.0, 1E-9 );   //     false             |     true (below 1E-8)
-   complex<double> c3( 0.0, 1.0 );    //     false             |     false
-
-   blaze::DynamicVector<int> vec;     //     false             |     false
-   blaze::DynamicMatrix<double> mat;  //     false             |     false
+   int    i = 1;    // isReal( i ) returns true
+   double d = 1.0;  // isReal( d ) returns true
    \endcode
+
+// In case the value/object is of complex type, the function returns \a true if the imaginary
+// part is close to 0 (relaxed semantics):
+
+   \code
+   complex<double> c1( 1.0, 0.0 );  // isReal( c1 ) returns true
+   complex<double> c2( 0.0, 1.0 );  // isReal( c2 ) returns false
+   \endcode
+
+// Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
+// semantics (blaze::strict). In case of strict semantics, for complex types the function returns
+// \a true in case the imaginary part is exactly zero:
+
+   \code
+                                     // isReal<strict>( ... ) | isReal<relaxed>( ... )
+   complex<double> c1( 1.0, 0.0  );  //    true               |    true
+   complex<double> c2( 1.0, 1E-9 );  //    false              |    true (below 1E-8)
+   complex<double> c3( 0.0, 1.0  );  //    false              |    false
+   \endcode
+
+// For all other types the function returns \a false.
 */
 template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value
