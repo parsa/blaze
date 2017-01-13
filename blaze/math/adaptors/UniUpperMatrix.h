@@ -187,7 +187,8 @@ inline void clear( UniUpperMatrix<MT,SO,DF>& m )
 //
 // This function checks whether the resizable upper unitriangular matrix is in default state.
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Density flag
 inline bool isDefault_backend( const UniUpperMatrix<MT,SO,DF>& m, TrueType )
@@ -208,45 +209,15 @@ inline bool isDefault_backend( const UniUpperMatrix<MT,SO,DF>& m, TrueType )
 //
 // This function checks whether the fixed-size upper unitriangular matrix is in default state.
 */
-template< typename MT  // Type of the adapted matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF >    // Density flag
 inline bool isDefault_backend( const UniUpperMatrix<MT,SO,DF>& m, FalseType )
 {
-   return isIdentity( m );
+   return isIdentity<RF>( m );
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the invariants of the given uniupper matrix are intact.
-// \ingroup uniupper_matrix
-//
-// \param m The uniupper matrix to be tested.
-// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
-//
-// This function checks whether the invariants of the uniupper matrix are intact, i.e. if its
-// state is valid. In case the invariants are intact, the function returns \a true, else it
-// will return \a false. The following example demonstrates the use of the \a isIntact()
-// function:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::UniUpperMatrix;
-
-   UniUpperMatrix< DynamicMatrix<int> > A;
-   // ... Resizing and initialization
-   if( isIntact( A ) ) { ... }
-   \endcode
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline bool isIntact( const UniUpperMatrix<MT,SO,DF>& m )
-{
-   return m.isIntact();
-}
 //*************************************************************************************************
 
 
@@ -283,7 +254,38 @@ template< bool RF      // Relaxation flag
         , bool DF >    // Density flag
 inline bool isDefault( const UniUpperMatrix<MT,SO,DF>& m )
 {
-   return isDefault_backend( m, typename IsResizable<MT>::Type() );
+   return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given uniupper matrix are intact.
+// \ingroup uniupper_matrix
+//
+// \param m The uniupper matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the uniupper matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UniUpperMatrix;
+
+   UniUpperMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool isIntact( const UniUpperMatrix<MT,SO,DF>& m )
+{
+   return m.isIntact();
 }
 //*************************************************************************************************
 
