@@ -1138,6 +1138,13 @@ inline void clear( Submatrix<MT,AF,SO,DF>&& sm )
    // ... Resizing and initialization
    if( isDefault( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
+   \endcode
 */
 template< bool RF      // Relaxation flag
         , typename MT  // Type of the matrix

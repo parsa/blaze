@@ -66,25 +66,31 @@ namespace blaze {
 // The \a isDefault shim represents an abstract interface for testing a value/object whether
 // it is in its default state or not. In case the value/object is in its default state, the
 // function returns \a true, otherwise it returns \a false. For integral built-in data types,
-// the function returns \a true in case the current value is zero. For floating point built-in
-// data types, the function returns either \a true in case the current value is zero (strict
-// semantics) or \a true in case the current value is close to zero within a certain accuracy
-// (relaxed semantics).
+// the function returns \a true in case the current value is zero:
 
    \code
-   using Vec3i = blaze::StaticVector<int,2UL>;
-   using Vec3d = blaze::StaticVector<double,2UL>;
+   int i1 = 0;  // isDefault( i1 ) returns true
+   int i2 = 1;  // isDefault( i2 ) returns false
+   \endcode
 
-                            // isDefault<strict>( ... ) | isDefault<relaxed>( ... )
-   int    i = 0;            //     true                 |     true
-   double d1 = 2.0;         //     false                |     false
-   double d2 = 0.0;         //     true                 |     true
-   double d3 = 1E-9;        //     false                |     true (below 1E-8)
-   Vec3i  v1;               //     true                 |     true
-   Vec3i  v2( 0, 0 );       //     true                 |     true
-   Vec3i  v3( 1, 2 );       //     false                |     false
-   Vec3d  v4( 0.0, 0.0 );   //     true                 |     true
-   Vec3d  v4( 0.0, 1E-9 );  //     false                |     true (below 1E-8)
+// For floating point built-in data types, the function by default uses relaxed semantics and
+// returns \a true in case the current value is close to zero within a certain accuracy:
+
+   \code
+   double d1 = 0.0;   // isDefault( d1 ) returns true
+   double d2 = 1E-9;  // isDefault( d2 ) returns true since d2 is below 1E-8
+   double d3 = 1.0;   // isDefault( d3 ) returns false
+   \endcode
+
+// Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
+// semantics (blaze::strict). In case of strict semantics, for floating point built-in data types
+// the function returns \a true in case the current value is exactly zero:
+
+   \code
+                      // isDefault<strict>( ... ) | isDefault<relaxed>( ... )
+   double d1 = 0.0;   //    true                  |    true
+   double d2 = 1E-9;  //    false (not 0.0)       |    true (below 1E-8)
+   double d3 = 1.0;   //    false                 |    false
    \endcode
 */
 template< bool RF          // Relaxation flag
@@ -200,18 +206,31 @@ BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>
 // The \a isDefault shim represents an abstract interface for testing a value/object whether
 // it is in its default state or not. In case the value/object is in its default state, the
 // function returns \a true, otherwise it returns \a false. For integral built-in data types,
-// the function returns \a true in case the current value is zero. For floating point built-in
-// data types, the function returns either \a true in case the current value is close to zero
-// within a certain accuracy (relaxed semantics).
+// the function returns \a true in case the current value is zero:
 
    \code
-   using Vec3i = blaze::StaticVector<int,2UL>;
+   int i1 = 0;  // isDefault( i1 ) returns true
+   int i2 = 1;  // isDefault( i2 ) returns false
+   \endcode
 
-   int    i = 0;       // isDefault( i ) returns true
-   double d = 2.0;     // isDefault( d ) returns false
-   Vec3i  v1;          // isDefault( v1 ) returns true
-   Vec3i  v2( 0, 0 );  // isDefault( v2 ) returns true since (0,0) is the default state
-   Vec3i  v3( 1, 2 );  // isDefault( v3 ) returns false
+// For floating point built-in data types, the function by default uses relaxed semantics and
+// returns \a true in case the current value is close to zero within a certain accuracy:
+
+   \code
+   double d1 = 0.0;   // isDefault( d1 ) returns true
+   double d2 = 1E-9;  // isDefault( d2 ) returns true since d2 is below 1E-8
+   double d3 = 1.0;   // isDefault( d3 ) returns false
+   \endcode
+
+// Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
+// semantics (blaze::strict). In case of strict semantics, for floating point built-in data types
+// the function returns \a true in case the current value is exactly zero:
+
+   \code
+                      // isDefault<strict>( ... ) | isDefault<relaxed>( ... )
+   double d1 = 0.0;   //    true                  |    true
+   double d2 = 1E-9;  //    false (not 0.0)       |    true (below 1E-8)
+   double d3 = 1.0;   //    false                 |    false
    \endcode
 */
 template< typename Type >  // Type of the given value/object

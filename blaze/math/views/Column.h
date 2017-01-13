@@ -623,6 +623,13 @@ inline void clear( Column<MT,SO,DF,SF>&& column )
    // ... Resizing and initialization
    if( isDefault( column( A, 0UL ) ) ) { ... }
    \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
+   \endcode
 */
 template< bool RF      // Relaxation flag
         , typename MT  // Type of the matrix

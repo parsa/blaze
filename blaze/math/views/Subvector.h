@@ -921,6 +921,13 @@ inline void clear( Subvector<VT,AF,TF,DF>&& sv )
    // ... Resizing and initialization
    if( isDefault( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( subvector( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
 */
 template< bool RF      // Relaxation flag
         , typename VT  // Type of the vector

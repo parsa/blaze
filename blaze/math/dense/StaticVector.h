@@ -2494,6 +2494,13 @@ inline void clear( StaticVector<Type,N,TF>& v )
    // ... Initialization
    if( isDefault( a ) ) { ... }
    \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( a ) ) { ... }
+   \endcode
 */
 template< bool RF        // Relaxation flag
         , typename Type  // Data type of the vector

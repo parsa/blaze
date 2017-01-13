@@ -203,6 +203,13 @@ inline void clear( DiagonalMatrix<MT,SO,DF>& m )
    // ... Resizing and initialization
    if( isDefault( A ) ) { ... }
    \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( A ) ) { ... }
+   \endcode
 */
 template< bool RF      // Relaxation flag
         , typename MT  // Type of the adapted matrix
