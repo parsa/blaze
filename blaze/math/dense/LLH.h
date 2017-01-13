@@ -148,7 +148,7 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
 
    DerestrictTrait_<MT2> l( derestrict( ~L ) );
 
-   resize( ~L, n, n );
+   resize( ~L, n, n, false );
    reset( l );
 
    if( IsRowMajorMatrix<MT2>::value ) {

@@ -228,7 +228,7 @@ void ql( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
       (~Q) = A;
       geqlf( ~Q, tau.get() );
 
-      resize( ~L, n, n );
+      resize( ~L, n, n, false );
       reset( l );
 
       for( size_t i=0UL; i<n; ++i ) {

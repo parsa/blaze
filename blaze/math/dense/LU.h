@@ -124,7 +124,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
       }
    }
 
-   resize( ~P, size, size );
+   resize( ~P, size, size, false );
    reset( ~P );
    for( size_t i=0UL; i<size; ++i ) {
       (~P)( ( SO1 ? permut[i] : i ), ( SO1 ? i : permut[i] ) ) = ET(1);
@@ -258,7 +258,7 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
       u = (~A);
       lu( u, ~P );
 
-      resize( ~L, m, m );
+      resize( ~L, m, m, false );
       reset( l );
 
       if( SO1 == rowMajor )
@@ -292,7 +292,7 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
       l = (~A);
       lu( l, ~P );
 
-      resize( ~U, n, n );
+      resize( ~U, n, n, false );
       reset( u );
 
       if( SO1 == rowMajor )

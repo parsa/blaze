@@ -216,7 +216,7 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
       (~Q) = A;
       gerqf( ~Q, tau.get() );
 
-      resize( ~R, m, m );
+      resize( ~R, m, m, false );
       reset( r );
 
       for( size_t i=0UL; i<m; ++i ) {

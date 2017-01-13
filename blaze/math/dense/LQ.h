@@ -214,7 +214,7 @@ void lq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, DenseMatrix<MT3
       (~Q) = A;
       gelqf( ~Q, tau.get() );
 
-      resize( ~L, m, m );
+      resize( ~L, m, m, false );
       reset( l );
 
       for( size_t i=0UL; i<m; ++i ) {
