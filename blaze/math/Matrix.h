@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/RelaxationFlag.h>
 
 
 namespace blaze {
@@ -59,9 +60,586 @@ namespace blaze {
 /*!\name Matrix functions */
 //@{
 template< typename MT, bool SO >
+inline bool isSymmetric( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isHermitian( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isUniform( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isLower( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isUniLower( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isStrictlyLower( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isUpper( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isUniUpper( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isStrictlyUpper( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isDiagonal( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+inline bool isIdentity( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
 inline auto trace( const Matrix<MT,SO>& m );
 //@}
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is symmetric.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is symmetric, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is symmetric. The matrix is considered
+// to be symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$).
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isSymmetric( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isSymmetric<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a symmetric matrix:
+
+   \code
+   if( isSymmetric( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isSymmetric( const Matrix<MT,SO>& m )
+{
+   return isSymmetric<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is Hermitian.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is Hermitian, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is an Hermitian matrix. The matrix
+// is considered to be an Hermitian matrix if it is a square matrix whose conjugate transpose is
+// equal to itself (\f$ A = \overline{A^T} \f$), i.e. each matrix element \f$ a_{ij} \f$ is equal
+// to the complex conjugate of the element \f$ a_{ji} \f$. The following code example demonstrates
+// the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isHermitian( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isHermitian<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an Hermitian matrix:
+
+   \code
+   if( isHermitian( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isHermitian( const Matrix<MT,SO>& m )
+{
+   return isHermitian<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a uniform matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is a uniform matrix. The matrix
+// is considered to be uniform if all its elements are identical. The following code example
+// demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniform( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a uniform matrix:
+
+   \code
+   if( isUniform( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isUniform( const Matrix<MT,SO>& m )
+{
+   return isUniform<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a lower triangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is a lower triangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is a lower triangular matrix. The
+// matrix is considered to be lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_{0,0} & 0       & 0       & \cdots & 0       \\
+                        l_{1,0} & l_{1,1} & 0       & \cdots & 0       \\
+                        l_{2,0} & l_{2,1} & l_{2,2} & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isLower( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isLower<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a lower triangular matrix:
+
+   \code
+   if( isLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isLower( const Matrix<MT,SO>& m )
+{
+   return isLower<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a lower unitriangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is a lower unitriangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is a lower unitriangular matrix. The
+// matrix is considered to be lower unitriangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 1       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 1       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniLower( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniLower<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a lower unitriangular matrix:
+
+   \code
+   if( isUniLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isUniLower( const Matrix<MT,SO>& m )
+{
+   return isUniLower<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a strictly lower triangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is a strictly lower triangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is a strictly lower triangular matrix.
+// The matrix is considered to be strictly lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 0       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 0       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyLower( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyLower<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly lower triangular
+// matrix:
+
+   \code
+   if( isStrictlyLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isStrictlyLower( const Matrix<MT,SO>& m )
+{
+   return isStrictlyLower<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is an upper triangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is an upper triangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is an upper triangular matrix. The
+// matrix is considered to be upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        u_{0,0} & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0       & u_{1,1} & u_{1,2} & \cdots & u_{1,N} \\
+                        0       & 0       & u_{2,2} & \cdots & u_{2,N} \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & u_{N,N} \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUpper( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUpper<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an upper triangular matrix:
+
+   \code
+   if( isUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isUpper( const Matrix<MT,SO>& m )
+{
+   return isUpper<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is an upper unitriangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is an upper unitriangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is an upper unitriangular matrix. The
+// matrix is considered to be upper unitriangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0      & 1       & u_{1,2} & \cdots & u_{1,N} \\
+                        0      & 0       & 1       & \cdots & u_{2,N} \\
+                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0      & 0       & 0       & \cdots & 1       \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniUpper( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniUpper<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an upper unitriangular matrix:
+
+   \code
+   if( isUniUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isUniUpper( const Matrix<MT,SO>& m )
+{
+   return isUniUpper<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a strictly upper triangular matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is a strictly upper triangular matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is a strictly upper triangular matrix.
+// The matrix is considered to be strictly upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0      & 0       & u_{1,2} & \cdots & u_{1,N} \\
+                        0      & 0       & 0       & \cdots & u_{2,N} \\
+                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0      & 0       & 0       & \cdots & 0       \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyUpper( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyUpper<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly upper triangular
+// matrix:
+
+   \code
+   if( isStrictlyUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isStrictlyUpper( const Matrix<MT,SO>& m )
+{
+   return isStrictlyUpper<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give matrix is diagonal.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is diagonal, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is diagonal, i.e. if the non-diagonal
+// elements are default elements. In case of integral or floating point data types, a diagonal
+// matrix has the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        aa     & 0      & 0      & \cdots & 0  \\
+                        0      & bb     & 0      & \cdots & 0  \\
+                        0      & 0      & cc     & \cdots & 0  \\
+                        \vdots & \vdots & \vdots & \ddots & 0  \\
+                        0      & 0      & 0      & 0      & xx \\
+                        \end{array}\right)\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially diagonal. The
+// following example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isDiagonal( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDiagonal<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a diagonal matrix:
+
+   \code
+   if( isDiagonal( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isDiagonal( const Matrix<MT,SO>& m )
+{
+   return isDiagonal<relaxed>( ~m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give matrix is an identity matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be checked.
+// \return \a true if the matrix is an identity matrix, \a false if not.
+//
+// This function checks if the given dense or sparse matrix is an identity matrix, i.e. if the
+// diagonal elements are 1 and the non-diagonal elements are 0. In case of integral or floating
+// point data types, an identity matrix has the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1      & 0      & 0      & \cdots & 0 \\
+                        0      & 1      & 0      & \cdots & 0 \\
+                        0      & 0      & 1      & \cdots & 0 \\
+                        \vdots & \vdots & \vdots & \ddots & 0 \\
+                        0      & 0      & 0      & 0      & 1 \\
+                        \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isIdentity( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isIdentity<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an identity matrix:
+
+   \code
+   if( isIdentity( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline bool isIdentity( const Matrix<MT,SO>& m )
+{
+   return isIdentity<relaxed>( ~m );
+}
+//*************************************************************************************************
+
 
 
 //*************************************************************************************************

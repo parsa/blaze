@@ -570,37 +570,37 @@ inline EnableIf_<IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseMatrix<
 template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isHermitian( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniform( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isLower( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniLower( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniUpper( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isIdentity( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -675,6 +675,13 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
    if( isSymmetric( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isSymmetric<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a symmetric matrix:
 
    \code
@@ -684,7 +691,8 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
@@ -707,7 +715,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !equal( A(i,j), A(j,i) ) )
+            if( !equal<RF>( A(i,j), A(j,i) ) )
                return false;
          }
       }
@@ -715,7 +723,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=1UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !equal( A(i,j), A(j,i) ) )
+            if( !equal<RF>( A(i,j), A(j,i) ) )
                return false;
          }
       }
@@ -745,6 +753,13 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( isHermitian( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isHermitian<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an Hermitian matrix:
 
    \code
@@ -754,7 +769,8 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isHermitian( const DenseMatrix<MT,SO>& dm )
 {
@@ -772,20 +788,20 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !equal( A(i,j), conj( A(j,i) ) ) )
+            if( !equal<RF>( A(i,j), conj( A(j,i) ) ) )
                return false;
          }
-         if( !isReal( A(i,i) ) )
+         if( !isReal<RF>( A(i,i) ) )
             return false;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !equal( A(i,j), conj( A(j,i) ) ) )
+            if( !equal<RF>( A(i,j), conj( A(j,i) ) ) )
                return false;
          }
-         if( !isReal( A(j,j) ) )
+         if( !isReal<RF>( A(j,j) ) )
             return false;
       }
    }
@@ -803,7 +819,8 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the dense matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -818,15 +835,15 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
    for( size_t i=ibegin; i<iend; ++i ) {
       if( !IsUpper<MT>::value ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( (~dm)(i,j) ) )
+            if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
          }
       }
-      if( !isDefault( (~dm)(i,i) ) )
+      if( !isDefault<RF>( (~dm)(i,i) ) )
          return false;
       if( !IsLower<MT>::value ) {
          for( size_t j=i+1UL; j<(~dm).columns(); ++j ) {
-            if( !isDefault( (~dm)(i,j) ) )
+            if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
          }
       }
@@ -846,7 +863,8 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the dense matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -861,15 +879,15 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
    for( size_t j=jbegin; j<jend; ++j ) {
       if( !IsLower<MT>::value ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault( (~dm)(i,j) ) )
+            if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
          }
       }
-      if( !isDefault( (~dm)(j,j) ) )
+      if( !isDefault<RF>( (~dm)(j,j) ) )
          return false;
       if( !IsUpper<MT>::value ) {
          for( size_t i=j+1UL; i<(~dm).rows(); ++i ) {
-            if( !isDefault( (~dm)(i,j) ) )
+            if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
          }
       }
@@ -889,7 +907,8 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the dense matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -921,7 +940,8 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the dense matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -962,6 +982,13 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
    if( isUniform( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a uniform matrix:
 
    \code
@@ -971,7 +998,8 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUniform( const DenseMatrix<MT,SO>& dm )
 {
@@ -984,7 +1012,7 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
 
    CompositeType_<MT> A( ~dm );  // Evaluation of the dense matrix operand
 
-   return isUniform_backend( A, typename IsTriangular<MT>::Type() );
+   return isUniform_backend<RF>( A, typename IsTriangular<MT>::Type() );
 }
 //*************************************************************************************************
 
@@ -1016,6 +1044,13 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
    if( isLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a lower triangular matrix:
 
    \code
@@ -1025,7 +1060,8 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isLower( const DenseMatrix<MT,SO>& dm )
 {
@@ -1048,7 +1084,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
          for( size_t j=i+1UL; j<A.columns(); ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1056,7 +1092,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=1UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1093,6 +1129,13 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( isUniLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a lower unitriangular matrix:
 
    \code
@@ -1102,7 +1145,8 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUniLower( const DenseMatrix<MT,SO>& dm )
 {
@@ -1121,10 +1165,10 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( !isOne( A(i,i) ) )
+         if( !isOne<RF>( A(i,i) ) )
             return false;
          for( size_t j=i+1UL; j<A.columns(); ++j ) {
-            if( !isZero( A(i,j) ) )
+            if( !isZero<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1132,10 +1176,10 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !isZero( A(i,j) ) )
+            if( !isZero<RF>( A(i,j) ) )
                return false;
          }
-         if( !isOne( A(j,j) ) )
+         if( !isOne<RF>( A(j,j) ) )
             return false;
       }
    }
@@ -1171,6 +1215,13 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    if( isStrictlyLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a strictly lower triangular
 // matrix:
 
@@ -1181,7 +1232,8 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 {
@@ -1201,7 +1253,7 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=i; j<A.columns(); ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1209,7 +1261,7 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<=j; ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1247,6 +1299,13 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    if( isUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an upper triangular matrix:
 
    \code
@@ -1256,7 +1315,8 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
@@ -1279,7 +1339,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1287,7 +1347,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=0UL; j<A.columns()-1UL; ++j ) {
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1324,6 +1384,13 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    if( isUniUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an upper unitriangular matrix:
 
    \code
@@ -1333,7 +1400,8 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 {
@@ -1353,19 +1421,19 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !isZero( A(i,j) ) )
+            if( !isZero<RF>( A(i,j) ) )
                return false;
          }
-         if( !isOne( A(i,i) ) )
+         if( !isOne<RF>( A(i,i) ) )
             return false;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( !isOne( A(j,j) ) )
+         if( !isOne<RF>( A(j,j) ) )
             return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
-            if( !isZero( A(i,j) ) )
+            if( !isZero<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1402,6 +1470,13 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    if( isStrictlyUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a strictly upper triangular
 // matrix:
 
@@ -1412,7 +1487,8 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 {
@@ -1432,7 +1508,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1440,7 +1516,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=j; i<A.rows(); ++i ) {
-            if( !isDefault( A(i,j) ) )
+            if( !isDefault<RF>( A(i,j) ) )
                return false;
          }
       }
@@ -1479,6 +1555,13 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    if( isDiagonal( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDiagonal<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a diagonal matrix:
 
    \code
@@ -1488,7 +1571,8 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 {
@@ -1512,13 +1596,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
       for( size_t i=0UL; i<A.rows(); ++i ) {
          if( !IsUpper<MT>::value ) {
             for( size_t j=0UL; j<i; ++j ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
          if( !IsLower<MT>::value ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
@@ -1528,13 +1612,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
       for( size_t j=0UL; j<A.columns(); ++j ) {
          if( !IsLower<MT>::value ) {
             for( size_t i=0UL; i<j; ++i ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
          if( !IsUpper<MT>::value ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
@@ -1573,6 +1657,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    if( isIdentity( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isIdentity<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an identity matrix:
 
    \code
@@ -1582,7 +1673,8 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isIdentity( const DenseMatrix<MT,SO>& dm )
 {
@@ -1606,16 +1698,16 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
       for( size_t i=0UL; i<A.rows(); ++i ) {
          if( !IsUpper<MT>::value ) {
             for( size_t j=0UL; j<i; ++j ) {
-               if( !isZero( A(i,j) ) )
+               if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne( A(i,i) ) ) {
+         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne<RF>( A(i,i) ) ) {
             return false;
          }
          if( !IsLower<MT>::value ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
-               if( !isZero( A(i,j) ) )
+               if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }
@@ -1625,16 +1717,16 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
       for( size_t j=0UL; j<A.columns(); ++j ) {
          if( !IsLower<MT>::value ) {
             for( size_t i=0UL; i<j; ++i ) {
-               if( !isZero( A(i,j) ) )
+               if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne( A(j,j) ) ) {
+         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne<RF>( A(j,j) ) ) {
             return false;
          }
          if( !IsUpper<MT>::value ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
-               if( !isZero( A(i,j) ) )
+               if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }

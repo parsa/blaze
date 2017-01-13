@@ -300,37 +300,37 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,S
 template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isHermitian( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniform( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isLower( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniLower( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUpper( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isUniUpper( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
-template< typename MT, bool SO >
+template< bool RF, typename MT, bool SO >
 bool isIdentity( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -406,6 +406,13 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    if( isSymmetric( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isSymmetric<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a symmetric matrix:
 
    \code
@@ -415,7 +422,8 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
@@ -442,11 +450,11 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
          {
             const size_t j( element->index() );
 
-            if( i == j || isDefault( element->value() ) )
+            if( i == j || isDefault<RF>( element->value() ) )
                continue;
 
             const ConstIterator pos( A.find( j, i ) );
-            if( pos == A.end(j) || !equal( pos->value(), element->value() ) )
+            if( pos == A.end(j) || !equal<RF>( pos->value(), element->value() ) )
                return false;
          }
       }
@@ -457,11 +465,11 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
          {
             const size_t i( element->index() );
 
-            if( j == i || isDefault( element->value() ) )
+            if( j == i || isDefault<RF>( element->value() ) )
                continue;
 
             const ConstIterator pos( A.find( j, i ) );
-            if( pos == A.end(i) || !equal( pos->value(), element->value() ) )
+            if( pos == A.end(i) || !equal<RF>( pos->value(), element->value() ) )
                return false;
          }
       }
@@ -491,6 +499,13 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( isHermitian( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isHermitian<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an Hermitian matrix:
 
    \code
@@ -500,7 +515,8 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isHermitian( const SparseMatrix<MT,SO>& sm )
 {
@@ -525,14 +541,14 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
          {
             const size_t j( element->index() );
 
-            if( isDefault( element->value() ) )
+            if( isDefault<RF>( element->value() ) )
                continue;
 
-            if( i == j && !isReal( element->value() ) )
+            if( i == j && !isReal<RF>( element->value() ) )
                return false;
 
             const ConstIterator pos( A.find( j, i ) );
-            if( pos == A.end(j) || !equal( pos->value(), conj( element->value() ) ) )
+            if( pos == A.end(j) || !equal<RF>( pos->value(), conj( element->value() ) ) )
                return false;
          }
       }
@@ -543,14 +559,14 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
          {
             const size_t i( element->index() );
 
-            if( isDefault( element->value() ) )
+            if( isDefault<RF>( element->value() ) )
                continue;
 
-            if( j == i && !isReal( element->value() ) )
+            if( j == i && !isReal<RF>( element->value() ) )
                return false;
 
             const ConstIterator pos( A.find( j, i ) );
-            if( pos == A.end(i) || !equal( pos->value(), conj( element->value() ) ) )
+            if( pos == A.end(i) || !equal<RF>( pos->value(), conj( element->value() ) ) )
                return false;
          }
       }
@@ -569,7 +585,8 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the sparse matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -585,7 +602,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 
    for( size_t i=ibegin; i<iend; ++i ) {
       for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
-         if( !isDefault( element->value() ) )
+         if( !isDefault<RF>( element->value() ) )
             return false;
       }
    }
@@ -604,7 +621,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the sparse matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -620,7 +638,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 
    for( size_t j=jbegin; j<jend; ++j ) {
       for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
-         if( !isDefault( element->value() ) )
+         if( !isDefault<RF>( element->value() ) )
             return false;
       }
    }
@@ -639,7 +657,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the sparse matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -657,7 +676,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    {
       for( size_t i=0UL; i<(~sm).rows(); ++i ) {
          for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -690,7 +709,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< typename MT >  // Type of the sparse matrix
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -708,7 +728,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    {
       for( size_t j=0UL; j<(~sm).columns(); ++j ) {
          for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -750,6 +770,13 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    if( isUniform( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a uniform matrix:
 
    \code
@@ -759,7 +786,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
@@ -772,7 +800,7 @@ bool isUniform( const SparseMatrix<MT,SO>& sm )
 
    CompositeType_<MT> A( ~sm );  // Evaluation of the sparse matrix operand
 
-   return isUniform_backend( A, typename IsTriangular<MT>::Type() );
+   return isUniform_backend<RF>( A, typename IsTriangular<MT>::Type() );
 }
 //*************************************************************************************************
 
@@ -804,6 +832,13 @@ bool isUniform( const SparseMatrix<MT,SO>& sm )
    if( isLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a lower triangular matrix:
 
    \code
@@ -813,7 +848,8 @@ bool isUniform( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isLower( const SparseMatrix<MT,SO>& sm )
 {
@@ -838,7 +874,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
          for( ConstIterator element=A.lowerBound(i,i+1UL); element!=A.end(i); ++element )
          {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -850,7 +886,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
             if( element->index() >= j )
                break;
 
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -887,6 +923,13 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( isUniLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a lower unitriangular matrix:
 
    \code
@@ -896,7 +939,8 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUniLower( const SparseMatrix<MT,SO>& sm )
 {
@@ -919,13 +963,13 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
       {
          ConstIterator element( A.lowerBound(i,i) );
 
-         if( element == A.end(i) || element->index() != i || !isOne( element->value() ) )
+         if( element == A.end(i) || element->index() != i || !isOne<RF>( element->value() ) )
             return false;
 
          ++element;
 
          for( ; element!=A.end(i); ++element ) {
-            if( !isZero( element->value() ) )
+            if( !isZero<RF>( element->value() ) )
                return false;
          }
       }
@@ -938,13 +982,13 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() >= j ) {
-               if( element->index() != j || !isOne( element->value() ) )
+               if( element->index() != j || !isOne<RF>( element->value() ) )
                   return false;
                hasDiagonalElement = true;
                break;
             }
 
-            if( !isZero( element->value() ) )
+            if( !isZero<RF>( element->value() ) )
                return false;
          }
 
@@ -985,6 +1029,13 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    if( isStrictlyLower( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyLower<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a strictly lower triangular
 // matrix:
 
@@ -995,7 +1046,8 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 {
@@ -1017,7 +1069,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.lowerBound(i,i); element!=A.end(i); ++element )
          {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1029,7 +1081,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
             if( element->index() > j )
                break;
 
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1067,6 +1119,13 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    if( isUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an upper triangular matrix:
 
    \code
@@ -1076,7 +1135,8 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUpper( const SparseMatrix<MT,SO>& sm )
 {
@@ -1104,7 +1164,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
             if( element->index() >= i )
                break;
 
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1113,7 +1173,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
       for( size_t j=0UL; j<A.columns()-1UL; ++j ) {
          for( ConstIterator element=A.lowerBound(j+1UL,j); element!=A.end(j); ++element )
          {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1150,6 +1210,13 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    if( isUniUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an upper unitriangular matrix:
 
    \code
@@ -1159,7 +1226,8 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 {
@@ -1185,12 +1253,12 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() >= i ) {
-               if( element->index() != i || !isOne( element->value() ) )
+               if( element->index() != i || !isOne<RF>( element->value() ) )
                   return false;
                hasDiagonalElement = true;
                break;
             }
-            else if( !isZero( element->value() ) ) {
+            else if( !isZero<RF>( element->value() ) ) {
                return false;
             }
          }
@@ -1205,13 +1273,13 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
       {
          ConstIterator element( A.lowerBound(j,j) );
 
-         if( element == A.end(j) || element->index() != j || !isOne( element->value() ) )
+         if( element == A.end(j) || element->index() != j || !isOne<RF>( element->value() ) )
             return false;
 
          ++element;
 
          for( ; element!=A.end(j); ++element ) {
-            if( !isZero( element->value() ) )
+            if( !isZero<RF>( element->value() ) )
                return false;
          }
       }
@@ -1248,6 +1316,13 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    if( isStrictlyUpper( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isStrictlyUpper<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a strictly upper triangular
 // matrix:
 
@@ -1258,7 +1333,8 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 {
@@ -1283,7 +1359,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
             if( element->index() > i )
                break;
 
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1292,7 +1368,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( ConstIterator element=A.lowerBound(j,j); element!=A.end(j); ++element )
          {
-            if( !isDefault( element->value() ) )
+            if( !isDefault<RF>( element->value() ) )
                return false;
          }
       }
@@ -1330,6 +1406,13 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    if( isDiagonal( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDiagonal<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in a diagonal matrix:
 
    \code
@@ -1339,7 +1422,8 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 {
@@ -1363,14 +1447,14 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
-            if( element->index() != i && !isDefault( element->value() ) )
+            if( element->index() != i && !isDefault<RF>( element->value() ) )
                return false;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
-            if( element->index() != j && !isDefault( element->value() ) )
+            if( element->index() != j && !isDefault<RF>( element->value() ) )
                return false;
       }
    }
@@ -1407,6 +1491,13 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    if( isIdentity( A ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isIdentity<relaxed>( A ) ) { ... }
+   \endcode
+
 // It is also possible to check if a matrix expression results in an identity matrix:
 
    \code
@@ -1416,7 +1507,8 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< typename MT  // Type of the sparse matrix
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isIdentity( const SparseMatrix<MT,SO>& sm )
 {
@@ -1442,11 +1534,11 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() == i ) {
-               if( !isOne( element->value() ) )
+               if( !isOne<RF>( element->value() ) )
                   return false;
                hasDiagonalElement = true;
             }
-            else if( !isZero( element->value() ) ) {
+            else if( !isZero<RF>( element->value() ) ) {
                return false;
             }
          }
@@ -1464,11 +1556,11 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() == j ) {
-               if( !isOne( element->value() ) )
+               if( !isOne<RF>( element->value() ) )
                   return false;
                hasDiagonalElement = true;
             }
-            else if( !isZero( element->value() ) ) {
+            else if( !isZero<RF>( element->value() ) ) {
                return false;
             }
          }
