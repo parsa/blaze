@@ -2087,7 +2087,6 @@ inline void invertUniUpper5x5( DenseMatrix<MT,SO>& dm )
 
    const ET tmp8 ( A(2,3)*tmp2 - A(0,1)*A(1,3) + A(0,3) );
    const ET tmp9 ( A(2,3)*A(1,2) - A(1,3) );
-   const ET tmp10( A(2,3) );
 
    B(0,1) = - A(0,1);
    B(0,2) =   A(0,1)*A(1,2) - A(0,2);
