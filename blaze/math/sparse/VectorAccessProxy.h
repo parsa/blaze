@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -235,7 +236,7 @@ template< typename VT >  // Type of the sparse vector
 inline VectorAccessProxy<VT>::~VectorAccessProxy()
 {
    const Iterator_<VT> element( sv_.find( i_ ) );
-   if( element != sv_.end() && isDefault( element->value() ) )
+   if( element != sv_.end() && isDefault<strict>( element->value() ) )
       sv_.erase( element );
 }
 //*************************************************************************************************
