@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
@@ -1879,7 +1880,7 @@ inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, 
 
    end_->value_ = value;
 
-   if( !check || !isDefault( end_->value_ ) ) {
+   if( !check || !isDefault<strict>( end_->value_ ) ) {
       end_->index_ = index;
       ++end_;
    }
@@ -1982,7 +1983,7 @@ inline void CompressedVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 
       end_->value_ = (~rhs)[i];
 
-      if( !isDefault( end_->value_ ) ) {
+      if( !isDefault<strict>( end_->value_ ) ) {
          end_->index_ = i;
          ++end_;
          ++nonzeros;
