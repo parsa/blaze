@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -247,7 +248,7 @@ inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
 {
    const Iterator_<MT> element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
-   if( element != sm_.end( index ) && isDefault( element->value() ) )
+   if( element != sm_.end( index ) && isDefault<strict>( element->value() ) )
       sm_.erase( index, element );
 }
 //*************************************************************************************************
