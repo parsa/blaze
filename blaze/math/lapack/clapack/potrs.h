@@ -105,8 +105,8 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //
 // This function uses the LAPACK spotrs() function to perform the substitution step to compute
 // the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the spotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// a \a n-by-\a n matrix that has already been factorized by the spotrf() function and \a X and
+// \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -144,8 +144,8 @@ inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B
 //
 // This function uses the LAPACK dpotrs() function to perform the substitution step to compute
 // the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the dpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// a \a n-by-\a n matrix that has already been factorized by the dpotrf() function and \a X and
+// \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -183,8 +183,8 @@ inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double*
 //
 // This function uses the LAPACK cpotrs() function to perform the substitution step to compute
 // the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the cpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// a \a n-by-\a n matrix that has already been factorized by the cpotrf() function and \a X and
+// \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -226,8 +226,8 @@ inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
 //
 // This function uses the LAPACK zpotrs() function to perform the substitution step to compute
 // the solution to the positive definite system of linear equations \f$ A*X=B \f$, where \a A is
-// a n-by-n matrix that has already been factorized by the zpotrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// a \a n-by-\a n matrix that has already been factorized by the zpotrf() function and \a X and
+// \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //

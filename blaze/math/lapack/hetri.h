@@ -86,9 +86,9 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //
 // This function performs the dense matrix inversion based on the LAPACK hetri() functions for
 // Hermitian indefinite matrices that have already been factorized by the hetrf() functions.
-// Note that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
-// adaptors or matrices of any other element type results in a compile time error!
+// Note that the function only works for general, non-adapted matrices with \c complex<float> or
+// \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// of any other element type results in a compile time error!
 //
 // The function fails if ...
 //
@@ -120,7 +120,7 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

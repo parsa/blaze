@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -121,6 +122,14 @@ inline void unmrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    unmrq( C, A, 'R', 'N', tau.data() );  // Computing C = C * Q
    \endcode
 
+// The function fails if ...
+//
+//  - ... the number of rows of the given \a A matrix is larger than the number of columns;
+//  - ... the given \a side argument is neither \c 'L' nor \c 'R';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T'.
+//
+// In all failure cases an exception is thrown.
+//
 // For more information on the unmrq() functions (i.e. cunmrq() and zunmrq()) see the LAPACK
 // online documentation browser:
 //
@@ -147,7 +156,7 @@ inline void unmrq( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
 
-   typedef ElementType_<MT1>  ET;
+   using ET = ElementType_<MT1>;
 
    if( (~A).rows() < (~A).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size of Q matrix" );

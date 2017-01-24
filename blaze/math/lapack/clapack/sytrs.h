@@ -110,8 +110,8 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //
 // This function uses the LAPACK ssytrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the ssytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the ssytrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -152,8 +152,8 @@ inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const in
 //
 // This function uses the LAPACK dsytrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the dsytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the dsytrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -194,8 +194,8 @@ inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const i
 //
 // This function uses the LAPACK csytrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the csytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the csytrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -238,8 +238,8 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 //
 // This function uses the LAPACK zsytrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the zsytrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the zsytrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //

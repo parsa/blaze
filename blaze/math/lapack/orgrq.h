@@ -124,7 +124,7 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<MT> );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );

@@ -111,8 +111,8 @@ inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 // \return void
 //
 // This function uses the LAPACK ssysv() function to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 
@@ -167,8 +167,8 @@ inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
 // \return void
 //
 // This function uses the LAPACK dsysv() function to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 
@@ -223,8 +223,8 @@ inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
 // \return void
 //
 // This function uses the LAPACK csysv() function to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 
@@ -282,8 +282,8 @@ inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 // \return void
 //
 // This function uses the LAPACK zsysv() function to compute the solution to the symmetric
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 

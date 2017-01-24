@@ -83,6 +83,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side vector provided.
 // \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the system of general
@@ -91,10 +92,11 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 //  - \f$ A  *x=b \f$ if \a A is column-major
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
-// In this context the general system matrix \a A n-by-n matrix and \a x and \a b are n-dimensional
-// vectors. Note that the function only works for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
-// function with adaptors or matrices of any other element type results in a compile time error!
+// In this context the general system matrix \a A \a n-by-\a n matrix and \a x and \a b are
+// n-dimensional vectors. Note that the function only works for general, non-adapted matrices
+// with \c float, \c double, \c complex<float>, or \c complex<double> element type. The attempt
+// to call the function with adaptors or matrices of any other element type results in a compile
+// time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
 // of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
@@ -145,6 +147,10 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
+   if( (~b).size() != (~A).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
+   }
+
    int n   ( numeric_cast<int>( (~A).rows() ) );
    int nrhs( 1 );
    int lda ( numeric_cast<int>( (~A).spacing() ) );
@@ -175,7 +181,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
-// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid right-hand side matrix provided.
 // \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the general system of
@@ -186,11 +192,11 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 //  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
 //  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
 //
-// In this context the general system matrix \a A is a n-by-n matrix and \a X and \a B are either
-// row-major m-by-n matrices or column-major n-by-m matrices. Note that the function only works for
-// general, non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double>
-// element type. The attempt to call the function with adaptors or matrices of any other element
-// type results in a compile time error!
+// In this context the general system matrix \a A is a \a n-by-\a n matrix and \a X and \a B are
+// either row-major \a m-by-\a n matrices or column-major \a n-by-\a m matrices. Note that the
+// function only works for general, non-adapted matrices with \c float, \c double, \c complex<float>,
+// or \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// of any other element type results in a compile time error!
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system
 // of equations and \a A has been decomposed by means of an LU decomposition with partial pivoting
@@ -251,7 +257,7 @@ inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv )
    int info( 0 );
 
    if( n != mrhs ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
    }
 
    if( n == 0 ) {

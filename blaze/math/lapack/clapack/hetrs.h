@@ -102,8 +102,8 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //
 // This function uses the LAPACK chetrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the chetrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the chetrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //
@@ -146,8 +146,8 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 //
 // This function uses the LAPACK zhetrs() function to perform the substitution step to compute
 // the solution to the symmetric indefinite system of linear equations \f$ A*X=B \f$, where \a A
-// is a n-by-n matrix that has already been factorized by the zhetrf() function and \a X and \a B
-// are column-major n-by-nrhs matrices.
+// is a \a n-by-\a n matrix that has already been factorized by the zhetrf() function and \a X
+// and \a B are column-major \a n-by-\a nrhs matrices.
 //
 // The \a info argument provides feedback on the success of the function call:
 //

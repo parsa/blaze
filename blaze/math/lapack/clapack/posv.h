@@ -104,8 +104,8 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 // \return void
 //
 // This function uses the LAPACK sposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
+// system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n positive definite matrix
+// and \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -155,8 +155,8 @@ inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int l
 // \return void
 //
 // This function uses the LAPACK dposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
+// system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n positive definite matrix
+// and \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -206,8 +206,8 @@ inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int
 // \return void
 //
 // This function uses the LAPACK cposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
+// system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n positive definite matrix
+// and \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 
@@ -260,8 +260,8 @@ inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, comple
 // \return void
 //
 // This function uses the LAPACK zposv() function to compute the solution to the positive definite
-// system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n positive definite matrix and
-// \a X and \a B are n-by-nrhs matrices.
+// system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n positive definite matrix
+// and \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Cholesky decomposition is used to factor \a A as
 

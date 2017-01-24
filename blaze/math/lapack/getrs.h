@@ -86,6 +86,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side vector provided.
 // \exception std::invalid_argument Invalid trans argument provided.
 //
 // This function uses the LAPACK getrs() functions to perform the substitution step to compute
@@ -94,7 +95,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 //  - \f$ A  *x=b \f$ if \a A is column-major
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
-// In this context the general system matrix \a A is a n-by-n matrix that has already been
+// In this context the general system matrix \a A is a \a n-by-\a n matrix that has already been
 // factorized by the getrf() functions and \a x and \a b are n-dimensional vectors. Note that the
 // function only works for general, non-adapted matrices with \c float, \c double, \c complex<float>,
 // or \c complex<double> element type. The attempt to call the function with adaptors or matrices
@@ -104,7 +105,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C'.
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T' nor \c 'C'.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -175,6 +176,10 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
+   if( (~b).size() != (~A).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
+   }
+
    if( trans != 'N' && trans != 'T' && trans != 'C' ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
@@ -207,8 +212,8 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 // \param ipiv Auxiliary array of size \a n for the pivot indices.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side matrix provided.
 // \exception std::invalid_argument Invalid trans argument provided.
-// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function uses the LAPACK getrs() functions to perform the substitution step to compute
 // the solution to the general system of linear equations:
@@ -218,18 +223,18 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 //  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
 //  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
 //
-// In this context the general system matrix \a A is a n-by-n matrix that has already been
-// factorized by the getrf() functions and \a X and \a B are either row-major m-by-n matrices
-// or column-major n-by-m matrices. Note that the function only works for general, non-adapted
-// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
-// attempt to call the function with adaptors or matrices of any other element type results in a
-// compile time error!
+// In this context the general system matrix \a A is a \a n-by-\a n matrix that has already been
+// factorized by the getrf() functions and \a X and \a B are either row-major \a m-by-\a n
+// matrices or column-major \a n-by-\a m matrices. Note that the function only works for general,
+// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double>
+// element type. The attempt to call the function with adaptors or matrices of any other
+// element type results in a compile time error!
 //
-// If the function exits successfully, the matrix \a B contains the solutions of the linear system
-// of equations. The function fails if ...
+// If the function exits successfully, the matrix \a B contains the solutions of the linear
+// system of equations. The function fails if ...
 //
 //  - ... the given system matrix is not a square matrix;
-//  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T' nor \c 'C'.
 //  - ... the sizes of the two given matrices do not match.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
@@ -318,7 +323,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    int info( 0 );
 
    if( n != mrhs ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
    }
 
    if( n == 0 ) {

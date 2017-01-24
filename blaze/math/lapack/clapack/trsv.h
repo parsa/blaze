@@ -108,9 +108,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 // \return void
 //
 // This function uses the LAPACK strsv() function to compute the solution to the triangular system
-// of linear equations \f$ A*x=b \f$, where \a A is a n-by-n triangular matrix and \a x and \a b
-// are n-dimensional vectors. The \a trans argument specifies the form of the linear system of
-// equations:
+// of linear equations \f$ A*x=b \f$, where \a A is a \a n-by-\a n triangular matrix and \a x and
+// \a b are n-dimensional vectors. The \a trans argument specifies the form of the linear system
+// of equations:
 //
 //   - 'N': \f$ A*x=b \f$ (no transpose)
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
@@ -150,9 +150,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
 // \return void
 //
 // This function uses the LAPACK dtrsv() function to compute the solution to the triangular system
-// of linear equations \f$ A*x=b \f$, where \a A is a n-by-n triangular matrix and \a x and \a b
-// are n-dimensional vectors. The \a trans argument specifies the form of the linear system of
-// equations:
+// of linear equations \f$ A*x=b \f$, where \a A is a \a n-by-\a n triangular matrix and \a x and
+// \a b are n-dimensional vectors. The \a trans argument specifies the form of the linear system
+// of equations:
 //
 //   - 'N': \f$ A*x=b \f$ (no transpose)
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
@@ -192,9 +192,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const double* A,
 // \return void
 //
 // This function uses the LAPACK ctrsv() function to compute the solution to the triangular system
-// of linear equations \f$ A*x=b \f$, where \a A is a n-by-n triangular matrix and \a x and \a b
-// are n-dimensional vectors. The \a trans argument specifies the form of the linear system of
-// equations:
+// of linear equations \f$ A*x=b \f$, where \a A is a \a n-by-\a n triangular matrix and \a x and
+// \a b are n-dimensional vectors. The \a trans argument specifies the form of the linear system
+// of equations:
 //
 //   - 'N': \f$ A*x=b \f$ (no transpose)
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)
@@ -237,9 +237,9 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
 // \return void
 //
 // This function uses the LAPACK ztrsv() function to compute the solution to the triangular system
-// of linear equations \f$ A*x=b \f$, where \a A is a n-by-n triangular matrix and \a x and \a b
-// are n-dimensional vectors. The \a trans argument specifies the form of the linear system of
-// equations:
+// of linear equations \f$ A*x=b \f$, where \a A is a \a n-by-\a n triangular matrix and \a x and
+// \a b are n-dimensional vectors. The \a trans argument specifies the form of the linear system
+// of equations:
 //
 //   - 'N': \f$ A*x=b \f$ (no transpose)
 //   - 'T': \f$ A^{T}*x=b \f$ (transpose)

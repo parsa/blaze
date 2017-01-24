@@ -110,9 +110,9 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 //
 // This function uses the LAPACK sgetrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
-// sgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
-// specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix that has already been factorized by the
+// sgetrf() function and \a X and \a B are column-major \a n-by-\a nrhs matrices. The \a trans
+// argument specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -157,9 +157,9 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 //
 // This function uses the LAPACK dgetrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
-// dgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
-// specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix that has already been factorized by the
+// dgetrf() function and \a X and \a B are column-major \a n-by-\a nrhs matrices. The \a trans
+// argument specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -204,9 +204,9 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 //
 // This function uses the LAPACK cgetrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
-// cgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
-// specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix that has already been factorized by the
+// cgetrf() function and \a X and \a B are column-major \a n-by-\a nrhs matrices. The \a trans
+// argument specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -253,9 +253,9 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 //
 // This function uses the LAPACK zgetrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix that has already been factorized by the
-// zgetrf() function and \a X and \a B are column-major n-by-nrhs matrices. The \a trans argument
-// specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix that has already been factorized by the
+// zgetrf() function and \a X and \a B are column-major \a n-by-\a nrhs matrices. The \a trans
+// argument specifies the form of the linear system of equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)

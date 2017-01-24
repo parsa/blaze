@@ -122,7 +122,7 @@ inline void geqrf( DenseMatrix<MT,SO>& A, ElementType_<MT>* tau )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );

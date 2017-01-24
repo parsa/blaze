@@ -103,8 +103,8 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 // \return void
 //
 // This function uses the LAPACK chesv() function to compute the solution to the Hermitian
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 
@@ -162,8 +162,8 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 // \return void
 //
 // This function uses the LAPACK zhesv() function to compute the solution to the Hermitian
-// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and
-// \a B are n-by-nrhs matrices.
+// indefinite system of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and
+// \a X and \a B are \a n-by-\a nrhs matrices.
 //
 // The Bunch-Kaufman decomposition is used to factor \a A as
 

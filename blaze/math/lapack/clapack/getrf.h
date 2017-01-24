@@ -101,9 +101,9 @@ inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* in
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix LU decomposition of a general m-by-n single precision
-// column-major matrix based on the LAPACK sgetrf() function, which uses partial pivoting with row
-// interchanges. The resulting decomposition has the form
+// This function performs the dense matrix LU decomposition of a general \a m-by-\a n single
+// precision column-major matrix based on the LAPACK sgetrf() function, which uses partial
+// pivoting with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
@@ -145,9 +145,9 @@ inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix LU decomposition of a general m-by-n double precision
-// column-major matrix based on the LAPACK dgetrf() function, which uses partial pivoting with row
-// interchanges. The resulting decomposition has the form
+// This function performs the dense matrix LU decomposition of a general \a m-by-\a n double
+// precision column-major matrix based on the LAPACK dgetrf() function, which uses partial
+// pivoting with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
@@ -189,9 +189,9 @@ inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info )
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix LU decomposition of a general m-by-n single precision
-// complex column-major matrix based on the LAPACK cgetrf() function, which uses partial pivoting
-// with row interchanges. The resulting decomposition has the form
+// This function performs the dense matrix LU decomposition of a general \a m-by-\a n single
+// precision complex column-major matrix based on the LAPACK cgetrf() function, which uses
+// partial pivoting with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 
@@ -235,9 +235,9 @@ inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* inf
 // \param info Return code of the function call.
 // \return void
 //
-// This function performs the dense matrix LU decomposition of a general m-by-n double precision
-// complex column-major matrix based on the LAPACK zgetrf() function, which uses partial pivoting
-// with row interchanges. The resulting decomposition has the form
+// This function performs the dense matrix LU decomposition of a general \a m-by-\a n double
+// precision complex column-major matrix based on the LAPACK zgetrf() function, which uses
+// partial pivoting with row interchanges. The resulting decomposition has the form
 
                           \f[ A = P \cdot L \cdot U, \f]
 

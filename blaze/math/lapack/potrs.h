@@ -85,6 +85,7 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side vector provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
 //
 // This function uses the LAPACK potrs() functions to perform the substitution step to compute
@@ -93,9 +94,9 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
 //  - \f$ A  *x=b \f$ if \a A is column-major
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
-// In this context the positive definite system matrix \a A is a n-by-n matrix that has already
-// been factorized by the potrf() functions and \a x and \a b are n-dimensional vectors. Note
-// that the function only works for general, non-adapted matrices with \c float, \c double,
+// In this context the positive definite system matrix \a A is a \a n-by-\a n matrix that has
+// already been factorized by the potrf() functions and \a x and \a b are n-dimensional vectors.
+// Note that the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //
@@ -175,6 +176,10 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
+   if( (~b).size() != (~A).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
+   }
+
    if( uplo != 'L' && uplo != 'U' ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
@@ -210,8 +215,8 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 // \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side matrix provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
-// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function uses the LAPACK potrs() functions to perform the substitution step to compute
 // the solution to a system of positive definite linear equations:
@@ -221,12 +226,12 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 //  - \f$ A  *X^T=B^T \f$ if \a A is column-major and \a B is row-major
 //  - \f$ A^T*X^T=B^T \f$ if both \a A and \a B are row-major
 //
-// In this context the positive definite system matrix \a A is a n-by-n matrix that has already
-// been factorized by the potrf() functions and \a X and \a B are either row-major m-by-n matrices
-// or column-major n-by-m matrices. Note that the function only works for general, non-adapted
-// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
-// attempt to call the function with adaptors or matrices of any other element type results in a
-// compile time error!
+// In this context the positive definite system matrix \a A is a \a n-by-\a n matrix that has
+// already been factorized by the potrf() functions and \a X and \a B are either row-major
+// \a m-by-\a n matrices or column-major \a n-by-\a m matrices. Note that the function only
+// works for general, non-adapted matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// of any other element type results in a compile time error!
 //
 // If the function exits successfully, the matrix \a B contains the solution of the linear system
 // of equations. The function fails if ...
@@ -314,7 +319,7 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    int info( 0 );
 
    if( n != mrhs ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
    }
 
    if( n == 0 ) {

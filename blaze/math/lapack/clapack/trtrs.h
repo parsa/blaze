@@ -111,8 +111,9 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 //
 // This function uses the LAPACK strtrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are column-major n-by-nrhs
-// matrices. The \a trans argument specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are column-major
+// \a n-by-\a nrhs matrices. The \a trans argument specifies the form of the linear system of
+// equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -157,8 +158,9 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const floa
 //
 // This function uses the LAPACK dtrtrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are column-major n-by-nrhs
-// matrices. The \a trans argument specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are column-major
+// \a n-by-\a nrhs matrices. The \a trans argument specifies the form of the linear system of
+// equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -203,8 +205,9 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const doub
 //
 // This function uses the LAPACK ctrtrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are column-major n-by-nrhs
-// matrices. The \a trans argument specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are column-major
+// \a n-by-\a nrhs matrices. The \a trans argument specifies the form of the linear system of
+// equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)
@@ -252,8 +255,9 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 //
 // This function uses the LAPACK ztrtrs() function to perform the substitution step to compute
 // the solution to the general system of linear equations \f$ A*X=B \f$, \f$ A^{T}*X=B \f$, or
-// \f$ A^{H}*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are column-major n-by-nrhs
-// matrices. The \a trans argument specifies the form of the linear system of equations:
+// \f$ A^{H}*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are column-major
+// \a n-by-\a nrhs matrices. The \a trans argument specifies the form of the linear system of
+// equations:
 //
 //   - 'N': \f$ A*X=B \f$ (no transpose)
 //   - 'T': \f$ A^{T}*X=B \f$ (transpose)

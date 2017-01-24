@@ -103,9 +103,9 @@ inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, compl
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK sgesv() function to compute the solution to the general system of
-// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
-// matrices.
+// This function uses the LAPACK sgesv() function to compute the solution to the general system
+// of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are
+// \a n-by-\a nrhs matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -152,9 +152,9 @@ inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int l
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK dgesv() function to compute the solution to the general system of
-// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
-// matrices.
+// This function uses the LAPACK dgesv() function to compute the solution to the general system
+// of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are
+// \a n-by-\a nrhs matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -201,9 +201,9 @@ inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK cgesv() function to compute the solution to the general system of
-// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
-// matrices.
+// This function uses the LAPACK cgesv() function to compute the solution to the general system
+// of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are
+// \a n-by-\a nrhs matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 
@@ -253,9 +253,9 @@ inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, comple
 // \param info Return code of the function call.
 // \return void
 //
-// This function uses the LAPACK zgesv() function to compute the solution to the general system of
-// linear equations \f$ A*X=B \f$, where \a A is a n-by-n matrix and \a X and \a B are n-by-nrhs
-// matrices.
+// This function uses the LAPACK zgesv() function to compute the solution to the general system
+// of linear equations \f$ A*X=B \f$, where \a A is a \a n-by-\a n matrix and \a X and \a B are
+// \a n-by-\a nrhs matrices.
 //
 // The LU decomposition with partial pivoting and row interchanges is used to factor \a A as
 

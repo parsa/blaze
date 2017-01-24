@@ -125,7 +125,7 @@ inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

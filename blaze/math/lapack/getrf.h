@@ -69,7 +69,6 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief LAPACK kernel for the LU decomposition of the given dense general matrix.
 // \ingroup lapack_decomposition
 //
@@ -77,7 +76,7 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 // \param ipiv Auxiliary array for the pivot indices; size >= min( \a m, \a n ).
 // \return void
 //
-// This function performs the dense matrix LU decomposition of a general m-by-n matrix based
+// This function performs the dense matrix LU decomposition of a general \a m-by-\a n matrix based
 // on the LAPACK \c getrf() functions, which use partial pivoting with row/column interchanges.
 // Note that the function only works for general, non-adapted matrices with \c float, \c double,
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
@@ -95,9 +94,9 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 
                           \f[ A = L \cdot U \cdot P, \f]
 
-// where \c P is an n-by-n permutation matrix, which represents the pivoting indices for the applied
-// column interchanges, \c L is a lower triangular matrix (lower trapezoidal if \a m > \a n), and
-// \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
+// where \c P is an \a n-by-\a n permutation matrix, which represents the pivoting indices for
+// the applied column interchanges, \c L is a lower triangular matrix (lower trapezoidal if
+// \a m > \a n), and \c U is an upper unitriangular matrix (upper trapezoidal if \a m < \a n).
 //
 // The resulting decomposition is stored within the matrix \a A: \c L is stored in the lower part
 // of \a A and \c U is stored in the upper part. The unit diagonal elements of \c L or \c U are
@@ -139,7 +138,6 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for LU decomposition" );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

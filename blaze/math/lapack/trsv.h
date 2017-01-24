@@ -85,6 +85,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 // \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid right-hand side vector provided.
 // \exception std::invalid_argument Invalid uplo argument provided.
 // \exception std::invalid_argument Invalid trans argument provided.
 // \exception std::invalid_argument Invalid diag argument provided.
@@ -95,11 +96,11 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 //  - \f$ A  *x=b \f$ if \a A is column-major
 //  - \f$ A^T*x=b \f$ if \a A is row-major
 //
-// In this context the positive definite system matrix \a A is a n-by-n matrix and \a x and \a b
-// are n-dimensional vectors. Note that the function only works for general, non-adapted matrices
-// with \c float, \c double, \c complex<float>, or \c complex<double> element type. The attempt
-// to call the function with adaptors or matrices of any other element type results in a compile
-// time error!
+// In this context the positive definite system matrix \a A is a \a n-by-\a n matrix and \a x and
+// \a b are n-dimensional vectors. Note that the function only works for general, non-adapted
+// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
+// attempt to call the function with adaptors or matrices of any other element type results in a
+// compile time error!
 //
 // If the function exits successfully, the vector \a x contains the solution of the linear system
 // of equations. The function fails if ...
@@ -175,6 +176,10 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( (~b).size() != (~A).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
    if( uplo != 'L' && uplo != 'U' ) {

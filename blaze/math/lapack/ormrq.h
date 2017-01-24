@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -53,7 +54,7 @@
 #include <blaze/math/lapack/clapack/ormrq.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/FloatingPoint.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/mpl/Xor.h>
 
 
@@ -123,6 +124,14 @@ inline void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    ormrq( C, A, 'R', 'N', tau.data() );  // Computing C = C * Q
    \endcode
 
+// The function fails if ...
+//
+//  - ... the number of rows of the given \a A matrix is larger than the number of columns;
+//  - ... the given \a side argument is neither \c 'L' nor \c 'R';
+//  - ... the given \a trans argument is neither \c 'N' nor \c 'T'.
+//
+// In all failure cases an exception is thrown.
+//
 // For more information on the ormrq() functions (i.e. sormrq() and dormrq()) see the LAPACK
 // online documentation browser:
 //
@@ -141,15 +150,15 @@ inline void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<MT2> );
 
-   typedef ElementType_<MT1>  ET;
+   using ET = ElementType_<MT1>;
 
    if( (~A).rows() < (~A).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size of Q matrix" );

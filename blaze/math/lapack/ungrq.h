@@ -125,7 +125,7 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT> );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
