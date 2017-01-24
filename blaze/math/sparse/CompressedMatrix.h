@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/MatrixAccessProxy.h>
@@ -2457,7 +2458,7 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
 
    end_[i]->value_ = value;
 
-   if( !check || !isDefault( end_[i]->value_ ) ) {
+   if( !check || !isDefault<strict>( end_[i]->value_ ) ) {
       end_[i]->index_ = j;
       ++end_[i];
    }
@@ -2607,7 +2608,7 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 
          end_[i]->value_ = (~rhs)(i,j);
 
-         if( !isDefault( end_[i]->value_ ) ) {
+         if( !isDefault<strict>( end_[i]->value_ ) ) {
             end_[i]->index_ = j;
             ++end_[i];
             ++nonzeros;
@@ -5070,7 +5071,7 @@ inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type&
 
    end_[j]->value_ = value;
 
-   if( !check || !isDefault( end_[j]->value_ ) ) {
+   if( !check || !isDefault<strict>( end_[j]->value_ ) ) {
       end_[j]->index_ = i;
       ++end_[j];
    }
@@ -5225,7 +5226,7 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
 
          end_[j]->value_ = (~rhs)(i,j);
 
-         if( !isDefault( end_[j]->value_ ) ) {
+         if( !isDefault<strict>( end_[j]->value_ ) ) {
             end_[j]->index_ = i;
             ++end_[j];
             ++nonzeros;
