@@ -138,11 +138,11 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<double,rowMajor>  A( 2UL, 2UL );  // The system matrix A
-   DynamicVector<double,columnVector> b( 2UL );    // The right-hand side vector b
+   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );   // The right-hand side vector b
    // ... Initialization
 
-   DynamicMatrix<double,rowMajor>  D( A );     // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor>     D( A );  // Temporary matrix to be decomposed
    DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
 
    trsv( D, x, 'L', 'N', 'N' );

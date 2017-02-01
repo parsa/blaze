@@ -137,12 +137,12 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<double,rowMajor>  A( 2UL, 2UL );  // The system matrix A
-   DynamicVector<double,columnVector> b( 2UL );    // The right-hand side vector b
-   DynamicVector<int,columnVector> ipiv( 2UL );    // Pivoting indices
+   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );   // The right-hand side vector b
+   DynamicVector<int,columnVector> ipiv( 2UL );   // Pivoting indices
    // ... Initialization
 
-   DynamicMatrix<double,rowMajor>  D( A );     // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor>     D( A );  // Temporary matrix to be decomposed
    DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
 
    getrf( D, ipiv.data() );

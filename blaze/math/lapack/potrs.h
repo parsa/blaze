@@ -139,7 +139,7 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    DynamicVector<double,columnVector> b( 2UL );   // The right-hand side vector b
    // ... Initialization
 
-   DynamicMatrix<double,rowMajor> D( A );      // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor>     D( A );  // Temporary matrix to be decomposed
    DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
 
    potrf( D, 'L' );

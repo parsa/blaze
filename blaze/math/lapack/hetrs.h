@@ -143,7 +143,7 @@ inline void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    DynamicVector<int,columnVector> ipiv( 2UL );   // Pivoting indices
    // ... Initialization
 
-   DynamicMatrix<double,rowMajor> D( A );      // Temporary matrix to be decomposed
+   DynamicMatrix<double,rowMajor>     D( A );  // Temporary matrix to be decomposed
    DynamicVector<double,columnVector> x( b );  // Temporary vector for the solution
 
    hetrf( D, 'L', ipiv.data() );
