@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math.h
+//  \file blaze/Math.h
 //  \brief Header file for the inclusion of the math module of the Blaze library
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -46,7 +46,6 @@
 #include <blaze/math/BLAS.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/Constants.h>
 #include <blaze/math/Constraints.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/CustomVector.h>
