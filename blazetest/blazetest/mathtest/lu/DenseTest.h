@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/decomposition/DenseRQTest.h
-//  \brief Header file for the dense matrix RQ test
+//  \file blazetest/mathtest/lu/DenseTest.h
+//  \brief Header file for the dense matrix LU test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSERQTEST_H_
-#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSERQTEST_H_
+#ifndef _BLAZETEST_MATHTEST_LU_DENSETEST_H_
+#define _BLAZETEST_MATHTEST_LU_DENSETEST_H_
 
 
 //*************************************************************************************************
@@ -45,6 +45,7 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
@@ -56,7 +57,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace lu {
 
 //=================================================================================================
 //
@@ -65,18 +66,18 @@ namespace decomposition {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix RQ tests.
+/*!\brief Auxiliary class for all dense matrix LU tests.
 //
-// This class represents a test suite for the dense matrix RQ decomposition functionality. It
-// performs a series of RQ decompositions on all dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix LU decomposition functionality. It
+// performs a series of LU decompositions on all dense matrix types of the Blaze library.
 */
-class DenseRQTest
+class DenseTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseRQTest();
+   explicit DenseTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -127,20 +128,20 @@ class DenseRQTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the RQ decomposition with a randomly initialized matrix of the given type.
+/*!\brief Test of the LU decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix RQ decomposition for a randomly initialized matrix of the
+// This function tests the dense matrix LU decomposition for a randomly initialized matrix of the
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseRQTest::testRandom()
+void DenseTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "RQ decomposition";
+   test_ = "LU decomposition";
 
    typedef blaze::RemoveAdaptor_<Type>  MT;
 
@@ -148,25 +149,32 @@ void DenseRQTest::testRandom()
    const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );
 
    Type A;
-   MT R, Q;
+   MT L, U, P;
 
    resize( A, m, n );
    randomize( A );
 
-   blaze::rq( A, R, Q );
+   blaze::lu( A, L, U, P );
 
-   const MT RQ( R*Q );
+   MT LU( L*U );
 
-   if( RQ != A ) {
+   if( blaze::IsRowMajorMatrix<Type>::value ) {
+      LU = LU * P;
+   }
+   else {
+      LU = P * LU;
+   }
+
+   if( LU != A ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: RQ decomposition failed\n"
+          << " Error: LU decomposition failed\n"
           << " Details:\n"
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
           << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result:\n" << RQ << "\n"
+          << "   Result:\n" << LU << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -185,13 +193,13 @@ void DenseRQTest::testRandom()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the dense matrix RQ decomposition.
+/*!\brief Testing the dense matrix LU decomposition.
 //
 // \return void
 */
 void runTest()
 {
-   DenseRQTest();
+   DenseTest();
 }
 //*************************************************************************************************
 
@@ -206,14 +214,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense matrix RQ test.
+/*!\brief Macro for the execution of the dense matrix LU test.
 */
-#define RUN_DENSE_RQ_TEST \
-   blazetest::mathtest::decomposition::runTest()
+#define RUN_DENSE_LU_TEST \
+   blazetest::mathtest::lu::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace lu
 
 } // namespace mathtest
 

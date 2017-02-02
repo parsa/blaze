@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the decomposition module of the Blaze test suite
+#  Makefile for the QR module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
@@ -54,17 +54,7 @@ noop: $(BIN)
 
 
 # Build rules
-DenseLUTest: DenseLUTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseLQTest: DenseLQTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseLLHTest: DenseLLHTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseQLTest: DenseQLTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseQRTest: DenseQRTest.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseRQTest: DenseRQTest.o
+DenseTest: DenseTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

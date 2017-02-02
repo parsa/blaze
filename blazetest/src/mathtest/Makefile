@@ -56,7 +56,7 @@ all: functions simd blas lapack typetraits \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     determinant decomposition inversion \
+     determinant lu llh qr rq ql lq inversion \
      vectorserializer matrixserializer
 
 essential: all
@@ -72,7 +72,7 @@ noop: functions simd blas lapack typetraits \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
       subvector submatrix row column \
-      determinant decomposition inversion \
+      determinant lu llh qr rq ql lq inversion \
       vectorserializer matrixserializer
 
 
@@ -472,10 +472,35 @@ determinant:
 	@echo "Building the matrix determinant tests..."
 	@$(MAKE) --no-print-directory -C ./determinant $(MAKECMDGOALS)
 
-decomposition:
+lu:
 	@echo
-	@echo "Building the matrix decomposition tests..."
-	@$(MAKE) --no-print-directory -C ./decomposition $(MAKECMDGOALS)
+	@echo "Building the matrix LU decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./lu $(MAKECMDGOALS)
+
+llh:
+	@echo
+	@echo "Building the matrix LLH decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./llh $(MAKECMDGOALS)
+
+qr:
+	@echo
+	@echo "Building the matrix QR decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./qr $(MAKECMDGOALS)
+
+rq:
+	@echo
+	@echo "Building the matrix RQ decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./rq $(MAKECMDGOALS)
+
+ql:
+	@echo
+	@echo "Building the matrix QL decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./ql $(MAKECMDGOALS)
+
+lq:
+	@echo
+	@echo "Building the matrix LQ decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./lq $(MAKECMDGOALS)
 
 inversion:
 	@echo
@@ -574,7 +599,12 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
-	@$(MAKE) --no-print-directory -C ./decomposition clean
+	@$(MAKE) --no-print-directory -C ./lu clean
+	@$(MAKE) --no-print-directory -C ./llh clean
+	@$(MAKE) --no-print-directory -C ./qr clean
+	@$(MAKE) --no-print-directory -C ./rq clean
+	@$(MAKE) --no-print-directory -C ./ql clean
+	@$(MAKE) --no-print-directory -C ./lq clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
@@ -604,5 +634,5 @@ clean:
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        determinant decomposition inversion \
+        determinant lu llh qr rq ql lq inversion \
         vectorserializer matrixserializer

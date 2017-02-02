@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/decomposition/DenseLQTest.h
+//  \file blazetest/mathtest/lq/DenseTest.h
 //  \brief Header file for the dense matrix LQ test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSELQTEST_H_
-#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSELQTEST_H_
+#ifndef _BLAZETEST_MATHTEST_LQ_DENSETEST_H_
+#define _BLAZETEST_MATHTEST_LQ_DENSETEST_H_
 
 
 //*************************************************************************************************
@@ -56,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace lq {
 
 //=================================================================================================
 //
@@ -70,13 +70,13 @@ namespace decomposition {
 // This class represents a test suite for the dense matrix LQ decomposition functionality. It
 // performs a series of LQ decompositions on all dense matrix types of the Blaze library.
 */
-class DenseLQTest
+class DenseTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseLQTest();
+   explicit DenseTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -136,7 +136,7 @@ class DenseLQTest
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseLQTest::testRandom()
+void DenseTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
@@ -191,7 +191,7 @@ void DenseLQTest::testRandom()
 */
 void runTest()
 {
-   DenseLQTest();
+   DenseTest();
 }
 //*************************************************************************************************
 
@@ -209,11 +209,11 @@ void runTest()
 /*!\brief Macro for the execution of the dense matrix LQ test.
 */
 #define RUN_DENSE_LQ_TEST \
-   blazetest::mathtest::decomposition::runTest()
+   blazetest::mathtest::lq::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace lq
 
 } // namespace mathtest
 

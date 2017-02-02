@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/decomposition/DenseQLTest.h
-//  \brief Header file for the dense matrix QL test
+//  \file blazetest/mathtest/decomposition/DenseTest.h
+//  \brief Header file for the dense matrix RQ test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQLTEST_H_
-#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQLTEST_H_
+#ifndef _BLAZETEST_MATHTEST_RQ_DENSETEST_H_
+#define _BLAZETEST_MATHTEST_RQ_DENSETEST_H_
 
 
 //*************************************************************************************************
@@ -56,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace rq {
 
 //=================================================================================================
 //
@@ -65,18 +65,18 @@ namespace decomposition {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix QL tests.
+/*!\brief Auxiliary class for all dense matrix RQ tests.
 //
-// This class represents a test suite for the dense matrix QL decomposition functionality. It
-// performs a series of QL decompositions on all dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix RQ decomposition functionality. It
+// performs a series of RQ decompositions on all dense matrix types of the Blaze library.
 */
-class DenseQLTest
+class DenseTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseQLTest();
+   explicit DenseTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -127,20 +127,20 @@ class DenseQLTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the QL decomposition with a randomly initialized matrix of the given type.
+/*!\brief Test of the RQ decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix QL decomposition for a randomly initialized matrix of the
+// This function tests the dense matrix RQ decomposition for a randomly initialized matrix of the
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseQLTest::testRandom()
+void DenseTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "QL decomposition";
+   test_ = "RQ decomposition";
 
    typedef blaze::RemoveAdaptor_<Type>  MT;
 
@@ -148,25 +148,25 @@ void DenseQLTest::testRandom()
    const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );
 
    Type A;
-   MT Q, L;
+   MT R, Q;
 
    resize( A, m, n );
    randomize( A );
 
-   blaze::ql( A, Q, L );
+   blaze::rq( A, R, Q );
 
-   const MT QL( Q*L );
+   const MT RQ( R*Q );
 
-   if( QL != A ) {
+   if( RQ != A ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: QL decomposition failed\n"
+          << " Error: RQ decomposition failed\n"
           << " Details:\n"
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
           << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result:\n" << QL << "\n"
+          << "   Result:\n" << RQ << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -185,13 +185,13 @@ void DenseQLTest::testRandom()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the dense matrix QL decomposition.
+/*!\brief Testing the dense matrix RQ decomposition.
 //
 // \return void
 */
 void runTest()
 {
-   DenseQLTest();
+   DenseTest();
 }
 //*************************************************************************************************
 
@@ -206,14 +206,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense matrix QL test.
+/*!\brief Macro for the execution of the dense matrix RQ test.
 */
-#define RUN_DENSE_QL_TEST \
-   blazetest::mathtest::decomposition::runTest()
+#define RUN_DENSE_RQ_TEST \
+   blazetest::mathtest::rq::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace rq
 
 } // namespace mathtest
 

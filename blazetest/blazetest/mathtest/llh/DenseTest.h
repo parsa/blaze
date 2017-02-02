@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/decomposition/DenseQRTest.h
-//  \brief Header file for the dense matrix QR test
+//  \file blazetest/mathtest/llh/DenseTest.h
+//  \brief Header file for the dense matrix LLH test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQRTEST_H_
-#define _BLAZETEST_MATHTEST_DECOMPOSITION_DENSEQRTEST_H_
+#ifndef _BLAZETEST_MATHTEST_LLH_DENSETEST_H_
+#define _BLAZETEST_MATHTEST_LLH_DENSETEST_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
@@ -56,7 +56,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace llh {
 
 //=================================================================================================
 //
@@ -65,18 +65,18 @@ namespace decomposition {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix QR tests.
+/*!\brief Auxiliary class for all dense matrix LLH tests.
 //
-// This class represents a test suite for the dense matrix QR decomposition functionality. It
-// performs a series of QR decompositions on all dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix LLH decomposition functionality. It
+// performs a series of LLH decompositions on all dense matrix types of the Blaze library.
 */
-class DenseQRTest
+class DenseTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseQRTest();
+   explicit DenseTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -127,46 +127,44 @@ class DenseQRTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the QR decomposition with a randomly initialized matrix of the given type.
+/*!\brief Test of the LLH decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix QR decomposition for a randomly initialized matrix of the
+// This function tests the dense matrix LLH decomposition for a randomly initialized matrix of the
 // given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
-void DenseQRTest::testRandom()
+void DenseTest::testRandom()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "QR decomposition";
+   test_ = "LLH decomposition";
 
    typedef blaze::RemoveAdaptor_<Type>  MT;
 
-   const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
-   const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );
+   const size_t n( blaze::rand<size_t>( 3UL, 8UL ) );
 
    Type A;
-   MT Q, R;
+   blaze::LowerMatrix<MT> L;
 
-   resize( A, m, n );
-   randomize( A );
+   resize( A, n, n );
+   makePositiveDefinite( A );
+   blaze::llh( A, L );
 
-   blaze::qr( A, Q, R );
+   const MT LLH( L * ctrans( L ) );
 
-   const MT QR( Q*R );
-
-   if( QR != A ) {
+   if( LLH != A ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: QR decomposition failed\n"
+          << " Error: LLH decomposition failed\n"
           << " Details:\n"
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
           << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
-          << "   Result:\n" << QR << "\n"
+          << "   Result:\n" << LLH << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -185,13 +183,13 @@ void DenseQRTest::testRandom()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the dense matrix QR decomposition.
+/*!\brief Testing the dense matrix LLH decomposition.
 //
 // \return void
 */
 void runTest()
 {
-   DenseQRTest();
+   DenseTest();
 }
 //*************************************************************************************************
 
@@ -206,14 +204,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense matrix QR test.
+/*!\brief Macro for the execution of the dense matrix LLH test.
 */
-#define RUN_DENSE_QR_TEST \
-   blazetest::mathtest::decomposition::runTest()
+#define RUN_DENSE_LLH_TEST \
+   blazetest::mathtest::llh::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace llh
 
 } // namespace mathtest
 

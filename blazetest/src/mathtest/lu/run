@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the decomposition module of the Blaze test suite
+#  Run script for the LU module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,13 +33,8 @@
 #==================================================================================================
 
 
-PATH_DECOMPOSITION=$( dirname "${BASH_SOURCE[0]}" )
+PATH_LU=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running decomposition tests..."
+echo " Running LU decomposition tests..."
 
-EXE=$PATH_DECOMPOSITION/DenseLUTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DECOMPOSITION/DenseLLHTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DECOMPOSITION/DenseQRTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DECOMPOSITION/DenseRQTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DECOMPOSITION/DenseQLTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DECOMPOSITION/DenseLQTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LU/DenseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/decomposition/DenseLLHTest.cpp
-//  \brief Source file for the dense matrix LLH test
+//  \file src/mathtest/ql/DenseTest.cpp
+//  \brief Source file for the dense matrix QL test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,18 +42,19 @@
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
-#include <blazetest/mathtest/decomposition/DenseLLHTest.h>
+#include <blazetest/mathtest/ql/DenseTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace ql {
 
 //=================================================================================================
 //
@@ -62,11 +63,11 @@ namespace decomposition {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DenseLLHTest test.
+/*!\brief Constructor for the DenseTest test.
 //
-// \exception std::runtime_error Error during LLH decomposition detected.
+// \exception std::runtime_error Error during QL decomposition detected.
 */
-DenseLLHTest::DenseLLHTest()
+DenseTest::DenseTest()
 {
    testGeneral();
    testSymmetric();
@@ -89,15 +90,15 @@ DenseLLHTest::DenseLLHTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for general matrices.
+/*!\brief Test of the QL decomposition functionality for general matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for general matrices. In case an error
+// This function tests the dense matrix QL decomposition for general matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testGeneral()
+void DenseTest::testGeneral()
 {
    //testRandom< blaze::DynamicMatrix<float,blaze::rowMajor   > >();
    //testRandom< blaze::DynamicMatrix<float,blaze::columnMajor> >();
@@ -115,15 +116,15 @@ void DenseLLHTest::testGeneral()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for symmetric matrices.
+/*!\brief Test of the QL decomposition functionality for symmetric matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for symmetric matrices. In case an error
+// This function tests the dense matrix QL decomposition for symmetric matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testSymmetric()
+void DenseTest::testSymmetric()
 {
    //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -141,15 +142,15 @@ void DenseLLHTest::testSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for Hermitian matrices.
+/*!\brief Test of the QL decomposition functionality for Hermitian matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for Hermitian matrices. In case an error
+// This function tests the dense matrix QL decomposition for Hermitian matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testHermitian()
+void DenseTest::testHermitian()
 {
    //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -167,15 +168,15 @@ void DenseLLHTest::testHermitian()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for lower matrices.
+/*!\brief Test of the QL decomposition functionality for lower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for lower matrices. In case an error
+// This function tests the dense matrix QL decomposition for lower matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testLower()
+void DenseTest::testLower()
 {
    //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -193,15 +194,15 @@ void DenseLLHTest::testLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for unilower matrices.
+/*!\brief Test of the QL decomposition functionality for unilower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for unilower matrices. In case an error
+// This function tests the dense matrix QL decomposition for unilower matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testUniLower()
+void DenseTest::testUniLower()
 {
    //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -219,15 +220,15 @@ void DenseLLHTest::testUniLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for upper matrices.
+/*!\brief Test of the QL decomposition functionality for upper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for upper matrices. In case an error
+// This function tests the dense matrix QL decomposition for upper matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testUpper()
+void DenseTest::testUpper()
 {
    //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -245,15 +246,15 @@ void DenseLLHTest::testUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for uniupper matrices.
+/*!\brief Test of the QL decomposition functionality for uniupper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for uniupper matrices. In case an error
+// This function tests the dense matrix QL decomposition for uniupper matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testUniUpper()
+void DenseTest::testUniUpper()
 {
    //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -271,15 +272,15 @@ void DenseLLHTest::testUniUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for diagonal matrices.
+/*!\brief Test of the QL decomposition functionality for diagonal matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for diagonal matrices. In case an error
+// This function tests the dense matrix QL decomposition for diagonal matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLLHTest::testDiagonal()
+void DenseTest::testDiagonal()
 {
    //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -295,7 +296,7 @@ void DenseLLHTest::testDiagonal()
 }
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace ql
 
 } // namespace mathtest
 
@@ -313,14 +314,14 @@ void DenseLLHTest::testDiagonal()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running dense matrix LLH decomposition test..." << std::endl;
+   std::cout << "   Running dense matrix QL decomposition test..." << std::endl;
 
    try
    {
-      RUN_DENSE_LLH_TEST;
+      RUN_DENSE_QL_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during dense matrix LLH decomposition test:\n"
+      std::cerr << "\n\n ERROR DETECTED during dense matrix QL decomposition test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/decomposition/DenseLUTest.cpp
-//  \brief Source file for the dense matrix LU test
+//  \file src/mathtest/rq/DenseTest.cpp
+//  \brief Source file for the dense matrix RQ test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -47,14 +47,14 @@
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
-#include <blazetest/mathtest/decomposition/DenseLUTest.h>
+#include <blazetest/mathtest/rq/DenseTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace decomposition {
+namespace rq {
 
 //=================================================================================================
 //
@@ -63,11 +63,11 @@ namespace decomposition {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the DenseLUTest test.
+/*!\brief Constructor for the DenseTest test.
 //
-// \exception std::runtime_error Error during LU decomposition detected.
+// \exception std::runtime_error Error during RQ decomposition detected.
 */
-DenseLUTest::DenseLUTest()
+DenseTest::DenseTest()
 {
    testGeneral();
    testSymmetric();
@@ -90,15 +90,15 @@ DenseLUTest::DenseLUTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for general matrices.
+/*!\brief Test of the RQ decomposition functionality for general matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for general matrices. In case an error
+// This function tests the dense matrix RQ decomposition for general matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testGeneral()
+void DenseTest::testGeneral()
 {
    //testRandom< blaze::DynamicMatrix<float,blaze::rowMajor   > >();
    //testRandom< blaze::DynamicMatrix<float,blaze::columnMajor> >();
@@ -116,15 +116,15 @@ void DenseLUTest::testGeneral()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for symmetric matrices.
+/*!\brief Test of the RQ decomposition functionality for symmetric matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for symmetric matrices. In case an error
+// This function tests the dense matrix RQ decomposition for symmetric matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testSymmetric()
+void DenseTest::testSymmetric()
 {
    //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::SymmetricMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -142,15 +142,15 @@ void DenseLUTest::testSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for Hermitian matrices.
+/*!\brief Test of the RQ decomposition functionality for Hermitian matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for Hermitian matrices. In case an error
+// This function tests the dense matrix RQ decomposition for Hermitian matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testHermitian()
+void DenseTest::testHermitian()
 {
    //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::HermitianMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -168,15 +168,15 @@ void DenseLUTest::testHermitian()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for lower matrices.
+/*!\brief Test of the RQ decomposition functionality for lower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for lower matrices. In case an error
+// This function tests the dense matrix RQ decomposition for lower matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testLower()
+void DenseTest::testLower()
 {
    //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::LowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -194,15 +194,15 @@ void DenseLUTest::testLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for unilower matrices.
+/*!\brief Test of the RQ decomposition functionality for unilower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for unilower matrices. In case an error
+// This function tests the dense matrix RQ decomposition for unilower matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testUniLower()
+void DenseTest::testUniLower()
 {
    //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UniLowerMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -220,15 +220,15 @@ void DenseLUTest::testUniLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for upper matrices.
+/*!\brief Test of the RQ decomposition functionality for upper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for upper matrices. In case an error
+// This function tests the dense matrix RQ decomposition for upper matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testUpper()
+void DenseTest::testUpper()
 {
    //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -246,15 +246,15 @@ void DenseLUTest::testUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for uniupper matrices.
+/*!\brief Test of the RQ decomposition functionality for uniupper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for uniupper matrices. In case an error
+// This function tests the dense matrix RQ decomposition for uniupper matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testUniUpper()
+void DenseTest::testUniUpper()
 {
    //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::UniUpperMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -272,15 +272,15 @@ void DenseLUTest::testUniUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LU decomposition functionality for diagonal matrices.
+/*!\brief Test of the RQ decomposition functionality for diagonal matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LU decomposition for diagonal matrices. In case an error
+// This function tests the dense matrix RQ decomposition for diagonal matrices. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseLUTest::testDiagonal()
+void DenseTest::testDiagonal()
 {
    //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::rowMajor   > > >();
    //testRandom< blaze::DiagonalMatrix< blaze::DynamicMatrix<float,blaze::columnMajor> > >();
@@ -296,7 +296,7 @@ void DenseLUTest::testDiagonal()
 }
 //*************************************************************************************************
 
-} // namespace decomposition
+} // namespace rq
 
 } // namespace mathtest
 
@@ -314,14 +314,14 @@ void DenseLUTest::testDiagonal()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running dense matrix LU decomposition test..." << std::endl;
+   std::cout << "   Running dense matrix RQ decomposition test..." << std::endl;
 
    try
    {
-      RUN_DENSE_LU_TEST;
+      RUN_DENSE_RQ_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during dense matrix LU decomposition test:\n"
+      std::cerr << "\n\n ERROR DETECTED during dense matrix RQ decomposition test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

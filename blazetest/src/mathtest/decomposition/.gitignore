@@ -1,9 +1,0 @@
-*.d
-*.o
-DenseLLHTest
-DenseLQTest
-DenseLUTest
-DenseQLTest
-DenseQRTest
-DenseRQTest
-
