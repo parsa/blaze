@@ -64,6 +64,7 @@
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/Random.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>

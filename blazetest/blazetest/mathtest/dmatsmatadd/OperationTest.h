@@ -72,6 +72,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blazetest/system/LAPACK.h>
