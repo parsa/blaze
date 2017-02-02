@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/lapack/geev.h>
 #include <blaze/math/lapack/gelqf.h>
 #include <blaze/math/lapack/geqlf.h>
 #include <blaze/math/lapack/geqp3.h>
