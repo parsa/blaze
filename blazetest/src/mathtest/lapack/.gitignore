@@ -1,6 +1,7 @@
 *.d
 *.o
 DecompositionTest
+EigenvalueTest
 InversionTest
 SolverTest
 SubstitutionTest

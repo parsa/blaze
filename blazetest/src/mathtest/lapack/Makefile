@@ -57,6 +57,9 @@ noop: $(BIN)
 DecompositionTest: DecompositionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+EigenvalueTest: EigenvalueTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 InversionTest: InversionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
