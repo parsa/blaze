@@ -67,6 +67,7 @@
 #include <blaze/math/lapack/potri.h>
 #include <blaze/math/lapack/potrs.h>
 #include <blaze/math/lapack/syev.h>
+#include <blaze/math/lapack/syevd.h>
 #include <blaze/math/lapack/sysv.h>
 #include <blaze/math/lapack/sytrf.h>
 #include <blaze/math/lapack/sytri.h>
