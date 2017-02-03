@@ -1834,7 +1834,7 @@
    \endcode
 
 // In this scenario, the \c evaluate() function assists in deducing the exact result type of
-// the operation via the 'auto' keyword. Please note that if \c evaluate() is used in this
+// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
 // way, no temporary vector is created and no copy operation is performed. Instead, the result
 // is directly written to the target vector due to the return value optimization (RVO). However,
 // if \c evaluate() is used in combination with an explicit target type, a temporary will be
@@ -3634,7 +3634,7 @@
    \endcode
 
 // In this scenario, the \c evaluate() function assists in deducing the exact result type of
-// the operation via the 'auto' keyword. Please note that if \c evaluate() is used in this
+// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
 // way, no temporary matrix is created and no copy operation is performed. Instead, the result
 // is directly written to the target matrix due to the return value optimization (RVO). However,
 // if \c evaluate() is used in combination with an explicit target type, a temporary will be
@@ -10689,6 +10689,258 @@
 // The last function throws a \a std::invalid_argument exception in case of an error. Note that
 // none of the functions does perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
+//
+//
+// \n \section lapack_eigenvalues Eigenvalues
+//
+// \subsection lapack_eigenvalues_general General Matrices
+//
+// The following functions provide an interface for the LAPACK functions \c sgeev(), \c dgeev(),
+// \c cgeev(), and \c zgeev(), which compute the eigenvalues and optionally the eigenvectors of
+// the given general matrix:
+
+   \code
+   void geev( char jobvl, char jobvr, int n, float* A, int lda, float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr, float* work, int lwork, int* info );
+
+   void geev( char jobvl, char jobvr, int n, double* A, int lda, double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr, double* work, int lwork, int* info );
+
+   void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda, complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr, complex<float>* work, int lwork, float* rwork, int* info );
+
+   void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda, complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr, complex<double>* work, int lwork, double* rwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename VT, bool TF >
+   void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
+   void geev( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename VT, bool TF, typename MT3, bool SO3 >
+   void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR );
+   \endcode
+
+// The complex eigenvalues of the given matrix \a A are returned in the given vector \a w.
+// Please note that no order of eigenvalues can be assumed, except that complex conjugate pairs
+// of eigenvalues appear consecutively with the eigenvalue having the positive imaginary part
+// first.
+//
+// If \a VR is provided as an argument, the right eigenvectors are returned in the rows of \a VR
+// in case \a VR is a row-major matrix and in the columns of \a VR in case \a VR is a column-major
+// matrix. The right eigenvector \f$v[j]\f$ of \a A satisfies
+
+                          \f[ A * v[j] = lambda[j] * v[j], \f]
+
+// where \f$lambda[j]\f$ is its eigenvalue.
+//
+// If \a VL is provided as an argument, the left eigenvectors are returned in the rows of \a VL
+// in case \a VL is a row-major matrix and in the columns of \a VL in case \a VL is a column-major
+// matrix. The left eigenvector \f$u[j]\f$ of \a A satisfies
+
+                       \f[ u[j]^{H} * A = lambda[j] * u[j]^{H}, \f]
+
+// where \f$u[j]^{H}\f$ denotes the conjugate transpose of \f$u[j]\f$.
+//
+// \a w, \a VL, and \a VR are resized to the correct dimensions (if possible and necessary). The
+// functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given matrix \a VL is a fixed size matrix and the dimensions don't match;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a VR is a fixed size matrix and the dimensions don't match;
+//  - ... the eigenvalue computation fails.
+//
+// The first four functions report failure via the \c info argument, the last four functions throw
+// an exception in case of an error.
+//
+//
+// \n \subsection lapack_eigenvalues_symmetric Symmetric Matrices
+//
+// The following functions provide an interface for the LAPACK functions \c ssyev() and \c dsyev(),
+// which compute the eigenvalues and eigenvectors of the given symmetric matrix:
+
+   \code
+   void syev( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* info );
+
+   void syev( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+   \endcode
+
+// Alternatively, the following functions can be used, which provide an interface to the LAPACK
+// functions \c ssyevd() and \c dsyevd(). In contrast to the syev() functions they use a
+// divide-and-conquer strategy for the computation of the left and right eigenvectors:
+
+   \code
+   void syevd( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* iwork, int liwork, int* info );
+
+   void syevd( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* iwork, int liwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void syevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+   \endcode
+
+// The real eigenvalues are returned in ascending order in the given vector \a w. \a w is resized
+// to the correct size (if possible and necessary). In case \a A is a row-major matrix, the left
+// eigenvectors are returned in the rows of \a A, in case \a A is a column-major matrix, the right
+// eigenvectors are returned in the columns of \a A.
+//
+// The functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given \a jobz argument is neither \c 'V' nor \c 'N';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the eigenvalue computation fails.
+//
+// The first two functions report failure via the \c info argument, the last function throws an
+// exception in case of an error.
+//
+// Via the following functions, which wrap the LAPACK functions \c ssyevx() and \c dsyevx(), it
+// is possible to compute a subset of eigenvalues and/or eigenvectors of a symmetric matrix:
+
+   \code
+   void syevx( char jobz, char range, char uplo, int n, float* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, float* Z, int ldz, float* work, int lwork, int* iwork, int* ifail, int* info );
+
+   void syevx( char jobz, char range, char uplo, int n, double* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, double* Z, int ldz, double* work, int lwork, int* iwork, int* ifail, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
+
+   template< typename MT, bool SO, typename VT, bool TF, typename ST >
+   size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
+   size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
+   size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+   \endcode
+
+// The number of eigenvalues to be computed is specified by the lower bound \c low and the upper
+// bound \c upp, which either form an integral or a floating point range.
+//
+// In case \a low and \a upp are of integral type, the function computes all eigenvalues in the
+// index range \f$[low..upp]\f$. The \a num resulting real eigenvalues are stored in ascending
+// order in the given vector \a w, which is either resized (if possible) or expected to be a
+// \a num-dimensional vector. The eigenvectors are returned in the rows of \a Z in case \a Z is
+// row-major matrix and in the columns of \a Z in case \a Z is a column-major matrix. \a Z is
+// resized (if possible) or expected to be a \a num-by-\a n row-major matrix or a \a n-by-\a num
+// column-major matrix.
+//
+// In case \a low and \a upp are of floating point type, the function computes all eigenvalues
+// in the half-open interval \f$(low..upp]\f$. The resulting real eigenvalues are stored in
+// ascending order in the given vector \a w, which is either resized (if possible) or expected
+// to be an \a n-dimensional vector. The eigenvectors are returned in the rows of \a Z in case
+// \a Z is a row-major matrix and in the columns of \a Z in case \a Z is a column-major matrix.
+// \a Z is resized (if possible) or expected to be a \a n-by-\a n matrix.
+//
+// The functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a Z is a fixed size matrix and the dimensions don't match;
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the eigenvalue computation fails.
+//
+// The first two functions report failure via the \c info argument, the last four functions throw
+// an exception in case of an error.
+//
+//
+// \n \subsection lapack_eigenvalues_hermitian Hermitian Matrices
+//
+// The following functions provide an interface for the LAPACK functions \c cheev() and \c zheev(),
+// which compute the eigenvalues and eigenvectors of the given Hermitian matrix:
+
+   \code
+   void heev( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* info );
+
+   void heev( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, float* rwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+   \endcode
+
+// Alternatively, the following functions can be used, which provide an interface to the LAPACK
+// functions \c cheevd() and \c zheevd(). In contrast to the heev() functions they use a
+// divide-and-conquer strategy for the computation of the left and right eigenvectors:
+
+   \code
+   void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* lrwork, int* iwork, int* liwork, int* info );
+
+   void heevd( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, double* rwork, int lrwork, int* iwork, int* liwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+   \endcode
+
+// The real eigenvalues are returned in ascending order in the given vector \a w. \a w is resized
+// to the correct size (if possible and necessary). In case \a A is a row-major matrix, the left
+// eigenvectors are returned in the rows of \a A, in case \a A is a column-major matrix, the right
+// eigenvectors are returned in the columns of \a A.
+//
+// The functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given \a jobz argument is neither \c 'V' nor \c 'N';
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the eigenvalue computation fails.
+//
+// The first two functions report failure via the \c info argument, the last function throws an
+// exception in case of an error.
+//
+// Via the following functions, which wrap the LAPACK functions \c cheevx() and \c zheevx(), it
+// is possible to compute a subset of eigenvalues and/or eigenvectors of an Hermitian matrix:
+
+   \code
+   void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, complex<float>* Z, int ldz, complex<float>* work, int lwork, float* rwork, int* iwork, int* ifail, int* info );
+
+   void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, complex<double>* Z, int ldz, complex<double>* work, int lwork, double* rwork, int* iwork, int* ifail, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
+
+   template< typename MT, bool SO, typename VT, bool TF, typename ST >
+   size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
+   size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
+   size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+   \endcode
+
+// The number of eigenvalues to be computed is specified by the lower bound \c low and the upper
+// bound \c upp, which either form an integral or a floating point range.
+//
+// In case \a low and \a upp are of integral type, the function computes all eigenvalues in the
+// index range \f$[low..upp]\f$. The \a num resulting real eigenvalues are stored in ascending
+// order in the given vector \a w, which is either resized (if possible) or expected to be a
+// \a num-dimensional vector. The eigenvectors are returned in the rows of \a Z in case \a Z is
+// row-major matrix and in the columns of \a Z in case \a Z is a column-major matrix. \a Z is
+// resized (if possible) or expected to be a \a num-by-\a n row-major matrix or a \a n-by-\a num
+// column-major matrix.
+//
+// In case \a low and \a upp are of floating point type, the function computes all eigenvalues
+// in the half-open interval \f$(low..upp]\f$. The resulting real eigenvalues are stored in
+// ascending order in the given vector \a w, which is either resized (if possible) or expected
+// to be an \a n-dimensional vector. The eigenvectors are returned in the rows of \a Z in case
+// \a Z is a row-major matrix and in the columns of \a Z in case \a Z is a column-major matrix.
+// \a Z is resized (if possible) or expected to be a \a n-by-\a n matrix.
+//
+// The functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a Z is a fixed size matrix and the dimensions don't match;
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U';
+//  - ... the eigenvalue computation fails.
+//
+// The first two functions report failure via the \c info argument, the last four functions throw
+// an exception in case of an error.
 //
 //
 // \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref configuration_files \n
