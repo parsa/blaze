@@ -4317,7 +4317,7 @@
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The functions compute the eigenvalues and/or eigenvectors a dense matrix by means of
+// \note The functions compute the eigenvalues and/or eigenvectors of a dense matrix by means of
 // LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is available
 // and linked to the executable. Otherwise a linker error will be created.
 //
@@ -4418,9 +4418,9 @@
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The functions compute the eigenvalues and/or eigenvectors a dense matrix by means of
-// LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is available
-// and linked to the executable. Otherwise a linker error will be created.
+// \note The functions compute the singular values and/or singular vectors of a dense matrix by
+// means of LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is
+// available and linked to the executable. Otherwise a linker error will be created.
 //
 //
 // \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
