@@ -56,7 +56,7 @@ all: functions simd blas lapack typetraits \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     determinant lu llh qr rq ql lq inversion eigen \
+     determinant lu llh qr rq ql lq inversion eigen svd \
      vectorserializer matrixserializer
 
 essential: all
@@ -72,7 +72,7 @@ noop: functions simd blas lapack typetraits \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
       subvector submatrix row column \
-      determinant lu llh qr rq ql lq inversion eigen \
+      determinant lu llh qr rq ql lq inversion eigen svd \
       vectorserializer matrixserializer
 
 
@@ -512,6 +512,11 @@ eigen:
 	@echo "Building the matrix eigenvalue/eigenvector tests..."
 	@$(MAKE) --no-print-directory -C ./eigen $(MAKECMDGOALS)
 
+svd:
+	@echo
+	@echo "Building the matrix singular value/vector tests..."
+	@$(MAKE) --no-print-directory -C ./svd $(MAKECMDGOALS)
+
 vectorserializer:
 	@echo
 	@echo "Building the VectorSerializer class tests..."
@@ -612,6 +617,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./lq clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
 	@$(MAKE) --no-print-directory -C ./eigen clean
+	@$(MAKE) --no-print-directory -C ./svd clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
 	@$(RM) $(OBJ) $(DEP)
@@ -640,5 +646,5 @@ clean:
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        determinant lu llh qr rq ql lq inversion eigen \
+        determinant lu llh qr rq ql lq inversion eigen svd \
         vectorserializer matrixserializer
