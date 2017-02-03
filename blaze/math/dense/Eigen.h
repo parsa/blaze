@@ -438,8 +438,8 @@ inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_<MT1>
 // \exception std::runtime_error Eigenvalue computation failed.
 //
 // This function computes the eigenvalues and eigenvectors of the given \a n-by-\a n matrix.
-// The eigenvalues are returned in the given vector \a w, which is resized to the correct size
-// (if possible and necessary).
+// The eigenvalues are returned in the given vector \a w and the eigenvectors are returned in the
+// given matrix \a V, which are both resized to the correct dimensions (if possible and necessary).
 //
 // Please note that in case the given matrix is either a compile time symmetric matrix with
 // floating point elements or an Hermitian matrix with complex elements, the resulting eigenvalues
@@ -460,7 +460,7 @@ inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_<MT1>
 //
 //  - ... the given matrix \a A is not a square matrix;
 //  - ... the given vector \a w is a fixed size vector and the size doesn't match;
-//  - ... the given matrix \a V is a fixed size vector and the dimensions don't match;
+//  - ... the given matrix \a V is a fixed size matrix and the dimensions don't match;
 //  - ... the eigenvalue computation fails.
 //
 // In all failure cases an exception is thrown.
