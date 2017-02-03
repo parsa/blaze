@@ -46,6 +46,7 @@
 #include <blaze/math/lapack/geqp3.h>
 #include <blaze/math/lapack/geqrf.h>
 #include <blaze/math/lapack/gerqf.h>
+#include <blaze/math/lapack/gesdd.h>
 #include <blaze/math/lapack/gesv.h>
 #include <blaze/math/lapack/gesvd.h>
 #include <blaze/math/lapack/getrf.h>
