@@ -10420,7 +10420,7 @@
    \endcode
 
 // If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The function fails if ...
+// of the linear system of equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
@@ -10457,7 +10457,7 @@
    \endcode
 
 // If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The function fails if ...
+// of the linear system of equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -10490,7 +10490,7 @@
    \endcode
 
 // If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The function fails if ...
+// of the linear system of equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -10527,7 +10527,7 @@
    \endcode
 
 // If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The function fails if ...
+// of the linear system of equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -10563,7 +10563,7 @@
    \endcode
 
 // If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The function fails if ...
+// of the linear system of equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -11042,6 +11042,156 @@
 //  - ... the eigenvalue computation fails.
 //
 // The first two functions report failure via the \c info argument, the last four functions throw
+// an exception in case of an error.
+//
+//
+// \n \section lapack_singular_value Singular Value
+//
+// The following functions provide an interface for the LAPACK functions \c sgesvd(), \c dgesvd(),
+// \c cgesvd(), and \c zgesvd(), which perform a singular value decomposition (SVD) on the given
+// general matrix:
+
+   \code
+   namespace blaze {
+
+   void gesvd( char jobu, char jobvt, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* info );
+
+   void gesvd( char jobu, char jobvt, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* info );
+
+   void gesvd( char jobu, char jobvt, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* info );
+
+   void gesvd( char jobu, char jobvt, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void gesvd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
+   void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, char jobu, char jobv );
+
+   template< typename MT1, bool SO, typename VT, bool TF, typename MT2 >
+   void gesvd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V, char jobu, char jobv );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
+   void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv );
+
+   } // namespace blaze
+   \endcode
+
+// Alternatively, the following functions can be used, which provide an interface to the LAPACK
+// functions \c sgesdd(), \c dgesdd(), \c cgesdd(), and \c zgesdd(). In contrast to the gesvd()
+// functions they compute the singular value decomposition (SVD) of the given general matrix by
+// applying a divide-and-conquer strategy for the computation of the left and right singular
+// vectors:
+
+   \code
+   namespace blaze {
+
+   void gesdd( char jobz, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* iwork, int* info );
+
+   void gesdd( char jobz, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* iwork, int* info );
+
+   void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+
+   void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
+   void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, char jobz );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
+   void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V, char jobz );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
+   void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz );
+
+   } // namespace blaze
+   \endcode
+
+// The resulting decomposition has the form
+
+                          \f[ A = U \cdot S \cdot VT, \f]
+
+// where \c S is a \a m-by-\a n matrix, which is zero except for its min(\a m,\a n) diagonal
+// elements, \a U is an \a m-by-\a m orthogonal matrix, and \a V is a \a n-by-\a n orthogonal
+// matrix. The diagonal elements of \c S are the singular values of \a A, the first min(\a m,\a n)
+// columns of \a U and rows of \a V are the left and right singular vectors of \a A, respectively.
+//
+// The resulting min(\a m,\a n) real and non-negative singular values are returned in descending
+// order in the vector \a s, which is resized to the correct size (if possible and necessary).
+//
+// Via the following functions, which wrap the LAPACK functions \c sgesvdx(), \c dgesvdx(),
+// \c cgesvdx(), and \c zgesvdx(), it is possible to compute a subset of singular values and/or
+// vectors:
+
+   \code
+   namespace blaze {
+
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* iwork, int* info );
+
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* iwork, int* info );
+
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+
+   template< typename MT, bool SO, typename VT, bool TF >
+   size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+
+   template< typename MT, bool SO, typename VT, bool TF, typename ST >
+   size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename ST >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, ST low, ST upp );
+
+   template< typename MT1, bool SO, typename VT, bool TF, typename MT2 >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V );
+
+   template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename ST >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V, ST low, ST upp );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+
+   template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3, typename ST >
+   size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
+
+   } // namespace blaze
+   \endcode
+
+// The number of singular values to be computed is specified by the lower bound \a low and the
+// upper bound \a upp, which either form an integral or a floating point range.
+//
+// In case \a low and \a upp form are of integral type, the function computes all singular values
+// in the index range \f$[low..upp]\f$. The \a num resulting real and non-negative singular values
+// are stored in descending order in the given vector \a s, which is either resized (if possible)
+// or expected to be a \a num-dimensional vector. The resulting left singular vectors are stored
+// in the given matrix \a U, which is either resized (if possible) or expected to be a
+// \a m-by-\a num matrix. The resulting right singular vectors are stored in the given matrix \a V,
+// which is either resized (if possible) or expected to be a \a num-by-\a n matrix.
+//
+// In case \a low and \a upp are of floating point type, the function computes all singular values
+// in the half-open interval \f$(low..upp]\f$. The resulting real and non-negative singular values
+// are stored in descending order in the given vector \a s, which is either resized (if possible)
+// or expected to be a min(\a m,\a n)-dimensional vector. The resulting left singular vectors are
+// stored in the given matrix \a U, which is either resized (if possible) or expected to be a
+// \a m-by-min(\a m,\a n) matrix. The resulting right singular vectors are stored in the given
+// matrix \a V, which is either resized (if possible) or expected to be a \a min(\a m,\a n)-by-\a n
+// matrix.
+//
+// The functions fail if ...
+//
+//  - ... the given matrix \a U is a fixed size matrix and the dimensions don't match;
+//  - ... the given vector \a s is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a V is a fixed size matrix and the dimensions don't match;
+//  - ... the given scalar values don't form a proper range;
+//  - ... the singular value decomposition fails.
+//
+// The first four functions report failure via the \c info argument, the remaining functions throw
 // an exception in case of an error.
 //
 //
