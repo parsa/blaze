@@ -735,7 +735,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
 //
 // This function computes the eigenvalues of a non-symmetric, non-Hermitian \a n-by-\a n matrix
 // based on the LAPACK geev() functions. Additionally, it computes the right eigenvectors. The
-// right eigenvector \f$v[j]\f$ of \a satisfies
+// right eigenvector \f$v[j]\f$ of \a A satisfies
 
                           \f[ A * v[j] = lambda[j] * v[j], \f]
 
@@ -1022,7 +1022,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
 //
 // This function computes the eigenvalues of a non-symmetric, non-Hermitian \a n-by-\a n matrix
 // based on the LAPACK geev() functions. Additionally, it computes the left and right eigenvectors.
-// The right eigenvector \f$v[j]\f$ of \a satisfies
+// The right eigenvector \f$v[j]\f$ of \a A satisfies
 
                           \f[ A * v[j] = lambda[j] * v[j], \f]
 
