@@ -4220,6 +4220,108 @@
    lq( A, L, Q );  // LQ decomposition of A
    \endcode
 
+// \n \section matrix_operations_eigenvalues Eigenvalues/Eigenvectors
+// <hr>
+//
+// The eigenvalues and eigenvectors of a dense matrix can be computed via the \c eigen() functions:
+
+   \code
+   template< typename MT, bool SO, typename VT, bool TF >
+   void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
+
+   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
+   void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V );
+   \endcode
+
+// The first function computes only the eigenvalues of the given \a n-by-\a n matrix, the second
+// function additionally computes the eigenvectors. The eigenvalues are returned in the given vector
+// \a w and the eigenvectors are returned in the given matrix \a V, which are both resized to the
+// correct dimensions (if possible and necessary).
+//
+// Depending on the given matrix type, the resulting eigenvalues are either of floating point
+// or complex type: In case the given matrix is either a compile time symmetric matrix with
+// floating point elements or an Hermitian matrix with complex elements, the resulting eigenvalues
+// will be of floating point type and therefore the elements of the given eigenvalue vector are
+// expected to be of floating point type. In all other cases they are expected to be of complex
+// type. Please note that for complex eigenvalues no order of eigenvalues can be assumed, except
+// that complex conjugate pairs of eigenvalues appear consecutively with the eigenvalue having
+// the positive imaginary part first.
+//
+// In case \a A is a row-major matrix, the left eigenvectors are returned in the rows of \a V,
+// in case \a A is a column-major matrix, the right eigenvectors are returned in the columns of
+// \a V. In case the given matrix is a compile time symmetric matrix with floating point elements,
+// the resulting eigenvectors will be of floating point type and therefore the elements of the
+// given eigenvector matrix are expected to be of floating point type. In all other cases they
+// are expected to be of complex type.
+//
+// The following examples give an impression of the computation of eigenvalues and eigenvectors
+// for a general, a symmetric, and an Hermitian matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
+   // ... Initialization
+
+   DynamicVector<complex<double>,columnVector> w( 5UL );   // The vector for the complex eigenvalues
+   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
+
+   eigen( A, w, V );
+   \endcode
+
+   \code
+   using blaze::SymmetricMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL, 5UL );  // The symmetric matrix A
+   // ... Initialization
+
+   DynamicVector<double,columnVector> w( 5UL );       // The vector for the real eigenvalues
+   DynamicMatrix<double,rowMajor>     V( 5UL, 5UL );  // The matrix for the left eigenvectors
+
+   eigen( A, w, V );
+   \endcode
+
+   \code
+   using blaze::HermitianMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL, 5UL );  // The Hermitian matrix A
+   // ... Initialization
+
+   DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
+   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
+
+   eigen( A, w, V );
+   \endcode
+
+// The functions fail if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the given vector \a w is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a V is a fixed size matrix and the dimensions don't match;
+//  - ... the eigenvalue computation fails.
+//
+// In all failure cases an exception is thrown.
+//
+// \note All \c eigen() functions can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The functions compute the eigenvalues and/or eigenvectors a dense matrix by means of
+// LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is available
+// and linked to the executable. Otherwise a linker error will be created.
+//
+//
 // \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
 */
 //*************************************************************************************************
@@ -10691,7 +10793,7 @@
 // must be performed prior to calling this function!
 //
 //
-// \n \section lapack_eigenvalues Eigenvalues
+// \n \section lapack_eigenvalues Eigenvalues/Eigenvectors
 //
 // \subsection lapack_eigenvalues_general General Matrices
 //
