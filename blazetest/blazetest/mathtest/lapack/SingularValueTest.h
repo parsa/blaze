@@ -234,7 +234,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, s1, 'N', 'O' );
       blaze::gesvd( A2, s2, 'N', 'O' );
 
-      if( s1 != s2 || abs( A1 ) != abs( A2 ) ) {
+      if( s1 != s2 || abs( A1 ) != abs( A2 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Singular value decomposition failed\n"
@@ -294,7 +294,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, s1, 'O', 'N' );
       blaze::gesvd( A2, s2, 'O', 'N' );
 
-      if( s1 != s2 || abs( A1 ) != abs( A2 ) ) {
+      if( s1 != s2 || abs( A1 ) != abs( A2 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Singular value decomposition failed\n"
@@ -332,7 +332,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, 'N', 'N' );
       blaze::gesvd( A2, U2, s2, 'N', 'N' );
 
-      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) ) {
+      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -440,7 +440,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, 'S', 'O' );
       blaze::gesvd( A2, U2, s2, 'S', 'O' );
 
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( A1 ) != abs( A2 ) ) {
+      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( A1 ) != abs( A2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -553,7 +553,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, s1, V1, 'N', 'N' );
       blaze::gesvd( A2, s2, V2, 'N', 'N' );
 
-      if( s1 != s2 || !isDefault( V1 ) || !isDefault( V2 ) ) {
+      if( s1 != s2 || !isDefault( V1 ) || !isDefault( V2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -589,7 +589,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, s1, V1, 'N', 'N' );
       blaze::gesvd( A2, s2, V2, 'N', 'N' );
 
-      if( s1 != s2 || !isDefault( V1 ) || !isDefault( V2 ) ) {
+      if( s1 != s2 || !isDefault( V1 ) || !isDefault( V2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -776,7 +776,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'N', 'N' );
       blaze::gesvd( A2, U2, s2, V2, 'N', 'N' );
 
-      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) || !isDefault( V1 ) || !isDefault( V2 ) ) {
+      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) || !isDefault( V1 ) || !isDefault( V2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -816,7 +816,7 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'N', 'N' );
       blaze::gesvd( A2, U2, s2, V2, 'N', 'N' );
 
-      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) || !isDefault( V1 ) || !isDefault( V2 ) ) {
+      if( s1 != s2 || !isDefault( U1 ) || !isDefault( U2 ) || !isDefault( V1 ) || !isDefault( V2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
@@ -1206,7 +1206,7 @@ void SingularValueTest::testGesdd()
       blaze::gesdd( A1, U1, s1, 'O' );
       blaze::gesdd( A2, U2, s2, 'O' );
 
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( A1 ) != abs( A2 ) ) {
+      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( A1 ) != abs( A2 ) ) {
          std::ostringstream oss;
          oss.precision( 30 );
          oss << " Test: " << test_ << "\n"
