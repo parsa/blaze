@@ -49,6 +49,7 @@
 #include <blaze/math/lapack/gesdd.h>
 #include <blaze/math/lapack/gesv.h>
 #include <blaze/math/lapack/gesvd.h>
+#include <blaze/math/lapack/gesvdx.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
 #include <blaze/math/lapack/getrs.h>
