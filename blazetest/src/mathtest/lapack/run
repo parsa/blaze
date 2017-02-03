@@ -42,3 +42,4 @@ EXE=$PATH_LAPACK/InversionTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; t
 EXE=$PATH_LAPACK/SubstitutionTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_LAPACK/SolverTest;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_LAPACK/EigenvalueTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LAPACK/SingularValueTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

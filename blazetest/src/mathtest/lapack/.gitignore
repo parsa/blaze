@@ -3,6 +3,7 @@
 DecompositionTest
 EigenvalueTest
 InversionTest
+SingularValueTest
 SolverTest
 SubstitutionTest
 

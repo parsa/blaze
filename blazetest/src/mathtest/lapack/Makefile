@@ -63,6 +63,9 @@ EigenvalueTest: EigenvalueTest.o
 InversionTest: InversionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+SingularValueTest: SingularValueTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 SolverTest: SolverTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
