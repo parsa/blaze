@@ -1953,7 +1953,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 // or expected to be a min(\a m,\a n)-dimensional vector. The resulting left singular vectors are
 // stored in the given matrix \a U, which is either resized (if possible) or expected to be a
 // \a m-by-min(\a m,\a n) matrix. The resulting right singular vectors are stored in the given
-// matrix \a V, which is either resized (if possible) or expected to be a \a min(\a m,\a n)-by-\a n
+// matrix \a V, which is either resized (if possible) or expected to be a min(\a m,\a n)-by-\a n
 // matrix.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,

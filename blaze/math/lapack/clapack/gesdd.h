@@ -137,8 +137,8 @@ inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double*
 //             \a V; \a U must be a general \a m-by-\a m matrix and \a V must be a general
 //             \a n-by-\a n matrix.
 //   - \c 'S': The first min(\a m,\a n) columns of \a U and the first min(\a m,\a n) rows of
-//             \a V are returned in \a U and \a V; \a U must be a \a m-by-\a min(\a m,\a n)
-//             matrix and \a V must be a \a min(\a m,\a n)-by-\a n matrix.
+//             \a V are returned in \a U and \a V; \a U must be a \a m-by-min(\a m,\a n)
+//             matrix and \a V must be a min(\a m,\a n)-by-\a n matrix.
 //   - \c 'O': If \a m >= \a n, the first \a n columns of \a U are returned in \a A and all
 //             rows of \a V are returned in \a V; matrix \a U is not referenced. Otherwise
 //             all columns of \a U are returned in \a U and the first \a m rows of \a V are
@@ -209,8 +209,8 @@ inline void gesdd( char jobz, int m, int n, float* A, int lda,
 //             \a V; \a U must be a general \a m-by-\a m matrix and \a V must be a general
 //             \a n-by-\a n matrix.
 //   - \c 'S': The first min(\a m,\a n) columns of \a U and the first min(\a m,\a n) rows of
-//             \a V are returned in \a U and \a V; \a U must be a \a m-by-\a min(\a m,\a n)
-//             matrix and \a V must be a \a min(\a m,\a n)-by-\a n matrix.
+//             \a V are returned in \a U and \a V; \a U must be a \a m-by-min(\a m,\a n)
+//             matrix and \a V must be a min(\a m,\a n)-by-\a n matrix.
 //   - \c 'O': If \a m >= \a n, the first \a n columns of \a U are returned in \a A and all
 //             rows of \a V are returned in \a V; matrix \a U is not referenced. Otherwise
 //             all columns of \a U are returned in \a U and the first \a m rows of \a V are
@@ -282,8 +282,8 @@ inline void gesdd( char jobz, int m, int n, double* A, int lda,
 //             \a V; \a U must be a general \a m-by-\a m matrix and \a V must be a general
 //             \a n-by-\a n matrix.
 //   - \c 'S': The first min(\a m,\a n) columns of \a U and the first min(\a m,\a n) rows of
-//             \a V are returned in \a U and \a V; \a U must be a \a m-by-\a min(\a m,\a n)
-//             matrix and \a V must be a \a min(\a m,\a n)-by-\a n matrix.
+//             \a V are returned in \a U and \a V; \a U must be a \a m-by-min(\a m,\a n)
+//             matrix and \a V must be a min(\a m,\a n)-by-\a n matrix.
 //   - \c 'O': If \a m >= \a n, the first \a n columns of \a U are returned in \a A and all
 //             rows of \a V are returned in \a V; matrix \a U is not referenced. Otherwise
 //             all columns of \a U are returned in \a U and the first \a m rows of \a V are
@@ -359,8 +359,8 @@ inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s
 //             \a V; \a U must be a general \a m-by-\a m matrix and \a V must be a general
 //             \a n-by-\a n matrix.
 //   - \c 'S': The first min(\a m,\a n) columns of \a U and the first min(\a m,\a n) rows of
-//             \a V are returned in \a U and \a V; \a U must be a \a m-by-\a min(\a m,\a n)
-//             matrix and \a V must be a \a min(\a m,\a n)-by-\a n matrix.
+//             \a V are returned in \a U and \a V; \a U must be a \a m-by-min(\a m,\a n)
+//             matrix and \a V must be a min(\a m,\a n)-by-\a n matrix.
 //   - \c 'O': If \a m >= \a n, the first \a n columns of \a U are returned in \a A and all
 //             rows of \a V are returned in \a V; matrix \a U is not referenced. Otherwise
 //             all columns of \a U are returned in \a U and the first \a m rows of \a V are
