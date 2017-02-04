@@ -4226,11 +4226,15 @@
 // The eigenvalues and eigenvectors of a dense matrix can be computed via the \c eigen() functions:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, typename VT, bool TF >
    void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
 
    template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
    void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V );
+
+   } // namespace blaze
    \endcode
 
 // The first function computes only the eigenvalues of the given \a n-by-\a n matrix, the second
@@ -4329,6 +4333,8 @@
 // functions:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, typename VT, bool TF >
    void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
@@ -4340,6 +4346,8 @@
 
    template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename MT3, typename ST >
    size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
+
+   } // namespace blaze
    \endcode
 
 // The first and third function compute only singular values of the given general \a m-by-\a n
@@ -4367,7 +4375,7 @@
 // or expected to be a min(\a m,\a n)-dimensional vector. The resulting left singular vectors are
 // stored in the given matrix \a U, which is either resized (if possible) or expected to be a
 // \a m-by-min(\a m,\a n) matrix. The resulting right singular vectors are stored in the given
-// matrix \a V, which is either resized (if possible) or expected to be a \a min(\a m,\a n)-by-\a n
+// matrix \a V, which is either resized (if possible) or expected to be a min(\a m,\a n)-by-\a n
 // matrix.
 //
 // The functions fail if ...
@@ -10903,6 +10911,8 @@
 // the given general matrix:
 
    \code
+   namespace blaze {
+
    void geev( char jobvl, char jobvr, int n, float* A, int lda, float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr, float* work, int lwork, int* info );
 
    void geev( char jobvl, char jobvr, int n, double* A, int lda, double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr, double* work, int lwork, int* info );
@@ -10922,6 +10932,8 @@
 
    template< typename MT1, bool SO1, typename MT2, bool SO2, typename VT, bool TF, typename MT3, bool SO3 >
    void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR );
+
+   } // namespace blaze
    \endcode
 
 // The complex eigenvalues of the given matrix \a A are returned in the given vector \a w.
@@ -10964,25 +10976,33 @@
 // which compute the eigenvalues and eigenvectors of the given symmetric matrix:
 
    \code
+   namespace blaze {
+
    void syev( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* info );
 
    void syev( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+
+   } // namespace blaze
    \endcode
 
 // Alternatively, the following functions can be used, which provide an interface to the LAPACK
-// functions \c ssyevd() and \c dsyevd(). In contrast to the syev() functions they use a
+// functions \c ssyevd() and \c dsyevd(). In contrast to the \c syev() functions they use a
 // divide-and-conquer strategy for the computation of the left and right eigenvectors:
 
    \code
+   namespace blaze {
+
    void syevd( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* iwork, int liwork, int* info );
 
    void syevd( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* iwork, int liwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void syevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+
+   } // namespace blaze
    \endcode
 
 // The real eigenvalues are returned in ascending order in the given vector \a w. \a w is resized
@@ -11005,6 +11025,8 @@
 // is possible to compute a subset of eigenvalues and/or eigenvectors of a symmetric matrix:
 
    \code
+   namespace blaze {
+
    void syevx( char jobz, char range, char uplo, int n, float* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, float* Z, int ldz, float* work, int lwork, int* iwork, int* ifail, int* info );
 
    void syevx( char jobz, char range, char uplo, int n, double* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, double* Z, int ldz, double* work, int lwork, int* iwork, int* ifail, int* info );
@@ -11020,6 +11042,8 @@
 
    template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
    size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+
+   } // namespace blaze
    \endcode
 
 // The number of eigenvalues to be computed is specified by the lower bound \c low and the upper
@@ -11058,25 +11082,33 @@
 // which compute the eigenvalues and eigenvectors of the given Hermitian matrix:
 
    \code
+   namespace blaze {
+
    void heev( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* info );
 
    void heev( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, float* rwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+
+   } // namespace blaze
    \endcode
 
 // Alternatively, the following functions can be used, which provide an interface to the LAPACK
-// functions \c cheevd() and \c zheevd(). In contrast to the heev() functions they use a
+// functions \c cheevd() and \c zheevd(). In contrast to the \c heev() functions they use a
 // divide-and-conquer strategy for the computation of the left and right eigenvectors:
 
    \code
+   namespace blaze {
+
    void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* lrwork, int* iwork, int* liwork, int* info );
 
    void heevd( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, double* rwork, int lrwork, int* iwork, int* liwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+
+   } // namespace blaze
    \endcode
 
 // The real eigenvalues are returned in ascending order in the given vector \a w. \a w is resized
@@ -11099,6 +11131,8 @@
 // is possible to compute a subset of eigenvalues and/or eigenvectors of an Hermitian matrix:
 
    \code
+   namespace blaze {
+
    void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, complex<float>* Z, int ldz, complex<float>* work, int lwork, float* rwork, int* iwork, int* ifail, int* info );
 
    void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, complex<double>* Z, int ldz, complex<double>* work, int lwork, double* rwork, int* iwork, int* ifail, int* info );
@@ -11114,6 +11148,8 @@
 
    template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
    size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+
+   } // namespace blaze
    \endcode
 
 // The number of eigenvalues to be computed is specified by the lower bound \c low and the upper
@@ -11146,7 +11182,7 @@
 // an exception in case of an error.
 //
 //
-// \n \section lapack_singular_value Singular Value
+// \n \section lapack_singular_values Singular Values/Singular Vectors
 //
 // The following functions provide an interface for the LAPACK functions \c sgesvd(), \c dgesvd(),
 // \c cgesvd(), and \c zgesvd(), which perform a singular value decomposition (SVD) on the given
@@ -11179,7 +11215,7 @@
    \endcode
 
 // Alternatively, the following functions can be used, which provide an interface to the LAPACK
-// functions \c sgesdd(), \c dgesdd(), \c cgesdd(), and \c zgesdd(). In contrast to the gesvd()
+// functions \c sgesdd(), \c dgesdd(), \c cgesdd(), and \c zgesdd(). In contrast to the \c gesvd()
 // functions they compute the singular value decomposition (SVD) of the given general matrix by
 // applying a divide-and-conquer strategy for the computation of the left and right singular
 // vectors:
@@ -11212,11 +11248,11 @@
 
 // The resulting decomposition has the form
 
-                          \f[ A = U \cdot S \cdot VT, \f]
+                          \f[ A = U \cdot S \cdot V, \f]
 
-// where \c S is a \a m-by-\a n matrix, which is zero except for its min(\a m,\a n) diagonal
+// where \a S is a \a m-by-\a n matrix, which is zero except for its min(\a m,\a n) diagonal
 // elements, \a U is an \a m-by-\a m orthogonal matrix, and \a V is a \a n-by-\a n orthogonal
-// matrix. The diagonal elements of \c S are the singular values of \a A, the first min(\a m,\a n)
+// matrix. The diagonal elements of \a S are the singular values of \a A, the first min(\a m,\a n)
 // columns of \a U and rows of \a V are the left and right singular vectors of \a A, respectively.
 //
 // The resulting min(\a m,\a n) real and non-negative singular values are returned in descending
@@ -11229,13 +11265,13 @@
    \code
    namespace blaze {
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
@@ -11281,7 +11317,7 @@
 // or expected to be a min(\a m,\a n)-dimensional vector. The resulting left singular vectors are
 // stored in the given matrix \a U, which is either resized (if possible) or expected to be a
 // \a m-by-min(\a m,\a n) matrix. The resulting right singular vectors are stored in the given
-// matrix \a V, which is either resized (if possible) or expected to be a \a min(\a m,\a n)-by-\a n
+// matrix \a V, which is either resized (if possible) or expected to be a min(\a m,\a n)-by-\a n
 // matrix.
 //
 // The functions fail if ...
