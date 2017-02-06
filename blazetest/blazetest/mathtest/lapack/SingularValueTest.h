@@ -1632,7 +1632,7 @@ void SingularValueTest::testGesdd()
 template< typename Type >
 void SingularValueTest::testGesvdx()
 {
-#if BLAZETEST_MATHTEST_LAPACK_MODE
+#if BLAZETEST_MATHTEST_LAPACK_MODE && BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX
 
    //=====================================================================================
    // gesvdx( DenseMatrix, DenseVector )

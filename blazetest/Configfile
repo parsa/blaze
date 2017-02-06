@@ -72,13 +72,17 @@ BLAS_LIBRARY_PATH=
 BLAS_LIBRARIES=
 
 # Configuration of the LAPACK library
-# Several matrix operations, such as the matrix inversion, LU and QR decomposition, are only
-# available via the LAPACK library. In case LAPACK is not available the according functions
-# cannot be used and therefore must not be included in any test. In case LAPACK is available
-# this switch should be set to 'yes', which enables all LAPACK specific tests. Additionally,
-# the required LAPACK library directives have to be specified (as for instance '-llapack').
-# In case LAPACK is not available the switch should be set to 'no'.
+# Several matrix operations, such as the matrix inversion, LU and QR decomposition, eigenvalue
+# computations and the SVD, are only available via a LAPACK library. In case no LAPACK library
+# is available, the according functions cannot be used and therefore must not be included in
+# any test. In case LAPACK is available this switch should be set to 'yes', which enables all
+# LAPACK specific tests, except for the tests for the 'gesvdx()' functions. These have to be
+# activated explicitly since not all LAPACK libraries provide the functions. Additionally, the
+# LAPACK library path has to be specified (otherwise it is assumed that the library resides in
+# standard paths) and the required LAPACK libraries have to be specified (as for instance
+# '-llapack'). In case LAPACK is not available the switch should be set to 'no'.
 LAPACK="no"
+LAPACK_SUPPORTS_GESVDX="no"
 LAPACK_LIBRARY_PATH=
 LAPACK_LIBRARIES=
 

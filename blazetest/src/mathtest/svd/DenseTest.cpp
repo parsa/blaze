@@ -95,8 +95,6 @@ DenseTest::DenseTest()
 */
 void DenseTest::testGeneral()
 {
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::complex;
@@ -106,417 +104,423 @@ void DenseTest::testGeneral()
    using blaze::rowVector;
 
 
-   //=====================================================================================
-   // svd( DenseMatrix, DenseVector )
-   //=====================================================================================
-
+#if BLAZETEST_MATHTEST_LAPACK_MODE
    {
-      test_ = "svd( DenseMatrix, DenseVector ) (double)";
+      //=====================================================================================
+      // svd( DenseMatrix, DenseVector )
+      //=====================================================================================
 
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
+      {
+         test_ = "svd( DenseMatrix, DenseVector ) (double)";
 
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
 
-      svd( A1, s1 );
-      svd( A2, s2 );
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
 
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
+         svd( A1, s1 );
+         svd( A2, s2 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseVector ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         svd( A1, s1 );
+         svd( A2, s2 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+
+      //=====================================================================================
+      // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix )
+      //=====================================================================================
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (double)";
+
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<double,columnMajor> U1;
+         DynamicMatrix<double,columnMajor> V1;
+
+         DynamicMatrix<double,rowMajor> U2;
+         DynamicMatrix<double,rowMajor> V2;
+
+         svd( A1, U1, s1, V1 );
+         svd( A2, U2, s2, V2 );
+
+         const blaze::DynamicMatrix<double,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0,   0.0,   0.0 },
+                                                                {   0.0, s1[1],   0.0,   0.0,   0.0 },
+                                                                {   0.0,   0.0, s1[2],   0.0,   0.0 },
+                                                                {   0.0,   0.0,   0.0, s1[3],   0.0 },
+                                                                {   0.0,   0.0,   0.0,   0.0, s1[4] } };
+         const blaze::DynamicMatrix<double,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0,   0.0,   0.0 },
+                                                                {   0.0, s2[1],   0.0,   0.0,   0.0 },
+                                                                {   0.0,   0.0, s2[2],   0.0,   0.0 },
+                                                                {   0.0,   0.0,   0.0, s2[3],   0.0 },
+                                                                {   0.0,   0.0,   0.0,   0.0, s2[4] } };
+
+         if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<complex<double>,columnMajor> U1;
+         DynamicMatrix<complex<double>,columnMajor> V1;
+
+         DynamicMatrix<complex<double>,rowMajor> U2;
+         DynamicMatrix<complex<double>,rowMajor> V2;
+
+         svd( A1, U1, s1, V1 );
+         svd( A2, U2, s2, V2 );
+
+         const blaze::DynamicMatrix<double,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0,   0.0,   0.0 },
+                                                                {   0.0, s1[1],   0.0,   0.0,   0.0 },
+                                                                {   0.0,   0.0, s1[2],   0.0,   0.0 },
+                                                                {   0.0,   0.0,   0.0, s1[3],   0.0 },
+                                                                {   0.0,   0.0,   0.0,   0.0, s1[4] } };
+         const blaze::DynamicMatrix<double,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0,   0.0,   0.0 },
+                                                                {   0.0, s2[1],   0.0,   0.0,   0.0 },
+                                                                {   0.0,   0.0, s2[2],   0.0,   0.0 },
+                                                                {   0.0,   0.0,   0.0, s2[3],   0.0 },
+                                                                {   0.0,   0.0,   0.0,   0.0, s2[4] } };
+
+         if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
+#endif
 
+
+#if BLAZETEST_MATHTEST_LAPACK_MODE && BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX
    {
-      test_ = "svd( DenseMatrix, DenseVector ) (complex<double>)";
+      //=====================================================================================
+      // svd( DenseMatrix, DenseVector, double, double )
+      //=====================================================================================
 
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+      {
+         test_ = "svd( DenseMatrix, DenseVector, double, double ) (double)";
 
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
 
-      svd( A1, s1 );
-      svd( A2, s2 );
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
 
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
+         svd( A1, s1, 0.0, 0.5 );
+         svd( A2, s2, 0.0, 0.5 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseVector, double, double ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         svd( A1, s1, 0.0, 0.5 );
+         svd( A2, s2, 0.0, 0.5 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+
+      //=====================================================================================
+      // svd( DenseMatrix, DenseVector, int, int )
+      //=====================================================================================
+
+      {
+         test_ = "svd( DenseMatrix, DenseVector, int, int ) (double)";
+
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         svd( A1, s1, 0, 1 );
+         svd( A2, s2, 0, 1 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseVector, int, int ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         svd( A1, s1, 0, 1 );
+         svd( A2, s2, 0, 1 );
+
+         if( s1 != s2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+
+      //=====================================================================================
+      // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double )
+      //=====================================================================================
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (double)";
+
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<double,columnMajor> U1;
+         DynamicMatrix<double,columnMajor> V1;
+
+         DynamicMatrix<double,rowMajor> U2;
+         DynamicMatrix<double,rowMajor> V2;
+
+         svd( A1, U1, s1, V1, 0.0, 0.5 );
+         svd( A2, U2, s2, V2, 0.0, 0.5 );
+
+         if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<complex<double>,columnMajor> U1;
+         DynamicMatrix<complex<double>,columnMajor> V1;
+
+         DynamicMatrix<complex<double>,rowMajor> U2;
+         DynamicMatrix<complex<double>,rowMajor> V2;
+
+         svd( A1, U1, s1, V1, 0.0, 0.5 );
+         svd( A2, U2, s2, V2, 0.0, 0.5 );
+
+         if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+
+      //=====================================================================================
+      // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int )
+      //=====================================================================================
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (double)";
+
+         DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<double,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<double,columnMajor> U1;
+         DynamicMatrix<double,columnMajor> V1;
+
+         DynamicMatrix<double,rowMajor> U2;
+         DynamicMatrix<double,rowMajor> V2;
+
+         svd( A1, U1, s1, V1, 0.0, 0.5 );
+         svd( A2, U2, s2, V2, 0.0, 0.5 );
+
+         if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (complex<double>)";
+
+         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         randomize( A1 );
+         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+
+         DynamicVector<double,rowVector> s1;
+         DynamicVector<double,rowVector> s2;
+
+         DynamicMatrix<complex<double>,columnMajor> U1;
+         DynamicMatrix<complex<double>,columnMajor> V1;
+
+         DynamicMatrix<complex<double>,rowMajor> U2;
+         DynamicMatrix<complex<double>,rowMajor> V2;
+
+         svd( A1, U1, s1, V1, 0, 1 );
+         svd( A2, U2, s2, V2, 0, 1 );
+
+         if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Singular value computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major singular values:\n" << s1 << "\n"
+                << "   Row-major left singular vectors:\n" << U1 << "\n"
+                << "   Row-major right singular vectors:\n" << V1 << "\n"
+                << "   Column-major singular values:\n" << s2 << "\n"
+                << "   Column-major left singular vectors:\n" << U2 << "\n"
+                << "   Column-major right singular vectors:\n" << V2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
-
-
-   //=====================================================================================
-   // svd( DenseMatrix, DenseVector, double, double )
-   //=====================================================================================
-
-   {
-      test_ = "svd( DenseMatrix, DenseVector, double, double ) (double)";
-
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      svd( A1, s1, 0.0, 0.5 );
-      svd( A2, s2, 0.0, 0.5 );
-
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "svd( DenseMatrix, DenseVector, double, double ) (complex<double>)";
-
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      svd( A1, s1, 0.0, 0.5 );
-      svd( A2, s2, 0.0, 0.5 );
-
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // svd( DenseMatrix, DenseVector, int, int )
-   //=====================================================================================
-
-   {
-      test_ = "svd( DenseMatrix, DenseVector, int, int ) (double)";
-
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      svd( A1, s1, 0, 1 );
-      svd( A2, s2, 0, 1 );
-
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "svd( DenseMatrix, DenseVector, int, int ) (complex<double>)";
-
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      svd( A1, s1, 0, 1 );
-      svd( A2, s2, 0, 1 );
-
-      if( s1 != s2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix )
-   //=====================================================================================
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (double)";
-
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<double,columnMajor> U1;
-      DynamicMatrix<double,columnMajor> V1;
-
-      DynamicMatrix<double,rowMajor> U2;
-      DynamicMatrix<double,rowMajor> V2;
-
-      svd( A1, U1, s1, V1 );
-      svd( A2, U2, s2, V2 );
-
-      const blaze::DynamicMatrix<double,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0,   0.0,   0.0 },
-                                                             {   0.0, s1[1],   0.0,   0.0,   0.0 },
-                                                             {   0.0,   0.0, s1[2],   0.0,   0.0 },
-                                                             {   0.0,   0.0,   0.0, s1[3],   0.0 },
-                                                             {   0.0,   0.0,   0.0,   0.0, s1[4] } };
-      const blaze::DynamicMatrix<double,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0,   0.0,   0.0 },
-                                                             {   0.0, s2[1],   0.0,   0.0,   0.0 },
-                                                             {   0.0,   0.0, s2[2],   0.0,   0.0 },
-                                                             {   0.0,   0.0,   0.0, s2[3],   0.0 },
-                                                             {   0.0,   0.0,   0.0,   0.0, s2[4] } };
-
-      if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (complex<double>)";
-
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<complex<double>,columnMajor> U1;
-      DynamicMatrix<complex<double>,columnMajor> V1;
-
-      DynamicMatrix<complex<double>,rowMajor> U2;
-      DynamicMatrix<complex<double>,rowMajor> V2;
-
-      svd( A1, U1, s1, V1 );
-      svd( A2, U2, s2, V2 );
-
-      const blaze::DynamicMatrix<double,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0,   0.0,   0.0 },
-                                                             {   0.0, s1[1],   0.0,   0.0,   0.0 },
-                                                             {   0.0,   0.0, s1[2],   0.0,   0.0 },
-                                                             {   0.0,   0.0,   0.0, s1[3],   0.0 },
-                                                             {   0.0,   0.0,   0.0,   0.0, s1[4] } };
-      const blaze::DynamicMatrix<double,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0,   0.0,   0.0 },
-                                                             {   0.0, s2[1],   0.0,   0.0,   0.0 },
-                                                             {   0.0,   0.0, s2[2],   0.0,   0.0 },
-                                                             {   0.0,   0.0,   0.0, s2[3],   0.0 },
-                                                             {   0.0,   0.0,   0.0,   0.0, s2[4] } };
-
-      if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double )
-   //=====================================================================================
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (double)";
-
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<double,columnMajor> U1;
-      DynamicMatrix<double,columnMajor> V1;
-
-      DynamicMatrix<double,rowMajor> U2;
-      DynamicMatrix<double,rowMajor> V2;
-
-      svd( A1, U1, s1, V1, 0.0, 0.5 );
-      svd( A2, U2, s2, V2, 0.0, 0.5 );
-
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (complex<double>)";
-
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<complex<double>,columnMajor> U1;
-      DynamicMatrix<complex<double>,columnMajor> V1;
-
-      DynamicMatrix<complex<double>,rowMajor> U2;
-      DynamicMatrix<complex<double>,rowMajor> V2;
-
-      svd( A1, U1, s1, V1, 0.0, 0.5 );
-      svd( A2, U2, s2, V2, 0.0, 0.5 );
-
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int )
-   //=====================================================================================
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (double)";
-
-      DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<double,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<double,columnMajor> U1;
-      DynamicMatrix<double,columnMajor> V1;
-
-      DynamicMatrix<double,rowMajor> U2;
-      DynamicMatrix<double,rowMajor> V2;
-
-      svd( A1, U1, s1, V1, 0.0, 0.5 );
-      svd( A2, U2, s2, V2, 0.0, 0.5 );
-
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (complex<double>)";
-
-      DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
-      randomize( A1 );
-      DynamicMatrix<complex<double>,rowMajor> A2( A1 );
-
-      DynamicVector<double,rowVector> s1;
-      DynamicVector<double,rowVector> s2;
-
-      DynamicMatrix<complex<double>,columnMajor> U1;
-      DynamicMatrix<complex<double>,columnMajor> V1;
-
-      DynamicMatrix<complex<double>,rowMajor> U2;
-      DynamicMatrix<complex<double>,rowMajor> V2;
-
-      svd( A1, U1, s1, V1, 0, 1 );
-      svd( A2, U2, s2, V2, 0, 1 );
-
-      if( s1 != s2 || abs( U1 ) != abs( U2 ) || abs( V1 ) != abs( V2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Singular value computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major singular values:\n" << s1 << "\n"
-             << "   Row-major left singular vectors:\n" << U1 << "\n"
-             << "   Row-major right singular vectors:\n" << V1 << "\n"
-             << "   Column-major singular values:\n" << s2 << "\n"
-             << "   Column-major left singular vectors:\n" << U2 << "\n"
-             << "   Column-major right singular vectors:\n" << V2 << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
 #endif
 }
 //*************************************************************************************************

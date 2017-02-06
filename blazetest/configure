@@ -443,5 +443,34 @@ fi
 cat >> ./blazetest/system/LAPACK.h <<EOF
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the LAPACK support of the gesvdx() functions.
+// \ingroup system
+//
+// The LAPACK gesvdx() functions are not supported by all LAPACK libraries. Via this compilation
+// switch tests for the gesvdx() function can be explicitly enabled/disabled. In case both the
+// LAPACK mode and this switch are enabled, all gesvdx() tests are included, in case either one
+// is disabled the gesvdx() tests are ignored.
+//
+// Possible settings for the LAPACK gesvdx() switch:
+//  - Deactivated: \b 0
+//  - Activated  : \b 1
+*/
+EOF
+
+if test $LAPACK_SUPPORTS_GESVDX = "yes"; then
+cat >> ./blazetest/system/LAPACK.h <<EOF
+#define BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX 1
+EOF
+else
+cat >> ./blazetest/system/LAPACK.h <<EOF
+#define BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX 0
+EOF
+fi
+
+cat >> ./blazetest/system/LAPACK.h <<EOF
+//*************************************************************************************************
+
 #endif
 EOF
