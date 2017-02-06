@@ -134,7 +134,7 @@ inline void geqlf( DenseMatrix<MT,SO>& A, ElementType_<MT>* tau )
       return;
    }
 
-   int lwork( n*lda );
+   int lwork( ( SO ? n : m ) * lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO ) {
