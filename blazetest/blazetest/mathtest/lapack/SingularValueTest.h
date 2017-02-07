@@ -856,12 +856,15 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'S', 'S' );
       blaze::gesvd( A2, U2, s2, V2, 'S', 'S' );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -903,12 +906,15 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'S', 'S' );
       blaze::gesvd( A2, U2, s2, V2, 'S', 'S' );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -950,12 +956,15 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'A', 'A' );
       blaze::gesvd( A2, U2, s2, V2, 'A', 'A' );
 
-      const blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0, 0.0, 0.0 },
-                                                                  {   0.0, s1[1],   0.0, 0.0, 0.0 },
-                                                                  {   0.0,   0.0, s1[2], 0.0, 0.0 } };
-      const blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0, 0.0, 0.0 },
-                                                                  {   0.0, s2[1],   0.0, 0.0, 0.0 },
-                                                                  {   0.0,   0.0, s2[2], 0.0, 0.0 } };
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -997,16 +1006,15 @@ void SingularValueTest::testGesvd()
       blaze::gesvd( A1, U1, s1, V1, 'A', 'A' );
       blaze::gesvd( A2, U2, s2, V2, 'A', 'A' );
 
-      const blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] },
-                                                                  {   0.0,   0.0,   0.0 },
-                                                                  {   0.0,   0.0,   0.0 } };
-      const blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] },
-                                                                  {   0.0,   0.0,   0.0 },
-                                                                  {   0.0,   0.0,   0.0 } };
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -1442,12 +1450,15 @@ void SingularValueTest::testGesdd()
       blaze::gesdd( A1, U1, s1, V1, 'S' );
       blaze::gesdd( A2, U2, s2, V2, 'S' );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -1489,12 +1500,15 @@ void SingularValueTest::testGesdd()
       blaze::gesdd( A1, U1, s1, V1, 'S' );
       blaze::gesdd( A2, U2, s2, V2, 'S' );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -1536,12 +1550,15 @@ void SingularValueTest::testGesdd()
       blaze::gesdd( A1, U1, s1, V1, 'A' );
       blaze::gesdd( A2, U2, s2, V2, 'A' );
 
-      const blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0, 0.0, 0.0 },
-                                                                  {   0.0, s1[1],   0.0, 0.0, 0.0 },
-                                                                  {   0.0,   0.0, s1[2], 0.0, 0.0 } };
-      const blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0, 0.0, 0.0 },
-                                                                  {   0.0, s2[1],   0.0, 0.0, 0.0 },
-                                                                  {   0.0,   0.0, s2[2], 0.0, 0.0 } };
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -1583,16 +1600,15 @@ void SingularValueTest::testGesdd()
       blaze::gesdd( A1, U1, s1, V1, 'A' );
       blaze::gesdd( A2, U2, s2, V2, 'A' );
 
-      const blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] },
-                                                                  {   0.0,   0.0,   0.0 },
-                                                                  {   0.0,   0.0,   0.0 } };
-      const blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] },
-                                                                  {   0.0,   0.0,   0.0 },
-                                                                  {   0.0,   0.0,   0.0 } };
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -2315,12 +2331,15 @@ void SingularValueTest::testGesvdx()
       blaze::gesvdx( A1, U1, s1, V1 );
       blaze::gesvdx( A2, U2, s2, V2 );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
@@ -2362,12 +2381,15 @@ void SingularValueTest::testGesvdx()
       blaze::gesvdx( A1, U1, s1, V1 );
       blaze::gesvdx( A2, U2, s2, V2 );
 
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1{ { s1[0],   0.0,   0.0 },
-                                                                  {   0.0, s1[1],   0.0 },
-                                                                  {   0.0,   0.0, s1[2] } };
-      const blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2{ { s2[0],   0.0,   0.0 },
-                                                                  {   0.0, s2[1],   0.0 },
-                                                                  {   0.0,   0.0, s2[2] } };
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S1;
+      S1(0,0) = s1[0];
+      S1(1,1) = s1[1];
+      S1(2,2) = s1[2];
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> S2;
+      S2(0,0) = s2[0];
+      S2(1,1) = s2[1];
+      S2(2,2) = s2[2];
 
       if( s1 != s2 || ( U1 * S1 * V1 ) != ( U2 * S2 * V2 ) ) {
          std::ostringstream oss;
