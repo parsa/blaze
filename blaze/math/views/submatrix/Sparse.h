@@ -59,6 +59,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
@@ -2404,10 +2405,14 @@ inline void Submatrix<MT,AF,false,false>::assign( const DenseMatrix<MT2,SO>& rhs
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( i, j, (~rhs)(i,j) );
-         else
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( (~rhs)(i,j) );
+            if( !isDefault<strict>( value ) )
+               set( i, j, value );
+         }
+         else {
             append( i, j, (~rhs)(i,j), true );
+         }
       }
       finalize( i );
    }
@@ -2440,10 +2445,14 @@ inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,false>&
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( i, element->index(), element->value() );
-         else
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( element->value() );
+            if( !isDefault<strict>( value ) )
+               set( i, element->index(), value );
+         }
+         else {
             append( i, element->index(), element->value(), true );
+         }
       }
       finalize( i );
    }
@@ -2491,10 +2500,14 @@ inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,true>& 
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<n_; ++j ) {
       for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( element->index(), j, element->value() );
-         else
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( element->value() );
+            if( !isDefault<strict>( value ) )
+               set( element->index(), j, value );
+         }
+         else {
             append( element->index(), j, element->value(), true );
+         }
    }
 }
 /*! \endcond */
@@ -4895,10 +4908,14 @@ inline void Submatrix<MT,AF,true,false>::assign( const DenseMatrix<MT2,SO>& rhs 
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( i, j, (~rhs)(i,j) );
-         else
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( (~rhs)(i,j) );
+            if( !isDefault<strict>( value ) )
+               set( i, j, value );
+         }
+         else {
             append( i, j, (~rhs)(i,j), true );
+         }
       }
       finalize( j );
    }
@@ -4931,8 +4948,11 @@ inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,true>& r
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( element->index(), j, element->value() );
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( element->value() );
+            if( !isDefault<strict>( value ) )
+               set( element->index(), j, value );
+         }
          else
             append( element->index(), j, element->value(), true );
       }
@@ -4982,10 +5002,14 @@ inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,false>& 
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<m_; ++i ) {
       for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
-            set( i, element->index(), element->value() );
-         else
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+            const ElementType& value( element->value() );
+            if( !isDefault<strict>( value ) )
+               set( i, element->index(), value );
+         }
+         else {
             append( i, element->index(), element->value(), true );
+         }
    }
 }
 /*! \endcond */
