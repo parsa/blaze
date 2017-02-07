@@ -67,8 +67,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a RQ decomposition with a matrix (unmrq) */
 //@{
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void unmrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+template< typename MT1, bool SO, typename MT2 >
+inline void unmrq( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
                    char side, char trans, const ElementType_<MT2>* tau );
 //@}
 //*************************************************************************************************
