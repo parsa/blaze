@@ -2972,6 +2972,71 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
       //=====================================================================================
+      // Transpose cross product with multiplication assignment
+      //=====================================================================================
+
+      // Transpose cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Transpose cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= trans( lhs_ % rhs_ );
+            tsres_   *= trans( lhs_ % rhs_ );
+            trefres_ *= trans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkTransposeResults<VT1,VT2>();
+
+         try {
+            initResults();
+            dres_   *= trans( tlhs_ % trhs_ );
+            sres_   *= trans( tlhs_ % trhs_ );
+            refres_ *= trans( treflhs_ % trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkResults<TVT1,TVT2>();
+      }
+
+      // Transpose cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Transpose cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= trans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   *= trans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ *= trans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkTransposeResults<VT1,VT2>();
+
+         try {
+            initResults();
+            dres_   *= trans( eval( tlhs_ ) % eval( trhs_ ) );
+            sres_   *= trans( eval( tlhs_ ) % eval( trhs_ ) );
+            refres_ *= trans( eval( treflhs_ ) % eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
       // Transpose cross product with division assignment
       //=====================================================================================
 
@@ -3247,6 +3312,71 @@ void OperationTest<VT1,VT2>::testCTransOperation()
             dres_   -= ctrans( eval( tlhs_ ) % eval( trhs_ ) );
             sres_   -= ctrans( eval( tlhs_ ) % eval( trhs_ ) );
             refres_ -= ctrans( eval( treflhs_ ) % eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose cross product with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate transpose cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Conjugate transpose cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( lhs_ % rhs_ );
+            tsres_   *= ctrans( lhs_ % rhs_ );
+            trefres_ *= ctrans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkTransposeResults<VT1,VT2>();
+
+         try {
+            initResults();
+            dres_   *= ctrans( tlhs_ % trhs_ );
+            sres_   *= ctrans( tlhs_ % trhs_ );
+            refres_ *= ctrans( treflhs_ % trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkResults<TVT1,TVT2>();
+      }
+
+      // Conjugate transpose cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Conjugate transpose cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   *= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ *= ctrans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkTransposeResults<VT1,VT2>();
+
+         try {
+            initResults();
+            dres_   *= ctrans( eval( tlhs_ ) % eval( trhs_ ) );
+            sres_   *= ctrans( eval( tlhs_ ) % eval( trhs_ ) );
+            refres_ *= ctrans( eval( treflhs_ ) % eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
