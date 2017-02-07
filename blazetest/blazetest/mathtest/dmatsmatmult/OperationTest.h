@@ -4903,9 +4903,9 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
       RT2  refrhs;
 
       try {
-         rhs    = trans( lhs_ );
-         orhs   = trans( lhs_ );
-         refrhs = trans( lhs_ );
+         rhs    = ctrans( lhs_ );
+         orhs   = ctrans( lhs_ );
+         refrhs = ctrans( lhs_ );
       }
       catch( std::exception& ) {
          return;
@@ -5334,9 +5334,9 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::FalseType )
       RT1  reflhs;
 
       try {
-         lhs    = trans( rhs_ );
-         olhs   = trans( rhs_ );
-         reflhs = trans( rhs_ );
+         lhs    = ctrans( rhs_ );
+         olhs   = ctrans( rhs_ );
+         reflhs = ctrans( rhs_ );
       }
       catch( std::exception& ) {
          return;
