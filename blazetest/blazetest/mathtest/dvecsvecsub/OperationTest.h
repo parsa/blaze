@@ -1101,6 +1101,71 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
 
       //=====================================================================================
+      // Subtraction with multiplication assignment
+      //=====================================================================================
+
+      // Subtraction with multiplication assignment with the given vectors
+      {
+         test_  = "Subtraction with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= lhs_ - rhs_;
+            sres_   *= lhs_ - rhs_;
+            refres_ *= reflhs_ - refrhs_;
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= tlhs_ - trhs_;
+            tsres_   *= tlhs_ - trhs_;
+            trefres_ *= treflhs_ - trefrhs_;
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Subtraction with multiplication assignment with evaluated vectors
+      {
+         test_  = "Subtraction with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= eval( lhs_ ) - eval( rhs_ );
+            sres_   *= eval( lhs_ ) - eval( rhs_ );
+            refres_ *= eval( reflhs_ ) - eval( refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= eval( tlhs_ ) - eval( trhs_ );
+            tsres_   *= eval( tlhs_ ) - eval( trhs_ );
+            trefres_ *= eval( treflhs_ ) - eval( trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
       // Subtraction with division assignment
       //=====================================================================================
 
