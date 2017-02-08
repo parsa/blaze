@@ -3986,7 +3986,7 @@
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The functions invert the dense matrix by means of LAPACK kernels. Thus the functions can
-// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
+// only be used if a fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
 //
 // \note It is not possible to use any kind of view on the expression object returned by the
@@ -4010,7 +4010,7 @@
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The functions decompose a dense matrix by means of LAPACK kernels. Thus the functions can
-// only be used if the fitting LAPACK library is available and linked to the executable. Otherwise
+// only be used if a fitting LAPACK library is available and linked to the executable. Otherwise
 // a linker error will be created.
 //
 // \subsection matrix_operations_decomposition_lu LU Decomposition
@@ -4322,11 +4322,11 @@
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The functions compute the eigenvalues and/or eigenvectors of a dense matrix by means of
-// LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is available
+// LAPACK kernels. Thus the functions can only be used if a fitting LAPACK library is available
 // and linked to the executable. Otherwise a linker error will be created.
 //
 //
-// \n \section matrix_operations_singularvalues Singular Values/Vectors
+// \n \section matrix_operations_singularvalues Singular Values/Singular Vectors
 // <hr>
 //
 // The singular value decomposition (SVD) of a dense matrix can be computed via the \c svd()
@@ -4427,7 +4427,7 @@
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The functions compute the singular values and/or singular vectors of a dense matrix by
-// means of LAPACK kernels. Thus the functions can only be used if the fitting LAPACK library is
+// means of LAPACK kernels. Thus the functions can only be used if a fitting LAPACK library is
 // available and linked to the executable. Otherwise a linker error will be created.
 //
 //
@@ -9803,7 +9803,7 @@
 // \c complex<float>, or \c complex<double> element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //
-// \note All functions can only be used if the fitting LAPACK library is available and linked to
+// \note All functions can only be used if a fitting LAPACK library is available and linked to
 // the final executable. Otherwise a call to this function will result in a linker error.
 //
 // \note For performance reasons all functions do only provide the basic exception safety guarantee,
