@@ -259,8 +259,9 @@ inline EnableIf_< IsComplex< ElementType_<MT> > >
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
@@ -517,8 +518,9 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1    // Type of the matrix A
         , bool SO         // Storage order of all matrices
@@ -785,8 +787,9 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1    // Type of the matrix A
         , bool SO         // Storage order of all matrices
@@ -1083,8 +1086,9 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1    // Type of the matrix A
         , bool SO         // Storage order of all matrices

@@ -119,8 +119,9 @@ inline void ormqr( char side, char trans, int m, int n, int k, const double* A, 
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void ormqr( char side, char trans, int m, int n, int k, const float* A, int lda,
                    const float* tau, float* C, int ldc, float* work, int lwork, int* info )
@@ -174,8 +175,9 @@ inline void ormqr( char side, char trans, int m, int n, int k, const float* A, i
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda,
                    const double* tau, double* C, int ldc, double* work, int lwork, int* info )

@@ -139,8 +139,9 @@ inline void syevx( char jobz, char range, char uplo, int n, double* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void syevx( char jobz, char range, char uplo, int n, float* A, int lda,
                    float vl, float vu, int il, int iu, float abstol, int* m, float* w,
@@ -208,8 +209,9 @@ inline void syevx( char jobz, char range, char uplo, int n, float* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void syevx( char jobz, char range, char uplo, int n, double* A, int lda,
                    double vl, double vu, int il, int iu, double abstol, int* m, double* w,

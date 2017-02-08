@@ -209,8 +209,9 @@ inline size_t syevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
@@ -334,8 +335,9 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT    // Type of the matrix A
         , bool SO        // Storage order of the matrix A
@@ -535,8 +537,9 @@ inline size_t syevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1  // Type of the matrix A
         , bool SO1      // Storage order of the matrix A
@@ -680,8 +683,9 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1   // Type of the matrix A
         , bool SO1       // Storage order of the matrix A

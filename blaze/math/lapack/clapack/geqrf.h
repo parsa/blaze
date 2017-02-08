@@ -137,8 +137,9 @@ inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* t
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqrf( int m, int n, float* A, int lda, float* tau,
                    float* work, int lwork, int* info )
@@ -193,8 +194,9 @@ inline void geqrf( int m, int n, float* A, int lda, float* tau,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqrf( int m, int n, double* A, int lda, double* tau,
                    double* work, int lwork, int* info )
@@ -249,8 +251,9 @@ inline void geqrf( int m, int n, double* A, int lda, double* tau,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
                    complex<float>* work, int lwork, int* info )
@@ -308,8 +311,9 @@ inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
                    complex<double>* work, int lwork, int* info )

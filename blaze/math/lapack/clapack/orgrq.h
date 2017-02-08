@@ -111,8 +111,9 @@ inline void orgrq( int m, int n, int k, double* A, int lda, const double* tau,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void orgrq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info )
 {
@@ -148,8 +149,9 @@ inline void orgrq( int m, int n, int k, float* A, int lda, const float* tau, flo
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void orgrq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info )
 {

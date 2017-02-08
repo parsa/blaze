@@ -114,8 +114,9 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
                    const int* ipiv, complex<float>* B, int ldb, int* info )
@@ -158,8 +159,9 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
                    const int* ipiv, complex<double>* B, int ldb, int* info )

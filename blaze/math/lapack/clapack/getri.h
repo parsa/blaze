@@ -122,8 +122,9 @@ inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info )
 {
@@ -164,8 +165,9 @@ inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int l
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info )
 {
@@ -206,8 +208,9 @@ inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
                    complex<float>* work, int lwork, int* info )
@@ -252,8 +255,9 @@ inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
                    complex<double>* work, int lwork, int* info )

@@ -154,8 +154,9 @@ inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
                   float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
@@ -224,8 +225,9 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
                   double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
@@ -294,8 +296,9 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
                   complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr,
@@ -368,8 +371,9 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
                   complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr,

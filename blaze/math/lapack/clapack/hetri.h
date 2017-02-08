@@ -112,8 +112,9 @@ inline void hetri( char uplo, int n, complex<double>* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hetri( char uplo, int n, complex<float>* A, int lda,
                    const int* ipiv, complex<float>* work, int* info )
@@ -154,8 +155,9 @@ inline void hetri( char uplo, int n, complex<float>* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hetri( char uplo, int n, complex<double>* A, int lda,
                    const int* ipiv, complex<double>* work, int* info )

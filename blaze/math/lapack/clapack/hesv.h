@@ -129,8 +129,9 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
                   complex<float>* B, int ldb, complex<float>* work, int lwork, int* info )
@@ -188,8 +189,9 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
                   complex<double>* B, int ldb, complex<double>* work, int lwork, int* info )

@@ -115,7 +115,7 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L );
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an

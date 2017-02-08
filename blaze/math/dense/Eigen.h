@@ -272,7 +272,7 @@ inline DisableIf_< Or< And< IsSymmetric<MT>, IsFloatingPoint< ElementType_<MT> >
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
 // \note Further options for computing eigenvalues and eigenvectors are available via the geev(),
@@ -518,7 +518,7 @@ inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_<MT1>
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
 // \note Further options for computing eigenvalues and eigenvectors are available via the geev(),

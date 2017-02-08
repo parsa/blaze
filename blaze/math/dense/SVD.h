@@ -120,11 +120,11 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note Further options for computing eigenvalues and eigenvectors are available via the gesvd(),
-// gesdd(), and gesvdx() functions.
+// \note Further options for computing singular values and singular vectors are available via the
+// gesvd(), gesdd(), and gesvdx() functions.
 */
 template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
@@ -198,11 +198,11 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note Further options for computing eigenvalues and eigenvectors are available via the gesvd(),
-// gesdd(), and gesvdx() functions.
+// \note Further options for computing singular values and singular vectors are available via the
+// gesvd(), gesdd(), and gesvdx() functions.
 */
 template< typename MT1    // Type of the matrix A
         , bool SO         // Storage order of all matrices
@@ -295,11 +295,11 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note Further options for computing eigenvalues and eigenvectors are available via the gesvd(),
-// gesdd(), and gesvdx() functions.
+// \note Further options for computing singular values and singular vectors are available via the
+// gesvd(), gesdd(), and gesvdx() functions.
 */
 template< typename MT    // Type of the matrix A
         , bool SO        // Storage order of the matrix A
@@ -398,11 +398,11 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a call to this function will result in a linker error.
 //
-// \note Further options for computing eigenvalues and eigenvectors are available via the gesvd(),
-// gesdd(), and gesvdx() functions.
+// \note Further options for computing singular values and singular vectors are available via the
+// gesvd(), gesdd(), and gesvdx() functions.
 */
 template< typename MT1   // Type of the matrix A
         , bool SO        // Storage order of all matrices

@@ -117,8 +117,9 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info )
 {
@@ -156,8 +157,9 @@ inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info )
 {
@@ -195,8 +197,9 @@ inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double*
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
                    int lda, complex<float>* B, int ldb, int* info )
@@ -238,8 +241,9 @@ inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
                    int lda, complex<double>* B, int ldb, int* info )

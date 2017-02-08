@@ -170,8 +170,9 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<doub
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, int lda,
                     float vl, float vu, int il, int iu, int* ns,
@@ -257,8 +258,9 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, in
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, int lda,
                     double vl, double vu, int il, int iu, int* ns,
@@ -345,8 +347,9 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, i
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<float>* A, int lda,
                     float vl, float vu, int il, int iu, int* ns,
@@ -437,8 +440,9 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<floa
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<double>* A, int lda,
                     double vl, double vu, int il, int iu, int* ns,

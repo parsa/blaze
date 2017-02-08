@@ -105,8 +105,9 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 //
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an
 // exception \a A may already have been modified.

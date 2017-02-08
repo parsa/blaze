@@ -156,8 +156,9 @@ inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double*
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesdd( char jobz, int m, int n, float* A, int lda,
                    float* s, float* U, int ldu, float* V, int ldv,
@@ -228,8 +229,9 @@ inline void gesdd( char jobz, int m, int n, float* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesdd( char jobz, int m, int n, double* A, int lda,
                    double* s, double* U, int ldu, double* V, int ldv,
@@ -301,8 +303,9 @@ inline void gesdd( char jobz, int m, int n, double* A, int lda,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s,
                    complex<float>* U, int ldu, complex<float>* V, int ldv,
@@ -378,8 +381,9 @@ inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double* s,
                    complex<double>* U, int ldu, complex<double>* V, int ldv,

@@ -375,7 +375,8 @@ ElementType_<MT> detNxN( const DenseMatrix<MT,SO>& dm )
 // \note The computation of the determinant is numerically unreliable since especially for large
 // matrices the value can overflow during the computation. Please note that this function does
 // not guarantee that it is possible to compute the determinant with the given matrix!
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+//
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
 template< typename MT  // Type of the dense matrix

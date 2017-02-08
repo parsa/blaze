@@ -155,8 +155,9 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 //
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!

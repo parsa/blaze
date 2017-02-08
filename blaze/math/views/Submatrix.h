@@ -1696,7 +1696,7 @@ inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Submatrix<MT,AF,SO,DF
 // In all failure cases either a compilation error is created if the failure can be predicted at
 // compile time or a \a std::invalid_argument exception is thrown.
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
+// \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 //
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an

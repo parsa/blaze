@@ -122,8 +122,9 @@ inline void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
                    float* work, int lwork, int* info )
@@ -179,8 +180,9 @@ inline void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
                    double* work, int lwork, int* info )

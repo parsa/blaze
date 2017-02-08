@@ -129,8 +129,9 @@ inline void unmlq( char side, char trans, int m, int n, int k, const complex<dou
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda,
                    const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work,
@@ -190,8 +191,9 @@ inline void unmlq( char side, char trans, int m, int n, int k, const complex<flo
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \note This function can only be used if the fitting LAPACK library is available and linked to
-// the executable. Otherwise a call to this function will result in a linker error.
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 inline void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda,
                    const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work,
