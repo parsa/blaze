@@ -259,7 +259,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF,HF,
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value &&
+                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsSIMDCombinable< ElementType_<T1>
                                             , ElementType_<T2>
@@ -494,7 +494,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF,HF,
    inline bool canSMPAssign() const noexcept {
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATTDMATMULT_THRESHOLD ) ) &&
-             ( rows() * columns() >= SMP_TDMATTDMATMULT_THRESHOLD );
+             ( rows() * columns() >= SMP_TDMATTDMATMULT_THRESHOLD ) &&
+             !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value;
    }
    //**********************************************************************************************
 

@@ -476,7 +476,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF
    inline bool canSMPAssign() const noexcept {
       return ( !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < DMATTDMATMULT_THRESHOLD ) ) &&
-             ( rows() * columns() >= SMP_DMATTDMATMULT_THRESHOLD );
+             ( rows() * columns() >= SMP_DMATTDMATMULT_THRESHOLD ) &&
+             !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value;
    }
    //**********************************************************************************************
 
