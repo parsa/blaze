@@ -2083,19 +2083,18 @@ inline void invertUniUpper5x5( DenseMatrix<MT,SO>& dm )
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
 
-   const ET tmp2( A(0,1)*A(1,2) - A(0,2) );
-
-   const ET tmp8 ( A(2,3)*tmp2 - A(0,1)*A(1,3) + A(0,3) );
-   const ET tmp9 ( A(2,3)*A(1,2) - A(1,3) );
+   const ET tmp1( A(0,1)*A(1,2) - A(0,2) );
+   const ET tmp2( A(2,3)*A(1,2) - A(1,3) );
+   const ET tmp3( A(2,3)*tmp1 - A(0,1)*A(1,3) + A(0,3) );
 
    B(0,1) = - A(0,1);
    B(0,2) =   A(0,1)*A(1,2) - A(0,2);
    B(1,2) = - A(1,2);
-   B(0,3) = - tmp8;
-   B(1,3) =   tmp9;
+   B(0,3) = - tmp3;
+   B(1,3) =   tmp2;
    B(2,3) = - A(2,3);
-   B(0,4) =   A(3,4)*tmp8 - A(2,4)*tmp2 + A(0,1)*A(1,4) - A(0,4);
-   B(1,4) =   A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp9;
+   B(0,4) =   A(3,4)*tmp3 - A(2,4)*tmp1 + A(0,1)*A(1,4) - A(0,4);
+   B(1,4) =   A(2,4)*A(1,2) - A(1,4) - A(3,4)*tmp2;
    B(2,4) =   A(3,4)*A(2,3) - A(2,4);
    B(3,4) = - A(3,4);
 }
