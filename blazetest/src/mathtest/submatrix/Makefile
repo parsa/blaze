@@ -54,13 +54,19 @@ noop: $(BIN)
 
 
 # Build rules
-DenseAlignedTest: DenseAlignedTest.o
+DenseAlignedTest1: DenseAlignedTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseUnalignedTest: DenseUnalignedTest.o
+DenseAlignedTest2: DenseAlignedTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseUnalignedTest1: DenseUnalignedTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseUnalignedTest2: DenseUnalignedTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseTest: SparseTest.o
+SparseTest1: SparseTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseTest2: SparseTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

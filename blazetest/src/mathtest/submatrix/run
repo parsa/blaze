@@ -37,6 +37,9 @@ PATH_SUBMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running Submatrix tests..."
 
-EXE=$PATH_SUBMATRIX/DenseUnalignedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SUBMATRIX/DenseAlignedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SUBMATRIX/SparseTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseUnalignedTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseUnalignedTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseAlignedTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/DenseAlignedTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/SparseTest1;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SUBMATRIX/SparseTest2;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
