@@ -54,15 +54,23 @@ noop: $(BIN)
 
 
 # Build rules
-AlignedPaddedTest: AlignedPaddedTest.o
+AlignedPaddedTest1: AlignedPaddedTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-AlignedUnpaddedTest: AlignedUnpaddedTest.o
+AlignedPaddedTest2: AlignedPaddedTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+AlignedUnpaddedTest1: AlignedUnpaddedTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+AlignedUnpaddedTest2: AlignedUnpaddedTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-UnalignedPaddedTest: UnalignedPaddedTest.o
+UnalignedPaddedTest1: UnalignedPaddedTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-UnalignedUnpaddedTest: UnalignedUnpaddedTest.o
+UnalignedPaddedTest2: UnalignedPaddedTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UnalignedUnpaddedTest1: UnalignedUnpaddedTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UnalignedUnpaddedTest2: UnalignedUnpaddedTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

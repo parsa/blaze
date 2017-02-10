@@ -50,7 +50,6 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/policies/ArrayDelete.h>
 #include <blazetest/system/Types.h>
 
 

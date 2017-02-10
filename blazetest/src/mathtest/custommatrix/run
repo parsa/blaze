@@ -37,7 +37,11 @@ PATH_CUSTOMMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running CustomMatrix tests..."
 
-EXE=$PATH_CUSTOMMATRIX/AlignedPaddedTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_CUSTOMMATRIX/AlignedUnpaddedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_CUSTOMMATRIX/UnalignedPaddedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_CUSTOMMATRIX/UnalignedUnpaddedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/AlignedPaddedTest1;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/AlignedPaddedTest2;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/AlignedUnpaddedTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/AlignedUnpaddedTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/UnalignedPaddedTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/UnalignedPaddedTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/UnalignedUnpaddedTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMMATRIX/UnalignedUnpaddedTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
