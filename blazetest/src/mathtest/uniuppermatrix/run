@@ -37,8 +37,10 @@ PATH_UNIUPPERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running UniUpperMatrix tests..."
 
-EXE=$PATH_UNIUPPERMATRIX/DenseTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_UNIUPPERMATRIX/SparseTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/DenseTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/DenseTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/SparseTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/SparseTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNIUPPERMATRIX/SubmatrixTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNIUPPERMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNIUPPERMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
