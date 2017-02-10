@@ -39,7 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Views.h>
 #include <blazetest/mathtest/submatrix/SparseTest.h>
 

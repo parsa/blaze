@@ -39,8 +39,10 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/serialization/VectorSerializer.h>
+#include <blaze/math/StaticVector.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/matrixserializer/ClassTest.h>
 

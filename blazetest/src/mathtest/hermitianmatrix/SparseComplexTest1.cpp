@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/hermitianmatrix/SparseComplexTest.h>

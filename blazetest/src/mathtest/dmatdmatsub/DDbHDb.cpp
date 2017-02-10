@@ -64,7 +64,7 @@ int main()
    {
       // Matrix type definitions
       typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<NumericB> >   DDb;
-      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<NumericB> >  HDb;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >  HDb;
 
       // Creator type definitions
       typedef blazetest::Creator<DDb>  CDDb;

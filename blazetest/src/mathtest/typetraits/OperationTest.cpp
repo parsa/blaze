@@ -58,6 +58,7 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/UpperMatrix.h>

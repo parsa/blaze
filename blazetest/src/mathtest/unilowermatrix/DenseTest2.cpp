@@ -41,7 +41,6 @@
 #include <iostream>
 #include <memory>
 #include <blaze/math/Column.h>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/Submatrix.h>

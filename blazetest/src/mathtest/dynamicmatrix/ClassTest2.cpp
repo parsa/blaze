@@ -42,9 +42,6 @@
 #include <memory>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>

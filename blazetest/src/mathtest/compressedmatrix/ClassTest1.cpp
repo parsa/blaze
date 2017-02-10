@@ -41,7 +41,6 @@
 #include <iostream>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DynamicVector.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>

@@ -42,6 +42,7 @@
 #include <iostream>
 #include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/shims/Equal.h>

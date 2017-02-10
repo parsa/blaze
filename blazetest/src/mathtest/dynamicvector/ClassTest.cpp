@@ -42,7 +42,6 @@
 #include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
-#include <blaze/math/StaticVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/policies/Deallocate.h>

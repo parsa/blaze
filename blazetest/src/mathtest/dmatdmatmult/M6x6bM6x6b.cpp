@@ -62,16 +62,12 @@ int main()
    {
       // Matrix type definitions
       typedef blaze::StaticMatrix<TypeB,6UL,6UL>  M6x6b;
-      typedef blaze::DynamicMatrix<TypeB>         MDb;
 
       // Creator type definitions
       typedef blazetest::Creator<M6x6b>  CM6x6b;
-      typedef blazetest::Creator<MDb>  CMDb;
 
       // Running the tests
-      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 3UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 6UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CMDb( 6UL, 9UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CM6x6b(), CM6x6b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"
