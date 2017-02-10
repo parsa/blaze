@@ -37,8 +37,10 @@ PATH_LOWERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running LowerMatrix tests..."
 
-EXE=$PATH_LOWERMATRIX/DenseTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_LOWERMATRIX/SparseTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LOWERMATRIX/DenseTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LOWERMATRIX/DenseTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LOWERMATRIX/SparseTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LOWERMATRIX/SparseTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_LOWERMATRIX/SubmatrixTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_LOWERMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_LOWERMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

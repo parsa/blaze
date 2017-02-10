@@ -56,13 +56,17 @@ noop: $(BIN)
 # Build rules
 ColumnTest: ColumnTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseTest: DenseTest.o
+DenseTest1: DenseTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseTest2: DenseTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowTest: RowTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseTest: SparseTest.o
+SparseTest1: SparseTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseTest2: SparseTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SubmatrixTest: SubmatrixTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
