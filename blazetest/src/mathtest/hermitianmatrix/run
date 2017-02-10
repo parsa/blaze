@@ -37,10 +37,14 @@ PATH_HERMITIANMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running HermitianMatrix tests..."
 
-EXE=$PATH_HERMITIANMATRIX/DenseRealTest;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_HERMITIANMATRIX/DenseComplexTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_HERMITIANMATRIX/SparseRealTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_HERMITIANMATRIX/SparseComplexTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/DenseRealTest1;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/DenseRealTest2;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/DenseComplexTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/DenseComplexTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/SparseRealTest1;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/SparseRealTest2;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/SparseComplexTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/SparseComplexTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/SubmatrixRealTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/SubmatrixComplexTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/RowRealTest;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

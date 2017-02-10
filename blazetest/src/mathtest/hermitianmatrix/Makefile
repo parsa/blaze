@@ -58,9 +58,13 @@ ColumnComplexTest: ColumnComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ColumnRealTest: ColumnRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseComplexTest: DenseComplexTest.o
+DenseComplexTest1: DenseComplexTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseRealTest: DenseRealTest.o
+DenseComplexTest2: DenseComplexTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseRealTest1: DenseRealTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseRealTest2: DenseRealTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -68,9 +72,13 @@ RowComplexTest: RowComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowRealTest: RowRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseComplexTest: SparseComplexTest.o
+SparseComplexTest1: SparseComplexTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseRealTest: SparseRealTest.o
+SparseComplexTest2: SparseComplexTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseRealTest1: SparseRealTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseRealTest2: SparseRealTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SubmatrixComplexTest: SubmatrixComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
