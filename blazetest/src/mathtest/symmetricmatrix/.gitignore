@@ -2,13 +2,17 @@
 *.o
 ColumnNonNumericTest
 ColumnNumericTest
-DenseNonNumericTest
-DenseNumericTest
+DenseNonNumericTest1
+DenseNonNumericTest2
+DenseNumericTest1
+DenseNumericTest2
 IncludeTest
 RowNonNumericTest
 RowNumericTest
-SparseNonNumericTest
-SparseNumericTest
+SparseNonNumericTest1
+SparseNonNumericTest2
+SparseNumericTest1
+SparseNumericTest2
 SubmatrixNonNumericTest
 SubmatrixNumericTest
 

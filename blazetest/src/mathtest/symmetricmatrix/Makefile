@@ -58,9 +58,13 @@ ColumnNonNumericTest: ColumnNonNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ColumnNumericTest: ColumnNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNonNumericTest: DenseNonNumericTest.o
+DenseNonNumericTest1: DenseNonNumericTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNumericTest: DenseNumericTest.o
+DenseNonNumericTest2: DenseNonNumericTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseNumericTest1: DenseNumericTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseNumericTest2: DenseNumericTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -68,9 +72,13 @@ RowNonNumericTest: RowNonNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 RowNumericTest: RowNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNonNumericTest: SparseNonNumericTest.o
+SparseNonNumericTest1: SparseNonNumericTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNumericTest: SparseNumericTest.o
+SparseNonNumericTest2: SparseNonNumericTest2.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseNumericTest1: SparseNumericTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseNumericTest2: SparseNumericTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SubmatrixNonNumericTest: SubmatrixNonNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
