@@ -37,4 +37,5 @@ PATH_DYNAMICMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DynamicMatrix tests..."
 
-EXE=$PATH_DYNAMICMATRIX/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DYNAMICMATRIX/ClassTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DYNAMICMATRIX/ClassTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

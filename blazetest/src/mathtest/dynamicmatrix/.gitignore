@@ -1,5 +1,6 @@
 *.d
 *.o
-ClassTest
+ClassTest1
+ClassTest2
 IncludeTest
 
