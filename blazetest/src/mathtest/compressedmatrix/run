@@ -37,5 +37,6 @@ PATH_COMPRESSEDMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running CompressedMatrix tests..."
 
-EXE=$PATH_COMPRESSEDMATRIX/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_COMPRESSEDMATRIX/ProxyTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COMPRESSEDMATRIX/ClassTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COMPRESSEDMATRIX/ClassTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COMPRESSEDMATRIX/ProxyTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
