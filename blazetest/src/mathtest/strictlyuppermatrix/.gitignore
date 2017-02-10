@@ -1,9 +1,11 @@
 *.d
 *.o
 ColumnTest
-DenseTest
+DenseTest1
+DenseTest2
 IncludeTest
 RowTest
-SparseTest
+SparseTest1
+SparseTest2
 SubmatrixTest
 

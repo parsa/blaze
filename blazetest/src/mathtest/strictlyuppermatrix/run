@@ -37,8 +37,10 @@ PATH_STRICTLYUPPERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running StrictlyUpperMatrix tests..."
 
-EXE=$PATH_STRICTLYUPPERMATRIX/DenseTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_STRICTLYUPPERMATRIX/SparseTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_STRICTLYUPPERMATRIX/DenseTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_STRICTLYUPPERMATRIX/DenseTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_STRICTLYUPPERMATRIX/SparseTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_STRICTLYUPPERMATRIX/SparseTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_STRICTLYUPPERMATRIX/SubmatrixTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_STRICTLYUPPERMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_STRICTLYUPPERMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
