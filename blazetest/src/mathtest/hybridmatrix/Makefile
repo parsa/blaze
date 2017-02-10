@@ -54,7 +54,9 @@ noop: $(BIN)
 
 
 # Build rules
-ClassTest: ClassTest.o
+ClassTest1: ClassTest1.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ClassTest2: ClassTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)

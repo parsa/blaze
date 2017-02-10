@@ -37,4 +37,5 @@ PATH_HYBRIDMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running HybridMatrix tests..."
 
-EXE=$PATH_HYBRIDMATRIX/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HYBRIDMATRIX/ClassTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HYBRIDMATRIX/ClassTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
