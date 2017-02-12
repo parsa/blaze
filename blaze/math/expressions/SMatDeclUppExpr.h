@@ -42,7 +42,6 @@
 
 #include <iterator>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Upper.h>
@@ -777,7 +776,6 @@ class SMatDeclUppExpr : public SparseMatrix< SMatDeclUppExpr<MT,SO>, SO >
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
