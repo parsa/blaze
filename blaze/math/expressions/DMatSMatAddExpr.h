@@ -54,18 +54,9 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
-#include <blaze/math/traits/DeclDiagExprTrait.h>
-#include <blaze/math/traits/DeclLowExprTrait.h>
-#include <blaze/math/traits/DeclUppExprTrait.h>
-#include <blaze/math/traits/DMatDeclDiagExprTrait.h>
-#include <blaze/math/traits/DMatDeclLowExprTrait.h>
-#include <blaze/math/traits/DMatDeclUppExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/traits/TDMatDeclDiagExprTrait.h>
-#include <blaze/math/traits/TDMatDeclLowExprTrait.h>
-#include <blaze/math/traits/TDMatDeclUppExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -764,122 +755,6 @@ inline const SubExprTrait_< DMatSMatAddExpr<T1,T2,SO1>, T3 >
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Declares the given non-lower matrix addition expression as lower.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix addition expression.
-// \return The redeclared matrix addition expression.
-// \exception std::invalid_argument Invalid lower matrix specification.
-//
-// The \a decllow function declares the given non-lower matrix addition expression \a dm
-// as lower. The function returns an expression representing the operation. In case the
-// given expression does not represent a square matrix, a \a std::invalid_argument
-// exception is thrown.\n
-// The following example demonstrates the use of the \a decllow function:
-
-   \code
-   blaze::CompressedMatrix<double> A;
-   blaze::DynamicMatrix<double> B, C;
-   // ... Resizing and initialization
-   C = decllow( A + B );
-   \endcode
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
-inline const DeclLowExprTrait_< DMatSMatAddExpr<MT1,MT2,SO> >
-   decllow( const DMatSMatAddExpr<MT1,MT2,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return decllow( dm.leftOperand() ) + decllow( dm.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Declares the given non-upper matrix addition expression as upper.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix addition expression.
-// \return The redeclared matrix addition expression.
-// \exception std::invalid_argument Invalid upper matrix specification.
-//
-// The \a declupp function declares the given non-upper matrix addition expression \a dm
-// as upper. The function returns an expression representing the operation. In case the
-// given expression does not represent a square matrix, a \a std::invalid_argument
-// exception is thrown.\n
-// The following example demonstrates the use of the \a declupp function:
-
-   \code
-   blaze::CompressedMatrix<double> A;
-   blaze::DynamicMatrix<double> B, C;
-   // ... Resizing and initialization
-   C = declupp( A + B );
-   \endcode
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
-inline const DeclUppExprTrait_< DMatSMatAddExpr<MT1,MT2,SO> >
-   declupp( const DMatSMatAddExpr<MT1,MT2,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return declupp( dm.leftOperand() ) + declupp( dm.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Declares the given non-diagonal matrix addition expression as diagonal.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix addition expression.
-// \return The redeclared matrix addition expression.
-// \exception std::invalid_argument Invalid diagonal matrix specification.
-//
-// The \a decldiag function declares the given non-diagonal matrix addition expression \a dm
-// as diagonal. The function returns an expression representing the operation. In case the
-// given expression does not represent a square matrix, a \a std::invalid_argument
-// exception is thrown.\n
-// The following example demonstrates the use of the \a decldiag function:
-
-   \code
-   blaze::CompressedMatrix<double> A;
-   blaze::DynamicMatrix<double> B, C;
-   // ... Resizing and initialization
-   C = decldiag( A + B );
-   \endcode
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
-inline const DeclDiagExprTrait_< DMatSMatAddExpr<MT1,MT2,SO> >
-   decldiag( const DMatSMatAddExpr<MT1,MT2,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return decldiag( dm.leftOperand() ) + decldiag( dm.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ROWS SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1220,90 +1095,6 @@ struct TDMatTDMatSubExprTrait< DMatSMatAddExpr<MT1,MT2,true>, MT3 >
                    , TDMatTSMatAddExprTrait_< TDMatTDMatSubExprTrait_<MT1,MT3>, MT2 >
                    , INVALID_TYPE >;
    /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct DMatDeclLowExprTrait< DMatSMatAddExpr<MT1,MT2,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclLowExprTrait_<MT1>, DeclLowExprTrait_<MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct TDMatDeclLowExprTrait< DMatSMatAddExpr<MT1,MT2,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclLowExprTrait_<MT1>, DeclLowExprTrait_<MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct DMatDeclUppExprTrait< DMatSMatAddExpr<MT1,MT2,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclUppExprTrait_<MT1>, DeclUppExprTrait_<MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct TDMatDeclUppExprTrait< DMatSMatAddExpr<MT1,MT2,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclUppExprTrait_<MT1>, DeclUppExprTrait_<MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct DMatDeclDiagExprTrait< DMatSMatAddExpr<MT1,MT2,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclDiagExprTrait_<MT1>, DeclDiagExprTrait_<MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct TDMatDeclDiagExprTrait< DMatSMatAddExpr<MT1,MT2,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< DeclDiagExprTrait_<MT1>, DeclDiagExprTrait_<MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

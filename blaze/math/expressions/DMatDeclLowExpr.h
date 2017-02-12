@@ -44,7 +44,6 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -804,7 +803,6 @@ class DMatDeclLowExpr : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATADDEXPR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
    /*! \endcond */
