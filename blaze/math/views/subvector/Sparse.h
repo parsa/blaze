@@ -492,14 +492,20 @@ class Subvector<VT,AF,TF,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline void       reset();
-                              inline Iterator   set    ( size_t index, const ElementType& value );
-                              inline Iterator   insert ( size_t index, const ElementType& value );
-                              inline void       reserve( size_t n );
-   template< typename Other > inline Subvector& scale  ( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const ElementType& value );
+   inline Iterator insert( size_t index, const ElementType& value );
+   inline void     append( size_t index, const ElementType& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -530,10 +536,10 @@ class Subvector<VT,AF,TF,false>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append( size_t index, const ElementType& value, bool check=false );
+   template< typename Other > inline Subvector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1369,6 +1375,39 @@ inline void Subvector<VT,AF,TF,false>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse subvector.
+//
+// \param n The new minimum capacity of the sparse subvector.
+// \return void
+//
+// This function increases the capacity of the sparse subvector to at least \a n elements. The
+// current values of the subvector elements are preserved.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+void Subvector<VT,AF,TF,false>::reserve( size_t n )
+{
+   const size_t current( capacity() );
+
+   if( n > current ) {
+      vector_.reserve( vector_.capacity() + n - current );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting an element of the sparse subvector.
 //
 // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1418,45 +1457,38 @@ inline typename Subvector<VT,AF,TF,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse subvector.
+/*!\brief Appending an element to the sparse subvector.
 //
-// \param n The new minimum capacity of the sparse subvector.
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
-// This function increases the capacity of the sparse subvector to at least \a n elements. The
-// current values of the subvector elements are preserved.
+// This function provides a very efficient way to fill a sparse subvector with elements. It
+// appends a new element to the end of the sparse subvector without any memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the sparse subvector
+//  - the current number of non-zero elements must be smaller than the capacity of the subvector
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
 */
 template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
-void Subvector<VT,AF,TF,false>::reserve( size_t n )
+inline void Subvector<VT,AF,TF,false>::append( size_t index, const ElementType& value, bool check )
 {
-   const size_t current( capacity() );
-
-   if( n > current ) {
-      vector_.reserve( vector_.capacity() + n - current );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse subvector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the subvector scaling.
-// \return Reference to the sparse subvector.
-*/
-template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline Subvector<VT,AF,TF,false>& Subvector<VT,AF,TF,false>::scale( const Other& scalar )
-{
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
+   if( offset_ + size_ == vector_.size() )
+      vector_.append( offset_ + index, value, check );
+   else if( !check || !isDefault( value ) )
+      vector_.insert( offset_ + index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1780,44 +1812,26 @@ inline typename Subvector<VT,AF,TF,false>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the sparse subvector.
+/*!\brief Scaling of the sparse subvector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
-//
-// This function provides a very efficient way to fill a sparse subvector with elements. It
-// appends a new element to the end of the sparse subvector without any memory allocation.
-// Therefore it is strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the sparse subvector
-//  - the current number of non-zero elements must be smaller than the capacity of the subvector
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \param scalar The scalar value for the subvector scaling.
+// \return Reference to the sparse subvector.
 */
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline void Subvector<VT,AF,TF,false>::append( size_t index, const ElementType& value, bool check )
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline Subvector<VT,AF,TF,false>& Subvector<VT,AF,TF,false>::scale( const Other& scalar )
 {
-   if( offset_ + size_ == vector_.size() )
-      vector_.append( offset_ + index, value, check );
-   else if( !check || !isDefault( value ) )
-      vector_.insert( offset_ + index, value );
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************

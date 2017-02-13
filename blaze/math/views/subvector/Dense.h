@@ -609,10 +609,16 @@ class Subvector<VT,unaligned,TF,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline void       reset();
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline Subvector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -1646,6 +1652,14 @@ inline void Subvector<VT,unaligned,TF,true>::reset()
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the dense subvector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
@@ -2670,10 +2684,16 @@ class Subvector<VT,aligned,TF,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     size() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline void       reset();
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline Subvector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -3693,6 +3713,14 @@ inline void Subvector<VT,aligned,TF,true>::reset()
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
