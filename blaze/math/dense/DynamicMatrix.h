@@ -333,23 +333,30 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         rows() const noexcept;
-                              inline size_t         columns() const noexcept;
-                              inline size_t         spacing() const noexcept;
-                              inline size_t         capacity() const noexcept;
-                              inline size_t         capacity( size_t i ) const noexcept;
-                              inline size_t         nonZeros() const;
-                              inline size_t         nonZeros( size_t i ) const;
-                              inline void           reset();
-                              inline void           reset( size_t i );
-                              inline void           clear();
-                                     void           resize ( size_t m, size_t n, bool preserve=true );
-                              inline void           extend ( size_t m, size_t n, bool preserve=true );
-                              inline void           reserve( size_t elements );
-                              inline DynamicMatrix& transpose();
-                              inline DynamicMatrix& ctranspose();
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+          void   resize ( size_t m, size_t n, bool preserve=true );
+   inline void   extend ( size_t m, size_t n, bool preserve=true );
+   inline void   reserve( size_t elements );
+   inline void   swap( DynamicMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline DynamicMatrix& transpose();
+   inline DynamicMatrix& ctranspose();
+
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
-                              inline void           swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1824,6 +1831,50 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
 
 
 //*************************************************************************************************
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
+{
+   std::swap( m_ , m.m_  );
+   std::swap( n_ , m.n_  );
+   std::swap( nn_, m.nn_ );
+   std::swap( capacity_, m.capacity_ );
+   std::swap( v_ , m.v_  );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Adjusting the number columns of the matrix according to its data type \a Type.
+//
+// \param minColumns The minimum necessary number of columns.
+// \return The adjusted number of columns.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
+{
+   if( usePadding && IsVectorizable<Type>::value )
+      return nextMultiple<size_t>( minColumns, SIMDSIZE );
+   else return minColumns;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -1919,42 +1970,6 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::scale( const Other& scala
          v_[i*nn_+j] *= scalar;
 
    return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Swapping the contents of two matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
-{
-   std::swap( m_ , m.m_  );
-   std::swap( n_ , m.n_  );
-   std::swap( nn_, m.nn_ );
-   std::swap( capacity_, m.capacity_ );
-   std::swap( v_ , m.v_  );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Adjusting the number columns of the matrix according to its data type \a Type.
-//
-// \param minColumns The minimum necessary number of columns.
-// \return The adjusted number of columns.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
-{
-   if( usePadding && IsVectorizable<Type>::value )
-      return nextMultiple<size_t>( minColumns, SIMDSIZE );
-   else return minColumns;
 }
 //*************************************************************************************************
 
@@ -3092,23 +3107,30 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         rows() const noexcept;
-                              inline size_t         columns() const noexcept;
-                              inline size_t         spacing() const noexcept;
-                              inline size_t         capacity() const noexcept;
-                              inline size_t         capacity( size_t j ) const noexcept;
-                              inline size_t         nonZeros() const;
-                              inline size_t         nonZeros( size_t j ) const;
-                              inline void           reset();
-                              inline void           reset( size_t j );
-                              inline void           clear();
-                                     void           resize ( size_t m, size_t n, bool preserve=true );
-                              inline void           extend ( size_t m, size_t n, bool preserve=true );
-                              inline void           reserve( size_t elements );
-                              inline DynamicMatrix& transpose();
-                              inline DynamicMatrix& ctranspose();
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t j ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t j ) const;
+   inline void   reset();
+   inline void   reset( size_t j );
+   inline void   clear();
+          void   resize ( size_t m, size_t n, bool preserve=true );
+   inline void   extend ( size_t m, size_t n, bool preserve=true );
+   inline void   reserve( size_t elements );
+   inline void   swap( DynamicMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline DynamicMatrix& transpose();
+   inline DynamicMatrix& ctranspose();
+
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
-                              inline void           swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4598,6 +4620,52 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type >  // Data type of the matrix
+inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
+{
+   std::swap( m_ , m.m_  );
+   std::swap( mm_, m.mm_ );
+   std::swap( n_ , m.n_  );
+   std::swap( capacity_, m.capacity_ );
+   std::swap( v_ , m.v_  );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Adjusting the number rows of the matrix according to its data type \a Type.
+//
+// \param minRows The minimum necessary number of rows.
+// \return The adjusted number of rows.
+*/
+template< typename Type >  // Data type of the matrix
+inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
+{
+   if( usePadding && IsVectorizable<Type>::value )
+      return nextMultiple<size_t>( minRows, SIMDSIZE );
+   else return minRows;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -4694,44 +4762,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::scale( const Other& s
          v_[i+j*mm_] *= scalar;
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type >  // Data type of the matrix
-inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
-{
-   std::swap( m_ , m.m_  );
-   std::swap( mm_, m.mm_ );
-   std::swap( n_ , m.n_  );
-   std::swap( capacity_, m.capacity_ );
-   std::swap( v_ , m.v_  );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Adjusting the number rows of the matrix according to its data type \a Type.
-//
-// \param minRows The minimum necessary number of rows.
-// \return The adjusted number of rows.
-*/
-template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
-{
-   if( usePadding && IsVectorizable<Type>::value )
-      return nextMultiple<size_t>( minRows, SIMDSIZE );
-   else return minRows;
 }
 /*! \endcond */
 //*************************************************************************************************
