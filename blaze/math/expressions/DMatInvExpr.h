@@ -200,14 +200,14 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // \return The proper inversion flag for the matrix type \a MT.
    */
    static constexpr InversionFlag getInversionFlag() noexcept {
-      if     ( IsDiagonal<MT>::value  ) return asDiagonal;
-      else if( IsUniUpper<MT>::value  ) return asUniUpper;
-      else if( IsUpper<MT>::value     ) return asUpper;
-      else if( IsUniLower<MT>::value  ) return asUniLower;
-      else if( IsLower<MT>::value     ) return asLower;
-      else if( IsHermitian<MT>::value ) return asHermitian;
-      else if( IsSymmetric<MT>::value ) return asSymmetric;
-      else                              return asGeneral;
+      return ( IsDiagonal<MT>::value  ? asDiagonal
+             : IsUniUpper<MT>::value  ? asUniUpper
+             : IsUpper<MT>::value     ? asUpper
+             : IsUniLower<MT>::value  ? asUniLower
+             : IsLower<MT>::value     ? asLower
+             : IsHermitian<MT>::value ? asHermitian
+             : IsSymmetric<MT>::value ? asSymmetric
+             :                          asGeneral );
    }
    /*! \endcond */
    //**********************************************************************************************
