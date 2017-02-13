@@ -78,10 +78,10 @@ SparseGeneralTest::SparseGeneralTest()
    testNonZeros();
    testReset();
    testClear();
+   testReserve();
    testSet();
    testInsert();
    testAppend();
-   testReserve();
    testErase();
    testFind();
    testLowerBound();
@@ -4053,6 +4053,73 @@ void SparseGeneralTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the Row specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the Row specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseGeneralTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Row::reserve()";
+
+      MT mat( 3UL, 20UL );
+
+      RT row0 = blaze::row( mat, 0UL );
+
+      // Increasing the capacity of the row
+      row0.reserve( 10UL );
+
+      checkSize    ( row0, 20UL );
+      checkCapacity( row0, 10UL );
+      checkNonZeros( row0,  0UL );
+
+      // Further increasing the capacity of the row
+      row0.reserve( 15UL );
+
+      checkSize    ( row0, 20UL );
+      checkCapacity( row0, 15UL );
+      checkNonZeros( row0,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Row::reserve()";
+
+      OMT mat( 3UL, 20UL );
+
+      ORT row0 = blaze::row( mat, 0UL );
+
+      // Increasing the capacity of the row
+      row0.reserve( 10UL );
+
+      checkSize    ( row0, 20UL );
+      checkCapacity( row0, 10UL );
+      checkNonZeros( row0,  0UL );
+
+      // Further increasing the capacity of the row
+      row0.reserve( 15UL );
+
+      checkSize    ( row0, 20UL );
+      checkCapacity( row0, 15UL );
+      checkNonZeros( row0,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the Row specialization.
 //
 // \return void
@@ -4728,73 +4795,6 @@ void SparseGeneralTest::testAppend()
              << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the Row specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the Row specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseGeneralTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Row::reserve()";
-
-      MT mat( 3UL, 20UL );
-
-      RT row0 = blaze::row( mat, 0UL );
-
-      // Increasing the capacity of the row
-      row0.reserve( 10UL );
-
-      checkSize    ( row0, 20UL );
-      checkCapacity( row0, 10UL );
-      checkNonZeros( row0,  0UL );
-
-      // Further increasing the capacity of the row
-      row0.reserve( 15UL );
-
-      checkSize    ( row0, 20UL );
-      checkCapacity( row0, 15UL );
-      checkNonZeros( row0,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Row::reserve()";
-
-      OMT mat( 3UL, 20UL );
-
-      ORT row0 = blaze::row( mat, 0UL );
-
-      // Increasing the capacity of the row
-      row0.reserve( 10UL );
-
-      checkSize    ( row0, 20UL );
-      checkCapacity( row0, 10UL );
-      checkNonZeros( row0,  0UL );
-
-      // Further increasing the capacity of the row
-      row0.reserve( 15UL );
-
-      checkSize    ( row0, 20UL );
-      checkCapacity( row0, 15UL );
-      checkNonZeros( row0,  0UL );
    }
 }
 //*************************************************************************************************

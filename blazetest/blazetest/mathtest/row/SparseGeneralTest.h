@@ -100,10 +100,10 @@ class SparseGeneralTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
+   void testReserve     ();
    void testSet         ();
    void testInsert      ();
    void testAppend      ();
-   void testReserve     ();
    void testErase       ();
    void testFind        ();
    void testLowerBound  ();
