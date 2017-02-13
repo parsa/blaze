@@ -834,23 +834,30 @@ class HermitianMatrix<MT,SO,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline size_t           spacing() const noexcept;
-                              inline size_t           capacity() const noexcept;
-                              inline size_t           capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline void             clear();
-                                     void             resize ( size_t n, bool preserve=true );
-                              inline void             extend ( size_t n, bool preserve=true );
-                              inline void             reserve( size_t elements );
-                              inline HermitianMatrix& transpose();
-                              inline HermitianMatrix& ctranspose();
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+          void   resize ( size_t n, bool preserve=true );
+   inline void   extend ( size_t n, bool preserve=true );
+   inline void   reserve( size_t elements );
+   inline void   swap( HermitianMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline HermitianMatrix& transpose();
+   inline HermitianMatrix& ctranspose();
+
    template< typename Other > inline HermitianMatrix& scale( const Other& scalar );
-                              inline void             swap( HermitianMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2535,6 +2542,33 @@ inline void HermitianMatrix<MT,SO,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void HermitianMatrix<MT,SO,true>::swap( HermitianMatrix& m ) noexcept
+{
+   using std::swap;
+
+   swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the Hermitian matrix.
 //
 // \return Reference to the transposed matrix.
@@ -2582,25 +2616,6 @@ inline HermitianMatrix<MT,SO,true>&
 {
    matrix_.scale( scalar );
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::swap( HermitianMatrix& m ) noexcept
-{
-   using std::swap;
-
-   swap( matrix_, m.matrix_ );
 }
 /*! \endcond */
 //*************************************************************************************************
