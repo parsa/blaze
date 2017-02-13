@@ -70,19 +70,19 @@ SparseRealTest::SparseRealTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
    testResize();
    testReserve();
    testTrim();
-   testTranspose();
-   testCTranspose();
    testSwap();
+   testSet();
+   testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
    testUpperBound();
+   testTranspose();
+   testCTranspose();
    testIsDefault();
    testSubmatrix();
    testRow();
@@ -2051,6 +2051,596 @@ void SparseRealTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the HermitianMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testResize()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix::resize()";
+
+      // Initialization check
+      HT herm;
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+
+      // Resizing to 2x2
+      herm.resize( 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkNonZeros( herm, 0UL );
+      checkNonZeros( herm, 0UL, 0UL );
+      checkNonZeros( herm, 1UL, 0UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 0 ||
+          herm(1,0) != 0 || herm(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      herm(0,1) = 1;
+      herm(1,1) = 2;
+      herm.resize( 4UL, true );
+
+      checkRows    ( herm, 4UL );
+      checkColumns ( herm, 4UL );
+      checkCapacity( herm, 3UL );
+      checkNonZeros( herm, 3UL );
+      checkNonZeros( herm, 0UL, 1UL );
+      checkNonZeros( herm, 1UL, 2UL );
+      checkNonZeros( herm, 2UL, 0UL );
+      checkNonZeros( herm, 3UL, 0UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 1 || herm(0,2) != 0 || herm(0,3) != 0 ||
+          herm(1,0) != 1 || herm(1,1) != 2 || herm(1,2) != 0 || herm(1,3) != 0 ||
+          herm(2,0) != 0 || herm(2,1) != 0 || herm(2,2) != 0 || herm(2,3) != 0 ||
+          herm(3,0) != 0 || herm(3,1) != 0 || herm(3,2) != 0 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      herm(2,2) = 3;
+      herm.resize( 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 3UL );
+      checkNonZeros( herm, 3UL );
+      checkNonZeros( herm, 0UL, 1UL );
+      checkNonZeros( herm, 1UL, 2UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 1 ||
+          herm(1,0) != 1 || herm(1,1) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 1 )\n( 1 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      herm.resize( 0UL );
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix::resize()";
+
+      // Initialization check
+      OHT herm;
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+
+      // Resizing to 2x2
+      herm.resize( 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkNonZeros( herm, 0UL );
+      checkNonZeros( herm, 0UL, 0UL );
+      checkNonZeros( herm, 1UL, 0UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 0 ||
+          herm(1,0) != 0 || herm(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      herm(0,1) = 1;
+      herm(1,1) = 2;
+      herm.resize( 4UL );
+
+      checkRows    ( herm, 4UL );
+      checkColumns ( herm, 4UL );
+      checkCapacity( herm, 3UL );
+      checkNonZeros( herm, 3UL );
+      checkNonZeros( herm, 0UL, 1UL );
+      checkNonZeros( herm, 1UL, 2UL );
+      checkNonZeros( herm, 2UL, 0UL );
+      checkNonZeros( herm, 3UL, 0UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 1 || herm(0,2) != 0 || herm(0,3) != 0 ||
+          herm(1,0) != 1 || herm(1,1) != 2 || herm(1,2) != 0 || herm(1,3) != 0 ||
+          herm(2,0) != 0 || herm(2,1) != 0 || herm(2,2) != 0 || herm(2,3) != 0 ||
+          herm(3,0) != 0 || herm(3,1) != 0 || herm(3,2) != 0 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      herm(2,2) = 2;
+      herm.resize( 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 3UL );
+      checkNonZeros( herm, 3UL );
+      checkNonZeros( herm, 0UL, 1UL );
+      checkNonZeros( herm, 1UL, 2UL );
+
+      if( herm(0,0) != 0 || herm(0,1) != 1 ||
+          herm(1,0) != 1 || herm(1,1) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 0 1 )\n( 1 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      herm.resize( 0UL );
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the HermitianMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix::reserve()";
+
+      // Initialization check
+      HT herm;
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the capacity of the matrix
+      herm.reserve( 10UL );
+
+      checkRows    ( herm,  0UL );
+      checkColumns ( herm,  0UL );
+      checkCapacity( herm, 10UL );
+      checkNonZeros( herm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      herm.reserve( 20UL );
+
+      checkRows    ( herm,  0UL );
+      checkColumns ( herm,  0UL );
+      checkCapacity( herm, 20UL );
+      checkNonZeros( herm,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix::reserve()";
+
+      // Initialization check
+      OHT herm;
+
+      checkRows    ( herm, 0UL );
+      checkColumns ( herm, 0UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the capacity of the matrix
+      herm.reserve( 10UL );
+
+      checkRows    ( herm,  0UL );
+      checkColumns ( herm,  0UL );
+      checkCapacity( herm, 10UL );
+      checkNonZeros( herm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      herm.reserve( 20UL );
+
+      checkRows    ( herm,  0UL );
+      checkColumns ( herm,  0UL );
+      checkCapacity( herm, 20UL );
+      checkNonZeros( herm,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trim() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trim() member function of the HermitianMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix::trim()";
+
+      // Initialization check
+      HT herm( 3UL );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the row capacity of the matrix
+      herm.reserve( 0UL, 10UL );
+      herm.reserve( 1UL, 15UL );
+      herm.reserve( 2UL, 20UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 10UL );
+      checkCapacity( herm,  1UL, 15UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the matrix
+      herm.trim();
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 0UL );
+      checkCapacity( herm,  1UL, 0UL );
+      checkCapacity( herm,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Row-major HermitianMatrix::trim( size_t )";
+
+      // Initialization check
+      HT herm( 3UL, 3UL );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the row capacity of the matrix
+      herm.reserve( 0UL, 10UL );
+      herm.reserve( 1UL, 15UL );
+      herm.reserve( 2UL, 20UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 10UL );
+      checkCapacity( herm,  1UL, 15UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the 0th row
+      herm.trim( 0UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL,  0UL );
+      checkCapacity( herm,  1UL, 25UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the 1st row
+      herm.trim( 1UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL,  0UL );
+      checkCapacity( herm,  1UL,  0UL );
+      checkCapacity( herm,  2UL, 45UL );
+
+      // Trimming the 2nd row
+      herm.trim( 2UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 0UL );
+      checkCapacity( herm,  1UL, 0UL );
+      checkCapacity( herm,  2UL, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix::trim()";
+
+      // Initialization check
+      OHT herm( 3UL );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the row capacity of the matrix
+      herm.reserve( 0UL, 10UL );
+      herm.reserve( 1UL, 15UL );
+      herm.reserve( 2UL, 20UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 10UL );
+      checkCapacity( herm,  1UL, 15UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the matrix
+      herm.trim();
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 0UL );
+      checkCapacity( herm,  1UL, 0UL );
+      checkCapacity( herm,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Column-major HermitianMatrix::trim( size_t )";
+
+      // Initialization check
+      OHT herm( 3UL, 3UL );
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 0UL );
+
+      // Increasing the column capacity of the matrix
+      herm.reserve( 0UL, 10UL );
+      herm.reserve( 1UL, 15UL );
+      herm.reserve( 2UL, 20UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 10UL );
+      checkCapacity( herm,  1UL, 15UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the 0th column
+      herm.trim( 0UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL,  0UL );
+      checkCapacity( herm,  1UL, 25UL );
+      checkCapacity( herm,  2UL, 20UL );
+
+      // Trimming the 1st column
+      herm.trim( 1UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL,  0UL );
+      checkCapacity( herm,  1UL,  0UL );
+      checkCapacity( herm,  2UL, 45UL );
+
+      // Trimming the 2nd column
+      herm.trim( 2UL );
+
+      checkRows    ( herm,  3UL );
+      checkColumns ( herm,  3UL );
+      checkCapacity( herm, 45UL );
+      checkCapacity( herm,  0UL, 0UL );
+      checkCapacity( herm,  1UL, 0UL );
+      checkCapacity( herm,  2UL, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the HermitianMatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix swap";
+
+      HT herm1( 2UL );
+      herm1(0,0) = 1;
+      herm1(0,1) = 2;
+      herm1(1,1) = 3;
+
+      HT herm2( 2UL );
+      herm2(0,0) = 4;
+      herm2(0,1) = 5;
+
+      swap( herm1, herm2 );
+
+      checkRows    ( herm1, 2UL );
+      checkColumns ( herm1, 2UL );
+      checkCapacity( herm1, 4UL );
+      checkNonZeros( herm1, 3UL );
+      checkNonZeros( herm1, 0UL, 2UL );
+      checkNonZeros( herm1, 1UL, 1UL );
+
+      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm1 << "\n"
+             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( herm2, 2UL );
+      checkColumns ( herm2, 2UL );
+      checkCapacity( herm2, 4UL );
+      checkNonZeros( herm2, 4UL );
+      checkNonZeros( herm2, 0UL, 2UL );
+      checkNonZeros( herm2, 1UL, 2UL );
+
+      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix swap";
+
+      OHT herm1( 2UL );
+      herm1(0,0) = 1;
+      herm1(0,1) = 2;
+      herm1(1,1) = 3;
+
+      OHT herm2( 2UL );
+      herm2(0,0) = 4;
+      herm2(0,1) = 5;
+
+      swap( herm1, herm2 );
+
+      checkRows    ( herm1, 2UL );
+      checkColumns ( herm1, 2UL );
+      checkCapacity( herm1, 4UL );
+      checkNonZeros( herm1, 3UL );
+      checkNonZeros( herm1, 0UL, 2UL );
+      checkNonZeros( herm1, 1UL, 1UL );
+
+      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm1 << "\n"
+             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( herm2, 2UL );
+      checkColumns ( herm2, 2UL );
+      checkCapacity( herm2, 4UL );
+      checkNonZeros( herm2, 4UL );
+      checkNonZeros( herm2, 0UL, 2UL );
+      checkNonZeros( herm2, 1UL, 2UL );
+
+      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the HermitianMatrix specialization.
 //
 // \return void
@@ -3079,940 +3669,6 @@ void SparseRealTest::testAppend()
                 << "   Expected result:\n( 0 1 0 4 )\n( 1 2 3 5 )\n( 0 3 0 0 )\n( 4 5 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c resize() member function of the HermitianMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testResize()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HermitianMatrix::resize()";
-
-      // Initialization check
-      HT herm;
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-
-      // Resizing to 2x2
-      herm.resize( 2UL );
-
-      checkRows    ( herm, 2UL );
-      checkColumns ( herm, 2UL );
-      checkNonZeros( herm, 0UL );
-      checkNonZeros( herm, 0UL, 0UL );
-      checkNonZeros( herm, 1UL, 0UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 0 ||
-          herm(1,0) != 0 || herm(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      herm(0,1) = 1;
-      herm(1,1) = 2;
-      herm.resize( 4UL, true );
-
-      checkRows    ( herm, 4UL );
-      checkColumns ( herm, 4UL );
-      checkCapacity( herm, 3UL );
-      checkNonZeros( herm, 3UL );
-      checkNonZeros( herm, 0UL, 1UL );
-      checkNonZeros( herm, 1UL, 2UL );
-      checkNonZeros( herm, 2UL, 0UL );
-      checkNonZeros( herm, 3UL, 0UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 1 || herm(0,2) != 0 || herm(0,3) != 0 ||
-          herm(1,0) != 1 || herm(1,1) != 2 || herm(1,2) != 0 || herm(1,3) != 0 ||
-          herm(2,0) != 0 || herm(2,1) != 0 || herm(2,2) != 0 || herm(2,3) != 0 ||
-          herm(3,0) != 0 || herm(3,1) != 0 || herm(3,2) != 0 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      herm(2,2) = 3;
-      herm.resize( 2UL );
-
-      checkRows    ( herm, 2UL );
-      checkColumns ( herm, 2UL );
-      checkCapacity( herm, 3UL );
-      checkNonZeros( herm, 3UL );
-      checkNonZeros( herm, 0UL, 1UL );
-      checkNonZeros( herm, 1UL, 2UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 1 ||
-          herm(1,0) != 1 || herm(1,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 1 )\n( 1 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      herm.resize( 0UL );
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HermitianMatrix::resize()";
-
-      // Initialization check
-      OHT herm;
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-
-      // Resizing to 2x2
-      herm.resize( 2UL );
-
-      checkRows    ( herm, 2UL );
-      checkColumns ( herm, 2UL );
-      checkNonZeros( herm, 0UL );
-      checkNonZeros( herm, 0UL, 0UL );
-      checkNonZeros( herm, 1UL, 0UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 0 ||
-          herm(1,0) != 0 || herm(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      herm(0,1) = 1;
-      herm(1,1) = 2;
-      herm.resize( 4UL );
-
-      checkRows    ( herm, 4UL );
-      checkColumns ( herm, 4UL );
-      checkCapacity( herm, 3UL );
-      checkNonZeros( herm, 3UL );
-      checkNonZeros( herm, 0UL, 1UL );
-      checkNonZeros( herm, 1UL, 2UL );
-      checkNonZeros( herm, 2UL, 0UL );
-      checkNonZeros( herm, 3UL, 0UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 1 || herm(0,2) != 0 || herm(0,3) != 0 ||
-          herm(1,0) != 1 || herm(1,1) != 2 || herm(1,2) != 0 || herm(1,3) != 0 ||
-          herm(2,0) != 0 || herm(2,1) != 0 || herm(2,2) != 0 || herm(2,3) != 0 ||
-          herm(3,0) != 0 || herm(3,1) != 0 || herm(3,2) != 0 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      herm(2,2) = 2;
-      herm.resize( 2UL );
-
-      checkRows    ( herm, 2UL );
-      checkColumns ( herm, 2UL );
-      checkCapacity( herm, 3UL );
-      checkNonZeros( herm, 3UL );
-      checkNonZeros( herm, 0UL, 1UL );
-      checkNonZeros( herm, 1UL, 2UL );
-
-      if( herm(0,0) != 0 || herm(0,1) != 1 ||
-          herm(1,0) != 1 || herm(1,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 0 1 )\n( 1 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      herm.resize( 0UL );
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the HermitianMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HermitianMatrix::reserve()";
-
-      // Initialization check
-      HT herm;
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the capacity of the matrix
-      herm.reserve( 10UL );
-
-      checkRows    ( herm,  0UL );
-      checkColumns ( herm,  0UL );
-      checkCapacity( herm, 10UL );
-      checkNonZeros( herm,  0UL );
-
-      // Further increasing the capacity of the matrix
-      herm.reserve( 20UL );
-
-      checkRows    ( herm,  0UL );
-      checkColumns ( herm,  0UL );
-      checkCapacity( herm, 20UL );
-      checkNonZeros( herm,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HermitianMatrix::reserve()";
-
-      // Initialization check
-      OHT herm;
-
-      checkRows    ( herm, 0UL );
-      checkColumns ( herm, 0UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the capacity of the matrix
-      herm.reserve( 10UL );
-
-      checkRows    ( herm,  0UL );
-      checkColumns ( herm,  0UL );
-      checkCapacity( herm, 10UL );
-      checkNonZeros( herm,  0UL );
-
-      // Further increasing the capacity of the matrix
-      herm.reserve( 20UL );
-
-      checkRows    ( herm,  0UL );
-      checkColumns ( herm,  0UL );
-      checkCapacity( herm, 20UL );
-      checkNonZeros( herm,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c trim() member function of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c trim() member function of the HermitianMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testTrim()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HermitianMatrix::trim()";
-
-      // Initialization check
-      HT herm( 3UL );
-
-      checkRows    ( herm, 3UL );
-      checkColumns ( herm, 3UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the row capacity of the matrix
-      herm.reserve( 0UL, 10UL );
-      herm.reserve( 1UL, 15UL );
-      herm.reserve( 2UL, 20UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 10UL );
-      checkCapacity( herm,  1UL, 15UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the matrix
-      herm.trim();
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 0UL );
-      checkCapacity( herm,  1UL, 0UL );
-      checkCapacity( herm,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Row-major HermitianMatrix::trim( size_t )";
-
-      // Initialization check
-      HT herm( 3UL, 3UL );
-
-      checkRows    ( herm, 3UL );
-      checkColumns ( herm, 3UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the row capacity of the matrix
-      herm.reserve( 0UL, 10UL );
-      herm.reserve( 1UL, 15UL );
-      herm.reserve( 2UL, 20UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 10UL );
-      checkCapacity( herm,  1UL, 15UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the 0th row
-      herm.trim( 0UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL,  0UL );
-      checkCapacity( herm,  1UL, 25UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the 1st row
-      herm.trim( 1UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL,  0UL );
-      checkCapacity( herm,  1UL,  0UL );
-      checkCapacity( herm,  2UL, 45UL );
-
-      // Trimming the 2nd row
-      herm.trim( 2UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 0UL );
-      checkCapacity( herm,  1UL, 0UL );
-      checkCapacity( herm,  2UL, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HermitianMatrix::trim()";
-
-      // Initialization check
-      OHT herm( 3UL );
-
-      checkRows    ( herm, 3UL );
-      checkColumns ( herm, 3UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the row capacity of the matrix
-      herm.reserve( 0UL, 10UL );
-      herm.reserve( 1UL, 15UL );
-      herm.reserve( 2UL, 20UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 10UL );
-      checkCapacity( herm,  1UL, 15UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the matrix
-      herm.trim();
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 0UL );
-      checkCapacity( herm,  1UL, 0UL );
-      checkCapacity( herm,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Column-major HermitianMatrix::trim( size_t )";
-
-      // Initialization check
-      OHT herm( 3UL, 3UL );
-
-      checkRows    ( herm, 3UL );
-      checkColumns ( herm, 3UL );
-      checkNonZeros( herm, 0UL );
-
-      // Increasing the column capacity of the matrix
-      herm.reserve( 0UL, 10UL );
-      herm.reserve( 1UL, 15UL );
-      herm.reserve( 2UL, 20UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 10UL );
-      checkCapacity( herm,  1UL, 15UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the 0th column
-      herm.trim( 0UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL,  0UL );
-      checkCapacity( herm,  1UL, 25UL );
-      checkCapacity( herm,  2UL, 20UL );
-
-      // Trimming the 1st column
-      herm.trim( 1UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL,  0UL );
-      checkCapacity( herm,  1UL,  0UL );
-      checkCapacity( herm,  2UL, 45UL );
-
-      // Trimming the 2nd column
-      herm.trim( 2UL );
-
-      checkRows    ( herm,  3UL );
-      checkColumns ( herm,  3UL );
-      checkCapacity( herm, 45UL );
-      checkCapacity( herm,  0UL, 0UL );
-      checkCapacity( herm,  1UL, 0UL );
-      checkCapacity( herm,  2UL, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c transpose() member function of the HermitianMatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c trans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via transpose()";
-
-      HT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      transpose( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via trans()";
-
-      HT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      herm = trans( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via transpose()";
-
-      OHT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      transpose( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via trans()";
-
-      OHT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      herm = trans( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c ctranspose() member function of the HermitianMatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testCTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via ctranspose()";
-
-      HT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      ctranspose( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via ctrans()";
-
-      HT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      herm = ctrans( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via ctranspose()";
-
-      OHT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      ctranspose( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via ctrans()";
-
-      OHT herm( 4UL );
-      herm(0,0) = 1;
-      herm(0,2) = 2;
-      herm(0,3) = 3;
-      herm(1,1) = 4;
-      herm(1,3) = 5;
-      herm(2,2) = 6;
-      herm(2,3) = 7;
-
-      herm = ctrans( herm );
-
-      checkRows    ( herm,  4UL );
-      checkColumns ( herm,  4UL );
-      checkCapacity( herm, 11UL );
-      checkNonZeros( herm, 11UL );
-      checkNonZeros( herm,  0UL, 3UL );
-      checkNonZeros( herm,  1UL, 2UL );
-      checkNonZeros( herm,  2UL, 3UL );
-      checkNonZeros( herm,  3UL, 3UL );
-
-      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
-          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
-          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
-          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm << "\n"
-             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the HermitianMatrix specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseRealTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HermitianMatrix swap";
-
-      HT herm1( 2UL );
-      herm1(0,0) = 1;
-      herm1(0,1) = 2;
-      herm1(1,1) = 3;
-
-      HT herm2( 2UL );
-      herm2(0,0) = 4;
-      herm2(0,1) = 5;
-
-      swap( herm1, herm2 );
-
-      checkRows    ( herm1, 2UL );
-      checkColumns ( herm1, 2UL );
-      checkCapacity( herm1, 4UL );
-      checkNonZeros( herm1, 3UL );
-      checkNonZeros( herm1, 0UL, 2UL );
-      checkNonZeros( herm1, 1UL, 1UL );
-
-      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm1 << "\n"
-             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( herm2, 2UL );
-      checkColumns ( herm2, 2UL );
-      checkCapacity( herm2, 4UL );
-      checkNonZeros( herm2, 4UL );
-      checkNonZeros( herm2, 0UL, 2UL );
-      checkNonZeros( herm2, 1UL, 2UL );
-
-      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HermitianMatrix swap";
-
-      OHT herm1( 2UL );
-      herm1(0,0) = 1;
-      herm1(0,1) = 2;
-      herm1(1,1) = 3;
-
-      OHT herm2( 2UL );
-      herm2(0,0) = 4;
-      herm2(0,1) = 5;
-
-      swap( herm1, herm2 );
-
-      checkRows    ( herm1, 2UL );
-      checkColumns ( herm1, 2UL );
-      checkCapacity( herm1, 4UL );
-      checkNonZeros( herm1, 3UL );
-      checkNonZeros( herm1, 0UL, 2UL );
-      checkNonZeros( herm1, 1UL, 1UL );
-
-      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm1 << "\n"
-             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( herm2, 2UL );
-      checkColumns ( herm2, 2UL );
-      checkCapacity( herm2, 4UL );
-      checkNonZeros( herm2, 4UL );
-      checkNonZeros( herm2, 0UL, 2UL );
-      checkNonZeros( herm2, 1UL, 2UL );
-
-      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -6319,6 +5975,350 @@ void SparseRealTest::testUpperBound()
                 << "   Current matrix:\n" << herm << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c transpose() member function of the HermitianMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      HT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      transpose( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      HT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      herm = trans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via transpose()";
+
+      OHT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      transpose( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      OHT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      herm = trans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the HermitianMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseRealTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via ctranspose()";
+
+      HT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      ctranspose( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      HT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      herm = ctrans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via ctranspose()";
+
+      OHT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      ctranspose( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      OHT herm( 4UL );
+      herm(0,0) = 1;
+      herm(0,2) = 2;
+      herm(0,3) = 3;
+      herm(1,1) = 4;
+      herm(1,3) = 5;
+      herm(2,2) = 6;
+      herm(2,3) = 7;
+
+      herm = ctrans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 11UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 0 || herm(0,2) != 2 || herm(0,3) != 3 ||
+          herm(1,0) != 0 || herm(1,1) != 4 || herm(1,2) != 0 || herm(1,3) != 5 ||
+          herm(2,0) != 2 || herm(2,1) != 0 || herm(2,2) != 6 || herm(2,3) != 7 ||
+          herm(3,0) != 3 || herm(3,1) != 5 || herm(3,2) != 7 || herm(3,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }

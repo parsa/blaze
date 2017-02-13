@@ -76,9 +76,9 @@ DenseRealTest::DenseRealTest()
    testResize();
    testExtend();
    testReserve();
+   testSwap();
    testTranspose();
    testCTranspose();
-   testSwap();
    testIsDefault();
    testSubmatrix();
    testRow();
@@ -3441,6 +3441,127 @@ void DenseRealTest::testReserve()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the HermitianMatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseRealTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix swap";
+
+      HT herm1( 2UL );
+      herm1(0,0) = 1;
+      herm1(0,1) = 2;
+      herm1(1,1) = 3;
+
+      HT herm2( 2UL );
+      herm2(0,0) = 4;
+      herm2(0,1) = 5;
+
+      swap( herm1, herm2 );
+
+      checkRows    ( herm1, 2UL );
+      checkColumns ( herm1, 2UL );
+      checkCapacity( herm1, 4UL );
+      checkNonZeros( herm1, 3UL );
+      checkNonZeros( herm1, 0UL, 2UL );
+      checkNonZeros( herm1, 1UL, 1UL );
+
+      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm1 << "\n"
+             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( herm2, 2UL );
+      checkColumns ( herm2, 2UL );
+      checkCapacity( herm2, 4UL );
+      checkNonZeros( herm2, 4UL );
+      checkNonZeros( herm2, 0UL, 2UL );
+      checkNonZeros( herm2, 1UL, 2UL );
+
+      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix swap";
+
+      OHT herm1( 2UL );
+      herm1(0,0) = 1;
+      herm1(0,1) = 2;
+      herm1(1,1) = 3;
+
+      OHT herm2( 2UL );
+      herm2(0,0) = 4;
+      herm2(0,1) = 5;
+
+      swap( herm1, herm2 );
+
+      checkRows    ( herm1, 2UL );
+      checkColumns ( herm1, 2UL );
+      checkCapacity( herm1, 4UL );
+      checkNonZeros( herm1, 3UL );
+      checkNonZeros( herm1, 0UL, 2UL );
+      checkNonZeros( herm1, 1UL, 1UL );
+
+      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm1 << "\n"
+             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( herm2, 2UL );
+      checkColumns ( herm2, 2UL );
+      checkCapacity( herm2, 4UL );
+      checkNonZeros( herm2, 4UL );
+      checkNonZeros( herm2, 0UL, 2UL );
+      checkNonZeros( herm2, 1UL, 2UL );
+
+      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c transpose() member function of the HermitianMatrix specialization.
 //
 // \return void
@@ -3777,127 +3898,6 @@ void DenseRealTest::testCTranspose()
              << " Details:\n"
              << "   Result:\n" << herm << "\n"
              << "   Expected result:\n( 1 0 2 3 )\n( 0 4 0 5 )\n( 2 0 6 7 )\n( 3 5 7 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the HermitianMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the HermitianMatrix specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void DenseRealTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HermitianMatrix swap";
-
-      HT herm1( 2UL );
-      herm1(0,0) = 1;
-      herm1(0,1) = 2;
-      herm1(1,1) = 3;
-
-      HT herm2( 2UL );
-      herm2(0,0) = 4;
-      herm2(0,1) = 5;
-
-      swap( herm1, herm2 );
-
-      checkRows    ( herm1, 2UL );
-      checkColumns ( herm1, 2UL );
-      checkCapacity( herm1, 4UL );
-      checkNonZeros( herm1, 3UL );
-      checkNonZeros( herm1, 0UL, 2UL );
-      checkNonZeros( herm1, 1UL, 1UL );
-
-      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm1 << "\n"
-             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( herm2, 2UL );
-      checkColumns ( herm2, 2UL );
-      checkCapacity( herm2, 4UL );
-      checkNonZeros( herm2, 4UL );
-      checkNonZeros( herm2, 0UL, 2UL );
-      checkNonZeros( herm2, 1UL, 2UL );
-
-      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HermitianMatrix swap";
-
-      OHT herm1( 2UL );
-      herm1(0,0) = 1;
-      herm1(0,1) = 2;
-      herm1(1,1) = 3;
-
-      OHT herm2( 2UL );
-      herm2(0,0) = 4;
-      herm2(0,1) = 5;
-
-      swap( herm1, herm2 );
-
-      checkRows    ( herm1, 2UL );
-      checkColumns ( herm1, 2UL );
-      checkCapacity( herm1, 4UL );
-      checkNonZeros( herm1, 3UL );
-      checkNonZeros( herm1, 0UL, 2UL );
-      checkNonZeros( herm1, 1UL, 1UL );
-
-      if( herm1(0,0) != 4 || herm1(0,1) != 5 || herm1(1,0) != 5 || herm1(1,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm1 << "\n"
-             << "   Expected result:\n( 4 5 )\n( 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( herm2, 2UL );
-      checkColumns ( herm2, 2UL );
-      checkCapacity( herm2, 4UL );
-      checkNonZeros( herm2, 4UL );
-      checkNonZeros( herm2, 0UL, 2UL );
-      checkNonZeros( herm2, 1UL, 2UL );
-
-      if( herm2(0,0) != 1 || herm2(0,1) != 2 || herm2(1,0) != 2 || herm2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << herm2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 2 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
