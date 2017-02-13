@@ -369,17 +369,23 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t            size() const noexcept;
-                              inline size_t            capacity() const noexcept;
-                              inline size_t            nonZeros() const;
-                              inline void              reset();
-                              inline void              clear();
-                              inline Iterator          set   ( size_t index, const Type& value );
-                              inline Iterator          insert( size_t index, const Type& value );
-                              inline void              resize( size_t n, bool preserve=true );
-                                     void              reserve( size_t n );
-   template< typename Other > inline CompressedVector& scale( const Other& scalar );
-                              inline void              swap( CompressedVector& sv ) noexcept;
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   clear();
+   inline void   resize( size_t n, bool preserve=true );
+          void   reserve( size_t n );
+   inline void   swap( CompressedVector& sv ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const Type& value );
+   inline Iterator insert( size_t index, const Type& value );
+   inline void     append( size_t index, const Type& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -410,10 +416,10 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append( size_t index, const Type& value, bool check=false );
+   template< typename Other > inline CompressedVector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -440,11 +446,16 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          Iterator insert( Iterator pos, size_t index, const Type& value );
-   inline size_t   extendCapacity() const noexcept;
-
+   inline size_t       extendCapacity() const noexcept;
    inline Iterator     castDown( IteratorBase it ) const noexcept;
    inline IteratorBase castUp  ( Iterator     it ) const noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions***************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   Iterator insert( Iterator pos, size_t index, const Type& value );
    //@}
    //**********************************************************************************************
 
@@ -1278,6 +1289,153 @@ inline void CompressedVector<Type,TF>::clear()
 
 
 //*************************************************************************************************
+/*!\brief Changing the size of the compressed vector.
+//
+// \param n The new size of the compressed vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+//
+// This function resizes the compressed vector using the given size to \a n. During this
+// operation, new dynamic memory may be allocated in case the capacity of the compressed
+// vector is too small. Note that this function may invalidate all existing views (subvectors,
+// ...) on the vector if it is used to shrink the vector. Additionally, the resize operation
+// potentially changes all vector elements. In order to preserve the old vector values, the
+// \a preserve flag can be set to \a true.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void CompressedVector<Type,TF>::resize( size_t n, bool preserve )
+{
+   if( preserve ) {
+      end_ = lowerBound( n );
+   }
+   else {
+      end_ = begin_;
+   }
+
+   size_ = n;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the minimum capacity of the compressed vector.
+//
+// \param n The new minimum capacity of the compressed vector.
+// \return void
+//
+// This function increases the capacity of the compressed vector to at least \a n elements. The
+// current values of the vector elements are preserved.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+void CompressedVector<Type,TF>::reserve( size_t n )
+{
+   if( n > capacity_ ) {
+      const size_t newCapacity( n );
+
+      // Allocating a new data and index array
+      Iterator newBegin  = allocate<Element>( newCapacity );
+
+      // Replacing the old data and index array
+      end_ = castDown( transfer( begin_, end_, castUp( newBegin ) ) );
+      std::swap( newBegin, begin_ );
+      capacity_ = newCapacity;
+      deallocate( newBegin );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Swapping the contents of two compressed vectors.
+//
+// \param sv The compressed vector to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) noexcept
+{
+   std::swap( size_, sv.size_ );
+   std::swap( capacity_, sv.capacity_ );
+   std::swap( begin_, sv.begin_ );
+   std::swap( end_, sv.end_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculating a new vector capacity.
+//
+// \return The new compressed vector capacity.
+//
+// This function calculates a new vector capacity based on the current capacity of the sparse
+// vector. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline size_t CompressedVector<Type,TF>::extendCapacity() const noexcept
+{
+   using blaze::max;
+   using blaze::min;
+
+   size_t nonzeros( 2UL*capacity_+1UL );
+   nonzeros = max( nonzeros, 7UL   );
+   nonzeros = min( nonzeros, size_ );
+
+   BLAZE_INTERNAL_ASSERT( nonzeros > capacity_, "Invalid capacity value" );
+
+   return nonzeros;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs a down-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs a down-cast of the given iterator to base elements to an iterator to
+// derived elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::castDown( IteratorBase it ) const noexcept
+{
+   return static_cast<Iterator>( it );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Performs an up-cast of the given iterator.
+//
+// \return The casted iterator.
+//
+// This function performs an up-cast of the given iterator to derived elements to an iterator
+// to base elements.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::IteratorBase
+   CompressedVector<Type,TF>::castUp( Iterator it ) const noexcept
+{
+   return static_cast<IteratorBase>( it );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief Setting an element of the compressed vector.
 //
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1378,158 +1536,43 @@ typename CompressedVector<Type,TF>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Changing the size of the compressed vector.
+/*!\brief Appending an element to the compressed vector.
 //
-// \param n The new size of the compressed vector.
-// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
-// This function resizes the compressed vector using the given size to \a n. During this
-// operation, new dynamic memory may be allocated in case the capacity of the compressed
-// vector is too small. Note that this function may invalidate all existing views (subvectors,
-// ...) on the vector if it is used to shrink the vector. Additionally, the resize operation
-// potentially changes all vector elements. In order to preserve the old vector values, the
-// \a preserve flag can be set to \a true.
+// This function provides a very efficient way to fill a compressed vector with elements. It
+// appends a new element to the end of the compressed vector without any memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the compressed vector
+//  - the current number of non-zero elements must be smaller than the capacity of the vector
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::resize( size_t n, bool preserve )
+inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, bool check )
 {
-   if( preserve ) {
-      end_ = lowerBound( n );
+   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
+   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved capacity" );
+   BLAZE_USER_ASSERT( begin_ == end_ || (end_-1UL)->index_ < index, "Index is not strictly increasing" );
+
+   end_->value_ = value;
+
+   if( !check || !isDefault<strict>( end_->value_ ) ) {
+      end_->index_ = index;
+      ++end_;
    }
-   else {
-      end_ = begin_;
-   }
-
-   size_ = n;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Setting the minimum capacity of the compressed vector.
-//
-// \param n The new minimum capacity of the compressed vector.
-// \return void
-//
-// This function increases the capacity of the compressed vector to at least \a n elements. The
-// current values of the vector elements are preserved.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-void CompressedVector<Type,TF>::reserve( size_t n )
-{
-   if( n > capacity_ ) {
-      const size_t newCapacity( n );
-
-      // Allocating a new data and index array
-      Iterator newBegin  = allocate<Element>( newCapacity );
-
-      // Replacing the old data and index array
-      end_ = castDown( transfer( begin_, end_, castUp( newBegin ) ) );
-      std::swap( newBegin, begin_ );
-      capacity_ = newCapacity;
-      deallocate( newBegin );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Scaling of the compressed vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the compressed vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other& scalar )
-{
-   for( Iterator element=begin_; element!=end_; ++element )
-      element->value_ *= scalar;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Swapping the contents of two compressed vectors.
-//
-// \param sv The compressed vector to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) noexcept
-{
-   std::swap( size_, sv.size_ );
-   std::swap( capacity_, sv.capacity_ );
-   std::swap( begin_, sv.begin_ );
-   std::swap( end_, sv.end_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculating a new vector capacity.
-//
-// \return The new compressed vector capacity.
-//
-// This function calculates a new vector capacity based on the current capacity of the sparse
-// vector. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t CompressedVector<Type,TF>::extendCapacity() const noexcept
-{
-   using blaze::max;
-   using blaze::min;
-
-   size_t nonzeros( 2UL*capacity_+1UL );
-   nonzeros = max( nonzeros, 7UL   );
-   nonzeros = min( nonzeros, size_ );
-
-   BLAZE_INTERNAL_ASSERT( nonzeros > capacity_, "Invalid capacity value" );
-
-   return nonzeros;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Performs a down-cast of the given iterator.
-//
-// \return The casted iterator.
-//
-// This function performs a down-cast of the given iterator to base elements to an iterator to
-// derived elements.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::Iterator
-   CompressedVector<Type,TF>::castDown( IteratorBase it ) const noexcept
-{
-   return static_cast<Iterator>( it );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Performs an up-cast of the given iterator.
-//
-// \return The casted iterator.
-//
-// This function performs an up-cast of the given iterator to derived elements to an iterator
-// to base elements.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename CompressedVector<Type,TF>::IteratorBase
-   CompressedVector<Type,TF>::castUp( Iterator it ) const noexcept
-{
-   return static_cast<IteratorBase>( it );
 }
 //*************************************************************************************************
 
@@ -1842,48 +1885,24 @@ inline typename CompressedVector<Type,TF>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Appending an element to the compressed vector.
+/*!\brief Scaling of the compressed vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
-//
-// This function provides a very efficient way to fill a compressed vector with elements. It
-// appends a new element to the end of the compressed vector without any memory allocation.
-// Therefore it is strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the compressed vector
-//  - the current number of non-zero elements must be smaller than the capacity of the vector
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the compressed vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, bool check )
+template< typename Type     // Data type of the vector
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other& scalar )
 {
-   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
-   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved capacity" );
-   BLAZE_USER_ASSERT( begin_ == end_ || (end_-1UL)->index_ < index, "Index is not strictly increasing" );
-
-   end_->value_ = value;
-
-   if( !check || !isDefault<strict>( end_->value_ ) ) {
-      end_->index_ = index;
-      ++end_;
-   }
+   for( Iterator element=begin_; element!=end_; ++element )
+      element->value_ *= scalar;
+   return *this;
 }
 //*************************************************************************************************
 
