@@ -78,9 +78,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
+   testSwap();
    testTranspose();
    testCTranspose();
-   testSwap();
    testIsDefault();
 }
 //*************************************************************************************************
@@ -3384,6 +3384,115 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the StaticMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticMatrix swap";
+
+      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat1{ { 1, 2 }, { 0, 3 } };
+      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat2{ { 4, 3 }, { 2, 1 } };
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 2UL );
+      checkColumns ( mat1, 2UL );
+      checkCapacity( mat1, 4UL );
+      checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
+
+      if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 4UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StaticMatrix swap";
+
+      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat1{ { 1, 0 }, { 2, 3 } };
+      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat2{ { 4, 2 }, { 3, 1 } };
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 2UL );
+      checkColumns ( mat1, 2UL );
+      checkCapacity( mat1, 4UL );
+      checkNonZeros( mat1, 4UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
+
+      if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 4UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c transpose() member function of the StaticMatrix class template.
 //
 // \return void
@@ -3680,115 +3789,6 @@ void ClassTest::testCTranspose()
              << "   Expected result:\n( (1,1) (2,2) (3,3) )\n"
                                      "( (4,4) (5,5) (6,6) )\n"
                                      "( (7,7) (8,8) (9,9) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the StaticMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the StaticMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major StaticMatrix swap";
-
-      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat1{ { 1, 2 }, { 0, 3 } };
-      blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> mat2{ { 4, 3 }, { 2, 1 } };
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 2UL );
-      checkCapacity( mat1, 4UL );
-      checkNonZeros( mat1, 4UL );
-      checkNonZeros( mat1, 0UL, 2UL );
-      checkNonZeros( mat1, 1UL, 2UL );
-
-      if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 2UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 3UL );
-      checkNonZeros( mat2, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major StaticMatrix swap";
-
-      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat1{ { 1, 0 }, { 2, 3 } };
-      blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> mat2{ { 4, 2 }, { 3, 1 } };
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 2UL );
-      checkCapacity( mat1, 4UL );
-      checkNonZeros( mat1, 4UL );
-      checkNonZeros( mat1, 0UL, 2UL );
-      checkNonZeros( mat1, 1UL, 2UL );
-
-      if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 2UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 3UL );
-      checkNonZeros( mat2, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
