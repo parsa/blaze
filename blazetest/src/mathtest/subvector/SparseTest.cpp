@@ -75,10 +75,10 @@ SparseTest::SparseTest()
    testNonZeros();
    testReset();
    testClear();
+   testReserve();
    testSet();
    testInsert();
    testAppend();
-   testReserve();
    testErase();
    testFind();
    testLowerBound();
@@ -1994,6 +1994,40 @@ void SparseTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the Subvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testReserve()
+{
+   test_ = "Subvector::reserve()";
+
+   VT vec( 10UL );
+
+   SVT sv = blaze::subvector( vec, 2UL, 4UL );
+
+   // Increasing the capacity of the vector
+   sv.reserve( 10UL );
+
+   checkSize    ( sv,  4UL );
+   checkCapacity( sv, 10UL );
+   checkNonZeros( sv,  0UL );
+
+   // Further increasing the capacity of the vector
+   sv.reserve( 20UL );
+
+   checkSize    ( sv,  4UL );
+   checkCapacity( sv, 20UL );
+   checkNonZeros( sv,  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the Subvector class template.
 //
 // \return void
@@ -2333,40 +2367,6 @@ void SparseTest::testAppend()
           << "   Expected result:\n( 0 0 1 2 3 4 0 0 0 )\n";
       throw std::runtime_error( oss.str() );
    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the Subvector class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the Subvector
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testReserve()
-{
-   test_ = "Subvector::reserve()";
-
-   VT vec( 10UL );
-
-   SVT sv = blaze::subvector( vec, 2UL, 4UL );
-
-   // Increasing the capacity of the vector
-   sv.reserve( 10UL );
-
-   checkSize    ( sv,  4UL );
-   checkCapacity( sv, 10UL );
-   checkNonZeros( sv,  0UL );
-
-   // Further increasing the capacity of the vector
-   sv.reserve( 20UL );
-
-   checkSize    ( sv,  4UL );
-   checkCapacity( sv, 20UL );
-   checkNonZeros( sv,  0UL );
 }
 //*************************************************************************************************
 
