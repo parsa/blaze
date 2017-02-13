@@ -748,13 +748,17 @@ class StrictlyLowerMatrix<MT,SO,true>
           void   resize ( size_t n, bool preserve=true );
    inline void   extend ( size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
-
-   template< typename Other > inline StrictlyLowerMatrix& scale( const Other& scalar );
-
-   inline void swap( StrictlyLowerMatrix& m ) noexcept;
+   inline void   swap( StrictlyLowerMatrix& m ) noexcept;
 
    static inline constexpr size_t maxNonZeros() noexcept;
    static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline StrictlyLowerMatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2386,26 +2390,6 @@ inline void StrictlyLowerMatrix<MT,SO,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the matrix scaling.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted dense matrix
-        , bool SO >         // Storage order of the adapted dense matrix
-template< typename Other >  // Data type of the scalar value
-inline StrictlyLowerMatrix<MT,SO,true>&
-   StrictlyLowerMatrix<MT,SO,true>::scale( const Other& scalar )
-{
-   matrix_.scale( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Swapping the contents of two matrices.
 //
 // \param m The matrix to be swapped.
@@ -2462,6 +2446,34 @@ template< typename MT  // Type of the adapted dense matrix
 inline constexpr size_t StrictlyLowerMatrix<MT,SO,true>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n - 1UL ) * n ) / 2UL;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the matrix scaling.
+// \return Reference to the matrix.
+*/
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
+template< typename Other >  // Data type of the scalar value
+inline StrictlyLowerMatrix<MT,SO,true>&
+   StrictlyLowerMatrix<MT,SO,true>::scale( const Other& scalar )
+{
+   matrix_.scale( scalar );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
