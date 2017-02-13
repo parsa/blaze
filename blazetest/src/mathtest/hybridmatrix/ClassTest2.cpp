@@ -80,9 +80,9 @@ ClassTest::ClassTest()
    testClear();
    testResize();
    testExtend();
+   testSwap();
    testTranspose();
    testCTranspose();
-   testSwap();
    testIsDefault();
 }
 //*************************************************************************************************
@@ -3639,6 +3639,131 @@ void ClassTest::testExtend()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the HybridMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the HybridMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HybridMatrix swap";
+
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat1{ { 1, 2 },
+                                                             { 0, 3 },
+                                                             { 4, 0 } };
+
+      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat2{ { 6, 5, 4 },
+                                                             { 3, 2, 1 } };
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 2UL );
+      checkColumns ( mat1, 3UL );
+      checkCapacity( mat1, 6UL );
+      checkNonZeros( mat1, 6UL );
+      checkNonZeros( mat1, 0UL, 3UL );
+      checkNonZeros( mat1, 1UL, 3UL );
+
+      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
+          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 4UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HybridMatrix swap";
+
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat1{ { 1, 2 },
+                                                                { 0, 3 },
+                                                                { 4, 0 } };
+
+      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat2{ { 6, 5, 4 },
+                                                                { 3, 2, 1 } };
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 2UL );
+      checkColumns ( mat1, 3UL );
+      checkCapacity( mat1, 6UL );
+      checkNonZeros( mat1, 6UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 2UL );
+      checkNonZeros( mat1, 2UL, 2UL );
+
+      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
+          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 4UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c transpose() member function of the HybridMatrix class template.
 //
 // \return void
@@ -4296,131 +4421,6 @@ void ClassTest::testCTranspose()
                                         "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the HybridMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the HybridMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major HybridMatrix swap";
-
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat1{ { 1, 2 },
-                                                             { 0, 3 },
-                                                             { 4, 0 } };
-
-      blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> mat2{ { 6, 5, 4 },
-                                                             { 3, 2, 1 } };
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 3UL );
-      checkCapacity( mat1, 6UL );
-      checkNonZeros( mat1, 6UL );
-      checkNonZeros( mat1, 0UL, 3UL );
-      checkNonZeros( mat1, 1UL, 3UL );
-
-      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
-          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 3UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 4UL );
-      checkNonZeros( mat2, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 1UL );
-      checkNonZeros( mat2, 2UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
-          mat2(1,0) != 0 || mat2(1,1) != 3 ||
-          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major HybridMatrix swap";
-
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat1{ { 1, 2 },
-                                                                { 0, 3 },
-                                                                { 4, 0 } };
-
-      blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> mat2{ { 6, 5, 4 },
-                                                                { 3, 2, 1 } };
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 2UL );
-      checkColumns ( mat1, 3UL );
-      checkCapacity( mat1, 6UL );
-      checkNonZeros( mat1, 6UL );
-      checkNonZeros( mat1, 0UL, 2UL );
-      checkNonZeros( mat1, 1UL, 2UL );
-      checkNonZeros( mat1, 2UL, 2UL );
-
-      if( mat1(0,0) != 6 || mat1(0,1) != 5 || mat1(0,2) != 4 ||
-          mat1(1,0) != 3 || mat1(1,1) != 2 || mat1(1,2) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 6 5 4 )\n( 3 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 3UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 4UL );
-      checkNonZeros( mat2, 4UL );
-      checkNonZeros( mat2, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 2UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 2 ||
-          mat2(1,0) != 0 || mat2(1,1) != 3 ||
-          mat2(2,0) != 4 || mat2(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }

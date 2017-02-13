@@ -111,9 +111,9 @@ class ClassTest
    void testClear       ();
    void testResize      ();
    void testExtend      ();
+   void testSwap        ();
    void testTranspose   ();
    void testCTranspose  ();
-   void testSwap        ();
    void testIsDefault   ();
 
    template< typename Type >
