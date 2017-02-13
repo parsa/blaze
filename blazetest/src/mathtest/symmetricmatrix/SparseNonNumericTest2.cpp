@@ -70,19 +70,19 @@ SparseNonNumericTest::SparseNonNumericTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
    testResize();
    testReserve();
    testTrim();
-   testTranspose();
-   testCTranspose();
    testSwap();
+   testSet();
+   testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
    testUpperBound();
+   testTranspose();
+   testCTranspose();
    testIsDefault();
    testSubmatrix();
    testRow();
@@ -2065,6 +2065,610 @@ void SparseNonNumericTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testResize()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::resize()";
+
+      // Initialization check
+      ST sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+
+      // Resizing to 2x2
+      sym.resize( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+
+      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( ) ( ) )\n"
+                                     "( ( ) ( ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      sym(0,1) = vec( 1 );
+      sym(1,1) = vec( 2 );
+      sym.resize( 4UL, true );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 3UL );
+      checkNonZeros( sym, 0UL, 1UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 )   || !isDefault( sym(0,2) ) || !isDefault( sym(0,3) ) ||
+          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 )   || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) || !isDefault( sym(2,3) ) ||
+          !isDefault( sym(3,0) ) || !isDefault( sym(3,1) ) || !isDefault( sym(3,2) ) || !isDefault( sym(3,3) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
+                                     "( ( 1 ) ( 2 ) (   ) (   ) )\n"
+                                     "( (   ) (   ) (   ) (   ) )\n"
+                                     "( (   ) (   ) (   ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      sym(2,2) = vec( 3 );
+      sym.resize( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkNonZeros( sym, 3UL );
+      checkNonZeros( sym, 0UL, 1UL );
+      checkNonZeros( sym, 1UL, 2UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 ) ||
+          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (   ) ( 1 ) )\n"
+                                     "( ( 1 ) ( 2 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      sym.resize( 0UL );
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::resize()";
+
+      // Initialization check
+      OST sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+
+      // Resizing to 2x2
+      sym.resize( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+
+      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( ) ( ) )\n"
+                                     "( ( ) ( ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      sym(0,1) = vec( 1 );
+      sym(1,1) = vec( 2 );
+      sym.resize( 4UL, true );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 3UL );
+      checkNonZeros( sym, 0UL, 1UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 )   || !isDefault( sym(0,2) ) || !isDefault( sym(0,3) ) ||
+          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 )   || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) || !isDefault( sym(2,3) ) ||
+          !isDefault( sym(3,0) ) || !isDefault( sym(3,1) ) || !isDefault( sym(3,2) ) || !isDefault( sym(3,3) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
+                                     "( ( 1 ) ( 2 ) (   ) (   ) )\n"
+                                     "( (   ) (   ) (   ) (   ) )\n"
+                                     "( (   ) (   ) (   ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      sym(2,2) = vec( 3 );
+      sym.resize( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkNonZeros( sym, 3UL );
+      checkNonZeros( sym, 0UL, 1UL );
+      checkNonZeros( sym, 1UL, 2UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 ) ||
+          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (   ) ( 1 ) )\n"
+                                     "( ( 1 ) ( 2 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      sym.resize( 0UL );
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::reserve()";
+
+      // Initialization check
+      ST sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the capacity of the matrix
+      sym.reserve( 10UL );
+
+      checkRows    ( sym,  0UL );
+      checkColumns ( sym,  0UL );
+      checkCapacity( sym, 10UL );
+      checkNonZeros( sym,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sym.reserve( 20UL );
+
+      checkRows    ( sym,  0UL );
+      checkColumns ( sym,  0UL );
+      checkCapacity( sym, 20UL );
+      checkNonZeros( sym,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::reserve()";
+
+      // Initialization check
+      OST sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the capacity of the matrix
+      sym.reserve( 10UL );
+
+      checkRows    ( sym,  0UL );
+      checkColumns ( sym,  0UL );
+      checkCapacity( sym, 10UL );
+      checkNonZeros( sym,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sym.reserve( 20UL );
+
+      checkRows    ( sym,  0UL );
+      checkColumns ( sym,  0UL );
+      checkCapacity( sym, 20UL );
+      checkNonZeros( sym,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trim() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trim() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::trim()";
+
+      // Initialization check
+      ST sym( 3UL );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the row capacity of the matrix
+      sym.reserve( 0UL, 10UL );
+      sym.reserve( 1UL, 15UL );
+      sym.reserve( 2UL, 20UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 10UL );
+      checkCapacity( sym,  1UL, 15UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the matrix
+      sym.trim();
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 0UL );
+      checkCapacity( sym,  1UL, 0UL );
+      checkCapacity( sym,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Row-major SymmetricMatrix::trim( size_t )";
+
+      // Initialization check
+      ST sym( 3UL, 3UL );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the row capacity of the matrix
+      sym.reserve( 0UL, 10UL );
+      sym.reserve( 1UL, 15UL );
+      sym.reserve( 2UL, 20UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 10UL );
+      checkCapacity( sym,  1UL, 15UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the 0th row
+      sym.trim( 0UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL,  0UL );
+      checkCapacity( sym,  1UL, 25UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the 1st row
+      sym.trim( 1UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL,  0UL );
+      checkCapacity( sym,  1UL,  0UL );
+      checkCapacity( sym,  2UL, 45UL );
+
+      // Trimming the 2nd row
+      sym.trim( 2UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 0UL );
+      checkCapacity( sym,  1UL, 0UL );
+      checkCapacity( sym,  2UL, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::trim()";
+
+      // Initialization check
+      OST sym( 3UL );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the row capacity of the matrix
+      sym.reserve( 0UL, 10UL );
+      sym.reserve( 1UL, 15UL );
+      sym.reserve( 2UL, 20UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 10UL );
+      checkCapacity( sym,  1UL, 15UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the matrix
+      sym.trim();
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 0UL );
+      checkCapacity( sym,  1UL, 0UL );
+      checkCapacity( sym,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Column-major SymmetricMatrix::trim( size_t )";
+
+      // Initialization check
+      OST sym( 3UL, 3UL );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+
+      // Increasing the column capacity of the matrix
+      sym.reserve( 0UL, 10UL );
+      sym.reserve( 1UL, 15UL );
+      sym.reserve( 2UL, 20UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 10UL );
+      checkCapacity( sym,  1UL, 15UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the 0th column
+      sym.trim( 0UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL,  0UL );
+      checkCapacity( sym,  1UL, 25UL );
+      checkCapacity( sym,  2UL, 20UL );
+
+      // Trimming the 1st column
+      sym.trim( 1UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL,  0UL );
+      checkCapacity( sym,  1UL,  0UL );
+      checkCapacity( sym,  2UL, 45UL );
+
+      // Trimming the 2nd column
+      sym.trim( 2UL );
+
+      checkRows    ( sym,  3UL );
+      checkColumns ( sym,  3UL );
+      checkCapacity( sym, 45UL );
+      checkCapacity( sym,  0UL, 0UL );
+      checkCapacity( sym,  1UL, 0UL );
+      checkCapacity( sym,  2UL, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix swap";
+
+      ST sym1( 2UL );
+      sym1(0,0) = vec( 1 );
+      sym1(0,1) = vec( 2 );
+      sym1(1,1) = vec( 3 );
+
+      ST sym2( 2UL );
+      sym2(0,0) = vec( 4 );
+      sym2(0,1) = vec( 5 );
+
+      swap( sym1, sym2 );
+
+      checkRows    ( sym1, 2UL );
+      checkColumns ( sym1, 2UL );
+      checkCapacity( sym1, 4UL );
+      checkNonZeros( sym1, 3UL );
+      checkNonZeros( sym1, 0UL, 2UL );
+      checkNonZeros( sym1, 1UL, 1UL );
+
+      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
+          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym1 << "\n"
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
+                                     "( ( 5 ) ( 0 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( sym2, 2UL );
+      checkColumns ( sym2, 2UL );
+      checkCapacity( sym2, 4UL );
+      checkNonZeros( sym2, 4UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+
+      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
+          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix swap";
+
+      OST sym1( 2UL );
+      sym1(0,0) = vec( 1 );
+      sym1(0,1) = vec( 2 );
+      sym1(1,1) = vec( 3 );
+
+      OST sym2( 2UL );
+      sym2(0,0) = vec( 4 );
+      sym2(0,1) = vec( 5 );
+
+      swap( sym1, sym2 );
+
+      checkRows    ( sym1, 2UL );
+      checkColumns ( sym1, 2UL );
+      checkCapacity( sym1, 4UL );
+      checkNonZeros( sym1, 3UL );
+      checkNonZeros( sym1, 0UL, 2UL );
+      checkNonZeros( sym1, 1UL, 1UL );
+
+      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
+          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym1 << "\n"
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
+                                     "( ( 5 ) ( 0 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( sym2, 2UL );
+      checkColumns ( sym2, 2UL );
+      checkCapacity( sym2, 4UL );
+      checkNonZeros( sym2, 4UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+
+      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
+          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the SymmetricMatrix specialization.
 //
 // \return void
@@ -3197,930 +3801,6 @@ void SparseNonNumericTest::testAppend()
                                         "( (   ) (   ) ( 4 ) ( 5 ) )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c resize() member function of the SymmetricMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testResize()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix::resize()";
-
-      // Initialization check
-      ST sym;
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-
-      // Resizing to 2x2
-      sym.resize( 2UL );
-
-      checkRows    ( sym, 2UL );
-      checkColumns ( sym, 2UL );
-      checkNonZeros( sym, 0UL );
-      checkNonZeros( sym, 0UL, 0UL );
-      checkNonZeros( sym, 1UL, 0UL );
-
-      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) ||
-          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( ) ( ) )\n"
-                                     "( ( ) ( ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      sym(0,1) = vec( 1 );
-      sym(1,1) = vec( 2 );
-      sym.resize( 4UL, true );
-
-      checkRows    ( sym, 4UL );
-      checkColumns ( sym, 4UL );
-      checkNonZeros( sym, 3UL );
-      checkNonZeros( sym, 0UL, 1UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 0UL );
-      checkNonZeros( sym, 3UL, 0UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 )   || !isDefault( sym(0,2) ) || !isDefault( sym(0,3) ) ||
-          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 )   || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) ||
-          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) || !isDefault( sym(2,3) ) ||
-          !isDefault( sym(3,0) ) || !isDefault( sym(3,1) ) || !isDefault( sym(3,2) ) || !isDefault( sym(3,3) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
-                                     "( ( 1 ) ( 2 ) (   ) (   ) )\n"
-                                     "( (   ) (   ) (   ) (   ) )\n"
-                                     "( (   ) (   ) (   ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      sym(2,2) = vec( 3 );
-      sym.resize( 2UL );
-
-      checkRows    ( sym, 2UL );
-      checkColumns ( sym, 2UL );
-      checkNonZeros( sym, 3UL );
-      checkNonZeros( sym, 0UL, 1UL );
-      checkNonZeros( sym, 1UL, 2UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 ) ||
-          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (   ) ( 1 ) )\n"
-                                     "( ( 1 ) ( 2 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      sym.resize( 0UL );
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix::resize()";
-
-      // Initialization check
-      OST sym;
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-
-      // Resizing to 2x2
-      sym.resize( 2UL );
-
-      checkRows    ( sym, 2UL );
-      checkColumns ( sym, 2UL );
-      checkNonZeros( sym, 0UL );
-      checkNonZeros( sym, 0UL, 0UL );
-      checkNonZeros( sym, 1UL, 0UL );
-
-      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) ||
-          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( ) ( ) )\n"
-                                     "( ( ) ( ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      sym(0,1) = vec( 1 );
-      sym(1,1) = vec( 2 );
-      sym.resize( 4UL, true );
-
-      checkRows    ( sym, 4UL );
-      checkColumns ( sym, 4UL );
-      checkNonZeros( sym, 3UL );
-      checkNonZeros( sym, 0UL, 1UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 0UL );
-      checkNonZeros( sym, 3UL, 0UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 )   || !isDefault( sym(0,2) ) || !isDefault( sym(0,3) ) ||
-          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 )   || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) ||
-          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) || !isDefault( sym(2,3) ) ||
-          !isDefault( sym(3,0) ) || !isDefault( sym(3,1) ) || !isDefault( sym(3,2) ) || !isDefault( sym(3,3) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
-                                     "( ( 1 ) ( 2 ) (   ) (   ) )\n"
-                                     "( (   ) (   ) (   ) (   ) )\n"
-                                     "( (   ) (   ) (   ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      sym(2,2) = vec( 3 );
-      sym.resize( 2UL );
-
-      checkRows    ( sym, 2UL );
-      checkColumns ( sym, 2UL );
-      checkNonZeros( sym, 3UL );
-      checkNonZeros( sym, 0UL, 1UL );
-      checkNonZeros( sym, 1UL, 2UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( 1 ) ||
-          sym(1,0) != vec( 1 )   || sym(1,1) != vec( 2 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (   ) ( 1 ) )\n"
-                                     "( ( 1 ) ( 2 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      sym.resize( 0UL );
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the SymmetricMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix::reserve()";
-
-      // Initialization check
-      ST sym;
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the capacity of the matrix
-      sym.reserve( 10UL );
-
-      checkRows    ( sym,  0UL );
-      checkColumns ( sym,  0UL );
-      checkCapacity( sym, 10UL );
-      checkNonZeros( sym,  0UL );
-
-      // Further increasing the capacity of the matrix
-      sym.reserve( 20UL );
-
-      checkRows    ( sym,  0UL );
-      checkColumns ( sym,  0UL );
-      checkCapacity( sym, 20UL );
-      checkNonZeros( sym,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix::reserve()";
-
-      // Initialization check
-      OST sym;
-
-      checkRows    ( sym, 0UL );
-      checkColumns ( sym, 0UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the capacity of the matrix
-      sym.reserve( 10UL );
-
-      checkRows    ( sym,  0UL );
-      checkColumns ( sym,  0UL );
-      checkCapacity( sym, 10UL );
-      checkNonZeros( sym,  0UL );
-
-      // Further increasing the capacity of the matrix
-      sym.reserve( 20UL );
-
-      checkRows    ( sym,  0UL );
-      checkColumns ( sym,  0UL );
-      checkCapacity( sym, 20UL );
-      checkNonZeros( sym,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c trim() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c trim() member function of the SymmetricMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testTrim()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix::trim()";
-
-      // Initialization check
-      ST sym( 3UL );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the row capacity of the matrix
-      sym.reserve( 0UL, 10UL );
-      sym.reserve( 1UL, 15UL );
-      sym.reserve( 2UL, 20UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 10UL );
-      checkCapacity( sym,  1UL, 15UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the matrix
-      sym.trim();
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 0UL );
-      checkCapacity( sym,  1UL, 0UL );
-      checkCapacity( sym,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Row-major SymmetricMatrix::trim( size_t )";
-
-      // Initialization check
-      ST sym( 3UL, 3UL );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the row capacity of the matrix
-      sym.reserve( 0UL, 10UL );
-      sym.reserve( 1UL, 15UL );
-      sym.reserve( 2UL, 20UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 10UL );
-      checkCapacity( sym,  1UL, 15UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the 0th row
-      sym.trim( 0UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL,  0UL );
-      checkCapacity( sym,  1UL, 25UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the 1st row
-      sym.trim( 1UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL,  0UL );
-      checkCapacity( sym,  1UL,  0UL );
-      checkCapacity( sym,  2UL, 45UL );
-
-      // Trimming the 2nd row
-      sym.trim( 2UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 0UL );
-      checkCapacity( sym,  1UL, 0UL );
-      checkCapacity( sym,  2UL, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix::trim()";
-
-      // Initialization check
-      OST sym( 3UL );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the row capacity of the matrix
-      sym.reserve( 0UL, 10UL );
-      sym.reserve( 1UL, 15UL );
-      sym.reserve( 2UL, 20UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 10UL );
-      checkCapacity( sym,  1UL, 15UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the matrix
-      sym.trim();
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 0UL );
-      checkCapacity( sym,  1UL, 0UL );
-      checkCapacity( sym,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Column-major SymmetricMatrix::trim( size_t )";
-
-      // Initialization check
-      OST sym( 3UL, 3UL );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 0UL );
-
-      // Increasing the column capacity of the matrix
-      sym.reserve( 0UL, 10UL );
-      sym.reserve( 1UL, 15UL );
-      sym.reserve( 2UL, 20UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 10UL );
-      checkCapacity( sym,  1UL, 15UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the 0th column
-      sym.trim( 0UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL,  0UL );
-      checkCapacity( sym,  1UL, 25UL );
-      checkCapacity( sym,  2UL, 20UL );
-
-      // Trimming the 1st column
-      sym.trim( 1UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL,  0UL );
-      checkCapacity( sym,  1UL,  0UL );
-      checkCapacity( sym,  2UL, 45UL );
-
-      // Trimming the 2nd column
-      sym.trim( 2UL );
-
-      checkRows    ( sym,  3UL );
-      checkColumns ( sym,  3UL );
-      checkCapacity( sym, 45UL );
-      checkCapacity( sym,  0UL, 0UL );
-      checkCapacity( sym,  1UL, 0UL );
-      checkCapacity( sym,  2UL, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c transpose() member function of the SymmetricMatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c trans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via transpose()";
-
-      ST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      transpose( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via trans()";
-
-      ST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      sym = trans( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via transpose()";
-
-      OST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      transpose( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via trans()";
-
-      OST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      sym = trans( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c ctranspose() member function of the SymmetricMatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testCTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via ctranspose()";
-
-      ST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      ctranspose( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via ctrans()";
-
-      ST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      sym = ctrans( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via ctranspose()";
-
-      OST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      ctranspose( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via ctrans()";
-
-      OST sym( 3UL );
-      sym(0,0) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 3 );
-      sym(1,2) = vec( 4 );
-      sym(2,2) = vec( 5 );
-
-      sym = ctrans( sym );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
-
-      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
-          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
-          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
-                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
-                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNonNumericTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix swap";
-
-      ST sym1( 2UL );
-      sym1(0,0) = vec( 1 );
-      sym1(0,1) = vec( 2 );
-      sym1(1,1) = vec( 3 );
-
-      ST sym2( 2UL );
-      sym2(0,0) = vec( 4 );
-      sym2(0,1) = vec( 5 );
-
-      swap( sym1, sym2 );
-
-      checkRows    ( sym1, 2UL );
-      checkColumns ( sym1, 2UL );
-      checkCapacity( sym1, 4UL );
-      checkNonZeros( sym1, 3UL );
-      checkNonZeros( sym1, 0UL, 2UL );
-      checkNonZeros( sym1, 1UL, 1UL );
-
-      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
-          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
-                                     "( ( 5 ) ( 0 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( sym2, 2UL );
-      checkColumns ( sym2, 2UL );
-      checkCapacity( sym2, 4UL );
-      checkNonZeros( sym2, 4UL );
-      checkNonZeros( sym2, 0UL, 2UL );
-      checkNonZeros( sym2, 1UL, 2UL );
-
-      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
-          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
-                                     "( ( 2 ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix swap";
-
-      OST sym1( 2UL );
-      sym1(0,0) = vec( 1 );
-      sym1(0,1) = vec( 2 );
-      sym1(1,1) = vec( 3 );
-
-      OST sym2( 2UL );
-      sym2(0,0) = vec( 4 );
-      sym2(0,1) = vec( 5 );
-
-      swap( sym1, sym2 );
-
-      checkRows    ( sym1, 2UL );
-      checkColumns ( sym1, 2UL );
-      checkCapacity( sym1, 4UL );
-      checkNonZeros( sym1, 3UL );
-      checkNonZeros( sym1, 0UL, 2UL );
-      checkNonZeros( sym1, 1UL, 1UL );
-
-      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
-          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
-                                     "( ( 5 ) ( 0 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( sym2, 2UL );
-      checkColumns ( sym2, 2UL );
-      checkCapacity( sym2, 4UL );
-      checkNonZeros( sym2, 4UL );
-      checkNonZeros( sym2, 0UL, 2UL );
-      checkNonZeros( sym2, 1UL, 2UL );
-
-      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
-          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
-                                     "( ( 2 ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -6547,6 +6227,326 @@ void SparseNonNumericTest::testUpperBound()
                 << "   Current matrix:\n" << sym << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c transpose() member function of the SymmetricMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      transpose( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = trans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via transpose()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      transpose( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = trans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the SymmetricMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNonNumericTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via ctranspose()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      ctranspose( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = ctrans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via ctranspose()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      ctranspose( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = ctrans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n"
+                                     "( ( 0 ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }

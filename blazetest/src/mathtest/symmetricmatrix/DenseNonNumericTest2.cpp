@@ -74,9 +74,9 @@ DenseNonNumericTest::DenseNonNumericTest()
    testResize();
    testExtend();
    testReserve();
+   testSwap();
    testTranspose();
    testCTranspose();
-   testSwap();
    testIsDefault();
    testSubmatrix();
    testRow();
@@ -2644,6 +2644,135 @@ void DenseNonNumericTest::testReserve()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseNonNumericTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix swap";
+
+      ST sym1( 2UL );
+      sym1(0,0) = vec( 1 );
+      sym1(0,1) = vec( 2 );
+      sym1(1,1) = vec( 3 );
+
+      ST sym2( 2UL );
+      sym2(0,0) = vec( 4 );
+      sym2(0,1) = vec( 5 );
+
+      swap( sym1, sym2 );
+
+      checkRows    ( sym1, 2UL );
+      checkColumns ( sym1, 2UL );
+      checkCapacity( sym1, 4UL );
+      checkNonZeros( sym1, 3UL );
+      checkNonZeros( sym1, 0UL, 2UL );
+      checkNonZeros( sym1, 1UL, 1UL );
+
+      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
+          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym1 << "\n"
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
+                                     "( ( 5 ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( sym2, 2UL );
+      checkColumns ( sym2, 2UL );
+      checkCapacity( sym2, 4UL );
+      checkNonZeros( sym2, 4UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+
+      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
+          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix swap";
+
+      OST sym1( 2UL );
+      sym1(0,0) = vec( 1 );
+      sym1(0,1) = vec( 2 );
+      sym1(1,1) = vec( 3 );
+
+      OST sym2( 2UL );
+      sym2(0,0) = vec( 4 );
+      sym2(0,1) = vec( 5 );
+
+      swap( sym1, sym2 );
+
+      checkRows    ( sym1, 2UL );
+      checkColumns ( sym1, 2UL );
+      checkCapacity( sym1, 4UL );
+      checkNonZeros( sym1, 3UL );
+      checkNonZeros( sym1, 0UL, 2UL );
+      checkNonZeros( sym1, 1UL, 1UL );
+
+      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
+          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym1 << "\n"
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
+                                     "( ( 5 ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( sym2, 2UL );
+      checkColumns ( sym2, 2UL );
+      checkCapacity( sym2, 4UL );
+      checkNonZeros( sym2, 4UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+
+      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
+          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c transpose() member function of the SymmetricMatrix specialization.
 //
 // \return void
@@ -2964,135 +3093,6 @@ void DenseNonNumericTest::testCTranspose()
              << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n"
                                      "( (   ) ( 3 ) ( 4 ) )\n"
                                      "( ( 2 ) ( 4 ) ( 5 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void DenseNonNumericTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix swap";
-
-      ST sym1( 2UL );
-      sym1(0,0) = vec( 1 );
-      sym1(0,1) = vec( 2 );
-      sym1(1,1) = vec( 3 );
-
-      ST sym2( 2UL );
-      sym2(0,0) = vec( 4 );
-      sym2(0,1) = vec( 5 );
-
-      swap( sym1, sym2 );
-
-      checkRows    ( sym1, 2UL );
-      checkColumns ( sym1, 2UL );
-      checkCapacity( sym1, 4UL );
-      checkNonZeros( sym1, 3UL );
-      checkNonZeros( sym1, 0UL, 2UL );
-      checkNonZeros( sym1, 1UL, 1UL );
-
-      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
-          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
-                                     "( ( 5 ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( sym2, 2UL );
-      checkColumns ( sym2, 2UL );
-      checkCapacity( sym2, 4UL );
-      checkNonZeros( sym2, 4UL );
-      checkNonZeros( sym2, 0UL, 2UL );
-      checkNonZeros( sym2, 1UL, 2UL );
-
-      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
-          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
-                                     "( ( 2 ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix swap";
-
-      OST sym1( 2UL );
-      sym1(0,0) = vec( 1 );
-      sym1(0,1) = vec( 2 );
-      sym1(1,1) = vec( 3 );
-
-      OST sym2( 2UL );
-      sym2(0,0) = vec( 4 );
-      sym2(0,1) = vec( 5 );
-
-      swap( sym1, sym2 );
-
-      checkRows    ( sym1, 2UL );
-      checkColumns ( sym1, 2UL );
-      checkCapacity( sym1, 4UL );
-      checkNonZeros( sym1, 3UL );
-      checkNonZeros( sym1, 0UL, 2UL );
-      checkNonZeros( sym1, 1UL, 1UL );
-
-      if( sym1(0,0) != vec( 4 ) || sym1(0,1) != vec( 5 ) ||
-          sym1(1,0) != vec( 5 ) || !isDefault( sym1(1,1) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n"
-                                     "( ( 5 ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( sym2, 2UL );
-      checkColumns ( sym2, 2UL );
-      checkCapacity( sym2, 4UL );
-      checkNonZeros( sym2, 4UL );
-      checkNonZeros( sym2, 0UL, 2UL );
-      checkNonZeros( sym2, 1UL, 2UL );
-
-      if( sym2(0,0) != vec( 1 ) || sym2(0,1) != vec( 2 ) ||
-          sym2(1,0) != vec( 2 ) || sym2(1,1) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
-                                     "( ( 2 ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
