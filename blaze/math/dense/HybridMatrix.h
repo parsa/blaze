@@ -335,22 +335,29 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline constexpr size_t spacing() const noexcept;
-                              inline constexpr size_t capacity() const noexcept;
-                              inline           size_t capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline void             clear();
-                                     void             resize ( size_t m, size_t n, bool preserve=true );
-                              inline void             extend ( size_t m, size_t n, bool preserve=true );
-                              inline HybridMatrix&    transpose();
-                              inline HybridMatrix&    ctranspose();
-   template< typename Other > inline HybridMatrix&    scale( const Other& scalar );
-                              inline void             swap( HybridMatrix& m ) noexcept;
+   inline size_t           rows() const noexcept;
+   inline size_t           columns() const noexcept;
+   inline constexpr size_t spacing() const noexcept;
+   inline constexpr size_t capacity() const noexcept;
+   inline           size_t capacity( size_t i ) const noexcept;
+   inline size_t           nonZeros() const;
+   inline size_t           nonZeros( size_t i ) const;
+   inline void             reset();
+   inline void             reset( size_t i );
+   inline void             clear();
+          void             resize ( size_t m, size_t n, bool preserve=true );
+   inline void             extend ( size_t m, size_t n, bool preserve=true );
+   inline void             swap( HybridMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline HybridMatrix& transpose();
+   inline HybridMatrix& ctranspose();
+
+   template< typename Other > inline HybridMatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1960,6 +1967,43 @@ inline void HybridMatrix<Type,M,N,SO>::extend( size_t m, size_t n, bool preserve
 
 
 //*************************************************************************************************
+/*!\brief Swapping the contents of two hybrid matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
+{
+   using std::swap;
+
+   const size_t maxrows( max( m_, m.m_ ) );
+   const size_t maxcols( max( n_, m.n_ ) );
+
+   for( size_t i=0UL; i<maxrows; ++i ) {
+      for( size_t j=0UL; j<maxcols; ++j ) {
+         swap( v_[i*NN+j], m(i,j) );
+      }
+   }
+
+   swap( m_, m.m_ );
+   swap( n_, m.n_ );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -2088,35 +2132,6 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::scale( const Other&
          v_[i*NN+j] *= scalar;
 
    return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Swapping the contents of two hybrid matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
-{
-   using std::swap;
-
-   const size_t maxrows( max( m_, m.m_ ) );
-   const size_t maxcols( max( n_, m.n_ ) );
-
-   for( size_t i=0UL; i<maxrows; ++i ) {
-      for( size_t j=0UL; j<maxcols; ++j ) {
-         swap( v_[i*NN+j], m(i,j) );
-      }
-   }
-
-   swap( m_, m.m_ );
-   swap( n_, m.n_ );
 }
 //*************************************************************************************************
 
@@ -3253,22 +3268,29 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline constexpr size_t spacing() const noexcept;
-                              inline constexpr size_t capacity() const noexcept;
-                              inline           size_t capacity( size_t j ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t j ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline void             clear();
-                                     void             resize ( size_t m, size_t n, bool preserve=true );
-                              inline void             extend ( size_t m, size_t n, bool preserve=true );
-                              inline HybridMatrix&    transpose();
-                              inline HybridMatrix&    ctranspose();
-   template< typename Other > inline HybridMatrix&    scale( const Other& scalar );
-                              inline void             swap( HybridMatrix& m ) noexcept;
+   inline size_t           rows() const noexcept;
+   inline size_t           columns() const noexcept;
+   inline constexpr size_t spacing() const noexcept;
+   inline constexpr size_t capacity() const noexcept;
+   inline           size_t capacity( size_t j ) const noexcept;
+   inline size_t           nonZeros() const;
+   inline size_t           nonZeros( size_t j ) const;
+   inline void             reset();
+   inline void             reset( size_t i );
+   inline void             clear();
+          void             resize ( size_t m, size_t n, bool preserve=true );
+   inline void             extend ( size_t m, size_t n, bool preserve=true );
+   inline void             swap( HybridMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline HybridMatrix& transpose();
+   inline HybridMatrix& ctranspose();
+
+   template< typename Other > inline HybridMatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4888,6 +4910,44 @@ inline void HybridMatrix<Type,M,N,true>::extend( size_t m, size_t n, bool preser
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two hybrid matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
+{
+   using std::swap;
+
+   const size_t maxrows( max( m_, m.m_ ) );
+   const size_t maxcols( max( n_, m.n_ ) );
+
+   for( size_t j=0UL; j<maxcols; ++j ) {
+      for( size_t i=0UL; i<maxrows; ++i ) {
+         swap( v_[i+j*MM], m(i,j) );
+      }
+   }
+
+   swap( m_, m.m_ );
+   swap( n_, m.n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -5018,36 +5078,6 @@ inline HybridMatrix<Type,M,N,true>&
          v_[i+j*MM] *= scalar;
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two hybrid matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
-{
-   using std::swap;
-
-   const size_t maxrows( max( m_, m.m_ ) );
-   const size_t maxcols( max( n_, m.n_ ) );
-
-   for( size_t j=0UL; j<maxcols; ++j ) {
-      for( size_t i=0UL; i<maxrows; ++i ) {
-         swap( v_[i+j*MM], m(i,j) );
-      }
-   }
-
-   swap( m_, m.m_ );
-   swap( n_, m.n_ );
 }
 /*! \endcond */
 //*************************************************************************************************
