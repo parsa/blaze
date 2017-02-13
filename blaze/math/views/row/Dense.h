@@ -220,11 +220,17 @@ class Row<MT,true,true,SF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t size() const noexcept;
-                              inline size_t capacity() const noexcept;
-                              inline size_t nonZeros() const;
-                              inline void   reset();
-   template< typename Other > inline Row&   scale( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline Row& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1221,6 +1227,14 @@ inline void Row<MT,true,true,SF>::reset()
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2522,11 +2536,17 @@ class Row<MT,false,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t size() const noexcept;
-                              inline size_t capacity() const noexcept;
-                              inline size_t nonZeros() const;
-                              inline void   reset();
-   template< typename Other > inline Row&   scale( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline Row& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -3426,6 +3446,14 @@ inline void Row<MT,false,true,false>::reset()
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the row by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
@@ -3977,11 +4005,17 @@ class Row<MT,false,true,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t size() const noexcept;
-                              inline size_t capacity() const noexcept;
-                              inline size_t nonZeros() const;
-                              inline void   reset();
-   template< typename Other > inline Row&   scale( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline Row& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4951,6 +4985,14 @@ inline void Row<MT,false,true,true>::reset()
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
