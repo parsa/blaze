@@ -303,16 +303,22 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t         size() const noexcept;
-                              inline size_t         capacity() const noexcept;
-                              inline size_t         nonZeros() const;
-                              inline void           reset();
-                              inline void           clear();
-                              inline void           resize( size_t n, bool preserve=true );
-                              inline void           extend( size_t n, bool preserve=true );
-                              inline void           reserve( size_t n );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   clear();
+   inline void   resize( size_t n, bool preserve=true );
+   inline void   extend( size_t n, bool preserve=true );
+   inline void   reserve( size_t n );
+   inline void   swap( DynamicVector& v ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline DynamicVector& scale( const Other& scalar );
-                              inline void           swap( DynamicVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1537,24 +1543,6 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
 
 
 //*************************************************************************************************
-/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scalar )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= scalar;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Swapping the contents of two vectors.
 //
 // \param v The vector to be swapped.
@@ -1584,6 +1572,32 @@ inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
    if( usePadding && IsVectorizable<Type>::value )
       return nextMultiple<size_t>( minCapacity, SIMDSIZE );
    else return minCapacity;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the vector.
+*/
+template< typename Type     // Data type of the vector
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scalar )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] *= scalar;
+   return *this;
 }
 //*************************************************************************************************
 
