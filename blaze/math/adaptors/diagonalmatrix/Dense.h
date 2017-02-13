@@ -728,21 +728,27 @@ class DiagonalMatrix<MT,SO,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t          rows() const noexcept;
-                              inline size_t          columns() const noexcept;
-                              inline size_t          spacing() const noexcept;
-                              inline size_t          capacity() const noexcept;
-                              inline size_t          capacity( size_t i ) const noexcept;
-                              inline size_t          nonZeros() const;
-                              inline size_t          nonZeros( size_t i ) const;
-                              inline void            reset();
-                              inline void            reset( size_t i );
-                              inline void            clear();
-                                     void            resize ( size_t n, bool preserve=true );
-                              inline void            extend ( size_t n, bool preserve=true );
-                              inline void            reserve( size_t elements );
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+          void   resize ( size_t n, bool preserve=true );
+   inline void   extend ( size_t n, bool preserve=true );
+   inline void   reserve( size_t elements );
+   inline void   swap( DiagonalMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline DiagonalMatrix& scale( const Other& scalar );
-                              inline void            swap( DiagonalMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -2335,25 +2341,6 @@ inline void DiagonalMatrix<MT,SO,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the matrix scaling.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted dense matrix
-        , bool SO >         // Storage order of the adapted dense matrix
-template< typename Other >  // Data type of the scalar value
-inline DiagonalMatrix<MT,SO,true>& DiagonalMatrix<MT,SO,true>::scale( const Other& scalar )
-{
-   matrix_.scale( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Swapping the contents of two matrices.
 //
 // \param m The matrix to be swapped.
@@ -2366,6 +2353,33 @@ inline void DiagonalMatrix<MT,SO,true>::swap( DiagonalMatrix& m ) noexcept
    using std::swap;
 
    swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the matrix scaling.
+// \return Reference to the matrix.
+*/
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
+template< typename Other >  // Data type of the scalar value
+inline DiagonalMatrix<MT,SO,true>& DiagonalMatrix<MT,SO,true>::scale( const Other& scalar )
+{
+   matrix_.scale( scalar );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
