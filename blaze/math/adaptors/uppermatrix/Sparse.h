@@ -220,28 +220,34 @@ class UpperMatrix<MT,SO,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t       rows() const noexcept;
-                              inline size_t       columns() const noexcept;
-                              inline size_t       capacity() const noexcept;
-                              inline size_t       capacity( size_t i ) const noexcept;
-                              inline size_t       nonZeros() const;
-                              inline size_t       nonZeros( size_t i ) const;
-                              inline void         reset();
-                              inline void         reset( size_t i );
-                              inline void         clear();
-                              inline Iterator     set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator     insert( size_t i, size_t j, const ElementType& value );
-                              inline void         resize ( size_t n, bool preserve=true );
-                              inline void         reserve( size_t nonzeros );
-                              inline void         reserve( size_t i, size_t nonzeros );
-                              inline void         trim();
-                              inline void         trim( size_t i );
-   template< typename Other > inline UpperMatrix& scale( const Other& scalar );
-   template< typename Other > inline UpperMatrix& scaleDiagonal( Other scale );
-                              inline void         swap( UpperMatrix& m ) noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+   inline void   resize ( size_t n, bool preserve=true );
+   inline void   reserve( size_t nonzeros );
+   inline void   reserve( size_t i, size_t nonzeros );
+   inline void   trim();
+   inline void   trim( size_t i );
+   inline void   swap( UpperMatrix& m ) noexcept;
 
    static inline constexpr size_t maxNonZeros() noexcept;
    static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set( size_t i, size_t j, const ElementType& value );
+   inline Iterator insert( size_t i, size_t j, const ElementType& value );
+   inline void     append  ( size_t i, size_t j, const ElementType& value, bool check=false );
+   inline void     finalize( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -272,11 +278,11 @@ class UpperMatrix<MT,SO,false>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append  ( size_t i, size_t j, const ElementType& value, bool check=false );
-   inline void finalize( size_t i );
+   template< typename Other > inline UpperMatrix& scale( const Other& scalar );
+   template< typename Other > inline UpperMatrix& scaleDiagonal( const Other& scale );
    //@}
    //**********************************************************************************************
 
@@ -1352,69 +1358,6 @@ inline void UpperMatrix<MT,SO,false>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting elements of the upper matrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be set.
-// \return Iterator to the set element.
-// \exception std::invalid_argument Invalid access to lower matrix element.
-//
-// This function sets the value of an element of the upper matrix. In case the upper matrix
-// already contains an element with row index \a i and column index \a j its value is modified,
-// else a new element with the given \a value is inserted. The attempt to set an element in the
-// lower part of the matrix (i.e. below the diagonal) will result in a \a std::invalid_argument
-// exception.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename UpperMatrix<MT,SO,false>::Iterator
-   UpperMatrix<MT,SO,false>::set( size_t i, size_t j, const ElementType& value )
-{
-   if( i > j ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
-   }
-
-   return matrix_.set( i, j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting elements into the upper matrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be inserted.
-// \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse matrix access index.
-// \exception std::invalid_argument Invalid access to lower matrix element.
-//
-// This function inserts a new element into the upper matrix. However, duplicate elements are
-// not allowed. In case the upper matrix already contains an element with row index \a i and
-// column index \a j, a \a std::invalid_argument exception is thrown. Also, the attempt to
-// insert an element in the lower part of the matrix (i.e. below the diagonal) will result in
-// a \a std::invalid_argument exception.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename UpperMatrix<MT,SO,false>::Iterator
-   UpperMatrix<MT,SO,false>::insert( size_t i, size_t j, const ElementType& value )
-{
-   if( i > j ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
-   }
-
-   return matrix_.insert( i, j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the upper matrix.
 //
 // \param n The new number of rows and columns of the matrix.
@@ -1532,46 +1475,6 @@ inline void UpperMatrix<MT,SO,false>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the matrix scaling.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline UpperMatrix<MT,SO,false>&
-   UpperMatrix<MT,SO,false>::scale( const Other& scalar )
-{
-   matrix_.scale( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling the diagonal of the upper matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the upper matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline UpperMatrix<MT,SO,false>&
-   UpperMatrix<MT,SO,false>::scaleDiagonal( Other scalar )
-{
-   matrix_.scaleDiagonal( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Swapping the contents of two matrices.
 //
 // \param m The matrix to be swapped.
@@ -1650,6 +1553,165 @@ inline void UpperMatrix<MT,SO,false>::resetLower()
       for( size_t i=1UL; i<rows(); ++i )
          matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting elements of the upper matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+// \exception std::invalid_argument Invalid access to lower matrix element.
+//
+// This function sets the value of an element of the upper matrix. In case the upper matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted. The attempt to set an element in the
+// lower part of the matrix (i.e. below the diagonal) will result in a \a std::invalid_argument
+// exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename UpperMatrix<MT,SO,false>::Iterator
+   UpperMatrix<MT,SO,false>::set( size_t i, size_t j, const ElementType& value )
+{
+   if( i > j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
+   }
+
+   return matrix_.set( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting elements into the upper matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse matrix access index.
+// \exception std::invalid_argument Invalid access to lower matrix element.
+//
+// This function inserts a new element into the upper matrix. However, duplicate elements are
+// not allowed. In case the upper matrix already contains an element with row index \a i and
+// column index \a j, a \a std::invalid_argument exception is thrown. Also, the attempt to
+// insert an element in the lower part of the matrix (i.e. below the diagonal) will result in
+// a \a std::invalid_argument exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename UpperMatrix<MT,SO,false>::Iterator
+   UpperMatrix<MT,SO,false>::insert( size_t i, size_t j, const ElementType& value )
+{
+   if( i > j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
+   }
+
+   return matrix_.insert( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Appending elements to the specified row/column of the upper matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+// \exception std::invalid_argument Invalid access to lower matrix element.
+//
+// This function provides a very efficient way to fill an upper sparse matrix with elements. It
+// appends a new element to the end of the specified row/column without any additional memory
+// allocation. Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the specified row/column of the sparse matrix
+//  - the current number of non-zero elements in the matrix must be smaller than the capacity
+//    of the matrix
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// In combination with the reserve() and the finalize() function, append() provides the most
+// efficient way to add new elements to a (newly created) sparse matrix:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::UpperMatrix;
+   using blaze::rowMajor;
+
+   UpperMatrix< CompressedMatrix<double,rowMajor> > A( 4 );
+
+   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   A.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   A.finalize( 0 );        // Finalizing row 0
+   A.append( 1, 2, 2.0 );  // Appending the value 2 in row 1 with column index 2
+   A.finalize( 1 );        // Finalizing row 1
+   A.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   A.append( 3, 3, 3.0 );  // Appending the value 3 in row 3 with column index 3
+   A.finalize( 3 );        // Finalizing row 3
+   \endcode
+
+// Note that although append() does not allocate new memory it still invalidates all iterators
+// returned by the end() functions! Also note that the attempt to append an element within the
+// lower part of the matrix (i.e. below the diagonal) will result in a \a std::invalid_argument
+// exception.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void UpperMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+{
+   if( i > j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
+   }
+
+   matrix_.append( i, j, value, check );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the element insertion of a row/column.
+//
+// \param i The index of the row/column to be finalized \f$[0..N-1]\f$.
+// \return void
+//
+// This function is part of the low-level interface to efficiently fill a matrix with elements.
+// After completion of row/column \a i via the append() function, this function can be called to
+// finalize row/column \a i and prepare the next row/column for insertion process via append().
+//
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void UpperMatrix<MT,SO,false>::finalize( size_t i )
+{
+   matrix_.finalize( i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1980,69 +2042,25 @@ inline typename UpperMatrix<MT,SO,false>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending elements to the specified row/column of the upper matrix.
+/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
 //
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
-// \exception std::invalid_argument Invalid access to lower matrix element.
-//
-// This function provides a very efficient way to fill an upper sparse matrix with elements. It
-// appends a new element to the end of the specified row/column without any additional memory
-// allocation. Therefore it is strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the specified row/column of the sparse matrix
-//  - the current number of non-zero elements in the matrix must be smaller than the capacity
-//    of the matrix
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// In combination with the reserve() and the finalize() function, append() provides the most
-// efficient way to add new elements to a (newly created) sparse matrix:
-
-   \code
-   using blaze::CompressedMatrix;
-   using blaze::UpperMatrix;
-   using blaze::rowMajor;
-
-   UpperMatrix< CompressedMatrix<double,rowMajor> > A( 4 );
-
-   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
-   A.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
-   A.finalize( 0 );        // Finalizing row 0
-   A.append( 1, 2, 2.0 );  // Appending the value 2 in row 1 with column index 2
-   A.finalize( 1 );        // Finalizing row 1
-   A.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
-   A.append( 3, 3, 3.0 );  // Appending the value 3 in row 3 with column index 3
-   A.finalize( 3 );        // Finalizing row 3
-   \endcode
-
-// Note that although append() does not allocate new memory it still invalidates all iterators
-// returned by the end() functions! Also note that the attempt to append an element within the
-// lower part of the matrix (i.e. below the diagonal) will result in a \a std::invalid_argument
-// exception.
+// \param scalar The scalar value for the matrix scaling.
+// \return Reference to the matrix.
 */
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline void UpperMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+template< typename MT       // Type of the adapted sparse matrix
+        , bool SO >         // Storage order of the adapted sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline UpperMatrix<MT,SO,false>&
+   UpperMatrix<MT,SO,false>::scale( const Other& scalar )
 {
-   if( i > j ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to lower matrix element" );
-   }
-
-   matrix_.append( i, j, value, check );
+   matrix_.scale( scalar );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2050,23 +2068,19 @@ inline void UpperMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Finalizing the element insertion of a row/column.
+/*!\brief Scaling the diagonal of the upper matrix by the scalar value \a scalar.
 //
-// \param i The index of the row/column to be finalized \f$[0..N-1]\f$.
-// \return void
-//
-// This function is part of the low-level interface to efficiently fill a matrix with elements.
-// After completion of row/column \a i via the append() function, this function can be called to
-// finalize row/column \a i and prepare the next row/column for insertion process via append().
-//
-// \note Although finalize() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \param scalar The scalar value for the diagonal scaling.
+// \return Reference to the upper matrix.
 */
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline void UpperMatrix<MT,SO,false>::finalize( size_t i )
+template< typename MT       // Type of the adapted sparse matrix
+        , bool SO >         // Storage order of the adapted sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline UpperMatrix<MT,SO,false>&
+   UpperMatrix<MT,SO,false>::scaleDiagonal( const Other& scalar )
 {
-   matrix_.finalize( i );
+   matrix_.scaleDiagonal( scalar );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
