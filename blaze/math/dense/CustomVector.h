@@ -543,13 +543,19 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                                inline size_t        size() const noexcept;
-                                inline size_t        capacity() const noexcept;
-                                inline size_t        nonZeros() const;
-                                inline void          reset();
-                                inline void          clear();
-   template< typename Other   > inline CustomVector& scale( const Other& scalar );
-                                inline void          swap( CustomVector& v ) noexcept;
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   clear();
+   inline void   swap( CustomVector& v ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline CustomVector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1688,26 +1694,6 @@ inline void CustomVector<Type,AF,PF,TF>::clear()
 
 
 //*************************************************************************************************
-/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::scale( const Other& scalar )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= scalar;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Swapping the contents of two vectors.
 //
 // \param v The vector to be swapped.
@@ -1723,6 +1709,34 @@ inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) noexcept
 
    swap( size_, v.size_ );
    swap( v_, v.v_ );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the vector.
+*/
+template< typename Type     // Data type of the vector
+        , bool AF           // Alignment flag
+        , bool PF           // Padding flag
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::scale( const Other& scalar )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] *= scalar;
+   return *this;
 }
 //*************************************************************************************************
 
@@ -2873,13 +2887,19 @@ class CustomVector<Type,AF,padded,TF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                                inline size_t        size() const noexcept;
-                                inline size_t        capacity() const noexcept;
-                                inline size_t        nonZeros() const;
-                                inline void          reset();
-                                inline void          clear();
-   template< typename Other >   inline CustomVector& scale( const Other& scalar );
-                                inline void          swap( CustomVector& v ) noexcept;
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   clear();
+   inline void   swap( CustomVector& v ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline CustomVector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4001,28 +4021,6 @@ inline void CustomVector<Type,AF,padded,TF>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline CustomVector<Type,AF,padded,TF>&
-   CustomVector<Type,AF,padded,TF>::scale( const Other& scalar )
-{
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= scalar;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Swapping the contents of two vectors.
 //
 // \param v The vector to be swapped.
@@ -4038,6 +4036,36 @@ inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) noexcept
    swap( size_, v.size_ );
    swap( capacity_, v.capacity_ );
    swap( v_, v.v_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the vector.
+*/
+template< typename Type     // Data type of the vector
+        , bool AF           // Alignment flag
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline CustomVector<Type,AF,padded,TF>&
+   CustomVector<Type,AF,padded,TF>::scale( const Other& scalar )
+{
+   for( size_t i=0UL; i<size_; ++i )
+      v_[i] *= scalar;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
