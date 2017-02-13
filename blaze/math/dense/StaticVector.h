@@ -301,12 +301,18 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline constexpr size_t size() const noexcept;
-                              inline constexpr size_t capacity() const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline void             reset();
-   template< typename Other > inline StaticVector&    scale( const Other& scalar );
-                              inline void             swap( StaticVector& v ) noexcept;
+   inline constexpr size_t size() const noexcept;
+   inline constexpr size_t capacity() const noexcept;
+   inline size_t           nonZeros() const;
+   inline void             reset();
+   inline void             swap( StaticVector& v ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline StaticVector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1433,25 +1439,6 @@ inline void StaticVector<Type,N,TF>::reset()
 
 
 //*************************************************************************************************
-/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}*=s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( const Other& scalar )
-{
-   for( size_t i=0; i<N; ++i )
-      v_[i] *= scalar;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Swapping the contents of two static vectors.
 //
 // \param v The vector to be swapped.
@@ -1466,6 +1453,33 @@ inline void StaticVector<Type,N,TF>::swap( StaticVector& v ) noexcept
 
    for( size_t i=0UL; i<N; ++i )
       swap( v_[i], v.v_[i] );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}*=s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the vector.
+*/
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( const Other& scalar )
+{
+   for( size_t i=0; i<N; ++i )
+      v_[i] *= scalar;
+   return *this;
 }
 //*************************************************************************************************
 
