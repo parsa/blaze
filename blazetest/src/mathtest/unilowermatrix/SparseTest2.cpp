@@ -69,13 +69,13 @@ SparseTest::SparseTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
    testResize();
    testReserve();
    testTrim();
    testSwap();
+   testSet();
+   testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
@@ -2211,6 +2211,662 @@ void SparseTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the UniLowerMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the UniLowerMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testResize()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniLowerMatrix::resize()";
+
+      // Initialization check
+      LT lower;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+
+      // Resizing to 2x2
+      lower.resize( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 2UL );
+      checkNonZeros( lower, 2UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+
+      if( lower(0,0) != 1 || lower(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      lower(1,0) = 2;
+      lower.resize( 4UL, true );
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkCapacity( lower, 5UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
+      checkNonZeros( lower, 3UL, 1UL );
+
+      if( lower(0,0) != 1 ||
+          lower(1,0) != 2 || lower(1,1) != 1 ||
+          lower(2,2) != 1 ||
+          lower(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 0 )\n( 2 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      lower(2,1) = 4;
+      lower.resize( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+
+      if( lower(0,0) != 1 ||
+          lower(1,0) != 2 || lower(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      lower.resize( 0UL );
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniLowerMatrix::resize()";
+
+      // Initialization check
+      OLT lower;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+
+      // Resizing to 2x2
+      lower.resize( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 2UL );
+      checkNonZeros( lower, 2UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( x 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      lower(1,0) = 2;
+      lower.resize( 4UL, true );
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkCapacity( lower, 5UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+      checkNonZeros( lower, 3UL, 1UL );
+
+      if( lower(0,0) != 1 ||
+          lower(1,0) != 2 || lower(1,1) != 1 ||
+          lower(2,2) != 1 ||
+          lower(3,3) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 0 )\n( 2 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      lower(2,1) = 4;
+      lower.resize( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+
+      if( lower(0,0) != 1 ||
+          lower(1,0) != 2 || lower(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 0x0
+      lower.resize( 0UL );
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the UniLowerMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the UniLowerMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniLowerMatrix::reserve()";
+
+      // Initialization check
+      LT lower;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+
+      // Increasing the capacity of the matrix
+      lower.reserve( 10UL );
+
+      checkRows    ( lower,  0UL );
+      checkColumns ( lower,  0UL );
+      checkCapacity( lower, 10UL );
+      checkNonZeros( lower,  0UL );
+
+      // Further increasing the capacity of the matrix
+      lower.reserve( 20UL );
+
+      checkRows    ( lower,  0UL );
+      checkColumns ( lower,  0UL );
+      checkCapacity( lower, 20UL );
+      checkNonZeros( lower,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniLowerMatrix::reserve()";
+
+      // Initialization check
+      OLT lower;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+
+      // Increasing the capacity of the matrix
+      lower.reserve( 10UL );
+
+      checkRows    ( lower,  0UL );
+      checkColumns ( lower,  0UL );
+      checkCapacity( lower, 10UL );
+      checkNonZeros( lower,  0UL );
+
+      // Further increasing the capacity of the matrix
+      lower.reserve( 20UL );
+
+      checkRows    ( lower,  0UL );
+      checkColumns ( lower,  0UL );
+      checkCapacity( lower, 20UL );
+      checkNonZeros( lower,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trim() member function of the UniLowerMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trim() member function of the UniLowerMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniLowerMatrix::trim()";
+
+      // Initialization check
+      LT lower( 3UL );
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      // Increasing the row capacity of the matrix
+      lower.reserve( 0UL, 10UL );
+      lower.reserve( 1UL, 15UL );
+      lower.reserve( 2UL, 20UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 10UL );
+      checkCapacity( lower,  1UL, 15UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the matrix
+      lower.trim();
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 1UL );
+      checkCapacity( lower,  1UL, 1UL );
+      checkCapacity( lower,  2UL, 1UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+   }
+
+   {
+      test_ = "Row-major UniLowerMatrix::trim( size_t )";
+
+      // Initialization check
+      LT lower( 3UL );
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      // Increasing the row capacity of the matrix
+      lower.reserve( 0UL, 10UL );
+      lower.reserve( 1UL, 15UL );
+      lower.reserve( 2UL, 20UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 10UL );
+      checkCapacity( lower,  1UL, 15UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 0th row
+      lower.trim( 0UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL,  1UL );
+      checkCapacity( lower,  1UL, 24UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 1st row
+      lower.trim( 1UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL,  1UL );
+      checkCapacity( lower,  1UL,  1UL );
+      checkCapacity( lower,  2UL, 43UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 2nd row
+      lower.trim( 2UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 1UL );
+      checkCapacity( lower,  1UL, 1UL );
+      checkCapacity( lower,  2UL, 1UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniLowerMatrix::trim()";
+
+      // Initialization check
+      OLT lower( 3UL );
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      // Increasing the column capacity of the matrix
+      lower.reserve( 0UL, 10UL );
+      lower.reserve( 1UL, 15UL );
+      lower.reserve( 2UL, 20UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 10UL );
+      checkCapacity( lower,  1UL, 15UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the matrix
+      lower.trim();
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 1UL );
+      checkCapacity( lower,  1UL, 1UL );
+      checkCapacity( lower,  2UL, 1UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+   }
+
+   {
+      test_ = "Column-major UniLowerMatrix::trim( size_t )";
+
+      // Initialization check
+      OLT lower( 3UL );
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      // Increasing the column capacity of the matrix
+      lower.reserve( 0UL, 10UL );
+      lower.reserve( 1UL, 15UL );
+      lower.reserve( 2UL, 20UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 10UL );
+      checkCapacity( lower,  1UL, 15UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 0th column
+      lower.trim( 0UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL,  1UL );
+      checkCapacity( lower,  1UL, 24UL );
+      checkCapacity( lower,  2UL, 20UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 1st column
+      lower.trim( 1UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL,  1UL );
+      checkCapacity( lower,  1UL,  1UL );
+      checkCapacity( lower,  2UL, 43UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+
+      // Trimming the 2nd column
+      lower.trim( 2UL );
+
+      checkRows    ( lower,  3UL );
+      checkColumns ( lower,  3UL );
+      checkCapacity( lower, 45UL );
+      checkCapacity( lower,  0UL, 1UL );
+      checkCapacity( lower,  1UL, 1UL );
+      checkCapacity( lower,  2UL, 1UL );
+      checkNonZeros( lower,  3UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 1UL );
+      checkNonZeros( lower,  2UL, 1UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the UniLowerMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the UniLowerMatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major UniLowerMatrix swap";
+
+      LT lower1( 2UL );
+      lower1(1,0) = 2;
+
+      LT lower2( 3UL );
+      lower2(1,0) = 3;
+      lower2(2,0) = 4;
+      lower2(2,1) = 5;
+
+      swap( lower1, lower2 );
+
+      checkRows    ( lower1, 3UL );
+      checkColumns ( lower1, 3UL );
+      checkCapacity( lower1, 6UL );
+      checkNonZeros( lower1, 6UL );
+      checkNonZeros( lower1, 0UL, 1UL );
+      checkNonZeros( lower1, 1UL, 2UL );
+      checkNonZeros( lower1, 2UL, 3UL );
+
+      if( lower1(0,0) != 1 || lower1(0,1) != 0 || lower1(0,2) != 0 ||
+          lower1(1,0) != 3 || lower1(1,1) != 1 || lower1(1,2) != 0 ||
+          lower1(2,0) != 4 || lower1(2,1) != 5 || lower1(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower1 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 3 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( lower2, 2UL );
+      checkColumns ( lower2, 2UL );
+      checkCapacity( lower2, 3UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+
+      if( lower2(0,0) != 1 || lower2(0,1) != 0 || lower2(1,0) != 2 || lower2(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major UniLowerMatrix swap";
+
+      OLT lower1( 2UL );
+      lower1(1,0) = 2;
+
+      OLT lower2( 3UL );
+      lower2(1,0) = 3;
+      lower2(2,0) = 4;
+      lower2(2,1) = 5;
+
+      swap( lower1, lower2 );
+
+      checkRows    ( lower1, 3UL );
+      checkColumns ( lower1, 3UL );
+      checkCapacity( lower1, 6UL );
+      checkNonZeros( lower1, 6UL );
+      checkNonZeros( lower1, 0UL, 3UL );
+      checkNonZeros( lower1, 1UL, 2UL );
+      checkNonZeros( lower1, 2UL, 1UL );
+
+      if( lower1(0,0) != 1 || lower1(0,1) != 0 || lower1(0,2) != 0 ||
+          lower1(1,0) != 3 || lower1(1,1) != 1 || lower1(1,2) != 0 ||
+          lower1(2,0) != 4 || lower1(2,1) != 5 || lower1(2,2) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower1 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 3 1 0 )\n( 4 5 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( lower2, 2UL );
+      checkColumns ( lower2, 2UL );
+      checkCapacity( lower2, 3UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+
+      if( lower2(0,0) != 1 || lower2(0,1) != 0 || lower2(1,0) != 2 || lower2(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the UniLowerMatrix specialization.
 //
 // \return void
@@ -2981,662 +3637,6 @@ void SparseTest::testAppend()
                 << "   Expected result:\n( 1 0 0 0 )\n( 2 1 0 0 )\n( 0 3 1 0 )\n( 0 4 5 1 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the UniLowerMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c resize() member function of the UniLowerMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testResize()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniLowerMatrix::resize()";
-
-      // Initialization check
-      LT lower;
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-
-      // Resizing to 2x2
-      lower.resize( 2UL );
-
-      checkRows    ( lower, 2UL );
-      checkColumns ( lower, 2UL );
-      checkCapacity( lower, 2UL );
-      checkNonZeros( lower, 2UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-
-      if( lower(0,0) != 1 || lower(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 )\n( 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      lower(1,0) = 2;
-      lower.resize( 4UL, true );
-
-      checkRows    ( lower, 4UL );
-      checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
-      checkNonZeros( lower, 5UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 2UL );
-      checkNonZeros( lower, 2UL, 1UL );
-      checkNonZeros( lower, 3UL, 1UL );
-
-      if( lower(0,0) != 1 ||
-          lower(1,0) != 2 || lower(1,1) != 1 ||
-          lower(2,2) != 1 ||
-          lower(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 0 0 )\n( 2 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      lower(2,1) = 4;
-      lower.resize( 2UL );
-
-      checkRows    ( lower, 2UL );
-      checkColumns ( lower, 2UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 2UL );
-
-      if( lower(0,0) != 1 ||
-          lower(1,0) != 2 || lower(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      lower.resize( 0UL );
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniLowerMatrix::resize()";
-
-      // Initialization check
-      OLT lower;
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-
-      // Resizing to 2x2
-      lower.resize( 2UL );
-
-      checkRows    ( lower, 2UL );
-      checkColumns ( lower, 2UL );
-      checkCapacity( lower, 2UL );
-      checkNonZeros( lower, 2UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-
-      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 )\n( x 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      lower(1,0) = 2;
-      lower.resize( 4UL, true );
-
-      checkRows    ( lower, 4UL );
-      checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
-      checkNonZeros( lower, 5UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
-      checkNonZeros( lower, 3UL, 1UL );
-
-      if( lower(0,0) != 1 ||
-          lower(1,0) != 2 || lower(1,1) != 1 ||
-          lower(2,2) != 1 ||
-          lower(3,3) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 0 0 )\n( 2 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      lower(2,1) = 4;
-      lower.resize( 2UL );
-
-      checkRows    ( lower, 2UL );
-      checkColumns ( lower, 2UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-
-      if( lower(0,0) != 1 ||
-          lower(1,0) != 2 || lower(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 0x0
-      lower.resize( 0UL );
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the UniLowerMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the UniLowerMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniLowerMatrix::reserve()";
-
-      // Initialization check
-      LT lower;
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-
-      // Increasing the capacity of the matrix
-      lower.reserve( 10UL );
-
-      checkRows    ( lower,  0UL );
-      checkColumns ( lower,  0UL );
-      checkCapacity( lower, 10UL );
-      checkNonZeros( lower,  0UL );
-
-      // Further increasing the capacity of the matrix
-      lower.reserve( 20UL );
-
-      checkRows    ( lower,  0UL );
-      checkColumns ( lower,  0UL );
-      checkCapacity( lower, 20UL );
-      checkNonZeros( lower,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniLowerMatrix::reserve()";
-
-      // Initialization check
-      OLT lower;
-
-      checkRows    ( lower, 0UL );
-      checkColumns ( lower, 0UL );
-      checkNonZeros( lower, 0UL );
-
-      // Increasing the capacity of the matrix
-      lower.reserve( 10UL );
-
-      checkRows    ( lower,  0UL );
-      checkColumns ( lower,  0UL );
-      checkCapacity( lower, 10UL );
-      checkNonZeros( lower,  0UL );
-
-      // Further increasing the capacity of the matrix
-      lower.reserve( 20UL );
-
-      checkRows    ( lower,  0UL );
-      checkColumns ( lower,  0UL );
-      checkCapacity( lower, 20UL );
-      checkNonZeros( lower,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c trim() member function of the UniLowerMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c trim() member function of the UniLowerMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testTrim()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniLowerMatrix::trim()";
-
-      // Initialization check
-      LT lower( 3UL );
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
-
-      // Increasing the row capacity of the matrix
-      lower.reserve( 0UL, 10UL );
-      lower.reserve( 1UL, 15UL );
-      lower.reserve( 2UL, 20UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 10UL );
-      checkCapacity( lower,  1UL, 15UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the matrix
-      lower.trim();
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 1UL );
-      checkCapacity( lower,  1UL, 1UL );
-      checkCapacity( lower,  2UL, 1UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-   }
-
-   {
-      test_ = "Row-major UniLowerMatrix::trim( size_t )";
-
-      // Initialization check
-      LT lower( 3UL );
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
-
-      // Increasing the row capacity of the matrix
-      lower.reserve( 0UL, 10UL );
-      lower.reserve( 1UL, 15UL );
-      lower.reserve( 2UL, 20UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 10UL );
-      checkCapacity( lower,  1UL, 15UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 0th row
-      lower.trim( 0UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL,  1UL );
-      checkCapacity( lower,  1UL, 24UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 1st row
-      lower.trim( 1UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL,  1UL );
-      checkCapacity( lower,  1UL,  1UL );
-      checkCapacity( lower,  2UL, 43UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 2nd row
-      lower.trim( 2UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 1UL );
-      checkCapacity( lower,  1UL, 1UL );
-      checkCapacity( lower,  2UL, 1UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniLowerMatrix::trim()";
-
-      // Initialization check
-      OLT lower( 3UL );
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
-
-      // Increasing the column capacity of the matrix
-      lower.reserve( 0UL, 10UL );
-      lower.reserve( 1UL, 15UL );
-      lower.reserve( 2UL, 20UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 10UL );
-      checkCapacity( lower,  1UL, 15UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the matrix
-      lower.trim();
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 1UL );
-      checkCapacity( lower,  1UL, 1UL );
-      checkCapacity( lower,  2UL, 1UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-   }
-
-   {
-      test_ = "Column-major UniLowerMatrix::trim( size_t )";
-
-      // Initialization check
-      OLT lower( 3UL );
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 3UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
-
-      // Increasing the column capacity of the matrix
-      lower.reserve( 0UL, 10UL );
-      lower.reserve( 1UL, 15UL );
-      lower.reserve( 2UL, 20UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 10UL );
-      checkCapacity( lower,  1UL, 15UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 0th column
-      lower.trim( 0UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL,  1UL );
-      checkCapacity( lower,  1UL, 24UL );
-      checkCapacity( lower,  2UL, 20UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 1st column
-      lower.trim( 1UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL,  1UL );
-      checkCapacity( lower,  1UL,  1UL );
-      checkCapacity( lower,  2UL, 43UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-
-      // Trimming the 2nd column
-      lower.trim( 2UL );
-
-      checkRows    ( lower,  3UL );
-      checkColumns ( lower,  3UL );
-      checkCapacity( lower, 45UL );
-      checkCapacity( lower,  0UL, 1UL );
-      checkCapacity( lower,  1UL, 1UL );
-      checkCapacity( lower,  2UL, 1UL );
-      checkNonZeros( lower,  3UL );
-      checkNonZeros( lower,  0UL, 1UL );
-      checkNonZeros( lower,  1UL, 1UL );
-      checkNonZeros( lower,  2UL, 1UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the UniLowerMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the UniLowerMatrix specialization.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major UniLowerMatrix swap";
-
-      LT lower1( 2UL );
-      lower1(1,0) = 2;
-
-      LT lower2( 3UL );
-      lower2(1,0) = 3;
-      lower2(2,0) = 4;
-      lower2(2,1) = 5;
-
-      swap( lower1, lower2 );
-
-      checkRows    ( lower1, 3UL );
-      checkColumns ( lower1, 3UL );
-      checkCapacity( lower1, 6UL );
-      checkNonZeros( lower1, 6UL );
-      checkNonZeros( lower1, 0UL, 1UL );
-      checkNonZeros( lower1, 1UL, 2UL );
-      checkNonZeros( lower1, 2UL, 3UL );
-
-      if( lower1(0,0) != 1 || lower1(0,1) != 0 || lower1(0,2) != 0 ||
-          lower1(1,0) != 3 || lower1(1,1) != 1 || lower1(1,2) != 0 ||
-          lower1(2,0) != 4 || lower1(2,1) != 5 || lower1(2,2) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower1 << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 3 1 0 )\n( 4 5 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( lower2, 2UL );
-      checkColumns ( lower2, 2UL );
-      checkCapacity( lower2, 3UL );
-      checkNonZeros( lower2, 3UL );
-      checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
-
-      if( lower2(0,0) != 1 || lower2(0,1) != 0 || lower2(1,0) != 2 || lower2(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major UniLowerMatrix swap";
-
-      OLT lower1( 2UL );
-      lower1(1,0) = 2;
-
-      OLT lower2( 3UL );
-      lower2(1,0) = 3;
-      lower2(2,0) = 4;
-      lower2(2,1) = 5;
-
-      swap( lower1, lower2 );
-
-      checkRows    ( lower1, 3UL );
-      checkColumns ( lower1, 3UL );
-      checkCapacity( lower1, 6UL );
-      checkNonZeros( lower1, 6UL );
-      checkNonZeros( lower1, 0UL, 3UL );
-      checkNonZeros( lower1, 1UL, 2UL );
-      checkNonZeros( lower1, 2UL, 1UL );
-
-      if( lower1(0,0) != 1 || lower1(0,1) != 0 || lower1(0,2) != 0 ||
-          lower1(1,0) != 3 || lower1(1,1) != 1 || lower1(1,2) != 0 ||
-          lower1(2,0) != 4 || lower1(2,1) != 5 || lower1(2,2) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower1 << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 3 1 0 )\n( 4 5 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( lower2, 2UL );
-      checkColumns ( lower2, 2UL );
-      checkCapacity( lower2, 3UL );
-      checkNonZeros( lower2, 3UL );
-      checkNonZeros( lower2, 0UL, 2UL );
-      checkNonZeros( lower2, 1UL, 1UL );
-
-      if( lower2(0,0) != 1 || lower2(0,1) != 0 || lower2(1,0) != 2 || lower2(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
