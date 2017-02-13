@@ -200,14 +200,20 @@ class Column<MT,true,false,SF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t   size() const noexcept;
-                              inline size_t   capacity() const noexcept;
-                              inline size_t   nonZeros() const;
-                              inline void     reset();
-                              inline Iterator set    ( size_t index, const ElementType& value );
-                              inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     reserve( size_t n );
-   template< typename Other > inline Column&  scale  ( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const ElementType& value );
+   inline Iterator insert( size_t index, const ElementType& value );
+   inline void     append( size_t index, const ElementType& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -238,10 +244,10 @@ class Column<MT,true,false,SF>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append( size_t index, const ElementType& value, bool check=false );
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1229,6 +1235,62 @@ inline void Column<MT,true,false,SF>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse column.
+//
+// \param n The new minimum capacity of the sparse column.
+// \return void
+//
+// This function increases the capacity of the sparse column to at least \a n elements. The
+// current values of the column elements are preserved.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SF >    // Symmetry flag
+void Column<MT,true,false,SF>::reserve( size_t n )
+{
+   matrix_.reserve( col_, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating a new sparse column capacity.
+//
+// \return The new sparse column capacity.
+//
+// This function calculates a new column capacity based on the current capacity of the sparse
+// column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SF >    // Symmetry flag
+inline size_t Column<MT,true,false,SF>::extendCapacity() const noexcept
+{
+   using blaze::max;
+   using blaze::min;
+
+   size_t nonzeros( 2UL*capacity()+1UL );
+   nonzeros = max( nonzeros, 7UL    );
+   nonzeros = min( nonzeros, size() );
+
+   BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
+
+   return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting an element of the sparse column.
 //
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1276,73 +1338,34 @@ inline typename Column<MT,true,false,SF>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse column.
+/*!\brief Appending an element to the sparse column.
 //
-// \param n The new minimum capacity of the sparse column.
+// \param index The index of the new element. The index must be smaller than the number of matrix rows.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
-// This function increases the capacity of the sparse column to at least \a n elements. The
-// current values of the column elements are preserved.
+// This function provides a very efficient way to fill a sparse column with elements. It appends
+// a new element to the end of the sparse column without any memory allocation. Therefore it is
+// strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the sparse column
+//  - the current number of non-zero elements must be smaller than the capacity of the column
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
-void Column<MT,true,false,SF>::reserve( size_t n )
+inline void Column<MT,true,false,SF>::append( size_t index, const ElementType& value, bool check )
 {
-   matrix_.reserve( col_, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the column scaling.
-// \return Reference to the sparse column.
-//
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
-*/
-template< typename MT       // Type of the sparse matrix
-        , bool SF >         // Symmetry flag
-template< typename Other >  // Data type of the scalar value
-inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Calculating a new sparse column capacity.
-//
-// \return The new sparse column capacity.
-//
-// This function calculates a new column capacity based on the current capacity of the sparse
-// column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SF >    // Symmetry flag
-inline size_t Column<MT,true,false,SF>::extendCapacity() const noexcept
-{
-   using blaze::max;
-   using blaze::min;
-
-   size_t nonzeros( 2UL*capacity()+1UL );
-   nonzeros = max( nonzeros, 7UL    );
-   nonzeros = min( nonzeros, size() );
-
-   BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
-
-   return nonzeros;
+   matrix_.append( index, col_, value, check );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1641,40 +1664,31 @@ inline typename Column<MT,true,false,SF>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the sparse column.
+/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param index The index of the new element. The index must be smaller than the number of matrix rows.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
+// \param scalar The scalar value for the column scaling.
+// \return Reference to the sparse column.
 //
-// This function provides a very efficient way to fill a sparse column with elements. It appends
-// a new element to the end of the sparse column without any memory allocation. Therefore it is
-// strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the sparse column
-//  - the current number of non-zero elements must be smaller than the capacity of the column
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
-template< typename MT  // Type of the sparse matrix
-        , bool SF >    // Symmetry flag
-inline void Column<MT,true,false,SF>::append( size_t index, const ElementType& value, bool check )
+template< typename MT       // Type of the sparse matrix
+        , bool SF >         // Symmetry flag
+template< typename Other >  // Data type of the scalar value
+inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::scale( const Other& scalar )
 {
-   matrix_.append( index, col_, value, check );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2369,14 +2383,20 @@ class Column<MT,false,false,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t   size() const;
-                              inline size_t   capacity() const;
-                              inline size_t   nonZeros() const;
-                              inline void     reset();
-                              inline Iterator set    ( size_t index, const ElementType& value );
-                              inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     reserve( size_t n );
-   template< typename Other > inline Column&  scale  ( const Other& scalar );
+   inline size_t size() const;
+   inline size_t capacity() const;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const ElementType& value );
+   inline Iterator insert( size_t index, const ElementType& value );
+   inline void     append( size_t index, const ElementType& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -2407,10 +2427,10 @@ class Column<MT,false,false,false>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append( size_t index, const ElementType& value, bool check=false );
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -3193,6 +3213,35 @@ inline void Column<MT,false,false,false>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse column.
+//
+// \param n The new minimum capacity of the sparse column.
+// \return void
+//
+// This function increases the capacity of the sparse column to at least \a n elements. The
+// current values of the column elements are preserved.
+*/
+template< typename MT >  // Type of the sparse matrix
+void Column<MT,false,false,false>::reserve( size_t n )
+{
+   UNUSED_PARAMETER( n );
+
+   return;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting an element of the sparse column.
 //
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
@@ -3238,45 +3287,34 @@ inline typename Column<MT,false,false,false>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse column.
+/*!\brief Appending an element to the sparse column.
 //
-// \param n The new minimum capacity of the sparse column.
+// \param index The index of the new element. The index must be smaller than the number of matrix rows.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
-// This function increases the capacity of the sparse column to at least \a n elements. The
-// current values of the column elements are preserved.
+// This function provides a very efficient way to fill a sparse column with elements. It appends
+// a new element to the end of the sparse column without any memory allocation. Therefore it is
+// strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the sparse column
+//  - the current number of non-zero elements must be smaller than the capacity of the column
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
-void Column<MT,false,false,false>::reserve( size_t n )
+inline void Column<MT,false,false,false>::append( size_t index, const ElementType& value, bool check )
 {
-   UNUSED_PARAMETER( n );
-
-   return;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the column scaling.
-// \return Reference to the sparse column.
-//
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
-*/
-template< typename MT >     // Type of the sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline Column<MT,false,false,false>& Column<MT,false,false,false>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
+   if( !check || !isDefault( value ) )
+      matrix_.insert( index, col_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3626,40 +3664,30 @@ inline typename Column<MT,false,false,false>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the sparse column.
+/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param index The index of the new element. The index must be smaller than the number of matrix rows.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
+// \param scalar The scalar value for the column scaling.
+// \return Reference to the sparse column.
 //
-// This function provides a very efficient way to fill a sparse column with elements. It appends
-// a new element to the end of the sparse column without any memory allocation. Therefore it is
-// strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the sparse column
-//  - the current number of non-zero elements must be smaller than the capacity of the column
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
-template< typename MT >  // Type of the sparse matrix
-inline void Column<MT,false,false,false>::append( size_t index, const ElementType& value, bool check )
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline Column<MT,false,false,false>& Column<MT,false,false,false>::scale( const Other& scalar )
 {
-   if( !check || !isDefault( value ) )
-      matrix_.insert( index, col_, value );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3942,14 +3970,20 @@ class Column<MT,false,false,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t   size() const noexcept;
-                              inline size_t   capacity() const noexcept;
-                              inline size_t   nonZeros() const;
-                              inline void     reset();
-                              inline Iterator set    ( size_t index, const ElementType& value );
-                              inline Iterator insert ( size_t index, const ElementType& value );
-                              inline void     reserve( size_t n );
-   template< typename Other > inline Column&  scale  ( const Other& scalar );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const ElementType& value );
+   inline Iterator insert( size_t index, const ElementType& value );
+   inline void     append( size_t index, const ElementType& value, bool check=false );
    //@}
    //**********************************************************************************************
 
@@ -3980,10 +4014,10 @@ class Column<MT,false,false,true>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append( size_t index, const ElementType& value, bool check=false );
+   template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4958,6 +4992,60 @@ inline void Column<MT,false,false,true>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse column.
+//
+// \param n The new minimum capacity of the sparse column.
+// \return void
+//
+// This function increases the capacity of the sparse column to at least \a n elements. The
+// current values of the column elements are preserved.
+*/
+template< typename MT >  // Type of the sparse matrix
+void Column<MT,false,false,true>::reserve( size_t n )
+{
+   matrix_.reserve( col_, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating a new sparse column capacity.
+//
+// \return The new sparse column capacity.
+//
+// This function calculates a new column capacity based on the current capacity of the sparse
+// column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline size_t Column<MT,false,false,true>::extendCapacity() const noexcept
+{
+   using blaze::max;
+   using blaze::min;
+
+   size_t nonzeros( 2UL*capacity()+1UL );
+   nonzeros = max( nonzeros, 7UL    );
+   nonzeros = min( nonzeros, size() );
+
+   BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
+
+   return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting an element of the sparse column.
 //
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
@@ -5003,70 +5091,33 @@ inline typename Column<MT,false,false,true>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the sparse column.
+/*!\brief Appending an element to the sparse column.
 //
-// \param n The new minimum capacity of the sparse column.
+// \param index The index of the new element. The index must be smaller than the number of matrix rows.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
 // \return void
 //
-// This function increases the capacity of the sparse column to at least \a n elements. The
-// current values of the column elements are preserved.
+// This function provides a very efficient way to fill a sparse column with elements. It appends
+// a new element to the end of the sparse column without any memory allocation. Therefore it is
+// strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the sparse column
+//  - the current number of non-zero elements must be smaller than the capacity of the column
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
-void Column<MT,false,false,true>::reserve( size_t n )
+inline void Column<MT,false,false,true>::append( size_t index, const ElementType& value, bool check )
 {
-   matrix_.reserve( col_, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
-//
-// \param scalar The scalar value for the column scaling.
-// \return Reference to the sparse column.
-//
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
-*/
-template< typename MT >     // Type of the sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline Column<MT,false,false,true>& Column<MT,false,false,true>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= scalar;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Calculating a new sparse column capacity.
-//
-// \return The new sparse column capacity.
-//
-// This function calculates a new column capacity based on the current capacity of the sparse
-// column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline size_t Column<MT,false,false,true>::extendCapacity() const noexcept
-{
-   using blaze::max;
-   using blaze::min;
-
-   size_t nonzeros( 2UL*capacity()+1UL );
-   nonzeros = max( nonzeros, 7UL    );
-   nonzeros = min( nonzeros, size() );
-
-   BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
-
-   return nonzeros;
+   matrix_.append( col_, index, value, check );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5358,39 +5409,30 @@ inline typename Column<MT,false,false,true>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the sparse column.
+/*!\brief Scaling of the sparse column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param index The index of the new element. The index must be smaller than the number of matrix rows.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
+// \param scalar The scalar value for the column scaling.
+// \return Reference to the sparse column.
 //
-// This function provides a very efficient way to fill a sparse column with elements. It appends
-// a new element to the end of the sparse column without any memory allocation. Therefore it is
-// strictly necessary to keep the following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the sparse column
-//  - the current number of non-zero elements must be smaller than the capacity of the column
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
-template< typename MT >  // Type of the sparse matrix
-inline void Column<MT,false,false,true>::append( size_t index, const ElementType& value, bool check )
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline Column<MT,false,false,true>& Column<MT,false,false,true>::scale( const Other& scalar )
 {
-   matrix_.append( col_, index, value, check );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************

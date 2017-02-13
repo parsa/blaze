@@ -221,10 +221,16 @@ class Column<MT,true,true,SF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t  size() const noexcept;
-                              inline size_t  capacity() const noexcept;
-                              inline size_t  nonZeros() const;
-                              inline void    reset();
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -1223,6 +1229,14 @@ inline void Column<MT,true,true,SF>::reset()
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2522,10 +2536,16 @@ class Column<MT,false,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t  size() const noexcept;
-                              inline size_t  capacity() const noexcept;
-                              inline size_t  nonZeros() const;
-                              inline void    reset();
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -3438,6 +3458,14 @@ inline void Column<MT,false,true,false>::reset()
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Scaling of the column by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
@@ -3989,10 +4017,16 @@ class Column<MT,false,true,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t  size() const noexcept;
-                              inline size_t  capacity() const noexcept;
-                              inline size_t  nonZeros() const;
-                              inline void    reset();
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline Column& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -4970,6 +5004,14 @@ inline void Column<MT,false,true,true>::reset()
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
