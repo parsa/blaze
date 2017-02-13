@@ -336,19 +336,26 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline constexpr size_t rows() const noexcept;
-                              inline constexpr size_t columns() const noexcept;
-                              inline constexpr size_t spacing() const noexcept;
-                              inline constexpr size_t capacity() const noexcept;
-                              inline           size_t capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline StaticMatrix&    transpose();
-                              inline StaticMatrix&    ctranspose();
-   template< typename Other > inline StaticMatrix&    scale( const Other& scalar );
-                              inline void             swap( StaticMatrix& m ) noexcept;
+   inline constexpr size_t rows() const noexcept;
+   inline constexpr size_t columns() const noexcept;
+   inline constexpr size_t spacing() const noexcept;
+   inline constexpr size_t capacity() const noexcept;
+   inline           size_t capacity( size_t i ) const noexcept;
+   inline size_t           nonZeros() const;
+   inline size_t           nonZeros( size_t i ) const;
+   inline void             reset();
+   inline void             reset( size_t i );
+   inline void             swap( StaticMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline StaticMatrix& transpose();
+   inline StaticMatrix& ctranspose();
+
+   template< typename Other > inline StaticMatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1750,6 +1757,37 @@ inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
 
 
 //*************************************************************************************************
+/*!\brief Swapping the contents of two static matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) noexcept
+{
+   using std::swap;
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         swap( v_[i*NN+j], m(i,j) );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -1922,29 +1960,6 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::scale( const Other&
          v_[i*NN+j] *= scalar;
 
    return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Swapping the contents of two static matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void StaticMatrix<Type,M,N,SO>::swap( StaticMatrix& m ) noexcept
-{
-   using std::swap;
-
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         swap( v_[i*NN+j], m(i,j) );
-      }
-   }
 }
 //*************************************************************************************************
 
@@ -3068,19 +3083,26 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline constexpr size_t rows() const noexcept;
-                              inline constexpr size_t columns() const noexcept;
-                              inline constexpr size_t spacing() const noexcept;
-                              inline constexpr size_t capacity() const noexcept;
-                              inline           size_t capacity( size_t j ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t j ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline StaticMatrix&    transpose();
-                              inline StaticMatrix&    ctranspose();
-   template< typename Other > inline StaticMatrix&    scale( const Other& scalar );
-                              inline void             swap( StaticMatrix& m ) noexcept;
+   inline constexpr size_t rows() const noexcept;
+   inline constexpr size_t columns() const noexcept;
+   inline constexpr size_t spacing() const noexcept;
+   inline constexpr size_t capacity() const noexcept;
+   inline           size_t capacity( size_t j ) const noexcept;
+   inline size_t           nonZeros() const;
+   inline size_t           nonZeros( size_t j ) const;
+   inline void             reset();
+   inline void             reset( size_t i );
+   inline void             swap( StaticMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline StaticMatrix& transpose();
+   inline StaticMatrix& ctranspose();
+
+   template< typename Other > inline StaticMatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4492,6 +4514,38 @@ inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two static matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) noexcept
+{
+   using std::swap;
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=0UL; i<M; ++i ) {
+         swap( v_[i+j*MM], m(i,j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -4662,30 +4716,6 @@ inline StaticMatrix<Type,M,N,true>&
          v_[i+j*MM] *= scalar;
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two static matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void StaticMatrix<Type,M,N,true>::swap( StaticMatrix& m ) noexcept
-{
-   using std::swap;
-
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         swap( v_[i+j*MM], m(i,j) );
-      }
-   }
 }
 /*! \endcond */
 //*************************************************************************************************
