@@ -559,20 +559,27 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const noexcept;
-                              inline size_t        columns() const noexcept;
-                              inline size_t        spacing() const noexcept;
-                              inline size_t        capacity() const noexcept;
-                              inline size_t        capacity( size_t i ) const noexcept;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t i ) const;
-                              inline void          reset();
-                              inline void          reset( size_t i );
-                              inline void          clear();
-                              inline CustomMatrix& transpose();
-                              inline CustomMatrix& ctranspose();
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+   inline void   swap( CustomMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline CustomMatrix& transpose();
+   inline CustomMatrix& ctranspose();
+
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
-                              inline void          swap( CustomMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1941,6 +1948,36 @@ inline void CustomMatrix<Type,AF,PF,SO>::clear()
 
 
 //*************************************************************************************************
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
+{
+   using std::swap;
+
+   swap( m_ , m.m_  );
+   swap( n_ , m.n_  );
+   swap( nn_, m.nn_ );
+   swap( v_ , m.v_  );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -2017,28 +2054,6 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::scale( const Ot
          v_[i*nn_+j] *= scalar;
 
    return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Swapping the contents of two matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
-{
-   using std::swap;
-
-   swap( m_ , m.m_  );
-   swap( n_ , m.n_  );
-   swap( nn_, m.nn_ );
-   swap( v_ , m.v_  );
 }
 //*************************************************************************************************
 
@@ -3338,20 +3353,27 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        rows() const noexcept;
-                              inline size_t        columns() const noexcept;
-                              inline size_t        spacing() const noexcept;
-                              inline size_t        capacity() const noexcept;
-                              inline size_t        capacity( size_t j ) const noexcept;
-                              inline size_t        nonZeros() const;
-                              inline size_t        nonZeros( size_t j ) const;
-                              inline void          reset();
-                              inline void          reset( size_t j );
-                              inline void          clear();
-                              inline CustomMatrix& transpose();
-                              inline CustomMatrix& ctranspose();
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t j ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t j ) const;
+   inline void   reset();
+   inline void   reset( size_t j );
+   inline void   clear();
+   inline void   swap( CustomMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline CustomMatrix& transpose();
+   inline CustomMatrix& ctranspose();
+
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
-                              inline void          swap( CustomMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -4716,6 +4738,37 @@ inline void CustomMatrix<Type,AF,PF,true>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
+{
+   using std::swap;
+
+   swap( m_ , m.m_  );
+   swap( mm_, m.mm_ );
+   swap( n_ , m.n_  );
+   swap( v_ , m.v_  );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
@@ -4793,29 +4846,6 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( cons
          v_[i+j*mm_] *= scalar;
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two matrices.
-//
-// \param m The matrix to be swapped.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
-{
-   using std::swap;
-
-   swap( m_ , m.m_  );
-   swap( mm_, m.mm_ );
-   swap( n_ , m.n_  );
-   swap( v_ , m.v_  );
 }
 /*! \endcond */
 //*************************************************************************************************
