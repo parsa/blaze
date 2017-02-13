@@ -70,17 +70,17 @@ SparseTest::SparseTest()
    testNonZeros();
    testReset();
    testClear();
+   testReserve();
+   testTrim();
    testSet();
    testInsert();
    testAppend();
-   testReserve();
-   testTrim();
-   testTranspose();
-   testCTranspose();
    testErase();
    testFind();
    testLowerBound();
    testUpperBound();
+   testTranspose();
+   testCTranspose();
    testIsDefault();
    testIsSame();
    testSubmatrix();
@@ -3285,6 +3285,304 @@ void SparseTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix::reserve()";
+
+      MT mat( 3UL, 20UL );
+
+      SMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
+
+      // Increasing the capacity of the matrix
+      sm.reserve( 10UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sm.reserve( 20UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 20UL );
+      checkNonZeros( sm,  0UL );
+   }
+
+   {
+      test_ = "Row-major Submatrix::reserve( size_t )";
+
+      MT mat( 3UL, 20UL );
+
+      SMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
+
+      // Increasing the capacity of the row
+      sm.reserve( 0UL, 10UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the row
+      sm.reserve( 0UL, 15UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 15UL );
+      checkNonZeros( sm,  0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix::reserve()";
+
+      OMT mat( 3UL, 20UL );
+
+      OSMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
+
+      // Increasing the capacity of the matrix
+      sm.reserve( 10UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the matrix
+      sm.reserve( 20UL );
+
+      checkRows    ( sm,  1UL );
+      checkColumns ( sm, 20UL );
+      checkCapacity( sm, 20UL );
+      checkNonZeros( sm,  0UL );
+   }
+
+   {
+      test_ = "Columnt-major Submatrix::reserve( size_t )";
+
+      OMT mat( 20UL, 3UL );
+
+      OSMT sm = blaze::submatrix( mat, 0UL, 1UL, 20UL, 1UL );
+
+      // Increasing the capacity of the column
+      sm.reserve( 0UL, 10UL );
+
+      checkRows    ( sm, 20UL );
+      checkColumns ( sm,  1UL );
+      checkCapacity( sm, 10UL );
+      checkNonZeros( sm,  0UL );
+
+      // Further increasing the capacity of the column
+      sm.reserve( 0UL, 15UL );
+
+      checkRows    ( sm, 20UL );
+      checkColumns ( sm,  1UL );
+      checkCapacity( sm, 15UL );
+      checkNonZeros( sm,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trim() member functions of the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trim() member functions of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::trim()";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, 10UL );
+      checkCapacity( sm  ,  1UL, 20UL );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, 10UL );
+      checkCapacity( mat_,  3UL, 20UL );
+
+      // Trimming the matrix
+      sm.trim();
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::trim( size_t )";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, 10UL );
+      checkCapacity( sm  ,  1UL, 20UL );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, 10UL );
+      checkCapacity( mat_,  3UL, 20UL );
+
+      // Trimming the 0th row
+      sm.trim( 0UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, 30UL - sm.nonZeros( 0UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, 30UL - mat_.nonZeros( 2UL ) );
+
+      // Trimming the 1st row
+      sm.trim( 1UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkCapacity( sm  , 30UL );
+      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( mat_, 30UL );
+      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
+      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::trim()";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, 10UL );
+      checkCapacity( sm   ,  1UL, 20UL );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, 10UL );
+      checkCapacity( tmat_,  3UL, 20UL );
+
+      // Trimming the matrix
+      sm.trim();
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::trim( size_t )";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      // Increasing the row capacity of the matrix
+      sm.reserve( 0UL, 10UL );
+      sm.reserve( 1UL, 20UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, 10UL );
+      checkCapacity( sm   ,  1UL, 20UL );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, 10UL );
+      checkCapacity( tmat_,  3UL, 20UL );
+
+      // Trimming the 0th row
+      sm.trim( 0UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, 30UL - sm.nonZeros( 0UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, 30UL - tmat_.nonZeros( 2UL ) );
+
+      // Trimming the 1st row
+      sm.trim( 1UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkCapacity( sm   , 30UL );
+      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
+      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
+      checkCapacity( tmat_, 30UL );
+      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
+      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the Submatrix class template.
 //
 // \return void
@@ -4060,720 +4358,6 @@ void SparseTest::testAppend()
                 << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the Submatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the Submatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major Submatrix::reserve()";
-
-      MT mat( 3UL, 20UL );
-
-      SMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
-
-      // Increasing the capacity of the matrix
-      sm.reserve( 10UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 10UL );
-      checkNonZeros( sm,  0UL );
-
-      // Further increasing the capacity of the matrix
-      sm.reserve( 20UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 20UL );
-      checkNonZeros( sm,  0UL );
-   }
-
-   {
-      test_ = "Row-major Submatrix::reserve( size_t )";
-
-      MT mat( 3UL, 20UL );
-
-      SMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
-
-      // Increasing the capacity of the row
-      sm.reserve( 0UL, 10UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 10UL );
-      checkNonZeros( sm,  0UL );
-
-      // Further increasing the capacity of the row
-      sm.reserve( 0UL, 15UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 15UL );
-      checkNonZeros( sm,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major Submatrix::reserve()";
-
-      OMT mat( 3UL, 20UL );
-
-      OSMT sm = blaze::submatrix( mat, 1UL, 0UL, 1UL, 20UL );
-
-      // Increasing the capacity of the matrix
-      sm.reserve( 10UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 10UL );
-      checkNonZeros( sm,  0UL );
-
-      // Further increasing the capacity of the matrix
-      sm.reserve( 20UL );
-
-      checkRows    ( sm,  1UL );
-      checkColumns ( sm, 20UL );
-      checkCapacity( sm, 20UL );
-      checkNonZeros( sm,  0UL );
-   }
-
-   {
-      test_ = "Columnt-major Submatrix::reserve( size_t )";
-
-      OMT mat( 20UL, 3UL );
-
-      OSMT sm = blaze::submatrix( mat, 0UL, 1UL, 20UL, 1UL );
-
-      // Increasing the capacity of the column
-      sm.reserve( 0UL, 10UL );
-
-      checkRows    ( sm, 20UL );
-      checkColumns ( sm,  1UL );
-      checkCapacity( sm, 10UL );
-      checkNonZeros( sm,  0UL );
-
-      // Further increasing the capacity of the column
-      sm.reserve( 0UL, 15UL );
-
-      checkRows    ( sm, 20UL );
-      checkColumns ( sm,  1UL );
-      checkCapacity( sm, 15UL );
-      checkNonZeros( sm,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c trim() member functions of the Submatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c trim() member functions of the Submatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testTrim()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::trim()";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
-
-      // Increasing the row capacity of the matrix
-      sm.reserve( 0UL, 10UL );
-      sm.reserve( 1UL, 20UL );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkCapacity( sm  , 30UL );
-      checkCapacity( sm  ,  0UL, 10UL );
-      checkCapacity( sm  ,  1UL, 20UL );
-      checkCapacity( mat_, 30UL );
-      checkCapacity( mat_,  2UL, 10UL );
-      checkCapacity( mat_,  3UL, 20UL );
-
-      // Trimming the matrix
-      sm.trim();
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkCapacity( sm  , 30UL );
-      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
-      checkCapacity( mat_, 30UL );
-      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
-      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
-   }
-
-   {
-      test_ = "Row-major CompressedMatrix::trim( size_t )";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
-
-      // Increasing the row capacity of the matrix
-      sm.reserve( 0UL, 10UL );
-      sm.reserve( 1UL, 20UL );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkCapacity( sm  , 30UL );
-      checkCapacity( sm  ,  0UL, 10UL );
-      checkCapacity( sm  ,  1UL, 20UL );
-      checkCapacity( mat_, 30UL );
-      checkCapacity( mat_,  2UL, 10UL );
-      checkCapacity( mat_,  3UL, 20UL );
-
-      // Trimming the 0th row
-      sm.trim( 0UL );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkCapacity( sm  , 30UL );
-      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm  ,  1UL, 30UL - sm.nonZeros( 0UL ) );
-      checkCapacity( mat_, 30UL );
-      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
-      checkCapacity( mat_,  3UL, 30UL - mat_.nonZeros( 2UL ) );
-
-      // Trimming the 1st row
-      sm.trim( 1UL );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkCapacity( sm  , 30UL );
-      checkCapacity( sm  ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm  ,  1UL, sm.nonZeros( 1UL ) );
-      checkCapacity( mat_, 30UL );
-      checkCapacity( mat_,  2UL, mat_.nonZeros( 2UL ) );
-      checkCapacity( mat_,  3UL, mat_.nonZeros( 3UL ) );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::trim()";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
-
-      // Increasing the row capacity of the matrix
-      sm.reserve( 0UL, 10UL );
-      sm.reserve( 1UL, 20UL );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkCapacity( sm   , 30UL );
-      checkCapacity( sm   ,  0UL, 10UL );
-      checkCapacity( sm   ,  1UL, 20UL );
-      checkCapacity( tmat_, 30UL );
-      checkCapacity( tmat_,  2UL, 10UL );
-      checkCapacity( tmat_,  3UL, 20UL );
-
-      // Trimming the matrix
-      sm.trim();
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkCapacity( sm   , 30UL );
-      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
-      checkCapacity( tmat_, 30UL );
-      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
-      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
-   }
-
-   {
-      test_ = "Column-major CompressedMatrix::trim( size_t )";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
-
-      // Increasing the row capacity of the matrix
-      sm.reserve( 0UL, 10UL );
-      sm.reserve( 1UL, 20UL );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkCapacity( sm   , 30UL );
-      checkCapacity( sm   ,  0UL, 10UL );
-      checkCapacity( sm   ,  1UL, 20UL );
-      checkCapacity( tmat_, 30UL );
-      checkCapacity( tmat_,  2UL, 10UL );
-      checkCapacity( tmat_,  3UL, 20UL );
-
-      // Trimming the 0th row
-      sm.trim( 0UL );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkCapacity( sm   , 30UL );
-      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm   ,  1UL, 30UL - sm.nonZeros( 0UL ) );
-      checkCapacity( tmat_, 30UL );
-      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
-      checkCapacity( tmat_,  3UL, 30UL - tmat_.nonZeros( 2UL ) );
-
-      // Trimming the 1st row
-      sm.trim( 1UL );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkCapacity( sm   , 30UL );
-      checkCapacity( sm   ,  0UL, sm.nonZeros( 0UL ) );
-      checkCapacity( sm   ,  1UL, sm.nonZeros( 1UL ) );
-      checkCapacity( tmat_, 30UL );
-      checkCapacity( tmat_,  2UL, tmat_.nonZeros( 2UL ) );
-      checkCapacity( tmat_,  3UL, tmat_.nonZeros( 3UL ) );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c transpose() member functions of the Submatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c transpose() member function of the Submatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c trans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testTranspose()
-{
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via transpose()";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
-
-      transpose( sm );
-
-      checkRows    ( sm  ,  3UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  5UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
-          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
-          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0 -2  0  0 )\n"
-                                     "(  1  0  4  0 )\n"
-                                     "(  0 -3  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via trans()";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
-
-      sm = trans( sm );
-
-      checkRows    ( sm  ,  3UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  5UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
-          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
-          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0 -2  0  0 )\n"
-                                     "(  1  0  4  0 )\n"
-                                     "(  0 -3  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via transpose()";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
-
-      transpose( sm );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  3UL );
-      checkNonZeros( sm   ,  5UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
-          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
-          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  1  0  7 )\n"
-                                     "(  0 -2  0 -3 -8 )\n"
-                                     "(  0  0  4  5  9 )\n"
-                                     "(  0  0  0 -6 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via trans()";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
-
-      sm = trans( sm );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  3UL );
-      checkNonZeros( sm   ,  5UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
-          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
-          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  1  0  7 )\n"
-                                     "(  0 -2  0 -3 -8 )\n"
-                                     "(  0  0  4  5  9 )\n"
-                                     "(  0  0  0 -6 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member functions of the Submatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c ctranspose() member function of the Submatrix
-// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseTest::testCTranspose()
-{
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via ctranspose()";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
-
-      ctranspose( sm );
-
-      checkRows    ( sm  ,  3UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  5UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
-          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
-          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0 -2  0  0 )\n"
-                                     "(  1  0  4  0 )\n"
-                                     "(  0 -3  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via ctrans()";
-
-      initialize();
-
-      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
-
-      sm = ctrans( sm );
-
-      checkRows    ( sm  ,  3UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  5UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
-          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
-          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0 -2  0  0 )\n"
-                                     "(  1  0  4  0 )\n"
-                                     "(  0 -3  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via ctranspose()";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
-
-      ctranspose( sm );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  3UL );
-      checkNonZeros( sm   ,  5UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
-          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
-          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  1  0  7 )\n"
-                                     "(  0 -2  0 -3 -8 )\n"
-                                     "(  0  0  4  5  9 )\n"
-                                     "(  0  0  0 -6 10 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via ctrans()";
-
-      initialize();
-
-      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
-
-      sm = ctrans( sm );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  3UL );
-      checkNonZeros( sm   ,  5UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
-
-      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
-          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
-          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Transpose operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  1  0  7 )\n"
-                                     "(  0 -2  0 -3 -8 )\n"
-                                     "(  0  0  4  5  9 )\n"
-                                     "(  0  0  0 -6 10 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -6350,6 +5934,422 @@ void SparseTest::testUpperBound()
                 << "   Current submatrix:\n" << sm << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() member functions of the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c transpose() member function of the Submatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testTranspose()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
+
+      transpose( sm );
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
+          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -2  0  0 )\n"
+                                     "(  1  0  4  0 )\n"
+                                     "(  0 -3  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
+
+      sm = trans( sm );
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
+          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -2  0  0 )\n"
+                                     "(  1  0  4  0 )\n"
+                                     "(  0 -3  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via transpose()";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      transpose( sm );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  1  0  7 )\n"
+                                     "(  0 -2  0 -3 -8 )\n"
+                                     "(  0  0  4  5  9 )\n"
+                                     "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      sm = trans( sm );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  1  0  7 )\n"
+                                     "(  0 -2  0 -3 -8 )\n"
+                                     "(  0  0  4  5  9 )\n"
+                                     "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member functions of the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the Submatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via ctranspose()";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
+
+      ctranspose( sm );
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
+          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -2  0  0 )\n"
+                                     "(  1  0  4  0 )\n"
+                                     "(  0 -3  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
+
+      sm = ctrans( sm );
+
+      checkRows    ( sm  ,  3UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  5UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != -2 || sm(0,2) != 0 ||
+          sm(1,0) != 1 || sm(1,1) !=  0 || sm(1,2) != 4 ||
+          sm(2,0) != 0 || sm(2,1) != -3 || sm(2,2) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 1  0 4 )\n( 0 -3 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) != -2 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 1 || mat_(2,1) !=  0 || mat_(2,2) != 4 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -2  0  0 )\n"
+                                     "(  1  0  4  0 )\n"
+                                     "(  0 -3  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via ctranspose()";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      ctranspose( sm );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  1  0  7 )\n"
+                                     "(  0 -2  0 -3 -8 )\n"
+                                     "(  0  0  4  5  9 )\n"
+                                     "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      sm = ctrans( sm );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  3UL );
+      checkNonZeros( sm   ,  5UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=  0 ||
+          sm(1,0) != -2 || sm(1,1) != 0 || sm(1,2) != -3 ||
+          sm(2,0) !=  0 || sm(2,1) != 4 || sm(2,2) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 1 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -2 || tmat_(1,2) != 0 || tmat_(1,3) != -3 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 4 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  1  0  7 )\n"
+                                     "(  0 -2  0 -3 -8 )\n"
+                                     "(  0  0  4  5  9 )\n"
+                                     "(  0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
