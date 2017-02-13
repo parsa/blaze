@@ -293,15 +293,21 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t        size() const noexcept;
-                              inline size_t        capacity() const noexcept;
-                              inline size_t        nonZeros() const;
-                              inline void          reset();
-                              inline void          clear();
-                              inline void          resize( size_t n, bool preserve=true );
-                              inline void          extend( size_t n, bool preserve=true );
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   clear();
+   inline void   resize( size_t n, bool preserve=true );
+   inline void   extend( size_t n, bool preserve=true );
+   inline void   swap( HybridVector& v ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline HybridVector& scale( const Other& scalar );
-                              inline void          swap( HybridVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1560,25 +1566,6 @@ inline void HybridVector<Type,N,TF>::extend( size_t n, bool preserve )
 
 
 //*************************************************************************************************
-/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}*=s \f$).
-//
-// \param scalar The scalar value for the vector scaling.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the scalar value
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( const Other& scalar )
-{
-   for( size_t i=0; i<size_; ++i )
-      v_[i] *= scalar;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Swapping the contents of two hybrid vectors.
 //
 // \param v The vector to be swapped.
@@ -1595,6 +1582,33 @@ inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) noexcept
    for( size_t i=0UL; i<maxsize; ++i )
       swap( v_[i], v.v_[i] );
    swap( size_, v.size_ );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Scaling of the vector by the scalar value \a scalar (\f$ \vec{a}*=s \f$).
+//
+// \param scalar The scalar value for the vector scaling.
+// \return Reference to the vector.
+*/
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF >         // Transpose flag
+template< typename Other >  // Data type of the scalar value
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( const Other& scalar )
+{
+   for( size_t i=0; i<size_; ++i )
+      v_[i] *= scalar;
+   return *this;
 }
 //*************************************************************************************************
 
