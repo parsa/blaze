@@ -386,27 +386,31 @@ class SymmetricMatrix<MT,SO,false,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t           rows() const noexcept;
-                              inline size_t           columns() const noexcept;
-                              inline size_t           capacity() const noexcept;
-                              inline size_t           capacity( size_t i ) const noexcept;
-                              inline size_t           nonZeros() const;
-                              inline size_t           nonZeros( size_t i ) const;
-                              inline void             reset();
-                              inline void             reset( size_t i );
-                              inline void             clear();
-                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator         insert( size_t i, size_t j, const ElementType& value );
-                              inline void             resize ( size_t n, bool preserve=true );
-                              inline void             reserve( size_t nonzeros );
-                              inline void             reserve( size_t i, size_t nonzeros );
-                              inline void             trim();
-                              inline void             trim( size_t i );
-                              inline SymmetricMatrix& transpose();
-                              inline SymmetricMatrix& ctranspose();
-   template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
-   template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
-                              inline void             swap( SymmetricMatrix& m ) noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   clear();
+   inline void   resize ( size_t n, bool preserve=true );
+   inline void   reserve( size_t nonzeros );
+   inline void   reserve( size_t i, size_t nonzeros );
+   inline void   trim();
+   inline void   trim( size_t i );
+   inline void   swap( SymmetricMatrix& m ) noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set     ( size_t i, size_t j, const ElementType& value );
+   inline Iterator insert  ( size_t i, size_t j, const ElementType& value );
+   inline void     append  ( size_t i, size_t j, const ElementType& value, bool check=false );
+   inline void     finalize( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -437,11 +441,14 @@ class SymmetricMatrix<MT,SO,false,true>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append  ( size_t i, size_t j, const ElementType& value, bool check=false );
-   inline void finalize( size_t i );
+   inline SymmetricMatrix& transpose();
+   inline SymmetricMatrix& ctranspose();
+
+   template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
+   template< typename Other > inline SymmetricMatrix& scaleDiagonal( const Other& scale );
    //@}
    //**********************************************************************************************
 
@@ -1618,61 +1625,6 @@ inline void SymmetricMatrix<MT,SO,false,true>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting elements of the symmetric matrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be set.
-// \return Iterator to the set element.
-//
-// This function sets the value of both the elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ of the
-// symmetric matrix and returns an iterator to the successfully set element \f$ a_{ij} \f$. In
-// case the symmetric matrix already contains the two elements with index \a i and \a j their
-// values are modified, else two new elements with the given \a value are inserted.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
-   SymmetricMatrix<MT,SO,false,true>::set( size_t i, size_t j, const ElementType& value )
-{
-   if( i != j )
-      matrix_.set( j, i, value );
-   return Iterator( matrix_.set( i, j, value ), matrix_, ( SO ? j : i ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting elements into the symmetric matrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be inserted.
-// \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse matrix access index.
-//
-// This function inserts both the elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ into the symmetric
-// matrix and returns an iterator to the successfully inserted element \f$ a_{ij} \f$. However,
-// duplicate elements are not allowed. In case the symmetric matrix an element with row index
-// \a i and column index \a j, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
-   SymmetricMatrix<MT,SO,false,true>::insert( size_t i, size_t j, const ElementType& value )
-{
-   if( i != j )
-      matrix_.insert( j, i, value );
-   return Iterator( matrix_.insert( i, j, value ), matrix_, ( SO ? j : i ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Changing the size of the symmetric matrix.
 //
 // \param n The new number of rows and columns of the matrix.
@@ -1792,81 +1744,6 @@ inline void SymmetricMatrix<MT,SO,false,true>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place transpose the symmetric matrix.
-//
-// \return Reference to the transposed matrix.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::transpose()
-{
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place conjugate transpose the symmetric matrix.
-//
-// \return Reference to the transposed matrix.
-*/
-template< typename MT  // Type of the adapted sparse matrix
-        , bool SO >    // Storage order of the adapted sparse matrix
-inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::ctranspose()
-{
-   if( !IsBuiltin<ElementType>::value )
-      conjugate( matrix_ );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the matrix scaling.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,SO,false,true>&
-   SymmetricMatrix<MT,SO,false,true>::scale( const Other& scalar )
-{
-   matrix_.scale( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling the diagonal of the symmetric matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the symmetric matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,SO,false,true>&
-   SymmetricMatrix<MT,SO,false,true>::scaleDiagonal( Other scalar )
-{
-   matrix_.scaleDiagonal( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Swapping the contents of two matrices.
 //
 // \param m The matrix to be swapped.
@@ -1879,6 +1756,160 @@ inline void SymmetricMatrix<MT,SO,false,true>::swap( SymmetricMatrix& m ) noexce
    using std::swap;
 
    swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting elements of the symmetric matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+//
+// This function sets the value of both the elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ of the
+// symmetric matrix and returns an iterator to the successfully set element \f$ a_{ij} \f$. In
+// case the symmetric matrix already contains the two elements with index \a i and \a j their
+// values are modified, else two new elements with the given \a value are inserted.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
+   SymmetricMatrix<MT,SO,false,true>::set( size_t i, size_t j, const ElementType& value )
+{
+   if( i != j )
+      matrix_.set( j, i, value );
+   return Iterator( matrix_.set( i, j, value ), matrix_, ( SO ? j : i ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting elements into the symmetric matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse matrix access index.
+//
+// This function inserts both the elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ into the symmetric
+// matrix and returns an iterator to the successfully inserted element \f$ a_{ij} \f$. However,
+// duplicate elements are not allowed. In case the symmetric matrix an element with row index
+// \a i and column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline typename SymmetricMatrix<MT,SO,false,true>::Iterator
+   SymmetricMatrix<MT,SO,false,true>::insert( size_t i, size_t j, const ElementType& value )
+{
+   if( i != j )
+      matrix_.insert( j, i, value );
+   return Iterator( matrix_.insert( i, j, value ), matrix_, ( SO ? j : i ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Appending elements to the specified row/column of the symmetric matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function both appends the element \f$ a_{ij} \f$ to the specified row/column and inserts
+// its according counterpart \f$ a_{ji} \f$ into the symmetric matrix. Since element \f$ a_{ij} \f$
+// is appended without any additional memory allocation, it is strictly necessary to keep the
+// following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the specified row/column of the sparse matrix
+//  - the current number of non-zero elements in the matrix must be smaller than the capacity
+//    of the matrix
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// Although in addition to element \f$ a_{ij} \f$ a second element \f$ a_{ji} \f$ is inserted into
+// the matrix, this function still provides the most efficient way to fill a symmetric matrix with
+// values. However, in order to achieve maximum efficiency, the matrix has to be specifically
+// prepared with reserve() calls:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+
+   // Setup of the symmetric matrix
+   //
+   //       ( 0 1 3 )
+   //   A = ( 1 2 0 )
+   //       ( 3 0 0 )
+
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+
+   A.reserve( 5 );         // Reserving enough capacity for 5 non-zero elements
+   A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
+   A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
+   A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row
+   A.append( 0, 1, 1.0 );  // Appending the value 1 at position (0,1) and (1,0)
+   A.append( 1, 1, 2.0 );  // Appending the value 2 at position (1,1)
+   A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
+   \endcode
+
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void SymmetricMatrix<MT,SO,false,true>::append( size_t i, size_t j, const ElementType& value, bool check )
+{
+   matrix_.append( i, j, value, check );
+   if( i != j && ( !check || !isDefault( value ) ) )
+      matrix_.insert( j, i, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the element insertion of a row/column.
+//
+// \param i The index of the row/column to be finalized \f$[0..N-1]\f$.
+// \return void
+//
+// This function is part of the low-level interface to efficiently fill a matrix with elements.
+// After completion of row/column \a i via the append() function, this function can be called to
+// finalize row/column \a i and prepare the next row/column for insertion process via append().
+//
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void SymmetricMatrix<MT,SO,false,true>::finalize( size_t i )
+{
+   matrix_.trim( i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2261,72 +2292,21 @@ inline typename SymmetricMatrix<MT,SO,false,true>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending elements to the specified row/column of the symmetric matrix.
+/*!\brief In-place transpose the symmetric matrix.
 //
-// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
-//
-// This function both appends the element \f$ a_{ij} \f$ to the specified row/column and inserts
-// its according counterpart \f$ a_{ji} \f$ into the symmetric matrix. Since element \f$ a_{ij} \f$
-// is appended without any additional memory allocation, it is strictly necessary to keep the
-// following preconditions in mind:
-//
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the specified row/column of the sparse matrix
-//  - the current number of non-zero elements in the matrix must be smaller than the capacity
-//    of the matrix
-//
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// Although in addition to element \f$ a_{ij} \f$ a second element \f$ a_{ji} \f$ is inserted into
-// the matrix, this function still provides the most efficient way to fill a symmetric matrix with
-// values. However, in order to achieve maximum efficiency, the matrix has to be specifically
-// prepared with reserve() calls:
-
-   \code
-   using blaze::CompressedMatrix;
-   using blaze::SymmetricMatrix;
-   using blaze::rowMajor;
-
-   // Setup of the symmetric matrix
-   //
-   //       ( 0 1 3 )
-   //   A = ( 1 2 0 )
-   //       ( 3 0 0 )
-
-   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
-
-   A.reserve( 5 );         // Reserving enough capacity for 5 non-zero elements
-   A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
-   A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
-   A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row
-   A.append( 0, 1, 1.0 );  // Appending the value 1 at position (0,1) and (1,0)
-   A.append( 1, 1, 2.0 );  // Appending the value 2 at position (1,1)
-   A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
-   \endcode
-
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \return Reference to the transposed matrix.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void SymmetricMatrix<MT,SO,false,true>::append( size_t i, size_t j, const ElementType& value, bool check )
+inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::transpose()
 {
-   matrix_.append( i, j, value, check );
-   if( i != j && ( !check || !isDefault( value ) ) )
-      matrix_.insert( j, i, value );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2334,23 +2314,58 @@ inline void SymmetricMatrix<MT,SO,false,true>::append( size_t i, size_t j, const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Finalizing the element insertion of a row/column.
+/*!\brief In-place conjugate transpose the symmetric matrix.
 //
-// \param i The index of the row/column to be finalized \f$[0..N-1]\f$.
-// \return void
-//
-// This function is part of the low-level interface to efficiently fill a matrix with elements.
-// After completion of row/column \a i via the append() function, this function can be called to
-// finalize row/column \a i and prepare the next row/column for insertion process via append().
-//
-// \note Although finalize() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// \return Reference to the transposed matrix.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
-inline void SymmetricMatrix<MT,SO,false,true>::finalize( size_t i )
+inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::ctranspose()
 {
-   matrix_.trim( i );
+   if( !IsBuiltin<ElementType>::value )
+      conjugate( matrix_ );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the matrix scaling.
+// \return Reference to the matrix.
+*/
+template< typename MT       // Type of the adapted sparse matrix
+        , bool SO >         // Storage order of the adapted sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline SymmetricMatrix<MT,SO,false,true>&
+   SymmetricMatrix<MT,SO,false,true>::scale( const Other& scalar )
+{
+   matrix_.scale( scalar );
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling the diagonal of the symmetric matrix by the scalar value \a scalar.
+//
+// \param scalar The scalar value for the diagonal scaling.
+// \return Reference to the symmetric matrix.
+*/
+template< typename MT       // Type of the adapted sparse matrix
+        , bool SO >         // Storage order of the adapted sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline SymmetricMatrix<MT,SO,false,true>&
+   SymmetricMatrix<MT,SO,false,true>::scaleDiagonal( const Other& scalar )
+{
+   matrix_.scaleDiagonal( scalar );
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
