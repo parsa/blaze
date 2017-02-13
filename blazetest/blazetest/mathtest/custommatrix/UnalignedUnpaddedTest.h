@@ -103,9 +103,9 @@ class UnalignedUnpaddedTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
+   void testSwap        ();
    void testTranspose   ();
    void testCTranspose  ();
-   void testSwap        ();
    void testIsDefault   ();
 
    template< typename Type >

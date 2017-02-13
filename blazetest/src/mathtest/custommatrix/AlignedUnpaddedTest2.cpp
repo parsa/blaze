@@ -78,9 +78,9 @@ AlignedUnpaddedTest::AlignedUnpaddedTest()
    testNonZeros();
    testReset();
    testClear();
+   testSwap();
    testTranspose();
    testCTranspose();
-   testSwap();
    testIsDefault();
 }
 //*************************************************************************************************
@@ -3473,6 +3473,133 @@ void AlignedUnpaddedTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the CustomMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the CustomMatrix class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedUnpaddedTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CustomMatrix swap";
+
+      MT mat1( blaze::allocate<int>( 32UL ), 2UL, 2UL, 16UL, blaze::Deallocate() );
+      mat1(0,0) = 1;
+      mat1(0,1) = 2;
+      mat1(1,0) = 0;
+      mat1(1,1) = 3;
+
+      MT mat2( blaze::allocate<int>( 64UL ), 2UL, 2UL, 32UL, blaze::Deallocate() );
+      mat2(0,0) = 4;
+      mat2(0,1) = 3;
+      mat2(1,0) = 2;
+      mat2(1,1) = 1;
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1,  2UL );
+      checkColumns ( mat1,  2UL );
+      checkCapacity( mat1, 64UL );
+      checkNonZeros( mat1,  4UL );
+      checkNonZeros( mat1,  0UL, 2UL );
+      checkNonZeros( mat1,  1UL, 2UL );
+
+      if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  2UL );
+      checkCapacity( mat2, 32UL );
+      checkNonZeros( mat2,  3UL );
+      checkNonZeros( mat2,  0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CustomMatrix swap";
+
+      OMT mat1( blaze::allocate<int>( 32UL ), 2UL, 2UL, 16UL, blaze::Deallocate() );
+      mat1(0,0) = 1;
+      mat1(0,1) = 0;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+
+      OMT mat2( blaze::allocate<int>( 64UL ), 2UL, 2UL, 32UL, blaze::Deallocate() );
+      mat2(0,0) = 4;
+      mat2(0,1) = 2;
+      mat2(1,0) = 3;
+      mat2(1,1) = 1;
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1,  2UL );
+      checkColumns ( mat1,  2UL );
+      checkCapacity( mat1, 64UL );
+      checkNonZeros( mat1,  4UL );
+      checkNonZeros( mat1,  0UL, 2UL );
+      checkNonZeros( mat1,  1UL, 2UL );
+
+      if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  2UL );
+      checkCapacity( mat2, 32UL );
+      checkNonZeros( mat2,  3UL );
+      checkNonZeros( mat2,  0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c transpose() member function of the CustomMatrix class template.
 //
 // \return void
@@ -3975,133 +4102,6 @@ void AlignedUnpaddedTest::testCTranspose()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the CustomMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the CustomMatrix class template.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void AlignedUnpaddedTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CustomMatrix swap";
-
-      MT mat1( blaze::allocate<int>( 32UL ), 2UL, 2UL, 16UL, blaze::Deallocate() );
-      mat1(0,0) = 1;
-      mat1(0,1) = 2;
-      mat1(1,0) = 0;
-      mat1(1,1) = 3;
-
-      MT mat2( blaze::allocate<int>( 64UL ), 2UL, 2UL, 32UL, blaze::Deallocate() );
-      mat2(0,0) = 4;
-      mat2(0,1) = 3;
-      mat2(1,0) = 2;
-      mat2(1,1) = 1;
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1,  2UL );
-      checkColumns ( mat1,  2UL );
-      checkCapacity( mat1, 64UL );
-      checkNonZeros( mat1,  4UL );
-      checkNonZeros( mat1,  0UL, 2UL );
-      checkNonZeros( mat1,  1UL, 2UL );
-
-      if( mat1(0,0) != 4 || mat1(0,1) != 3 || mat1(1,0) != 2 || mat1(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 3 )\n( 2 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2,  2UL );
-      checkColumns ( mat2,  2UL );
-      checkCapacity( mat2, 32UL );
-      checkNonZeros( mat2,  3UL );
-      checkNonZeros( mat2,  0UL, 2UL );
-      checkNonZeros( mat2,  1UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(1,0) != 0 || mat2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CustomMatrix swap";
-
-      OMT mat1( blaze::allocate<int>( 32UL ), 2UL, 2UL, 16UL, blaze::Deallocate() );
-      mat1(0,0) = 1;
-      mat1(0,1) = 0;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-
-      OMT mat2( blaze::allocate<int>( 64UL ), 2UL, 2UL, 32UL, blaze::Deallocate() );
-      mat2(0,0) = 4;
-      mat2(0,1) = 2;
-      mat2(1,0) = 3;
-      mat2(1,1) = 1;
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1,  2UL );
-      checkColumns ( mat1,  2UL );
-      checkCapacity( mat1, 64UL );
-      checkNonZeros( mat1,  4UL );
-      checkNonZeros( mat1,  0UL, 2UL );
-      checkNonZeros( mat1,  1UL, 2UL );
-
-      if( mat1(0,0) != 4 || mat1(0,1) != 2 || mat1(1,0) != 3 || mat1(1,1) != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 4 2 )\n( 3 1 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2,  2UL );
-      checkColumns ( mat2,  2UL );
-      checkCapacity( mat2, 32UL );
-      checkNonZeros( mat2,  3UL );
-      checkNonZeros( mat2,  0UL, 2UL );
-      checkNonZeros( mat2,  1UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(1,0) != 2 || mat2(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
    }
 }
 //*************************************************************************************************
