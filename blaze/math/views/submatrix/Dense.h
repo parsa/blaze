@@ -646,19 +646,26 @@ class Submatrix<MT,unaligned,false,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     spacing() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
    template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -1984,6 +1991,37 @@ inline void Submatrix<MT,unaligned,false,true>::reset( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool Submatrix<MT,unaligned,false,true>::hasOverlap() const noexcept
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -2098,29 +2136,6 @@ inline Submatrix<MT,unaligned,false,true>&
    }
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT >  // Type of the dense matrix
-inline bool Submatrix<MT,unaligned,false,true>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
-
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3631,19 +3646,26 @@ class Submatrix<MT,unaligned,true,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     spacing() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
    template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -4931,6 +4953,37 @@ inline void Submatrix<MT,unaligned,true,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool Submatrix<MT,unaligned,true,true>::hasOverlap() const noexcept
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -5044,29 +5097,6 @@ inline Submatrix<MT,unaligned,true,true>& Submatrix<MT,unaligned,true,true>::sca
    }
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT >  // Type of the dense matrix
-inline bool Submatrix<MT,unaligned,true,true>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
-
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6169,19 +6199,26 @@ class Submatrix<MT,aligned,false,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     spacing() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
    template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -7505,6 +7542,37 @@ inline void Submatrix<MT,aligned,false,true>::reset( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool Submatrix<MT,aligned,false,true>::hasOverlap() const noexcept
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -7618,29 +7686,6 @@ inline Submatrix<MT,aligned,false,true>& Submatrix<MT,aligned,false,true>::scale
    }
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT >  // Type of the dense matrix
-inline bool Submatrix<MT,aligned,false,true>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
-
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8741,19 +8786,26 @@ class Submatrix<MT,aligned,true,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     spacing() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
    template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -10036,6 +10088,37 @@ inline void Submatrix<MT,aligned,true,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool Submatrix<MT,aligned,true,true>::hasOverlap() const noexcept
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
@@ -10149,29 +10232,6 @@ inline Submatrix<MT,aligned,true,true>& Submatrix<MT,aligned,true,true>::scale( 
    }
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT >  // Type of the dense matrix
-inline bool Submatrix<MT,aligned,true,true>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
-
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************

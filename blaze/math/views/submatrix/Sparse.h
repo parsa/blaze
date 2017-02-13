@@ -507,25 +507,30 @@ class Submatrix<MT,AF,false,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Iterator   set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator   insert( size_t i, size_t j, const ElementType& value );
-                              inline void       reserve( size_t nonzeros );
-                                     void       reserve( size_t i, size_t nonzeros );
-                              inline void       trim();
-                              inline void       trim( size_t i );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
-   template< typename Other > inline Submatrix& scale( const Other& scalar );
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   reserve( size_t nonzeros );
+          void   reserve( size_t i, size_t nonzeros );
+   inline void   trim();
+   inline void   trim( size_t i );
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set     ( size_t i, size_t j, const ElementType& value );
+   inline Iterator insert  ( size_t i, size_t j, const ElementType& value );
+   inline void     append  ( size_t i, size_t j, const ElementType& value, bool check=false );
+   inline void     finalize( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -556,11 +561,13 @@ class Submatrix<MT,AF,false,false>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append  ( size_t i, size_t j, const ElementType& value, bool check=false );
-   inline void finalize( size_t i );
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1585,55 +1592,6 @@ inline void Submatrix<MT,AF,false,false>::reset( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting an element of the sparse submatrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be set.
-// \return Iterator to the set element.
-//
-// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
-// already contains an element with row index \a i and column index \a j its value is modified,
-// else a new element with the given \a value is inserted.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,false,false>::Iterator
-   Submatrix<MT,AF,false,false>::set( size_t i, size_t j, const ElementType& value )
-{
-   return Iterator( matrix_.set( row_+i, column_+j, value ), column_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting an element into the sparse submatrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be inserted.
-// \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse submatrix access index.
-//
-// This function inserts a new element into the sparse submatrix. However, duplicate elements are
-// not allowed. In case the sparse submatrix already contains an element with row index \a i and
-// column index \a j, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,false,false>::Iterator
-   Submatrix<MT,AF,false,false>::insert( size_t i, size_t j, const ElementType& value )
-{
-   return Iterator( matrix_.insert( row_+i, column_+j, value ), column_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse submatrix.
 //
 // \param nonzeros The new minimum capacity of the sparse submatrix.
@@ -1735,122 +1693,6 @@ void Submatrix<MT,AF,false,false>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place transpose of the submatrix.
-//
-// \return Reference to the transposed submatrix.
-// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::logic_error Invalid transpose operation.
-//
-// This function transposes the sparse submatrix in-place. Note that this function can only be used
-// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// the function fails if ...
-//
-//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
-//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
-//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
-//
-// In all cases, a \a std::logic_error is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::transpose()
-{
-   using blaze::assign;
-
-   if( m_ != n_ ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
-   }
-
-   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-   }
-
-   DerestrictTrait_<This> left( derestrict( *this ) );
-   const ResultType tmp( trans( *this ) );
-   reset();
-   assign( left, tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place conjugate transpose of the submatrix.
-//
-// \return Reference to the transposed submatrix.
-// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::logic_error Invalid transpose operation.
-//
-// This function transposes the sparse submatrix in-place. Note that this function can only be used
-// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// the function fails if ...
-//
-//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
-//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
-//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
-//
-// In all cases, a \a std::logic_error is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::ctranspose()
-{
-   using blaze::assign;
-
-   if( m_ != n_ ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
-   }
-
-   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-   }
-
-   DerestrictTrait_<This> left( derestrict( *this ) );
-   const ResultType tmp( ctrans( *this ) );
-   reset();
-   assign( left, tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the submatrix scaling.
-// \return Reference to the sparse submatrix.
-//
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
-*/
-template< typename MT       // Type of the sparse matrix
-        , bool AF >         // Alignment flag
-template< typename Other >  // Data type of the scalar value
-inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator last( end(i) );
-      for( Iterator element=begin(i); element!=last; ++element )
-         element->value() *= scalar;
-   }
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
 //
 // \return \a true in case an overlap exists, \a false if not.
@@ -1868,6 +1710,151 @@ inline bool Submatrix<MT,AF,false,false>::hasOverlap() const noexcept
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
    else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting an element of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+//
+// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::set( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.set( row_+i, column_+j, value ), column_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting an element into the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse submatrix access index.
+//
+// This function inserts a new element into the sparse submatrix. However, duplicate elements are
+// not allowed. In case the sparse submatrix already contains an element with row index \a i and
+// column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Iterator
+   Submatrix<MT,AF,false,false>::insert( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.insert( row_+i, column_+j, value ), column_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Appending an element to the specified row/column of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function provides a very efficient way to fill a sparse submatrix with elements. It appends
+// a new element to the end of the specified row/column without any additional memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the specified row/column of the sparse submatrix
+//  - the current number of non-zero elements in the submatrix must be smaller than the capacity
+//    of the matrix
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// In combination with the reserve() and the finalize() function, append() provides the most
+// efficient way to add new elements to a sparse submatrix:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
+   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
+
+   MatrixType A( 42, 54 );
+   SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
+
+   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   B.finalize( 0 );        // Finalizing row 0
+   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
+   B.finalize( 1 );        // Finalizing row 1
+   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
+   B.finalize( 3 );        // Finalizing row 3
+   \endcode
+
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+{
+   if( column_ + n_ == matrix_.columns() ) {
+      matrix_.append( row_ + i, column_ + j, value, check );
+   }
+   else if( !check || !isDefault( value ) ) {
+      matrix_.insert( row_ + i, column_ + j, value );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the element insertion of a row/column.
+//
+// \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
+// \return void
+//
+// This function is part of the low-level interface to efficiently fill a submatrix with elements.
+// After completion of row/column \a i via the append() function, this function can be called to
+// finalize row/column \a i and prepare the next row/column for insertion process via append().
+//
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,false,false>::finalize( size_t i )
+{
+   matrix_.trim( row_ + i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2215,69 +2202,48 @@ inline typename Submatrix<MT,AF,false,false>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the specified row/column of the sparse submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function provides a very efficient way to fill a sparse submatrix with elements. It appends
-// a new element to the end of the specified row/column without any additional memory allocation.
-// Therefore it is strictly necessary to keep the following preconditions in mind:
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
 //
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the specified row/column of the sparse submatrix
-//  - the current number of non-zero elements in the submatrix must be smaller than the capacity
-//    of the matrix
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
 //
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// In combination with the reserve() and the finalize() function, append() provides the most
-// efficient way to add new elements to a sparse submatrix:
-
-   \code
-   using blaze::rowMajor;
-
-   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
-
-   MatrixType A( 42, 54 );
-   SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
-
-   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
-   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
-   B.finalize( 0 );        // Finalizing row 0
-   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
-   B.finalize( 1 );        // Finalizing row 1
-   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
-   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
-   B.finalize( 3 );        // Finalizing row 3
-   \endcode
-
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,false,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::transpose()
 {
-   if( column_ + n_ == matrix_.columns() ) {
-      matrix_.append( row_ + i, column_ + j, value, check );
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
-   else if( !check || !isDefault( value ) ) {
-      matrix_.insert( row_ + i, column_ + j, value );
+
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+   const ResultType tmp( trans( *this ) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2285,23 +2251,72 @@ inline void Submatrix<MT,AF,false,false>::append( size_t i, size_t j, const Elem
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Finalizing the element insertion of a row/column.
+/*!\brief In-place conjugate transpose of the submatrix.
 //
-// \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
-// \return void
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function is part of the low-level interface to efficiently fill a submatrix with elements.
-// After completion of row/column \a i via the append() function, this function can be called to
-// finalize row/column \a i and prepare the next row/column for insertion process via append().
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
 //
-// \note Although finalize() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,false,false>::finalize( size_t i )
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::ctranspose()
 {
-   matrix_.trim( row_ + i );
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+   const ResultType tmp( ctrans( *this ) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the submatrix scaling.
+// \return Reference to the sparse submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool AF >         // Alignment flag
+template< typename Other >  // Data type of the scalar value
+inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::scale( const Other& scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( size_t i=0UL; i<rows(); ++i ) {
+      const Iterator last( end(i) );
+      for( Iterator element=begin(i); element!=last; ++element )
+         element->value() *= scalar;
+   }
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3068,26 +3083,30 @@ class Submatrix<MT,AF,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-                              inline size_t     row() const noexcept;
-                              inline size_t     rows() const noexcept;
-                              inline size_t     column() const noexcept;
-                              inline size_t     columns() const noexcept;
-                              inline size_t     capacity() const noexcept;
-                              inline size_t     capacity( size_t i ) const noexcept;
-                              inline size_t     nonZeros() const;
-                              inline size_t     nonZeros( size_t i ) const;
-                              inline void       reset();
-                              inline void       reset( size_t i );
-                              inline Iterator   set( size_t i, size_t j, const ElementType& value );
-                              inline Iterator   insert( size_t i, size_t j, const ElementType& value );
+   inline size_t row() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t column() const noexcept;
+   inline size_t columns() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
+   inline void   reserve( size_t nonzeros );
+          void   reserve( size_t i, size_t nonzeros );
+   inline void   trim();
+   inline void   trim( size_t j );
+   //@}
+   //**********************************************************************************************
 
-                              inline void       reserve( size_t nonzeros );
-                                     void       reserve( size_t i, size_t nonzeros );
-                              inline void       trim();
-                              inline void       trim( size_t j );
-                              inline Submatrix& transpose();
-                              inline Submatrix& ctranspose();
-   template< typename Other > inline Submatrix& scale( const Other& scalar );
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set     ( size_t i, size_t j, const ElementType& value );
+   inline Iterator insert  ( size_t i, size_t j, const ElementType& value );
+   inline void     append  ( size_t i, size_t j, const ElementType& value, bool check=false );
+   inline void     finalize( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -3118,11 +3137,13 @@ class Submatrix<MT,AF,true,false>
    //@}
    //**********************************************************************************************
 
-   //**Low-level utility functions*****************************************************************
-   /*!\name Low-level utility functions */
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
    //@{
-   inline void append  ( size_t i, size_t j, const ElementType& value, bool check=false );
-   inline void finalize( size_t i );
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
+
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4102,55 +4123,6 @@ inline void Submatrix<MT,AF,true,false>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Setting an element of the sparse submatrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be set.
-// \return Iterator to the set element.
-//
-// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
-// already contains an element with row index \a i and column index \a j its value is modified,
-// else a new element with the given \a value is inserted.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,true,false>::Iterator
-   Submatrix<MT,AF,true,false>::set( size_t i, size_t j, const ElementType& value )
-{
-   return Iterator( matrix_.set( row_+i, column_+j, value ), row_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting an element into the sparse submatrix.
-//
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be inserted.
-// \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse submatrix access index.
-//
-// This function inserts a new element into the sparse submatrix. However, duplicate elements are
-// not allowed. In case the sparse submatrix already contains an element with row index \a i and
-// column index \a j, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline typename Submatrix<MT,AF,true,false>::Iterator
-   Submatrix<MT,AF,true,false>::insert( size_t i, size_t j, const ElementType& value )
-{
-   return Iterator( matrix_.insert( row_+i, column_+j, value ), row_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Setting the minimum capacity of the sparse submatrix.
 //
 // \param nonzeros The new minimum capacity of the sparse submatrix.
@@ -4246,122 +4218,6 @@ void Submatrix<MT,AF,true,false>::trim( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place transpose of the submatrix.
-//
-// \return Reference to the transposed submatrix.
-// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::logic_error Invalid transpose operation.
-//
-// This function transposes the sparse submatrix in-place. Note that this function can only be used
-// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// the function fails if ...
-//
-//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
-//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
-//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
-//
-// In all cases, a \a std::logic_error is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::transpose()
-{
-   using blaze::assign;
-
-   if( m_ != n_ ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
-   }
-
-   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-   }
-
-   DerestrictTrait_<This> left( derestrict( *this ) );
-   const ResultType tmp( trans( *this ) );
-   reset();
-   assign( left, tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief In-place conjugate transpose of the submatrix.
-//
-// \return Reference to the transposed submatrix.
-// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::logic_error Invalid transpose operation.
-//
-// This function transposes the sparse submatrix in-place. Note that this function can only be used
-// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// the function fails if ...
-//
-//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
-//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
-//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
-//
-// In all cases, a \a std::logic_error is thrown.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::ctranspose()
-{
-   using blaze::assign;
-
-   if( m_ != n_ ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
-   }
-
-   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
-      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-   }
-
-   DerestrictTrait_<This> left( derestrict( *this ) );
-   const ResultType tmp( ctrans(*this) );
-   reset();
-   assign( left, tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the sparse submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
-//
-// \param scalar The scalar value for the submatrix scaling.
-// \return Reference to the sparse submatrix.
-//
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
-*/
-template< typename MT       // Type of the sparse matrix
-        , bool AF >         // Alignment flag
-template< typename Other >  // Data type of the scalar value
-inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::scale( const Other& scalar )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( size_t i=0UL; i<columns(); ++i ) {
-      const Iterator last( end(i) );
-      for( Iterator element=begin(i); element!=last; ++element )
-         element->value() *= scalar;
-   }
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
 //
 // \return \a true in case an overlap exists, \a false if not.
@@ -4379,6 +4235,151 @@ inline bool Submatrix<MT,AF,true,false>::hasOverlap() const noexcept
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
    else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  INSERTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting an element of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+//
+// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::set( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.set( row_+i, column_+j, value ), row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting an element into the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse submatrix access index.
+//
+// This function inserts a new element into the sparse submatrix. However, duplicate elements are
+// not allowed. In case the sparse submatrix already contains an element with row index \a i and
+// column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,true,false>::Iterator
+   Submatrix<MT,AF,true,false>::insert( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.insert( row_+i, column_+j, value ), row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Appending an element to the specified row/column of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function provides a very efficient way to fill a sparse submatrix with elements. It appends
+// a new element to the end of the specified row/column without any additional memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the specified row/column of the sparse submatrix
+//  - the current number of non-zero elements in the submatrix must be smaller than the capacity
+//    of the matrix
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// In combination with the reserve() and the finalize() function, append() provides the most
+// efficient way to add new elements to a sparse submatrix:
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
+   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
+
+   MatrixType A( 42, 54 );
+   SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
+
+   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   B.finalize( 0 );        // Finalizing row 0
+   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
+   B.finalize( 1 );        // Finalizing row 1
+   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
+   B.finalize( 3 );        // Finalizing row 3
+   \endcode
+
+// \note Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,true,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+{
+   if( row_ + m_ == matrix_.rows() ) {
+      matrix_.append( row_ + i, column_ + j, value, check );
+   }
+   else if( !check || !isDefault( value ) ) {
+      matrix_.insert( row_ + i, column_ + j, value );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Finalizing the element insertion of a column.
+//
+// \param j The index of the column to be finalized \f$[0..M-1]\f$.
+// \return void
+//
+// This function is part of the low-level interface to efficiently fill a submatrix with elements.
+// After completion of column \a j via the append() function, this function can be called to
+// finalize column \a j and prepare the next column for insertion process via append().
+//
+// \note Although finalize() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline void Submatrix<MT,AF,true,false>::finalize( size_t j )
+{
+   matrix_.trim( column_ + j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4718,69 +4719,48 @@ inline typename Submatrix<MT,AF,true,false>::ConstIterator
 
 //=================================================================================================
 //
-//  LOW-LEVEL UTILITY FUNCTIONS
+//  NUMERIC FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Appending an element to the specified row/column of the sparse submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
-// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
-// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be appended.
-// \param check \a true if the new value should be checked for default values, \a false if not.
-// \return void
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function provides a very efficient way to fill a sparse submatrix with elements. It appends
-// a new element to the end of the specified row/column without any additional memory allocation.
-// Therefore it is strictly necessary to keep the following preconditions in mind:
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
 //
-//  - the index of the new element must be strictly larger than the largest index of non-zero
-//    elements in the specified row/column of the sparse submatrix
-//  - the current number of non-zero elements in the submatrix must be smaller than the capacity
-//    of the matrix
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
 //
-// Ignoring these preconditions might result in undefined behavior! The optional \a check
-// parameter specifies whether the new value should be tested for a default value. If the new
-// value is a default value (for instance 0 in case of an integral element type) the value is
-// not appended. Per default the values are not tested.
-//
-// In combination with the reserve() and the finalize() function, append() provides the most
-// efficient way to add new elements to a sparse submatrix:
-
-   \code
-   using blaze::rowMajor;
-
-   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
-
-   MatrixType A( 42, 54 );
-   SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
-
-   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
-   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
-   B.finalize( 0 );        // Finalizing row 0
-   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
-   B.finalize( 1 );        // Finalizing row 1
-   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
-   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
-   B.finalize( 3 );        // Finalizing row 3
-   \endcode
-
-// \note Although append() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,true,false>::append( size_t i, size_t j, const ElementType& value, bool check )
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::transpose()
 {
-   if( row_ + m_ == matrix_.rows() ) {
-      matrix_.append( row_ + i, column_ + j, value, check );
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
-   else if( !check || !isDefault( value ) ) {
-      matrix_.insert( row_ + i, column_ + j, value );
+
+   if( !tryAssign( matrix_, trans( *this ), row_, column_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+   const ResultType tmp( trans( *this ) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4788,23 +4768,72 @@ inline void Submatrix<MT,AF,true,false>::append( size_t i, size_t j, const Eleme
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Finalizing the element insertion of a column.
+/*!\brief In-place conjugate transpose of the submatrix.
 //
-// \param j The index of the column to be finalized \f$[0..M-1]\f$.
-// \return void
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function is part of the low-level interface to efficiently fill a submatrix with elements.
-// After completion of column \a j via the append() function, this function can be called to
-// finalize column \a j and prepare the next column for insertion process via append().
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
 //
-// \note Although finalize() does not allocate new memory, it still invalidates all iterators
-// returned by the end() functions!
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-inline void Submatrix<MT,AF,true,false>::finalize( size_t j )
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::ctranspose()
 {
-   matrix_.trim( column_ + j );
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryAssign( matrix_, ctrans( *this ), row_, column_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse submatrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the submatrix scaling.
+// \return Reference to the sparse submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool AF >         // Alignment flag
+template< typename Other >  // Data type of the scalar value
+inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::scale( const Other& scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   for( size_t i=0UL; i<columns(); ++i ) {
+      const Iterator last( end(i) );
+      for( Iterator element=begin(i); element!=last; ++element )
+         element->value() *= scalar;
+   }
+
+   return *this;
 }
 /*! \endcond */
 //*************************************************************************************************
