@@ -71,19 +71,19 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
    testResize();
    testReserve();
    testTrim();
-   testTranspose();
-   testCTranspose();
    testSwap();
+   testSet();
+   testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
    testUpperBound();
+   testTranspose();
+   testCTranspose();
    testIsDefault();
 }
 //*************************************************************************************************
@@ -1921,6 +1921,801 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testResize()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::resize()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 3x4
+      mat.resize( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+
+      // Resizing to 5x3 and preserving the elements
+      mat(1,0) = 1;
+      mat(2,2) = 2;
+      mat.resize( 5UL, 3UL, true );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 0 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      mat(0,1) = 3;
+      mat.resize( 4UL, 4UL, true );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 0 )\n( 1 0 0 0 )\n( 0 0 2 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 6x5 and preserving the elements
+      mat(3,2) = 4;
+      mat.resize( 6UL, 5UL, true );
+
+      checkRows    ( mat, 6UL );
+      checkColumns ( mat, 5UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+      checkNonZeros( mat, 4UL, 0UL );
+      checkNonZeros( mat, 5UL, 0UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 0 0 )\n( 1 0 0 0 0 )\n( 0 0 2 0 0 )\n"
+                                     "( 0 0 4 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x3 and preserving the elements
+      mat(0,4) = 5;
+      mat(5,2) = 6;
+      mat(5,4) = 7;
+      mat.resize( 4UL, 3UL, true );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 1UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      mat.resize( 2UL, 2UL );
+
+      checkRows   ( mat, 2UL );
+      checkColumns( mat, 2UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::resize()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 0x3
+      mat.resize( 0UL, 3UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 5x0
+      mat.resize( 5UL, 0UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing to 3x4
+      mat.resize( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+
+      // Resizing to 5x3 and preserving the elements
+      mat(1,0) = 1;
+      mat(2,2) = 2;
+      mat.resize( 5UL, 3UL, true );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 2UL );
+      checkNonZeros( mat, 2UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 0 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x4 and preserving the elements
+      mat(0,1) = 3;
+      mat.resize( 4UL, 4UL, true );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+      checkNonZeros( mat, 3UL, 0UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 0 )\n( 1 0 0 0 )\n( 0 0 2 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 6x5 and preserving the elements
+      mat(3,2) = 4;
+      mat.resize( 6UL, 5UL, true );
+
+      checkRows    ( mat, 6UL );
+      checkColumns ( mat, 5UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+      checkNonZeros( mat, 3UL, 0UL );
+      checkNonZeros( mat, 4UL, 0UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 0 0 )\n( 1 0 0 0 0 )\n( 0 0 2 0 0 )\n"
+                                     "( 0 0 4 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 4x3 and preserving the elements
+      mat(0,4) = 5;
+      mat(5,2) = 6;
+      mat(5,4) = 7;
+      mat.resize( 4UL, 3UL, true );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 4UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 2UL );
+
+      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Resizing the matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 3 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Resizing to 2x2
+      mat.resize( 2UL, 2UL );
+
+      checkRows   ( mat, 2UL );
+      checkColumns( mat, 2UL );
+
+      // Resizing to 0x0
+      mat.resize( 0UL, 0UL );
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testReserve()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::reserve()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the matrix
+      mat.reserve( 10UL );
+
+      checkRows    ( mat,  0UL );
+      checkColumns ( mat,  0UL );
+      checkCapacity( mat, 10UL );
+      checkNonZeros( mat,  0UL );
+
+      // Further increasing the capacity of the matrix
+      mat.reserve( 20UL );
+
+      checkRows    ( mat,  0UL );
+      checkColumns ( mat,  0UL );
+      checkCapacity( mat, 20UL );
+      checkNonZeros( mat,  0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::reserve( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the 2nd row
+      mat.reserve( 2UL, 10UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 10UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 0th row
+      mat.reserve( 0UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 30UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 1st row
+      mat.reserve( 1UL, 15UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 10UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::reserve()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the matrix
+      mat.reserve( 10UL );
+
+      checkRows    ( mat,  0UL );
+      checkColumns ( mat,  0UL );
+      checkCapacity( mat, 10UL );
+      checkNonZeros( mat,  0UL );
+
+      // Further increasing the capacity of the matrix
+      mat.reserve( 20UL );
+
+      checkRows    ( mat,  0UL );
+      checkColumns ( mat,  0UL );
+      checkCapacity( mat, 20UL );
+      checkNonZeros( mat,  0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::reserve( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the capacity of the 2nd column
+      mat.reserve( 2UL, 10UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 10UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 0th column
+      mat.reserve( 0UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 30UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 10UL );
+
+      // Increasing the capacity of the 1st column
+      mat.reserve( 1UL, 15UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 20UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 10UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c trim() member functions of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c trim() member functions of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testTrim()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::trim()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the row capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the matrix
+      mat.trim();
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix::trim( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the row capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 0th row
+      mat.trim( 0UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL, 25UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 1st row
+      mat.trim( 1UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 45UL );
+
+      // Trimming the 2nd row
+      mat.trim( 2UL );
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::trim()";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the column capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the matrix
+      mat.trim();
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix::trim( size_t )";
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 3UL );
+      checkNonZeros( mat, 0UL );
+
+      // Increasing the column capacity of the matrix
+      mat.reserve( 0UL, 10UL );
+      mat.reserve( 1UL, 15UL );
+      mat.reserve( 2UL, 20UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 10UL );
+      checkCapacity( mat,  1UL, 15UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 0th column
+      mat.trim( 0UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL, 25UL );
+      checkCapacity( mat,  2UL, 20UL );
+
+      // Trimming the 1st column
+      mat.trim( 1UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL,  0UL );
+      checkCapacity( mat,  1UL,  0UL );
+      checkCapacity( mat,  2UL, 45UL );
+
+      // Trimming the 2nd column
+      mat.trim( 2UL );
+
+      checkRows    ( mat,  4UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 45UL );
+      checkCapacity( mat,  0UL, 0UL );
+      checkCapacity( mat,  1UL, 0UL );
+      checkCapacity( mat,  2UL, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the CompressedMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSwap()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix swap";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 5UL, 2UL );
+      mat1(0,0) = 1;
+      mat1(3,1) = 2;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 4UL );
+      mat2(0,1) = 3;
+      mat2(0,2) = 4;
+      mat2(2,0) = 5;
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 3UL );
+      checkColumns ( mat1, 4UL );
+      checkCapacity( mat1, 3UL );
+      checkNonZeros( mat1, 3UL );
+      checkNonZeros( mat1, 0UL, 2UL );
+      checkNonZeros( mat1, 1UL, 0UL );
+      checkNonZeros( mat1, 2UL, 1UL );
+
+      if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 0 3 4 )\n( 0 0 0 )\n( 5 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 5UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 2UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 0UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+      checkNonZeros( mat2, 3UL, 1UL );
+      checkNonZeros( mat2, 4UL, 0UL );
+
+      if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n( 0 2 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix swap";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 5UL, 2UL );
+      mat1(0,0) = 1;
+      mat1(3,1) = 2;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 4UL );
+      mat2(0,1) = 3;
+      mat2(0,2) = 4;
+      mat2(2,0) = 5;
+
+      swap( mat1, mat2 );
+
+      checkRows    ( mat1, 3UL );
+      checkColumns ( mat1, 4UL );
+      checkCapacity( mat1, 3UL );
+      checkNonZeros( mat1, 3UL );
+      checkNonZeros( mat1, 0UL, 1UL );
+      checkNonZeros( mat1, 1UL, 1UL );
+      checkNonZeros( mat1, 2UL, 1UL );
+      checkNonZeros( mat1, 3UL, 0UL );
+
+      if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the first matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n( 0 3 4 0 )\n( 0 0 0 0 )\n( 5 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      checkRows    ( mat2, 5UL );
+      checkColumns ( mat2, 2UL );
+      checkCapacity( mat2, 2UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Swapping the second matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n( 0 2 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c set() member function of the CompressedMatrix class template.
 //
 // \return void
@@ -3203,1493 +3998,6 @@ void ClassTest::testAppend()
                 << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c resize() member function of the CompressedMatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testResize()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::resize()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 0x3
-      mat.resize( 0UL, 3UL );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 5x0
-      mat.resize( 5UL, 0UL );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 3x4
-      mat.resize( 3UL, 4UL );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 4UL );
-      checkNonZeros( mat, 0UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 0UL );
-
-      // Resizing to 5x3 and preserving the elements
-      mat(1,0) = 1;
-      mat(2,2) = 2;
-      mat.resize( 5UL, 3UL, true );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 0UL );
-      checkNonZeros( mat, 4UL, 0UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 0 )\n( 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      mat(0,1) = 3;
-      mat.resize( 4UL, 4UL, true );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 0UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 0 )\n( 1 0 0 0 )\n( 0 0 2 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 6x5 and preserving the elements
-      mat(3,2) = 4;
-      mat.resize( 6UL, 5UL, true );
-
-      checkRows    ( mat, 6UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-      checkNonZeros( mat, 4UL, 0UL );
-      checkNonZeros( mat, 5UL, 0UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 0 0 )\n( 1 0 0 0 0 )\n( 0 0 2 0 0 )\n"
-                                     "( 0 0 4 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x3 and preserving the elements
-      mat(0,4) = 5;
-      mat(5,2) = 6;
-      mat(5,4) = 7;
-      mat.resize( 4UL, 3UL, true );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 1UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      mat.resize( 2UL, 2UL );
-
-      checkRows   ( mat, 2UL );
-      checkColumns( mat, 2UL );
-
-      // Resizing to 0x0
-      mat.resize( 0UL, 0UL );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::resize()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 0x3
-      mat.resize( 0UL, 3UL );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 5x0
-      mat.resize( 5UL, 0UL );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Resizing to 3x4
-      mat.resize( 3UL, 4UL );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 4UL );
-      checkNonZeros( mat, 0UL );
-      checkNonZeros( mat, 0UL, 0UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 0UL );
-      checkNonZeros( mat, 3UL, 0UL );
-
-      // Resizing to 5x3 and preserving the elements
-      mat(1,0) = 1;
-      mat(2,2) = 2;
-      mat.resize( 5UL, 3UL, true );
-
-      checkRows    ( mat, 5UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 2UL );
-      checkNonZeros( mat, 2UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 0UL );
-      checkNonZeros( mat, 2UL, 1UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 0 )\n( 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x4 and preserving the elements
-      mat(0,1) = 3;
-      mat.resize( 4UL, 4UL, true );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 4UL );
-      checkCapacity( mat, 3UL );
-      checkNonZeros( mat, 3UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 1UL );
-      checkNonZeros( mat, 3UL, 0UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 0 )\n( 1 0 0 0 )\n( 0 0 2 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 6x5 and preserving the elements
-      mat(3,2) = 4;
-      mat.resize( 6UL, 5UL, true );
-
-      checkRows    ( mat, 6UL );
-      checkColumns ( mat, 5UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
-      checkNonZeros( mat, 3UL, 0UL );
-      checkNonZeros( mat, 4UL, 0UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 0 0 )\n( 1 0 0 0 0 )\n( 0 0 2 0 0 )\n"
-                                     "( 0 0 4 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 4x3 and preserving the elements
-      mat(0,4) = 5;
-      mat(5,2) = 6;
-      mat(5,4) = 7;
-      mat.resize( 4UL, 3UL, true );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
-      checkNonZeros( mat, 4UL );
-      checkNonZeros( mat, 0UL, 1UL );
-      checkNonZeros( mat, 1UL, 1UL );
-      checkNonZeros( mat, 2UL, 2UL );
-
-      if( mat(1,0) != 1 || mat(2,2) != 2 || mat(0,1) != 3 || mat(3,2) != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n( 0 3 0 )\n( 1 0 0 )\n( 0 0 2 )\n( 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Resizing to 2x2
-      mat.resize( 2UL, 2UL );
-
-      checkRows   ( mat, 2UL );
-      checkColumns( mat, 2UL );
-
-      // Resizing to 0x0
-      mat.resize( 0UL, 0UL );
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the CompressedMatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::reserve()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the capacity of the matrix
-      mat.reserve( 10UL );
-
-      checkRows    ( mat,  0UL );
-      checkColumns ( mat,  0UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat,  0UL );
-
-      // Further increasing the capacity of the matrix
-      mat.reserve( 20UL );
-
-      checkRows    ( mat,  0UL );
-      checkColumns ( mat,  0UL );
-      checkCapacity( mat, 20UL );
-      checkNonZeros( mat,  0UL );
-   }
-
-   {
-      test_ = "Row-major CompressedMatrix::reserve( size_t )";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 4UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the capacity of the 2nd row
-      mat.reserve( 2UL, 10UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 10UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 10UL );
-
-      // Increasing the capacity of the 0th row
-      mat.reserve( 0UL, 20UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 30UL );
-      checkCapacity( mat,  0UL, 20UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 10UL );
-
-      // Increasing the capacity of the 1st row
-      mat.reserve( 1UL, 15UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 20UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 10UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::reserve()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
-
-      checkRows    ( mat, 0UL );
-      checkColumns ( mat, 0UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the capacity of the matrix
-      mat.reserve( 10UL );
-
-      checkRows    ( mat,  0UL );
-      checkColumns ( mat,  0UL );
-      checkCapacity( mat, 10UL );
-      checkNonZeros( mat,  0UL );
-
-      // Further increasing the capacity of the matrix
-      mat.reserve( 20UL );
-
-      checkRows    ( mat,  0UL );
-      checkColumns ( mat,  0UL );
-      checkCapacity( mat, 20UL );
-      checkNonZeros( mat,  0UL );
-   }
-
-   {
-      test_ = "Column-major CompressedMatrix::reserve( size_t )";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the capacity of the 2nd column
-      mat.reserve( 2UL, 10UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 10UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 10UL );
-
-      // Increasing the capacity of the 0th column
-      mat.reserve( 0UL, 20UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 30UL );
-      checkCapacity( mat,  0UL, 20UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 10UL );
-
-      // Increasing the capacity of the 1st column
-      mat.reserve( 1UL, 15UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 20UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 10UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c trim() member functions of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c trim() member functions of the CompressedMatrix
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testTrim()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix::trim()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 4UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the row capacity of the matrix
-      mat.reserve( 0UL, 10UL );
-      mat.reserve( 1UL, 15UL );
-      mat.reserve( 2UL, 20UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 10UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the matrix
-      mat.trim();
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 0UL );
-      checkCapacity( mat,  1UL, 0UL );
-      checkCapacity( mat,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Row-major CompressedMatrix::trim( size_t )";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
-
-      checkRows    ( mat, 3UL );
-      checkColumns ( mat, 4UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the row capacity of the matrix
-      mat.reserve( 0UL, 10UL );
-      mat.reserve( 1UL, 15UL );
-      mat.reserve( 2UL, 20UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 10UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the 0th row
-      mat.trim( 0UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL, 25UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the 1st row
-      mat.trim( 1UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 45UL );
-
-      // Trimming the 2nd row
-      mat.trim( 2UL );
-
-      checkRows    ( mat,  3UL );
-      checkColumns ( mat,  4UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 0UL );
-      checkCapacity( mat,  1UL, 0UL );
-      checkCapacity( mat,  2UL, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix::trim()";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the column capacity of the matrix
-      mat.reserve( 0UL, 10UL );
-      mat.reserve( 1UL, 15UL );
-      mat.reserve( 2UL, 20UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 10UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the matrix
-      mat.trim();
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 0UL );
-      checkCapacity( mat,  1UL, 0UL );
-      checkCapacity( mat,  2UL, 0UL );
-   }
-
-   {
-      test_ = "Column-major CompressedMatrix::trim( size_t )";
-
-      // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
-
-      checkRows    ( mat, 4UL );
-      checkColumns ( mat, 3UL );
-      checkNonZeros( mat, 0UL );
-
-      // Increasing the column capacity of the matrix
-      mat.reserve( 0UL, 10UL );
-      mat.reserve( 1UL, 15UL );
-      mat.reserve( 2UL, 20UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 10UL );
-      checkCapacity( mat,  1UL, 15UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the 0th column
-      mat.trim( 0UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL, 25UL );
-      checkCapacity( mat,  2UL, 20UL );
-
-      // Trimming the 1st column
-      mat.trim( 1UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL,  0UL );
-      checkCapacity( mat,  1UL,  0UL );
-      checkCapacity( mat,  2UL, 45UL );
-
-      // Trimming the 2nd column
-      mat.trim( 2UL );
-
-      checkRows    ( mat,  4UL );
-      checkColumns ( mat,  3UL );
-      checkCapacity( mat, 45UL );
-      checkCapacity( mat,  0UL, 0UL );
-      checkCapacity( mat,  1UL, 0UL );
-      checkCapacity( mat,  2UL, 0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c transpose() member function of the CompressedMatrix
-// class template. Additionally, it performs a test of self-transpose via the \c trans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via transpose()";
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
-
-         transpose( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
-             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
-
-         transpose( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via trans()";
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
-
-         mat = trans( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
-             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
-
-         mat = trans( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via transpose()";
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
-
-         transpose( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
-             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
-
-         transpose( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via trans()";
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
-
-         mat = trans( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
-             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
-
-         mat = trans( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c ctranspose() member function of the CompressedMatrix
-// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
-// function. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testCTranspose()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major self-transpose via ctranspose()";
-
-      typedef blaze::complex<int>  cplx;
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(2,-2);
-         mat(0,4) = cplx(3,-3);
-         mat(1,1) = cplx(4,-4);
-         mat(1,3) = cplx(5,-5);
-         mat(2,0) = cplx(6,-6);
-         mat(2,2) = cplx(7,-7);
-         mat(2,4) = cplx(8,-8);
-
-         ctranspose( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
-             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
-             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
-             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
-                                        "( (0,0) (4,4) (0,0) )\n"
-                                        "( (2,2) (0,0) (7,7) )\n"
-                                        "( (0,0) (5,5) (0,0) )\n"
-                                        "( (3,3) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(6,-6);
-         mat(1,1) = cplx(4,-4);
-         mat(2,0) = cplx(2,-2);
-         mat(2,2) = cplx(7,-7);
-         mat(3,1) = cplx(5,-5);
-         mat(4,0) = cplx(3,-3);
-         mat(4,2) = cplx(8,-8);
-
-         ctranspose( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
-             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
-                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
-                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-   {
-      test_ = "Row-major self-transpose via ctrans()";
-
-      typedef blaze::complex<int>  cplx;
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(2,-2);
-         mat(0,4) = cplx(3,-3);
-         mat(1,1) = cplx(4,-4);
-         mat(1,3) = cplx(5,-5);
-         mat(2,0) = cplx(6,-6);
-         mat(2,2) = cplx(7,-7);
-         mat(2,4) = cplx(8,-8);
-
-         mat = ctrans( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
-             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
-             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
-             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
-                                        "( (0,0) (4,4) (0,0) )\n"
-                                        "( (2,2) (0,0) (7,7) )\n"
-                                        "( (0,0) (5,5) (0,0) )\n"
-                                        "( (3,3) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(6,-6);
-         mat(1,1) = cplx(4,-4);
-         mat(2,0) = cplx(2,-2);
-         mat(2,2) = cplx(7,-7);
-         mat(3,1) = cplx(5,-5);
-         mat(4,0) = cplx(3,-3);
-         mat(4,2) = cplx(8,-8);
-
-         mat = ctrans( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
-             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
-                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
-                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major self-transpose via ctranspose()";
-
-      typedef blaze::complex<int>  cplx;
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(2,-2);
-         mat(0,4) = cplx(3,-3);
-         mat(1,1) = cplx(4,-4);
-         mat(1,3) = cplx(5,-5);
-         mat(2,0) = cplx(6,-6);
-         mat(2,2) = cplx(7,-7);
-         mat(2,4) = cplx(8,-8);
-
-         ctranspose( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
-             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
-             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
-             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
-                                        "( (0,0) (4,4) (0,0) )\n"
-                                        "( (2,2) (0,0) (7,7) )\n"
-                                        "( (0,0) (5,5) (0,0) )\n"
-                                        "( (3,3) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(6,-6);
-         mat(1,1) = cplx(4,-4);
-         mat(2,0) = cplx(2,-2);
-         mat(2,2) = cplx(7,-7);
-         mat(3,1) = cplx(5,-5);
-         mat(4,0) = cplx(3,-3);
-         mat(4,2) = cplx(8,-8);
-
-         ctranspose( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
-             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
-                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
-                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-   {
-      test_ = "Column-major self-transpose via ctrans()";
-
-      typedef blaze::complex<int>  cplx;
-
-      // Self-transpose of a 3x5 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(2,-2);
-         mat(0,4) = cplx(3,-3);
-         mat(1,1) = cplx(4,-4);
-         mat(1,3) = cplx(5,-5);
-         mat(2,0) = cplx(6,-6);
-         mat(2,2) = cplx(7,-7);
-         mat(2,4) = cplx(8,-8);
-
-         mat = ctrans( mat );
-
-         checkRows    ( mat, 5UL );
-         checkColumns ( mat, 3UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 3UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 3UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
-             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
-             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
-             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
-                                        "( (0,0) (4,4) (0,0) )\n"
-                                        "( (2,2) (0,0) (7,7) )\n"
-                                        "( (0,0) (5,5) (0,0) )\n"
-                                        "( (3,3) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Self-transpose of a 5x3 matrix
-      {
-         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = cplx(1,-1);
-         mat(0,2) = cplx(6,-6);
-         mat(1,1) = cplx(4,-4);
-         mat(2,0) = cplx(2,-2);
-         mat(2,2) = cplx(7,-7);
-         mat(3,1) = cplx(5,-5);
-         mat(4,0) = cplx(3,-3);
-         mat(4,2) = cplx(8,-8);
-
-         mat = ctrans( mat );
-
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkCapacity( mat, 8UL );
-         checkNonZeros( mat, 8UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 2UL );
-         checkNonZeros( mat, 3UL, 1UL );
-         checkNonZeros( mat, 4UL, 2UL );
-
-         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
-             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
-             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
-                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
-                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the CompressedMatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c swap() function of the CompressedMatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testSwap()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major CompressedMatrix swap";
-
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 5UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(3,1) = 2;
-
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 4UL );
-      mat2(0,1) = 3;
-      mat2(0,2) = 4;
-      mat2(2,0) = 5;
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 3UL );
-      checkColumns ( mat1, 4UL );
-      checkCapacity( mat1, 3UL );
-      checkNonZeros( mat1, 3UL );
-      checkNonZeros( mat1, 0UL, 2UL );
-      checkNonZeros( mat1, 1UL, 0UL );
-      checkNonZeros( mat1, 2UL, 1UL );
-
-      if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 0 3 4 )\n( 0 0 0 )\n( 5 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 5UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 2UL );
-      checkNonZeros( mat2, 2UL );
-      checkNonZeros( mat2, 0UL, 1UL );
-      checkNonZeros( mat2, 1UL, 0UL );
-      checkNonZeros( mat2, 2UL, 0UL );
-      checkNonZeros( mat2, 3UL, 1UL );
-      checkNonZeros( mat2, 4UL, 0UL );
-
-      if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n( 0 2 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major CompressedMatrix swap";
-
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 5UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(3,1) = 2;
-
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 4UL );
-      mat2(0,1) = 3;
-      mat2(0,2) = 4;
-      mat2(2,0) = 5;
-
-      swap( mat1, mat2 );
-
-      checkRows    ( mat1, 3UL );
-      checkColumns ( mat1, 4UL );
-      checkCapacity( mat1, 3UL );
-      checkNonZeros( mat1, 3UL );
-      checkNonZeros( mat1, 0UL, 1UL );
-      checkNonZeros( mat1, 1UL, 1UL );
-      checkNonZeros( mat1, 2UL, 1UL );
-      checkNonZeros( mat1, 3UL, 0UL );
-
-      if( mat1(0,1) != 3 || mat1(0,2) != 4 || mat1(2,0) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 0 3 4 0 )\n( 0 0 0 0 )\n( 5 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      checkRows    ( mat2, 5UL );
-      checkColumns ( mat2, 2UL );
-      checkCapacity( mat2, 2UL );
-      checkNonZeros( mat2, 2UL );
-      checkNonZeros( mat2, 0UL, 1UL );
-      checkNonZeros( mat2, 1UL, 1UL );
-
-      if( mat2(0,0) != 1 || mat2(3,1) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second matrix failed\n"
-             << " Details:\n"
-             << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 0 0 )\n( 0 2 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -6900,6 +6208,698 @@ void ClassTest::testUpperBound()
                 << " Details:\n"
                 << "   Required position = (5,1)\n"
                 << "   Current matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() member function of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c transpose() member function of the CompressedMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c trans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         transpose( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
+             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         transpose( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
+             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via transpose()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         transpose( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
+             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         transpose( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via trans()";
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 2;
+         mat(0,4) = 3;
+         mat(1,1) = 4;
+         mat(1,3) = 5;
+         mat(2,0) = 6;
+         mat(2,2) = 7;
+         mat(2,4) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != 1 || mat(2,0) != 2 || mat(4,0) != 3 || mat(1,1) != 4 ||
+             mat(3,1) != 5 || mat(0,2) != 6 || mat(2,2) != 7 || mat(4,2) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = 1;
+         mat(0,2) = 6;
+         mat(1,1) = 4;
+         mat(2,0) = 2;
+         mat(2,2) = 7;
+         mat(3,1) = 5;
+         mat(4,0) = 3;
+         mat(4,2) = 8;
+
+         mat = trans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
+             mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the CompressedMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         ctranspose( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         ctranspose( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         ctranspose( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         ctranspose( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 8UL );
+         checkNonZeros( mat, 8UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
             throw std::runtime_error( oss.str() );
          }
       }

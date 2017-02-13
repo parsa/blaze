@@ -102,19 +102,19 @@ class ClassTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
-   void testSet         ();
-   void testInsert      ();
-   void testAppend      ();
    void testResize      ();
    void testReserve     ();
    void testTrim        ();
-   void testTranspose   ();
-   void testCTranspose  ();
    void testSwap        ();
+   void testSet         ();
+   void testInsert      ();
+   void testAppend      ();
    void testErase       ();
    void testFind        ();
    void testLowerBound  ();
    void testUpperBound  ();
+   void testTranspose   ();
+   void testCTranspose  ();
    void testIsDefault   ();
 
    template< typename Type >
