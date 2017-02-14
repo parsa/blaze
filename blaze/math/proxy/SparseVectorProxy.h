@@ -108,18 +108,22 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t   size() const;
-   inline size_t   capacity() const;
-   inline size_t   nonZeros() const;
-   inline void     reset() const;
-   inline void     clear() const;
-   inline Iterator set( size_t index, const ElementType& value ) const;
+   inline size_t size() const;
+   inline size_t capacity() const;
+   inline size_t nonZeros() const;
+   inline void   reset() const;
+   inline void   clear() const;
+   inline void   resize( size_t n, bool preserve=true ) const;
+   inline void   reserve( size_t n ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t index, const ElementType& value ) const;
    inline Iterator insert( size_t index, const ElementType& value ) const;
    inline void     append( size_t index, const ElementType& value, bool check=false ) const;
-   inline void     resize( size_t n, bool preserve=true ) const;
-   inline void     reserve( size_t n ) const;
-
-   template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
    //**********************************************************************************************
 
@@ -147,6 +151,13 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
    inline Iterator lowerBound( size_t i, size_t j ) const;
    inline Iterator upperBound( size_t index ) const;
    inline Iterator upperBound( size_t i, size_t j ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
    //**********************************************************************************************
 
