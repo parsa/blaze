@@ -131,8 +131,14 @@ class DenseMatrixProxy : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value 
    inline void   resize( size_t m, size_t n, bool preserve=true ) const;
    inline void   extend( size_t m, size_t n, bool preserve=true ) const;
    inline void   reserve( size_t n ) const;
-   inline void   transpose() const;
-   inline void   ctranspose() const;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline void transpose() const;
+   inline void ctranspose() const;
 
    template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
