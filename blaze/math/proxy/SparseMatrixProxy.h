@@ -109,28 +109,30 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t   rows() const;
-   inline size_t   columns() const;
-   inline size_t   capacity() const;
-   inline size_t   capacity( size_t i ) const;
-   inline size_t   nonZeros() const;
-   inline size_t   nonZeros( size_t i ) const;
-   inline void     reset() const;
-   inline void     reset( size_t i ) const;
-   inline void     clear() const;
-   inline Iterator set( size_t i, size_t j, const ElementType& value ) const;
+   inline size_t rows() const;
+   inline size_t columns() const;
+   inline size_t capacity() const;
+   inline size_t capacity( size_t i ) const;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset() const;
+   inline void   reset( size_t i ) const;
+   inline void   clear() const;
+   inline void   finalize( size_t i ) const;
+   inline void   resize( size_t m, size_t n, bool preserve=true ) const;
+   inline void   reserve( size_t n ) const;
+   inline void   reserve( size_t i, size_t n ) const;
+   inline void   trim() const;
+   inline void   trim( size_t i ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Insertion functions*************************************************************************
+   /*!\name Insertion functions */
+   //@{
+   inline Iterator set   ( size_t i, size_t j, const ElementType& value ) const;
    inline Iterator insert( size_t i, size_t j, const ElementType& value ) const;
    inline void     append( size_t i, size_t j, const ElementType& value, bool check=false ) const;
-   inline void     finalize( size_t i ) const;
-   inline void     resize( size_t m, size_t n, bool preserve=true ) const;
-   inline void     reserve( size_t n ) const;
-   inline void     reserve( size_t i, size_t n ) const;
-   inline void     trim() const;
-   inline void     trim( size_t i ) const;
-   inline void     transpose() const;
-   inline void     ctranspose() const;
-
-   template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
    //**********************************************************************************************
 
@@ -155,6 +157,16 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
    inline Iterator find      ( size_t i, size_t j ) const;
    inline Iterator lowerBound( size_t i, size_t j ) const;
    inline Iterator upperBound( size_t i, size_t j ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   inline void transpose() const;
+   inline void ctranspose() const;
+
+   template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
    //**********************************************************************************************
 
