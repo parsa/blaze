@@ -123,7 +123,12 @@ class DenseVectorProxy : public DenseVector< PT, IsRowVector<VT>::value >
    inline void   resize( size_t n, bool preserve=true ) const;
    inline void   extend( size_t n, bool preserve=true ) const;
    inline void   reserve( size_t n ) const;
+   //@}
+   //**********************************************************************************************
 
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
    template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
    //**********************************************************************************************
