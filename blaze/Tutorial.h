@@ -11191,13 +11191,13 @@
    \code
    namespace blaze {
 
-   void gesvd( char jobu, char jobvt, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* info );
+   void gesvd( char jobu, char jobv, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* info );
 
-   void gesvd( char jobu, char jobvt, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* info );
+   void gesvd( char jobu, char jobv, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* info );
 
-   void gesvd( char jobu, char jobvt, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* info );
+   void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* info );
 
-   void gesvd( char jobu, char jobvt, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* info );
+   void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void gesvd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv );
@@ -11223,13 +11223,13 @@
    \code
    namespace blaze {
 
-   void gesdd( char jobz, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* VT, int ldvt, float* work, int lwork, int* iwork, int* info );
+   void gesdd( char jobz, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
 
-   void gesdd( char jobz, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* VT, int ldvt, double* work, int lwork, int* iwork, int* info );
+   void gesdd( char jobz, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
 
-   void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* VT, int ldvt, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+   void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
 
-   void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* VT, int ldvt, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+   void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
@@ -11265,13 +11265,13 @@
    \code
    namespace blaze {
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
 
-   void gesvdx( char jobu, char jobvt, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
