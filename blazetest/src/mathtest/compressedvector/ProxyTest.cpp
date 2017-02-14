@@ -73,21 +73,21 @@ ProxyTest::ProxyTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
    testResize();
    testExtend();
    testReserve();
    testTrim();
-   testTranspose();
-   testCTranspose();
-   testInvert();
    testSwap();
+   testSet();
+   testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
    testUpperBound();
+   testTranspose();
+   testCTranspose();
+   testInvert();
 }
 //*************************************************************************************************
 
@@ -1130,255 +1130,6 @@ void ProxyTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c set() member functions of the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c set() member functions of the VectorAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testSet()
-{
-   //=====================================================================================
-   // Vector elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::set( size_t, ElementType )";
-
-      SVV vec( 3UL, 1UL );
-      vec[1] = SV( 3UL, 1UL );
-      vec[1].set( 1UL, 5 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkSize    ( vec[0], 0UL );
-      checkSize    ( vec[1], 3UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkSize    ( vec[2], 0UL );
-
-      if( vec[1][1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setting an element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Matrix elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::set( size_t, size_t, ElementType )";
-
-      SMV vec( 3UL, 1UL );
-      vec[1] = SM( 2UL, 2UL, 1UL );
-      vec[1].set( 0UL, 1UL, 5 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 0UL );
-      checkColumns ( vec[0], 0UL );
-      checkRows    ( vec[1], 2UL );
-      checkColumns ( vec[1], 2UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-
-      if( vec[1](0,1) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setting an element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c insert() member functions of the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c insert() member functions of the VectorAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testInsert()
-{
-   //=====================================================================================
-   // Vector elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::insert( size_t, ElementType )";
-
-      SVV vec( 3UL, 1UL );
-      vec[1] = SV( 3UL, 1UL );
-      vec[1].insert( 1UL, 5 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkSize    ( vec[0], 0UL );
-      checkSize    ( vec[1], 3UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkSize    ( vec[2], 0UL );
-
-      if( vec[1][1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Matrix elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::insert( size_t, size_t, ElementType )";
-
-      SMV vec( 3UL, 1UL );
-      vec[1] = SM( 2UL, 2UL, 1UL );
-      vec[1].insert( 0UL, 1UL, 5 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 0UL );
-      checkColumns ( vec[0], 0UL );
-      checkRows    ( vec[1], 2UL );
-      checkColumns ( vec[1], 2UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-
-      if( vec[1](0,1) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c append() member functions of the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c append() member functions of the VectorAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testAppend()
-{
-   //=====================================================================================
-   // Vector elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::append( size_t, ElementType )";
-
-      SVV vec( 3UL, 1UL );
-      vec[1] = SV( 3UL );
-      vec[1].reserve( 1UL );
-      vec[1].append( 1UL, 5 );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkSize    ( vec[0], 0UL );
-      checkSize    ( vec[1], 3UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkSize    ( vec[2], 0UL );
-
-      if( vec[1][1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Matrix elements
-   //=====================================================================================
-
-   {
-      test_ = "VectorAccessProxy::append( size_t, size_t, ElementType )";
-
-      SMV vec( 3UL, 1UL );
-      vec[1] = SM( 2UL, 2UL );
-      vec[1].reserve( 0UL, 1UL );
-      vec[1].append( 0UL, 1UL, 5 );
-      vec[1].finalize( 0UL );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 0UL );
-      checkColumns ( vec[0], 0UL );
-      checkRows    ( vec[1], 2UL );
-      checkColumns ( vec[1], 2UL );
-      checkCapacity( vec[1], 1UL );
-      checkNonZeros( vec[1], 1UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-
-      if( vec[1](0,1) != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec[1] << "\n"
-             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c resize() member functions of the VectorAccessProxy class template.
 //
 // \return void
@@ -1686,212 +1437,6 @@ void ProxyTest::testTrim()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c transpose() functions of the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c transpose() functions of the VectorAccessProxy class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testTranspose()
-{
-   {
-      test_ = "VectorAccessProxy::transpose()";
-
-      DMV vec( 3UL, 1UL );
-      vec[0].resize( 5UL, 3UL );
-      vec[0].transpose();
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0],  3UL );
-      checkColumns ( vec[0],  5UL );
-      checkCapacity( vec[0], 15UL );
-      checkRows    ( vec[1],  0UL );
-      checkColumns ( vec[1],  0UL );
-      checkRows    ( vec[2],  0UL );
-      checkColumns ( vec[2],  0UL );
-   }
-
-   {
-      test_ = "transpose( VectorAccessProxy )";
-
-      DMV vec( 3UL, 1UL );
-      vec[0].resize( 5UL, 3UL );
-      transpose( vec[0] );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0],  3UL );
-      checkColumns ( vec[0],  5UL );
-      checkCapacity( vec[0], 15UL );
-      checkRows    ( vec[1],  0UL );
-      checkColumns ( vec[1],  0UL );
-      checkRows    ( vec[2],  0UL );
-      checkColumns ( vec[2],  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c ctranspose() functions of the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c ctranspose() functions of the VectorAccessProxy class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testCTranspose()
-{
-   {
-      test_ = "VectorAccessProxy::ctranspose()";
-
-      DMV vec( 3UL, 1UL );
-      vec[0].resize( 5UL, 3UL );
-      vec[0].ctranspose();
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0],  3UL );
-      checkColumns ( vec[0],  5UL );
-      checkCapacity( vec[0], 15UL );
-      checkRows    ( vec[1],  0UL );
-      checkColumns ( vec[1],  0UL );
-      checkRows    ( vec[2],  0UL );
-      checkColumns ( vec[2],  0UL );
-   }
-
-   {
-      test_ = "ctranspose( VectorAccessProxy )";
-
-      DMV vec( 3UL, 1UL );
-      vec[0].resize( 5UL, 3UL );
-      ctranspose( vec[0] );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0],  3UL );
-      checkColumns ( vec[0],  5UL );
-      checkCapacity( vec[0], 15UL );
-      checkRows    ( vec[1],  0UL );
-      checkColumns ( vec[1],  0UL );
-      checkRows    ( vec[2],  0UL );
-      checkColumns ( vec[2],  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c invert() function with the VectorAccessProxy class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c invert() functions with the VectorAccessProxy class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ProxyTest::testInvert()
-{
-#if BLAZETEST_MATHTEST_LAPACK_MODE
-
-   using blaze::invert;
-   using blaze::byLU;
-   using blaze::byLLH;
-
-
-   {
-      test_ = "invert( VectorAccessProxy )";
-
-      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
-      vec[0].resize( 3UL, 3UL );
-      vec[0] = 0.0;
-      vec[0](0,0) = 1.0;
-      vec[0](1,1) = 1.0;
-      vec[0](2,2) = 1.0;
-      invert( vec[0] );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 3UL );
-      checkColumns ( vec[0], 3UL );
-      checkCapacity( vec[0], 9UL );
-      checkNonZeros( vec[0], 3UL );
-      checkRows    ( vec[1], 0UL );
-      checkColumns ( vec[1], 0UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-   }
-
-   {
-      test_ = "invert<byLU>( VectorAccessProxy )";
-
-      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
-      vec[0].resize( 3UL, 3UL );
-      vec[0] = 0.0;
-      vec[0](0,0) = 1.0;
-      vec[0](1,1) = 1.0;
-      vec[0](2,2) = 1.0;
-      invert<byLU>( vec[0] );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 3UL );
-      checkColumns ( vec[0], 3UL );
-      checkCapacity( vec[0], 9UL );
-      checkNonZeros( vec[0], 3UL );
-      checkRows    ( vec[1], 0UL );
-      checkColumns ( vec[1], 0UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-   }
-
-   {
-      test_ = "invert<byLLH>( VectorAccessProxy )";
-
-      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
-      vec[0].resize( 3UL, 3UL );
-      vec[0] = 0.0;
-      vec[0](0,0) = 1.0;
-      vec[0](1,1) = 1.0;
-      vec[0](2,2) = 1.0;
-      invert<byLLH>( vec[0] );
-
-      checkSize    ( vec, 3UL );
-      checkCapacity( vec, 1UL );
-      checkNonZeros( vec, 1UL );
-
-      checkRows    ( vec[0], 3UL );
-      checkColumns ( vec[0], 3UL );
-      checkCapacity( vec[0], 9UL );
-      checkNonZeros( vec[0], 3UL );
-      checkRows    ( vec[1], 0UL );
-      checkColumns ( vec[1], 0UL );
-      checkRows    ( vec[2], 0UL );
-      checkColumns ( vec[2], 0UL );
-   }
-
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c swap() functionality of the VectorAccessProxy class template.
 //
 // \return void
@@ -1966,6 +1511,255 @@ void ProxyTest::testSwap()
       checkSize    ( tmp   , 2UL );
       checkCapacity( tmp   , 2UL );
       checkNonZeros( tmp   , 2UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c set() member functions of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c set() member functions of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testSet()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::set( size_t, ElementType )";
+
+      SVV vec( 3UL, 1UL );
+      vec[1] = SV( 3UL, 1UL );
+      vec[1].set( 1UL, 5 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::set( size_t, size_t, ElementType )";
+
+      SMV vec( 3UL, 1UL );
+      vec[1] = SM( 2UL, 2UL, 1UL );
+      vec[1].set( 0UL, 1UL, 5 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 0UL );
+      checkColumns ( vec[0], 0UL );
+      checkRows    ( vec[1], 2UL );
+      checkColumns ( vec[1], 2UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( vec[1](0,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c insert() member functions of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c insert() member functions of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testInsert()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::insert( size_t, ElementType )";
+
+      SVV vec( 3UL, 1UL );
+      vec[1] = SV( 3UL, 1UL );
+      vec[1].insert( 1UL, 5 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::insert( size_t, size_t, ElementType )";
+
+      SMV vec( 3UL, 1UL );
+      vec[1] = SM( 2UL, 2UL, 1UL );
+      vec[1].insert( 0UL, 1UL, 5 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 0UL );
+      checkColumns ( vec[0], 0UL );
+      checkRows    ( vec[1], 2UL );
+      checkColumns ( vec[1], 2UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( vec[1](0,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member functions of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member functions of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testAppend()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::append( size_t, ElementType )";
+
+      SVV vec( 3UL, 1UL );
+      vec[1] = SV( 3UL );
+      vec[1].reserve( 1UL );
+      vec[1].append( 1UL, 5 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Append operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::append( size_t, size_t, ElementType )";
+
+      SMV vec( 3UL, 1UL );
+      vec[1] = SM( 2UL, 2UL );
+      vec[1].reserve( 0UL, 1UL );
+      vec[1].append( 0UL, 1UL, 5 );
+      vec[1].finalize( 0UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 0UL );
+      checkColumns ( vec[0], 0UL );
+      checkRows    ( vec[1], 2UL );
+      checkColumns ( vec[1], 2UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( vec[1](0,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Append operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
@@ -2529,6 +2323,212 @@ void ProxyTest::testUpperBound()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() functions of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c transpose() functions of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testTranspose()
+{
+   {
+      test_ = "VectorAccessProxy::transpose()";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      vec[0].transpose();
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+
+   {
+      test_ = "transpose( VectorAccessProxy )";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      transpose( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() functions of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() functions of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testCTranspose()
+{
+   {
+      test_ = "VectorAccessProxy::ctranspose()";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      vec[0].ctranspose();
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+
+   {
+      test_ = "ctranspose( VectorAccessProxy )";
+
+      DMV vec( 3UL, 1UL );
+      vec[0].resize( 5UL, 3UL );
+      ctranspose( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  3UL );
+      checkColumns ( vec[0],  5UL );
+      checkCapacity( vec[0], 15UL );
+      checkRows    ( vec[1],  0UL );
+      checkColumns ( vec[1],  0UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() functions with the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testInvert()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   using blaze::invert;
+   using blaze::byLU;
+   using blaze::byLLH;
+
+
+   {
+      test_ = "invert( VectorAccessProxy )";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+
+   {
+      test_ = "invert<byLU>( VectorAccessProxy )";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert<byLU>( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+
+   {
+      test_ = "invert<byLLH>( VectorAccessProxy )";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<double> > vec( 3UL, 1UL );
+      vec[0].resize( 3UL, 3UL );
+      vec[0] = 0.0;
+      vec[0](0,0) = 1.0;
+      vec[0](1,1) = 1.0;
+      vec[0](2,2) = 1.0;
+      invert<byLLH>( vec[0] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 3UL );
+      checkColumns ( vec[0], 3UL );
+      checkCapacity( vec[0], 9UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+
+#endif
 }
 //*************************************************************************************************
 

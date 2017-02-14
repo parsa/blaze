@@ -101,21 +101,21 @@ class ProxyTest
    void testNonZeros();
    void testReset();
    void testClear();
-   void testSet();
-   void testInsert();
-   void testAppend();
    void testResize();
    void testExtend();
    void testReserve();
    void testTrim();
-   void testTranspose();
-   void testCTranspose();
-   void testInvert();
    void testSwap();
+   void testSet();
+   void testInsert();
+   void testAppend();
    void testErase();
    void testFind();
    void testLowerBound();
    void testUpperBound();
+   void testTranspose();
+   void testCTranspose();
+   void testInvert();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
