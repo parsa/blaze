@@ -113,6 +113,7 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Blocking.h>
+#include <blaze/system/Debugging.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -568,6 +569,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B );
       else
@@ -1637,6 +1639,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAddAssignKernel( C, A, B );
       else
@@ -2626,6 +2629,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallSubAssignKernel( C, A, B );
       else
@@ -4281,6 +4285,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B, scalar );
       else
@@ -5368,6 +5373,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAddAssignKernel( C, A, B, scalar );
       else
@@ -6279,6 +6285,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( ( IsDiagonal<MT4>::value ) ||
+          ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallSubAssignKernel( C, A, B, scalar );
       else
