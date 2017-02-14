@@ -37,4 +37,4 @@ PATH_LQ=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running LQ decomposition tests..."
 
-EXE=$PATH_LQ/DenseLUTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_LQ/DenseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
