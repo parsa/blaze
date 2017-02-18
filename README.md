@@ -19,15 +19,30 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.0.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.0.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.0.tar.gz)
+[![blaze-3.1.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.1.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.1.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.0.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.0.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.0.tar.gz)
+[![blaze-docu-3.1.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.1.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.1.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
 ----
 
 ## News ##
+
+**18.2.2017**: Rejoice, **Blaze** 3.1 is finally online! And the waiting time was worthwhile: This new version comes with a bunch of new features. Amongst others **Blaze** 3.1 introduces the functionality to compute eigenvalues and eigenvectors and to perform a singular value decomposition. Most remarkable, however, are the new [`declsym()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declsym), [`declherm()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declherm), [`decllow()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!decllow), [`declupp()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declupp), and [`decldiag()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!decldiag) functions. Via these functions it is now possible to explicitly declare a matrix or matrix expression as either symmetric, Hermitian, lower or upper triangular, or diagonal. And this can have significant effects on the performance. Consider for instance the following example:
+
+```
+#!c++
+blaze::DynamicMatrix<double> A, B;
+// ... Resizing and initialization
+
+B = A * trans(A);             // The result of the matrix multiplication is symmetric, but a
+                              // full matrix multiplication is performed
+B = declsym( A * trans(A) );  // Declare the result of the matrix multiplication as symmetric
+                              // i.e. perform an optimized matrix multiplication
+```
+
+In this example, the [`declsym()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declsym) function unlocks the potential to perform an optimized matrix multiplication, exploiting the compile time information that the result of the multiplication will be a symmetric matrix. Especially large matrix multiplications can benefit tremendously.
 
 **24.8.2016**: Exactly four years after the release of **Blaze** 1.0 we are very proud to release **Blaze** 3.0! For four years **Blaze** has been supporting C++98, and with that essentially every possible compiler and system. Also, within these four years we have managed to never introduce a breaking change in the released interface of **Blaze**. However, we believe it is time to upgrade to the new capabilities of the C++ standard. Now, for the first time we introduce a breaking change to the **Blaze** library by committing to C++14.
 
@@ -102,7 +117,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.8 through 6.1), the Intel C++ compiler (15.0), the Clang compiler (version 3.7 through 3.9), and Visual C++ 2015 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.9 through 6.3), the Intel C++ compiler (16.0), the Clang compiler (version 3.7 through 4.0), and Visual C++ 2015 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
