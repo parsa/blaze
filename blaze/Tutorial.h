@@ -1642,14 +1642,14 @@
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
-// \n \subsection vector_operations_clip clip()
+// \n \subsection vector_operations_clamp clamp()
 //
-// The \c clip() function can be used to restrict all elements of a vector to a specific range:
+// The \c clamp() function can be used to restrict all elements of a vector to a specific range:
 
    \code
    blaze::DynamicVector<double> a, b
 
-   b = clip( a, -1.0, 1.0 );  // Restrict all elements to the range [-1..1]
+   b = clamp( a, -1.0, 1.0 );  // Restrict all elements to the range [-1..1]
    \endcode
 
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
@@ -3427,14 +3427,14 @@
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
 //
 //
-// \n \subsection matrix_operators_clip clip()
+// \n \subsection matrix_operators_clamp clamp()
 //
-// The \c clip() function can be used to restrict all elements of a matrix to a specific range:
+// The \c clamp() function can be used to restrict all elements of a matrix to a specific range:
 
    \code
    blaze::DynamicMatrix<double> A, B;
 
-   B = clip( A, -1.0, 1.0 );  // Restrict all elements to the range [-1..1]
+   B = clamp( A, -1.0, 1.0 );  // Restrict all elements to the range [-1..1]
    \endcode
 
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
