@@ -29,6 +29,8 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
+**20.2.2017**: We are happy to announce that there is now a port of the **Blaze** library for the R language available: [RcppBlaze](https://github.com/ChingChuan-Chen/RcppBlaze).
+
 **18.2.2017**: Rejoice, **Blaze** 3.1 is finally online! And the waiting time was worthwhile: This new version comes with a bunch of new features. Amongst others **Blaze** 3.1 introduces the functionality to compute eigenvalues and eigenvectors and to perform a singular value decomposition. Most remarkable, however, are the new [`declsym()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declsym), [`declherm()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declherm), [`decllow()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!decllow), [`declupp()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declupp), and [`decldiag()`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!decldiag) functions. Via these functions it is now possible to explicitly declare a matrix or matrix expression as either symmetric, Hermitian, lower or upper triangular, or diagonal. And this can have significant effects on the performance. Consider for instance the following example:
 
 ```
