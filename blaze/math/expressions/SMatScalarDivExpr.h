@@ -936,7 +936,7 @@ inline const EnableIf_< IsNumeric<ST2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< SMatScalarDivExpr<MT,ST,SO> > : public Columns<MT>
+struct Rows< SMatScalarDivExpr<MT,ST,SO> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -953,7 +953,7 @@ struct Rows< SMatScalarDivExpr<MT,ST,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< SMatScalarDivExpr<MT,ST,SO> > : public Rows<MT>
+struct Columns< SMatScalarDivExpr<MT,ST,SO> > : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
