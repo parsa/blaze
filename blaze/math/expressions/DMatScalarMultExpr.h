@@ -1644,7 +1644,7 @@ inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalarMultExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
+struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1661,7 +1661,7 @@ struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
+struct Columns< DMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
