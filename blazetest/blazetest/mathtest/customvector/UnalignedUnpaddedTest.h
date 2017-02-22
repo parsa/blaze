@@ -131,8 +131,8 @@ class UnalignedUnpaddedTest
    //! Type of the custom column vector.
    typedef blaze::CustomVector<int,blaze::unaligned,blaze::unpadded,blaze::columnVector>  TVT;
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound custom row vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Rebound custom column vector type.
+   typedef VT::Rebind<const double>::Other   RVT;   //!< Rebound custom row vector type.
+   typedef TVT::Rebind<const double>::Other  TRVT;  //!< Rebound custom column vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
