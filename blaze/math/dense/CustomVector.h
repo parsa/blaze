@@ -83,7 +83,6 @@
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -98,6 +97,7 @@
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -423,14 +423,19 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,AF,PF,TF>  This;           //!< Type of this CustomVector instance.
-   typedef DenseVector<This,TF>         BaseType;       //!< Base type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>       ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicVector<Type,!TF>      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                         ElementType;    //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>      SIMDType;       //!< SIMD type of the vector elements.
-   typedef const Type&                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&          CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,AF,PF,TF>  This;      //!< Type of this CustomVector instance.
+   typedef DenseVector<This,TF>         BaseType;  //!< Base type of this CustomVector instance.
+
+   //! Result type for expression template evaluations.
+   typedef DynamicVector<RemoveConst_<Type>,TF>  ResultType;
+
+   //! Transpose type for expression template evaluations.
+   typedef DynamicVector<RemoveConst_<Type>,!TF>  TransposeType;
+
+   typedef Type                     ElementType;    //!< Type of the vector elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the vector elements.
+   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&      CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -720,7 +725,6 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    /*! \endcond */
    //**********************************************************************************************
@@ -2772,13 +2776,19 @@ class CustomVector<Type,AF,padded,TF>
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,AF,padded,TF>  This;           //!< Type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>           ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicVector<Type,!TF>          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                             ElementType;    //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>          SIMDType;       //!< SIMD type of the vector elements.
-   typedef const Type&                      ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&              CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,AF,padded,TF>  This;      //!< Type of this CustomVector instance.
+   typedef DenseVector<This,TF>             BaseType;  //!< Base type of this CustomVector instance.
+
+   //! Result type for expression template evaluations.
+   typedef DynamicVector<RemoveConst_<Type>,TF>  ResultType;
+
+   //! Transpose type for expression template evaluations.
+   typedef DynamicVector<RemoveConst_<Type>,!TF>  TransposeType;
+
+   typedef Type                     ElementType;    //!< Type of the vector elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the vector elements.
+   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&      CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -3048,7 +3058,6 @@ class CustomVector<Type,AF,padded,TF>
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    //**********************************************************************************************
 };
