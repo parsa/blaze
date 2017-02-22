@@ -92,7 +92,6 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -108,6 +107,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -436,15 +436,22 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomMatrix<Type,AF,PF,SO>  This;           //!< Type of this CustomMatrix instance.
-   typedef DenseMatrix<This,SO>         BaseType;       //!< Base type of this CustomMatrix instance.
-   typedef DynamicMatrix<Type,SO>       ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                         ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>      SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                  ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomMatrix<Type,AF,PF,SO>  This;      //!< Type of this CustomMatrix instance.
+   typedef DenseMatrix<This,SO>         BaseType;  //!< Base type of this CustomMatrix instance.
+
+   //! Result type for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,SO>  ResultType;
+
+   //! Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,!SO>  OppositeType;
+
+   //! Transpose type for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,!SO>  TransposeType;
+
+   typedef Type                     ElementType;    //!< Type of the matrix elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the matrix elements.
+   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
@@ -718,7 +725,6 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    /*! \endcond */
    //**********************************************************************************************
@@ -3230,15 +3236,22 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomMatrix<Type,AF,PF,true>  This;           //!< Type of this CustomMatrix instance.
-   typedef DenseMatrix<This,true>         BaseType;       //!< Base type of this CustomMatrix instance.
-   typedef DynamicMatrix<Type,true>       ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,false>      OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,false>      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                           ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>        SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                    ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                    CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomMatrix<Type,AF,PF,true>  This;      //!< Type of this CustomMatrix instance.
+   typedef DenseMatrix<This,true>         BaseType;  //!< Base type of this CustomMatrix instance.
+
+   //! Result type for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,true>  ResultType;
+
+   //! Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,false>  OppositeType;
+
+   //! Transpose type for expression template evaluations.
+   typedef DynamicMatrix<RemoveConst_<Type>,false>  TransposeType;
+
+   typedef Type                     ElementType;    //!< Type of the matrix elements.
+   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the matrix elements.
+   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
    typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
@@ -3498,7 +3511,6 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    //**********************************************************************************************
 };
