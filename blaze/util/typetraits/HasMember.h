@@ -128,7 +128,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
 template< typename TYPE1230 >                                                                \
 struct TYPE_TRAIT_NAME                                                                       \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1230>::value >                  \
-{};
+{}
 //*************************************************************************************************
 
 
@@ -210,7 +210,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
 template< typename TYPE1231 >                                                              \
 struct TYPE_TRAIT_NAME                                                                     \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1231>::value >                \
-{};
+{}
 //*************************************************************************************************
 
 
@@ -278,7 +278,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
 template< typename Type1232 >                                                               \
 struct TYPE_TRAIT_NAME                                                                      \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<Type1232>::value >                 \
-{};
+{}
 //*************************************************************************************************
 
 #endif
