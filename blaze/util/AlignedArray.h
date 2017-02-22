@@ -43,6 +43,7 @@
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/mpl/Max.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 
@@ -159,7 +160,7 @@ class AlignedArray
    /*! \cond BLAZE_INTERNAL */
    /*!\name Member variables */
    //@{
-   alignas( Alignment ) Type v_[N];  //!< The aligned array of size N.
+   alignas( Alignment ) Type v_[ N > 0UL ? N : 1UL ];  //!< The aligned array of size max(N,1).
    //@}
    /*! \endcond */
    //**********************************************************************************************
