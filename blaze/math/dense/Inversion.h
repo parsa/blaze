@@ -3854,7 +3854,7 @@ template< typename MT  // Type of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
    invert<byLU>( ~dm );
-};
+}
 //*************************************************************************************************
 
 
@@ -3920,7 +3920,7 @@ inline void invert( DenseMatrix<MT,SO>& dm )
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( ~dm ), "Broken invariant detected" );
-};
+}
 //*************************************************************************************************
 
 } // namespace blaze
