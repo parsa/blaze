@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/PtrdiffT.h
+//  \brief Header file for the PtrdiffT class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,33 +32,47 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_PTRDIFFT_H_
+#define _BLAZE_UTIL_MPL_PTRDIFFT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Max.h>
-#include <blaze/util/mpl/Min.h>
-#include <blaze/util/mpl/Minus.h>
-#include <blaze/util/mpl/Modulus.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/Plus.h>
-#include <blaze/util/mpl/PtrdiffT.h>
-#include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/mpl/Times.h>
-#include <blaze/util/mpl/Xor.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/Types.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a ptrdiff_t.
+// \ingroup mpl
+//
+// The PtrdiffT class template represents an integral wrapper for a compile time constant
+// expression of type \a ptrdiff_t. The value of an PtrdiffT can be accessed via the nested
+// \a value (which is guaranteed to be of type \a ptrdiff_t), the type can be accessed via
+// the nested type definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   PtrdiffT<3>::value      // Evaluates to 3
+   PtrdiffT<5>::ValueType  // Results in ptrdiff_t
+   \endcode
+*/
+template< ptrdiff_t N >
+struct PtrdiffT : public IntegralConstant<ptrdiff_t,N>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
