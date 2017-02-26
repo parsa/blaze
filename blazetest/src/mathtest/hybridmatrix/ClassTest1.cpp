@@ -129,9 +129,38 @@ void ClassTest::testConstructors()
    // Row-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
-      test_ = "Row-major HybridMatrix default constructor";
+      test_ = "Row-major HybridMatrix default constructor (0x0)";
+
+      blaze::HybridMatrix<int,0UL,0UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major HybridMatrix default constructor (0x4)";
+
+      blaze::HybridMatrix<int,0UL,4UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major HybridMatrix default constructor (3x0)";
+
+      blaze::HybridMatrix<int,3UL,0UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major HybridMatrix default constructor (3x4)";
 
       blaze::HybridMatrix<int,3UL,4UL,blaze::rowMajor> mat;
 
@@ -651,7 +680,37 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major HybridMatrix default constructor";
+      test_ = "Column-major HybridMatrix default constructor (0x0)";
+
+      blaze::HybridMatrix<int,0UL,0UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major HybridMatrix default constructor (0x4)";
+
+      blaze::HybridMatrix<int,0UL,4UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major HybridMatrix default constructor (3x0)";
+
+      blaze::HybridMatrix<int,3UL,0UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major HybridMatrix default constructor (3x4)";
 
       blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat;
 

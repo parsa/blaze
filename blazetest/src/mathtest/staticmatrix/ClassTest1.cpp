@@ -130,7 +130,40 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Row-major StaticMatrix default constructor";
+      test_ = "Row-major StaticMatrix default constructor (0x0)";
+
+      blaze::StaticMatrix<int,0UL,0UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major StaticMatrix default constructor (0x4)";
+
+      blaze::StaticMatrix<int,0UL,4UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major StaticMatrix default constructor (3x0)";
+
+      blaze::StaticMatrix<int,3UL,0UL,blaze::rowMajor> mat;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Row-major StaticMatrix default constructor (3x4)";
 
       blaze::StaticMatrix<int,3UL,4UL,blaze::rowMajor> mat;
 
@@ -589,7 +622,40 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major StaticMatrix default constructor";
+      test_ = "Column-major StaticMatrix default constructor (0x0)";
+
+      blaze::StaticMatrix<int,0UL,0UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major StaticMatrix default constructor (0x4)";
+
+      blaze::StaticMatrix<int,0UL,4UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 0UL );
+      checkColumns ( mat, 4UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major StaticMatrix default constructor (3x0)";
+
+      blaze::StaticMatrix<int,3UL,0UL,blaze::columnMajor> mat;
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 0UL );
+      checkCapacity( mat, 0UL );
+      checkNonZeros( mat, 0UL );
+   }
+
+   {
+      test_ = "Column-major StaticMatrix default constructor (3x4)";
 
       blaze::StaticMatrix<int,3UL,4UL,blaze::columnMajor> mat;
 
