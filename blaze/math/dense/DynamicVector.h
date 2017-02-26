@@ -240,8 +240,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    template< typename Other >
    explicit inline DynamicVector( size_t n, const Other* array );
 
-   template< typename Other, size_t N >
-   explicit inline DynamicVector( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   explicit inline DynamicVector( const Other (&array)[Dim] );
 
                            inline DynamicVector( const DynamicVector& v );
                            inline DynamicVector( DynamicVector&& v ) noexcept;
@@ -280,8 +280,8 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    inline DynamicVector& operator=( const Type& rhs );
    inline DynamicVector& operator=( initializer_list<Type> list );
 
-   template< typename Other, size_t N >
-   inline DynamicVector& operator=( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   inline DynamicVector& operator=( const Other (&array)[Dim] );
 
    inline DynamicVector& operator=( const DynamicVector& rhs );
    inline DynamicVector& operator=( DynamicVector&& rhs ) noexcept;
@@ -656,17 +656,17 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
 template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
-        , size_t N >      // Dimension of the initialization array
-inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[N] )
-   : size_    ( N )                            // The current size/dimension of the vector
-   , capacity_( adjustCapacity( N ) )          // The maximum capacity of the vector
+        , size_t Dim >    // Dimension of the initialization array
+inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
+   : size_    ( Dim )                          // The current size/dimension of the vector
+   , capacity_( adjustCapacity( Dim ) )        // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
-   for( size_t i=0UL; i<N; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    if( IsVectorizable<Type>::value ) {
-      for( size_t i=N; i<capacity_; ++i )
+      for( size_t i=Dim; i<capacity_; ++i )
          v_[i] = Type();
    }
 
@@ -1048,12 +1048,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_li
 template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
-        , size_t N >      // Dimension of the initialization array
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&array)[N] )
+        , size_t Dim >    // Dimension of the initialization array
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&array)[Dim] )
 {
-   resize( N, false );
+   resize( Dim, false );
 
-   for( size_t i=0UL; i<N; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    return *this;

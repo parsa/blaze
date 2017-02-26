@@ -241,8 +241,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    template< typename Other >
    explicit inline StaticVector( size_t n, const Other* array );
 
-   template< typename Other >
-   explicit inline StaticVector( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   explicit inline StaticVector( const Other (&array)[Dim] );
 
                               inline StaticVector( const StaticVector& v );
    template< typename Other > inline StaticVector( const StaticVector<Other,N,TF>& v );
@@ -278,8 +278,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    inline StaticVector& operator=( const Type& rhs );
    inline StaticVector& operator=( initializer_list<Type> list );
 
-   template< typename Other >
-   inline StaticVector& operator=( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   inline StaticVector& operator=( const Other (&array)[Dim] );
 
                               inline StaticVector& operator=( const StaticVector& rhs );
    template< typename Other > inline StaticVector& operator=( const StaticVector<Other,N,TF>& rhs );
@@ -653,14 +653,16 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
 // The vector is initialized with the values from the given array. Missing values are initialized
 // with default values (as e.g. the third value in the example).
 */
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the initialization array
-inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[N] )
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the initialization array
+        , size_t Dim >    // Dimension of the initialization array
+inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( Dim == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
@@ -1056,12 +1058,15 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( initializer_
 // The vector is assigned the values from the given array. Missing values are initialized with
 // default values (as e.g. the third value in the example).
 */
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the initialization array
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other (&array)[N] )
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the initialization array
+        , size_t Dim >    // Dimension of the initialization array
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
+   BLAZE_STATIC_ASSERT( Dim == N );
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
    return *this;
@@ -2386,33 +2391,6 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedDivA
       v_[i] /= (~rhs)[i];
    }
 }
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  UNDEFINED CLASS TEMPLATE SPECIALIZATION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of StaticVector for 0 elements.
-// \ingroup static_vector
-//
-// This specialization of the StaticVector class template is left undefined and therefore
-// prevents the instantiation for 0 elements.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class StaticVector<Type,0UL,TF>;
-/*! \endcond */
 //*************************************************************************************************
 
 

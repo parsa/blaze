@@ -236,8 +236,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    template< typename Other >
    explicit inline HybridVector( size_t n, const Other* array );
 
-   template< typename Other, size_t M >
-   explicit inline HybridVector( const Other (&array)[M] );
+   template< typename Other, size_t Dim >
+   explicit inline HybridVector( const Other (&array)[Dim] );
 
                            inline HybridVector( const HybridVector& v );
    template< typename VT > inline HybridVector( const Vector<VT,TF>& v );
@@ -272,8 +272,8 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    inline HybridVector& operator=( const Type& rhs );
    inline HybridVector& operator=( initializer_list<Type> list );
 
-   template< typename Other, size_t M >
-   inline HybridVector& operator=( const Other (&array)[M] );
+   template< typename Other, size_t Dim >
+   inline HybridVector& operator=( const Other (&array)[Dim] );
 
                            inline HybridVector& operator= ( const HybridVector&  rhs );
    template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs );
@@ -706,19 +706,19 @@ template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
-        , size_t M >      // Number of elements of the initialization array
-inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[M] )
-   : v_   ()     // The statically allocated vector elements
-   , size_( M )  // The current size/dimension of the vector
+        , size_t Dim >    // Number of elements of the initialization array
+inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
+   : v_   ()       // The statically allocated vector elements
+   , size_( Dim )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( M <= N );
+   BLAZE_STATIC_ASSERT( Dim <= N );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   for( size_t i=0UL; i<M; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    if( IsNumeric<Type>::value ) {
-      for( size_t i=M; i<NN; ++i )
+      for( size_t i=Dim; i<NN; ++i )
          v_[i] = Type();
    }
 
@@ -1106,14 +1106,14 @@ template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
-        , size_t M >      // Number of elements of the initialization array
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[M] )
+        , size_t Dim >    // Number of elements of the initialization array
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
-   BLAZE_STATIC_ASSERT( M <= N );
+   BLAZE_STATIC_ASSERT( Dim <= N );
 
-   resize( M, false );
+   resize( Dim, false );
 
-   for( size_t i=0UL; i<M; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    return *this;
@@ -2518,33 +2518,6 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedDivA
       v_[i] /= (~rhs)[i];
    }
 }
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  UNDEFINED CLASS TEMPLATE SPECIALIZATION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of HybridVector for 0 elements.
-// \ingroup hybrid_vector
-//
-// This specialization of the HybridVector class template is left undefined and therefore
-// prevents the instantiation for 0 elements.
-*/
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class HybridVector<Type,0UL,TF>;
-/*! \endcond */
 //*************************************************************************************************
 
 
