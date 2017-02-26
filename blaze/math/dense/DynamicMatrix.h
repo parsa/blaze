@@ -269,8 +269,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other >
    explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
 
-   template< typename Other, size_t M, size_t N >
-   explicit inline DynamicMatrix( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline DynamicMatrix( const Other (&array)[Rows][Cols] );
 
                                      inline DynamicMatrix( const DynamicMatrix& m );
                                      inline DynamicMatrix( DynamicMatrix&& m ) noexcept;
@@ -311,8 +311,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline DynamicMatrix& operator=( const Type& rhs );
    inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M, size_t N >
-   inline DynamicMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
 
    inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
    inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) noexcept;
@@ -704,21 +704,21 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
 template< typename Type   // Data type of the matrix
         , bool SO >       // Storage order
 template< typename Other  // Data type of the initialization array
-        , size_t M        // Number of rows of the initialization array
-        , size_t N >      // Number of columns of the initialization array
-inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[M][N] )
-   : m_       ( M )                            // The current number of rows of the matrix
-   , n_       ( N )                            // The current number of columns of the matrix
-   , nn_      ( adjustColumns( N ) )           // The alignment adjusted number of columns
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+   : m_       ( Rows )                         // The current number of rows of the matrix
+   , n_       ( Cols )                         // The current number of columns of the matrix
+   , nn_      ( adjustColumns( Cols ) )        // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; ++j )
+   for( size_t i=0UL; i<Rows; ++i ) {
+      for( size_t j=0UL; j<Cols; ++j )
          v_[i*nn_+j] = array[i][j];
 
       if( IsVectorizable<Type>::value ) {
-         for( size_t j=N; j<nn_; ++j )
+         for( size_t j=Cols; j<nn_; ++j )
             v_[i*nn_+j] = Type();
       }
    }
@@ -1239,14 +1239,14 @@ inline DynamicMatrix<Type,SO>&
 template< typename Type   // Data type of the matrix
         , bool SO >       // Storage order
 template< typename Other  // Data type of the initialization array
-        , size_t M        // Number of rows of the initialization array
-        , size_t N >      // Number of columns of the initialization array
-inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Other (&array)[M][N] )
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Other (&array)[Rows][Cols] )
 {
-   resize( M, N, false );
+   resize( Rows, Cols, false );
 
-   for( size_t i=0UL; i<M; ++i )
-      for( size_t j=0UL; j<N; ++j )
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
          v_[i*nn_+j] = array[i][j];
 
    return *this;
@@ -3043,8 +3043,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 
    template< typename Other > explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
 
-   template< typename Other, size_t M, size_t N >
-   explicit inline DynamicMatrix( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline DynamicMatrix( const Other (&array)[Rows][Cols] );
 
                                     inline DynamicMatrix( const DynamicMatrix& m );
                                     inline DynamicMatrix( DynamicMatrix&& m );
@@ -3085,8 +3085,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    inline DynamicMatrix& operator=( const Type& rhs );
    inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M, size_t N >
-   inline DynamicMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
 
    inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
    inline DynamicMatrix& operator=( DynamicMatrix&& rhs );
@@ -3486,21 +3486,21 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
 */
 template< typename Type >  // Data type of the matrix
 template< typename Other   // Data type of the initialization array
-        , size_t M         // Number of rows of the initialization array
-        , size_t N >       // Number of columns of the initialization array
-inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[M][N] )
-   : m_       ( M )                            // The current number of rows of the matrix
-   , mm_      ( adjustRows( M ) )              // The alignment adjusted number of rows
-   , n_       ( N )                            // The current number of columns of the matrix
+        , size_t Rows      // Number of rows of the initialization array
+        , size_t Cols >    // Number of columns of the initialization array
+inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+   : m_       ( Rows )                         // The current number of rows of the matrix
+   , mm_      ( adjustRows( Rows ) )           // The alignment adjusted number of rows
+   , n_       ( Cols )                         // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; ++i )
+   for( size_t j=0UL; j<Cols; ++j ) {
+      for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*mm_] = array[i][j];
 
       if( IsVectorizable<Type>::value ) {
-         for( size_t i=M; i<mm_; ++i )
+         for( size_t i=Rows; i<mm_; ++i )
             v_[i+j*mm_] = Type();
       }
    }
@@ -4017,14 +4017,14 @@ inline DynamicMatrix<Type,true>&
 */
 template< typename Type >  // Data type of the matrix
 template< typename Other   // Data type of the initialization array
-        , size_t M         // Number of rows of the initialization array
-        , size_t N >       // Number of columns of the initialization array
-inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Other (&array)[M][N] )
+        , size_t Rows      // Number of rows of the initialization array
+        , size_t Cols >    // Number of columns of the initialization array
+inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Other (&array)[Rows][Cols] )
 {
-   resize( M, N, false );
+   resize( Rows, Cols, false );
 
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=0UL; i<M; ++i )
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*mm_] = array[i][j];
 
    return *this;

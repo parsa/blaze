@@ -276,8 +276,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    template< typename Other >
    explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
 
-   template< typename Other >
-   explicit inline StaticMatrix( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
                                         inline StaticMatrix( const StaticMatrix& m );
    template< typename Other, bool SO2 > inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m );
@@ -315,8 +315,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    inline StaticMatrix& operator=( const Type& set );
    inline StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other >
-   inline StaticMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
 
                                         inline StaticMatrix& operator= ( const StaticMatrix& rhs );
    template< typename Other, bool SO2 > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO2>& rhs );
@@ -710,15 +710,18 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
 // The matrix is initialized with the values from the given array. Missing values are initialized
 // with default values (as e.g. the value 6 in the example).
 */
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the initialization array
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[M][N] )
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO >       // Storage order
+template< typename Other  // Data type of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -1270,13 +1273,17 @@ inline StaticMatrix<Type,M,N,SO>&
 // The matrix is assigned the values from the given array. Missing values are initialized with
 // default values (as e.g. the value 6 in the example).
 */
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the initialization array
-inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Other (&array)[M][N] )
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N        // Number of columns
+        , bool SO >       // Storage order
+template< typename Other  // Data type of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Other (&array)[Rows][Cols] )
 {
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = array[i][j];
@@ -3023,8 +3030,11 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    explicit inline StaticMatrix( const Type& init );
    explicit inline StaticMatrix( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other > explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
-   template< typename Other > explicit inline StaticMatrix( const Other (&array)[M][N] );
+   template< typename Other >
+   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
                                        inline StaticMatrix( const StaticMatrix& m );
    template< typename Other, bool SO > inline StaticMatrix( const StaticMatrix<Other,M,N,SO>&  m );
@@ -3062,8 +3072,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    inline StaticMatrix& operator=( const Type& set );
    inline StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other >
-   inline StaticMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
 
                                        inline StaticMatrix& operator= ( const StaticMatrix& rhs );
    template< typename Other, bool SO > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO>& rhs );
@@ -3463,14 +3473,17 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
 // The matrix is initialized with the values from the given array. Missing values are initialized
 // with default values (as e.g. the value 6 in the example).
 */
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-template< typename Other >  // Data type of the initialization array
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[M][N] )
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N >      // Number of columns
+template< typename Other  // Data type of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -4019,13 +4032,17 @@ inline StaticMatrix<Type,M,N,true>&
 // The matrix is assigned the values from the given array. Missing values are initialized with
 // default values (as e.g. the value 6 in the example).
 */
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-template< typename Other >  // Data type of the initialization array
+template< typename Type   // Data type of the matrix
+        , size_t M        // Number of rows
+        , size_t N >      // Number of columns
+template< typename Other  // Data type of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
 inline StaticMatrix<Type,M,N,true>&
-   StaticMatrix<Type,M,N,true>::operator=( const Other (&array)[M][N] )
+   StaticMatrix<Type,M,N,true>::operator=( const Other (&array)[Rows][Cols] )
 {
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = array[i][j];
@@ -5713,65 +5730,6 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  UNDEFINED CLASS TEMPLATE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of StaticMatrix for zero columns.
-// \ingroup static_matrix
-//
-// This specialization of the StaticMatrix class template is left undefined and therefore
-// prevents the instantiation for zero columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , bool SO >      // Storage order
-class StaticMatrix<Type,M,0UL,SO>;
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of StaticMatrix for zero rows.
-// \ingroup static_matrix
-//
-// This specialization of the StaticMatrix class template is left undefined and therefore
-// prevents the instantiation for zero rows.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-class StaticMatrix<Type,0UL,N,SO>;
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of StaticMatrix for 0 rows and 0 columns.
-// \ingroup static_matrix
-//
-// This specialization of the StaticMatrix class template is left undefined and therefore
-// prevents the instantiation for 0 rows and 0 columns.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class StaticMatrix<Type,0UL,0UL,SO>;
 /*! \endcond */
 //*************************************************************************************************
 

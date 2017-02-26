@@ -277,8 +277,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
 
-   template< typename Other, size_t M2, size_t N2 >
-   explicit inline HybridMatrix( const Other (&array)[M2][N2] );
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
                                      inline HybridMatrix( const HybridMatrix& m );
    template< typename MT, bool SO2 > inline HybridMatrix( const Matrix<MT,SO2>& m );
@@ -315,8 +315,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    inline HybridMatrix& operator=( const Type& set );
    inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M2, size_t N2 >
-   inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
 
                                      inline HybridMatrix& operator= ( const HybridMatrix& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs );
@@ -802,29 +802,29 @@ template< typename Type   // Data type of the matrix
         , size_t N        // Number of columns
         , bool SO >       // Storage order
 template< typename Other  // Data type of the initialization array
-        , size_t M2       // Number of rows of the initialization array
-        , size_t N2 >     // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[M2][N2] )
-   : v_()      // The statically allocated matrix elements
-   , m_( M2 )  // The current number of rows of the matrix
-   , n_( N2 )  // The current number of columns of the matrix
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : v_()        // The statically allocated matrix elements
+   , m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( M2 <= M );
-   BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   for( size_t i=0UL; i<M2; ++i ) {
-      for( size_t j=0UL; j<N2; ++j )
+   for( size_t i=0UL; i<Rows; ++i ) {
+      for( size_t j=0UL; j<Cols; ++j )
          v_[i*NN+j] = array[i][j];
 
       if( IsNumeric<Type>::value ) {
-         for( size_t j=N2; j<NN; ++j )
+         for( size_t j=Cols; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
    if( IsNumeric<Type>::value ) {
-      for( size_t i=M2; i<M; ++i )
+      for( size_t i=Rows; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
    }
@@ -1383,17 +1383,17 @@ template< typename Type   // Data type of the matrix
         , size_t N        // Number of columns
         , bool SO >       // Storage order
 template< typename Other  // Data type of the initialization array
-        , size_t M2       // Number of rows of the initialization array
-        , size_t N2 >     // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Other (&array)[M2][N2] )
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Other (&array)[Rows][Cols] )
 {
-   BLAZE_STATIC_ASSERT( M2 <= M );
-   BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
 
-   resize( M2, N2 );
+   resize( Rows, Cols );
 
-   for( size_t i=0UL; i<M2; ++i )
-      for( size_t j=0UL; j<N2; ++j )
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
          v_[i*NN+j] = array[i][j];
 
    return *this;
@@ -3210,8 +3210,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
 
-   template< typename Other, size_t M2, size_t N2 >
-   explicit inline HybridMatrix( const Other (&array)[M2][N2] );
+   template< typename Other, size_t Rows, size_t Cols >
+   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
                                     inline HybridMatrix( const HybridMatrix& m );
    template< typename MT, bool SO > inline HybridMatrix( const Matrix<MT,SO>& m );
@@ -3248,8 +3248,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    inline HybridMatrix& operator=( const Type& set );
    inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M2, size_t N2 >
-   inline HybridMatrix& operator=( const Other (&array)[M2][N2] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
 
                                     inline HybridMatrix& operator= ( const HybridMatrix& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs );
@@ -3739,29 +3739,29 @@ template< typename Type   // Data type of the matrix
         , size_t M        // Number of rows
         , size_t N >      // Number of columns
 template< typename Other  // Data type of the initialization array
-        , size_t M2       // Number of rows of the initialization array
-        , size_t N2 >     // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[M2][N2] )
-   : v_()      // The statically allocated matrix elements
-   , m_( M2 )  // The current number of rows of the matrix
-   , n_( N2 )  // The current number of columns of the matrix
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
+inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : v_()        // The statically allocated matrix elements
+   , m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( M2 <= M );
-   BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   for( size_t j=0UL; j<N2; ++j ) {
-      for( size_t i=0UL; i<M2; ++i )
+   for( size_t j=0UL; j<Cols; ++j ) {
+      for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*MM] = array[i][j];
 
       if( IsNumeric<Type>::value ) {
-         for( size_t i=M2; i<MM; ++i )
+         for( size_t i=Rows; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
    if( IsNumeric<Type>::value ) {
-      for( size_t j=N2; j<N; ++j )
+      for( size_t j=Cols; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
    }
@@ -4315,18 +4315,18 @@ template< typename Type   // Data type of the matrix
         , size_t M        // Number of rows
         , size_t N >      // Number of columns
 template< typename Other  // Data type of the initialization array
-        , size_t M2       // Number of rows of the initialization array
-        , size_t N2 >     // Number of columns of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
 inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( const Other (&array)[M2][N2] )
+   HybridMatrix<Type,M,N,true>::operator=( const Other (&array)[Rows][Cols] )
 {
-   BLAZE_STATIC_ASSERT( M2 <= M );
-   BLAZE_STATIC_ASSERT( N2 <= N );
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
 
-   resize( M2, N2 );
+   resize( Rows, Cols );
 
-   for( size_t j=0UL; j<N2; ++j )
-      for( size_t i=0UL; i<M2; ++i )
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*MM] = array[i][j];
 
    return *this;
@@ -6090,65 +6090,6 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
       for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-
-
-
-
-//=================================================================================================
-//
-//  UNDEFINED CLASS TEMPLATE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of HybridMatrix for zero columns.
-// \ingroup hybrid_matrix
-//
-// This specialization of the HybridMatrix class template is left undefined and therefore
-// prevents the instantiation for zero columns.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , bool SO >      // Storage order
-class HybridMatrix<Type,M,0UL,SO>;
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of HybridMatrix for zero rows.
-// \ingroup hybrid_matrix
-//
-// This specialization of the HybridMatrix class template is left undefined and therefore
-// prevents the instantiation for zero rows.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-class HybridMatrix<Type,0UL,N,SO>;
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of HybridMatrix for 0 rows and 0 columns.
-// \ingroup hybrid_matrix
-//
-// This specialization of the HybridMatrix class template is left undefined and therefore
-// prevents the instantiation for 0 rows and 0 columns.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class HybridMatrix<Type,0UL,0UL,SO>;
 /*! \endcond */
 //*************************************************************************************************
 
