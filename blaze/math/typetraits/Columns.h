@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/Types.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -59,7 +58,7 @@ namespace blaze {
 // The Columns type trait evaluates the number of columns of the given matrix type at compile time.
 // In case the given type \a T is a matrix type with a fixed number of columns (e.g. StaticMatrix),
 // the \a value member constant is set to the according number of columns. In all other cases,
-// \a value is set to 0.
+// \a value is set to -1.
 
    \code
    using blaze::StaticMatrix;
@@ -67,13 +66,13 @@ namespace blaze {
    using blaze::DynamicMatrix;
 
    blaze::Columns< StaticMatrix<int,3UL,2UL> >::value  // Evaluates to 2
-   blaze::Columns< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to 0; Only maximum number of columns is fixed!
-   blaze::Columns< DynamicMatrix<int> >::value         // Evaluates to 0; Number of columns not fixed at compile time!
-   blaze::Columns< int >::value                        // Evaluates to 0
+   blaze::Columns< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to -1; Only maximum number of columns is fixed!
+   blaze::Columns< DynamicMatrix<int> >::value         // Evaluates to -1; Number of columns not fixed at compile time!
+   blaze::Columns< int >::value                        // Evaluates to -1
    \endcode
 */
 template< typename T >
-struct Columns : public SizeT<0UL>
+struct Columns : public PtrdiffT<-1L>
 {};
 //*************************************************************************************************
 
@@ -84,7 +83,7 @@ struct Columns : public SizeT<0UL>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const T > : public SizeT< Columns<T>::value >
+struct Columns< const T > : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -96,7 +95,7 @@ struct Columns< const T > : public SizeT< Columns<T>::value >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< volatile T > : public SizeT< Columns<T>::value >
+struct Columns< volatile T > : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -108,7 +107,7 @@ struct Columns< volatile T > : public SizeT< Columns<T>::value >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const volatile T > : public SizeT< Columns<T>::value >
+struct Columns< const volatile T > : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

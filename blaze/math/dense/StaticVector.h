@@ -89,7 +89,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -2626,7 +2626,7 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexc
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct Size< StaticVector<T,N,TF> > : public SizeT<N>
+struct Size< StaticVector<T,N,TF> > : public PtrdiffT<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

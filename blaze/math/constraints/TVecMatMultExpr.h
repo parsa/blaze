@@ -47,9 +47,8 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -110,35 +109,10 @@ namespace blaze {
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_TVECMATMULTEXPR(T1,T2) \
    static_assert( ::blaze::And< ::blaze::IsRowVector<T1> \
                               , ::blaze::IsMatrix<T2> \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
-                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::SizeT<0UL> > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Rows<T2> > > \
                               >::value, "Invalid vector/matrix multiplication expression detected" )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_FORM_VALID_TVECMATMULTEXPR CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data types \a T1 and \a T2 do form a valid vector/matrix multiplication,
-// a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_FORM_VALID_TVECMATMULTEXPR(T1,T2) \
-   static_assert( ::blaze::Not< ::blaze::And< ::blaze::IsRowVector<T1> \
-                                            , ::blaze::IsMatrix<T2> \
-                                            , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
-                                                         , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::SizeT<0UL> > \
-                                                         , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Rows<T2> > > > \
-                              >::value, "Valid vector/matrix multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

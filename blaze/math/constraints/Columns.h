@@ -44,7 +44,7 @@
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrDiffT.h>
 
 
 namespace blaze {
@@ -65,8 +65,8 @@ namespace blaze {
 // no compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_COLUMNS(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::SizeT<0UL> > \
-                             , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::SizeT<0UL> > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::PtrdiffT<-1L> > \
                              , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Columns<T2> > \
                              >::value, "Invalid number of columns detected" )
 //*************************************************************************************************
@@ -90,8 +90,8 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_COLUMNS(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::SizeT<0UL> > \
-                             , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::SizeT<0UL> > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::PtrdiffT<-1L> > \
                              , ::blaze::Not< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Columns<T2> > > \
                              >::value, "Invalid number of columns detected" )
 //*************************************************************************************************

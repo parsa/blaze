@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/Types.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -59,7 +58,7 @@ namespace blaze {
 // The Rows type trait evaluates the number of rows of the given matrix type at compile time. In
 // case the given type \a T is a matrix type with a fixed number of rows (e.g. StaticMatrix), the
 // \a value member constant is set to the according number of rows. In all other cases, \a value
-// is set to 0.
+// is set to -1.
 
    \code
    using blaze::StaticMatrix;
@@ -67,13 +66,13 @@ namespace blaze {
    using blaze::DynamicMatrix;
 
    blaze::Rows< StaticMatrix<int,3UL,2UL> >::value  // Evaluates to 3
-   blaze::Rows< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to 0; Only maximum number of rows is fixed!
-   blaze::Rows< DynamicMatrix<int> >::value         // Evaluates to 0; Number of rows not fixed at compile time!
-   blaze::Rows< int >::value                        // Evaluates to 0
+   blaze::Rows< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to -1; Only maximum number of rows is fixed!
+   blaze::Rows< DynamicMatrix<int> >::value         // Evaluates to -1; Number of rows not fixed at compile time!
+   blaze::Rows< int >::value                        // Evaluates to -1
    \endcode
 */
 template< typename T >
-struct Rows : public SizeT<0UL>
+struct Rows : public PtrdiffT<-1L>
 {};
 //*************************************************************************************************
 
@@ -84,7 +83,7 @@ struct Rows : public SizeT<0UL>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Rows< const T > : public SizeT< Rows<T>::value >
+struct Rows< const T > : public Rows<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -96,7 +95,7 @@ struct Rows< const T > : public SizeT< Rows<T>::value >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Rows< volatile T > : public SizeT< Rows<T>::value >
+struct Rows< volatile T > : public Rows<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -108,7 +107,7 @@ struct Rows< volatile T > : public SizeT< Rows<T>::value >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Rows< const volatile T > : public SizeT< Rows<T>::value >
+struct Rows< const volatile T > : public Rows<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

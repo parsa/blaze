@@ -62,7 +62,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/Types.h>
 
 
@@ -563,7 +563,7 @@ inline const SVecDVecCrossExpr<T1,T2,TF>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
-struct Size< SVecDVecCrossExpr<VT1,VT2,TF> > : public SizeT<3UL>
+struct Size< SVecDVecCrossExpr<VT1,VT2,TF> > : public PtrdiffT<3L>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -104,7 +104,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -5980,7 +5980,7 @@ inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) n
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Rows< StaticMatrix<T,M,N,SO> > : public SizeT<M>
+struct Rows< StaticMatrix<T,M,N,SO> > : public PtrdiffT<M>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5997,7 +5997,7 @@ struct Rows< StaticMatrix<T,M,N,SO> > : public SizeT<M>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Columns< StaticMatrix<T,M,N,SO> > : public SizeT<N>
+struct Columns< StaticMatrix<T,M,N,SO> > : public PtrdiffT<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

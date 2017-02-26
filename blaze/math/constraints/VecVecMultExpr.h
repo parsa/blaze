@@ -46,9 +46,8 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -111,37 +110,10 @@ namespace blaze {
                                                          , ::blaze::IsRowVector<T2> > \
                                            , ::blaze::And< ::blaze::IsColumnVector<T1> \
                                                          , ::blaze::IsColumnVector<T2> > > \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::SizeT<0UL> > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > \
                               >::value, "Invalid vector/vector multiplication expression detected" )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_FORM_VALID_VECVECMULTEXPR CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data types \a T1 and \a T2 do form a valid vector/vector multiplication,
-// a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_FORM_VALID_VECVECMULTEXPR(T1,T2) \
-   static_assert( ::blaze::Not< ::blaze::And< ::blaze::Or< ::blaze::And< ::blaze::IsRowVector<T1> \
-                                                                       , ::blaze::IsRowVector<T2> > \
-                                                         , ::blaze::And< ::blaze::IsColumnVector<T1> \
-                                                                       , ::blaze::IsColumnVector<T2> > > \
-                                            , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::SizeT<0UL> > \
-                                                         , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::SizeT<0UL> > \
-                                                         , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > > \
-                              >::value, "Valid vector/vector multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze
