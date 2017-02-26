@@ -139,7 +139,16 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "HybridVector default constructor";
+      test_ = "HybridVector default constructor (size 0)";
+
+      blaze::HybridVector<int,0UL,blaze::rowVector> vec;
+
+      checkSize    ( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "HybridVector default constructor (size 7)";
 
       blaze::HybridVector<int,7UL,blaze::rowVector> vec;
 

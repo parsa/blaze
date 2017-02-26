@@ -138,7 +138,17 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "StaticVector default constructor";
+      test_ = "StaticVector default constructor (size 0)";
+
+      blaze::StaticVector<int,0UL,blaze::rowVector> vec;
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+   }
+
+   {
+      test_ = "StaticVector default constructor (size 5)";
 
       blaze::StaticVector<int,5UL,blaze::rowVector> vec;
 
