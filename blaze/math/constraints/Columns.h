@@ -44,7 +44,7 @@
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/PtrDiffT.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
