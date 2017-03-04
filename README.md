@@ -141,3 +141,9 @@ If you are looking for a C++98 compatible math library you might consider using 
 [Christian Godenschwager](http://www10.informatik.uni-erlangen.de/~godenschwager/) -- Visual Studio 2010/2012/2013/2015 bug fixes and testing
 
 Tobias Scharpff -- Sparse matrix multiplication algorithms
+
+byzhang -- Bug fixes
+
+Emerson Ferreira -- Bug fixes
+
+Fabien Péan -- CMake support
