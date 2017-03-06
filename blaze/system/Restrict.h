@@ -70,7 +70,7 @@
 
 // Microsoft visual studio
 #  elif defined(_MSC_VER)
-#    define BLAZE_RESTRICT
+#    define BLAZE_RESTRICT __restrict
 
 // All other compilers
 #  else
