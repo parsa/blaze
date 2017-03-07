@@ -96,6 +96,7 @@ class DenseSymmetricTest
    void testSubAssign   ();
    void testMultAssign  ();
    void testDivAssign   ();
+   void testCrossAssign ();
    void testScaling     ();
    void testSubscript   ();
    void testIterator    ();
