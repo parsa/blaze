@@ -945,8 +945,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,SO>::Reference
    HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) noexcept
 {
-   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i*NN+j];
 }
 //*************************************************************************************************
@@ -969,8 +969,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,SO>::ConstReference
    HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const noexcept
 {
-   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i*NN+j];
 }
 //*************************************************************************************************
@@ -1580,12 +1580,15 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
+   using blaze::assign;
+
    if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    const HybridMatrix tmp( *this * (~rhs) );
-   this->operator=( tmp );
+   resize( tmp.rows(), tmp.columns() );
+   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -3885,8 +3888,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,true>::Reference
    HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) noexcept
 {
-   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i+j*MM];
 }
 /*! \endcond */
@@ -3910,8 +3913,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,true>::ConstReference
    HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const noexcept
 {
-   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
    return v_[i+j*MM];
 }
 /*! \endcond */
@@ -4519,12 +4522,15 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
+   using blaze::assign;
+
    if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    const HybridMatrix tmp( *this * (~rhs) );
-   this->operator=( tmp );
+   resize( tmp.rows(), tmp.columns() );
+   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
