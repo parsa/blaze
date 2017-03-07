@@ -1492,12 +1492,14 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
+   using blaze::assign;
+
    if( M != N || (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    const StaticMatrix tmp( *this * (~rhs) );
-   this->operator=( tmp );
+   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -4258,12 +4260,14 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
+   using blaze::assign;
+
    if( M != N || (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    const StaticMatrix tmp( *this * (~rhs) );
-   this->operator=( tmp );
+   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
