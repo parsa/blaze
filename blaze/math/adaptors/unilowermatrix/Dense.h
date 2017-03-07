@@ -831,7 +831,7 @@ template< typename MT  // Type of the adapted dense matrix
 inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix()
    : matrix_()  // The adapted dense matrix
 {
-   for( size_t i=0UL; i<Rows<MT>::value; ++i )
+   for( size_t i=0UL; i<rows(); ++i )
       matrix_(i,i) = ElementType(1);
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
