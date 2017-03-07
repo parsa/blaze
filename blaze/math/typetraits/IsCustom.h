@@ -64,6 +64,9 @@ namespace blaze {
 
    \code
    using blaze::CustomVector;
+   using blaze::DynamicVector;
+   using blaze::CustomMatrix;
+   using blaze::DynamicMatrix;
    using blaze::aligned;
    using blaze::unpadded;
    using blaze::columnVector;
