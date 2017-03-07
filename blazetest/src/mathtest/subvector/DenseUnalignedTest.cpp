@@ -73,6 +73,7 @@ DenseUnalignedTest::DenseUnalignedTest()
    testSubAssign();
    testMultAssign();
    testDivAssign();
+   testCrossAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -609,7 +610,7 @@ void DenseUnalignedTest::testAddAssign()
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << vec_ << "\n"
+             << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 0 0 0 3 -8 4 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -883,7 +884,7 @@ void DenseUnalignedTest::testSubAssign()
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << vec_ << "\n"
+             << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 0 0 0 9 -8 -4 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1157,7 +1158,7 @@ void DenseUnalignedTest::testMultAssign()
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << vec_ << "\n"
+             << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 0 0 0 -18 0 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1431,7 +1432,7 @@ void DenseUnalignedTest::testDivAssign()
          oss << " Test: " << test_ << "\n"
              << " Error: Division assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << vec_ << "\n"
+             << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 0 0 0 -2 2 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1596,6 +1597,281 @@ void DenseUnalignedTest::testDivAssign()
              << " Details:\n"
              << "   Result:\n" << vec_ << "\n"
              << "   Expected result:\n( 0 1 0 -1 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Subvector cross product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the cross product assignment operators of the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseUnalignedTest::testCrossAssign()
+{
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
+   //=====================================================================================
+   // Subvector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Subvector cross product assignment (no aliasing)";
+
+      initialize();
+
+      VT vec( 10UL, 0 );
+      vec[4] =  2;
+      vec[6] = -1;
+      vec[7] =  4;
+
+      SVT sv = blaze::subvector( vec, 4UL, 3UL );
+      sv %= blaze::subvector( vec_, 1UL, 3UL );
+
+      checkSize    ( sv  ,  3UL );
+      checkNonZeros( sv  ,  1UL );
+      checkSize    ( vec_,  8UL );
+      checkNonZeros( vec_,  4UL );
+      checkSize    ( vec , 10UL );
+      checkNonZeros( vec ,  2UL );
+
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[0] != 0 || vec[1] != 0 || vec[2] != 0 || vec[3] != 0 || vec[4] != 0 ||
+          vec[5] != 3 || vec[6] != 0 || vec[7] != 4 || vec[8] != 0 || vec[9] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 0 3 0 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Subvector cross product assignment (aliasing)";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 3UL );
+      sv %= blaze::subvector( vec_, 3UL, 3UL );
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
+
+      if( sv[0] != -6 || sv[1] != 4 || sv[2] != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( -6 4 -3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != -6 || vec_[2] != 4 || vec_[3] != -3 ||
+          vec_[4] != -3 || vec_[5] !=  0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 -6 4 -3 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Dense vector cross product assignment (aligned/padded)";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 3UL );
+
+      const blaze::DynamicVector<short,rowVector> vec{ -2, 0, 1 };
+
+      sv %= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 3 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 3 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector cross product assignment (aligned/padded)";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 3UL );
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec[0] = -2;
+      vec[1] =  0;
+      vec[2] =  1;
+
+      sv %= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 3 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 3 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector cross product assignment (unaligned/unpadded)";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 3UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[4] );
+      UnalignedUnpadded vec( array.get()+1UL, 3UL );
+      vec[0] = -2;
+      vec[1] =  0;
+      vec[2] =  1;
+
+      sv %= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 3 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 3 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Sparse vector cross product assignment";
+
+      initialize();
+
+      SVT sv = blaze::subvector( vec_, 1UL, 3UL );
+
+      blaze::CompressedVector<int,rowVector> vec( 3UL, 2UL );
+      vec[0] = -2;
+      vec[2] =  1;
+
+      sv %= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 0 || sv[1] != 3 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 0 || vec_[2] != 3 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 0 3 0 -3 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
