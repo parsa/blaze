@@ -72,6 +72,7 @@ SparseGeneralTest::SparseGeneralTest()
    testSubAssign();
    testMultAssign();
    testDivAssign();
+   testCrossAssign();
    testScaling();
    testSubscript();
    testIterator();
@@ -1617,7 +1618,7 @@ void SparseGeneralTest::testDivAssign()
       if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
              << "   Expected result:\n( 2 0 -1 0 )\n";
@@ -1631,7 +1632,7 @@ void SparseGeneralTest::testDivAssign()
           mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n( 0  0  0  0 )\n"
@@ -1645,11 +1646,11 @@ void SparseGeneralTest::testDivAssign()
 
 
    //=====================================================================================
-   // Column-major dense vector multiplication assignment
+   // Column-major dense vector division assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major dense vector multiplication assignment";
+      test_ = "Column-major dense vector division assignment";
 
       initialize();
 
@@ -1668,7 +1669,7 @@ void SparseGeneralTest::testDivAssign()
       if( row2[0] != 2 || row2[1] != 0 || row2[2] != -1 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
              << "   Expected result:\n( 2 0 -1 0 )\n";
@@ -1682,7 +1683,7 @@ void SparseGeneralTest::testDivAssign()
           tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Multiplication assignment failed\n"
+             << " Error: Division assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0  0  0 )\n"
@@ -1690,6 +1691,311 @@ void SparseGeneralTest::testDivAssign()
                                      "( 2  0 -1  0 )\n"
                                      "( 0  4  5 -6 )\n"
                                      "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Row cross product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the cross product assignment operators of the Row
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseGeneralTest::testCrossAssign()
+{
+   //=====================================================================================
+   // Row-major Row cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Row cross product assignment";
+
+      MT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      RT row0 = blaze::row( mat, 0UL );
+      row0 %= blaze::row( mat, 1UL );
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  3  0 )\n"
+                                     "( 1  0 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major dense vector cross product assignment";
+
+      MT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      RT row0 = blaze::row( mat, 0UL );
+
+      const blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2 };
+
+      row0 %= vec;
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  3  0 )\n"
+                                     "( 1  0 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major sparse vector cross product assignment";
+
+      MT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      RT row0 = blaze::row( mat, 0UL );
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
+      vec[0] =  1;
+      vec[2] = -2;
+
+      row0 %= vec;
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  3  0 )\n"
+                                     "( 1  0 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Row cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Row cross product assignment";
+
+      OMT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      ORT row0 = blaze::row( mat, 0UL );
+      row0 %= blaze::row( mat, 1UL );
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  3  0 )\n"
+                                     "( 1  0 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major dense vector cross product assignment";
+
+      OMT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      ORT row0 = blaze::row( mat, 0UL );
+
+      const blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2 };
+
+      row0 %= vec;
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  0  0 )\n"
+                                     "( 1  0 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major sparse vector cross product assignment";
+
+      OMT mat( 2UL, 3UL, 4UL );
+      mat(0,0) =  2;
+      mat(0,2) = -1;
+      mat(1,0) =  1;
+      mat(1,2) = -2;
+
+      ORT row0 = blaze::row( mat, 0UL );
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
+      vec[0] =  1;
+      vec[2] = -2;
+
+      row0 %= vec;
+
+      checkSize    ( row0, 3UL );
+      checkNonZeros( row0, 1UL );
+      checkRows    ( mat , 2UL );
+      checkColumns ( mat , 3UL );
+      checkNonZeros( mat , 3UL );
+
+      if( row0[0] != 0 || row0[1] != 3 || row0[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row0 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 3 || mat(0,2) !=  0 ||
+          mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  3  0 )\n"
+                                     "( 1  0 -2 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
