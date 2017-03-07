@@ -110,6 +110,11 @@ inline EnableIf_< And< IsSymmetric<MT>, IsFloatingPoint< ElementType_<MT> > > >
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT> >;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
    Tmp tmp( A );
 
    syevd( tmp, ~w, 'N', 'L' );
@@ -145,6 +150,11 @@ inline EnableIf_< And< IsHermitian<MT>, IsComplex< ElementType_<MT> > > >
    eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
 
    Tmp tmp( A );
 
@@ -182,6 +192,11 @@ inline DisableIf_< Or< And< IsSymmetric<MT>, IsFloatingPoint< ElementType_<MT> >
    eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
 
    Tmp tmp( A );
 
@@ -328,6 +343,11 @@ inline EnableIf_< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_<MT1> > > 
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT1> >;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
    Tmp tmp( A );
 
    syevd( tmp, ~w, 'V', 'L' );
@@ -369,6 +389,11 @@ inline EnableIf_< And< IsHermitian<MT1>, IsComplex< ElementType_<MT1> > > >
    eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT1> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
 
    Tmp tmp( A );
 
@@ -412,6 +437,11 @@ inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_<MT1>
    eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
    using Tmp = ResultType_< RemoveAdaptor_<MT1> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
 
    Tmp tmp( A );
 
