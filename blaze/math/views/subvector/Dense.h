@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
@@ -597,6 +598,7 @@ class Subvector<VT,unaligned,TF,true>
    template< typename VT2 > inline Subvector& operator*=( const DenseVector<VT2,TF>&  rhs );
    template< typename VT2 > inline Subvector& operator*=( const SparseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
@@ -1506,6 +1508,58 @@ inline Subvector<VT,unaligned,TF,true>&
    else {
       smpDivAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true>&
+   Subvector<VT,unaligned,TF,true>::operator%=( const Vector<VT2,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT2> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType tmp( *this % (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
@@ -2672,6 +2726,7 @@ class Subvector<VT,aligned,TF,true>
    template< typename VT2 > inline Subvector& operator*=( const DenseVector<VT2,TF>&  rhs );
    template< typename VT2 > inline Subvector& operator*=( const SparseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>&  rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
@@ -3568,6 +3623,58 @@ inline Subvector<VT,aligned,TF,true>&
    else {
       smpDivAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true>&
+   Subvector<VT,aligned,TF,true>::operator%=( const Vector<VT2,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT2> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType tmp( *this % (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
