@@ -41,7 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
 
 
@@ -97,21 +101,39 @@ namespace blaze {
 // the two given data types the resulting data type is selected:
 
    \code
-   template< typename T1, typename T2 >    // The two generic types
-   typename CrossTrait<T1,T2>::Type        // The resulting generic return type
-   cross( T1 t1, T2 t2 )                   //
-   {                                       // The function 'cross' returns the cross
-      return t1 % t2;                      // product of the two given values
-   }                                       //
+   template< typename T1, typename T2 >  // The two generic types
+   typename CrossTrait<T1,T2>::Type      // The resulting generic return type
+   cross( T1 t1, T2 t2 )                 //
+   {                                     // The function 'cross' returns the cross
+      return t1 % t2;                    // product of the two given values
+   }                                     //
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct CrossTrait
 {
+ private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = INVALID_TYPE;
+   using Type1 = Decay_<T1>;
+   using Type2 = Decay_<T2>;
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**struct Failure******************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Failure { using Type = INVALID_TYPE; };
+   /*! \endcond */
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                            , CrossTrait<Type1,Type2>
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
