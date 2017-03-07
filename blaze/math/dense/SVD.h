@@ -139,7 +139,14 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
 
-   RemoveAdaptor_<MT> tmp( A );
+   typedef RemoveAdaptor_<MT>  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
+   Tmp tmp( A );
 
    gesdd( tmp, s );
 }
@@ -229,7 +236,14 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
-   RemoveAdaptor_<MT1> tmp( A );
+   typedef RemoveAdaptor_<MT1>  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
+   Tmp tmp( A );
 
    gesdd( tmp, U, s, V, 'S' );
 }
@@ -314,7 +328,14 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   RemoveAdaptor_<MT> tmp( A );
+   typedef RemoveAdaptor_<MT>  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
+   Tmp tmp( A );
 
    return gesvdx( tmp, s, low, upp );
 }
@@ -428,7 +449,14 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   RemoveAdaptor_<MT1> tmp( A );
+   typedef RemoveAdaptor_<MT1>  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<Tmp> );
+
+   Tmp tmp( A );
 
    return gesvdx( tmp, U, s, V, low, upp );
 }
