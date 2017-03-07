@@ -35,6 +35,9 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -281,6 +284,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    template< typename VT > inline HybridVector& operator-=( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator/=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline HybridVector& operator%=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, HybridVector >& operator*=( Other rhs );
@@ -1279,6 +1283,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
+   using blaze::assign;
    using blaze::multAssign;
 
    if( (~rhs).size() != size_ ) {
@@ -1287,7 +1292,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       const HybridVector tmp( *this * (~rhs) );
-      this->operator=( tmp );
+      assign( *this, tmp );
    }
    else {
       multAssign( *this, ~rhs );
@@ -1316,6 +1321,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   using blaze::assign;
    using blaze::divAssign;
 
    if( (~rhs).size() != size_ ) {
@@ -1324,11 +1330,53 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator/=( const Dense
 
    if( (~rhs).canAlias( this ) ) {
       const HybridVector tmp( *this / (~rhs) );
-      this->operator=( tmp );
+      assign( *this, tmp );
    }
    else {
       divAssign( *this, ~rhs );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the vector.
+// \exception std::invalid_argument Invalid vector size for cross product.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator%=( const Vector<VT,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< This, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType tmp( *this % (~rhs) );
+   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
