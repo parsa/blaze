@@ -133,7 +133,6 @@ template< typename MT  // Type of the matrix A
 inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -213,9 +212,7 @@ template< typename MT1    // Type of the matrix A
 inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                  DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
@@ -308,9 +305,7 @@ template< typename MT    // Type of the matrix A
         , typename ST >  // Type of the scalar boundary values
 inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -414,9 +409,7 @@ template< typename MT1   // Type of the matrix A
 inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                    DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
