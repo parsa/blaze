@@ -45,6 +45,7 @@
 #include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -536,6 +537,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, CustomVector >& operator*=( Other rhs );
@@ -1493,7 +1495,9 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( con
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       const MultType tmp( *this * (~rhs) );
-      this->operator=( tmp );
+      if( IsSparseVector<MultType>::value )
+         reset();
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
@@ -1527,6 +1531,7 @@ inline CustomVector<Type,AF,PF,TF>&
 
    typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
 
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
 
@@ -1536,11 +1541,52 @@ inline CustomVector<Type,AF,PF,TF>&
 
    if( (~rhs).canAlias( this ) ) {
       const DivType tmp( *this / (~rhs) );
-      this->operator=( tmp );
+      smpAssign( *this, tmp );
    }
    else {
       smpDivAssign( *this, ~rhs );
    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the vector.
+// \exception std::invalid_argument Invalid vector size for cross product.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator%=( const Vector<VT,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType tmp( *this % (~rhs) );
+   assign( *this, tmp );
 
    return *this;
 }
@@ -2885,6 +2931,7 @@ class CustomVector<Type,AF,padded,TF>
    template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, CustomVector >& operator*=( Other rhs );
@@ -3814,7 +3861,9 @@ inline CustomVector<Type,AF,padded,TF>&
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       const MultType tmp( *this * (~rhs) );
-      this->operator=( tmp );
+      if( IsSparseVector<MultType>::value )
+         reset();
+      smpAssign( *this, tmp );
    }
    else {
       smpMultAssign( *this, ~rhs );
@@ -3849,6 +3898,7 @@ inline CustomVector<Type,AF,padded,TF>&
 
    typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
 
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
 
@@ -3858,11 +3908,54 @@ inline CustomVector<Type,AF,padded,TF>&
 
    if( (~rhs).canAlias( this ) ) {
       const DivType tmp( *this / (~rhs) );
-      this->operator=( tmp );
+      smpAssign( *this, tmp );
    }
    else {
       smpDivAssign( *this, ~rhs );
    }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the vector.
+// \exception std::invalid_argument Invalid vector size for cross product.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+template< typename VT >  // Type of the right-hand side vector
+inline CustomVector<Type,AF,padded,TF>&
+   CustomVector<Type,AF,padded,TF>::operator%=( const Vector<VT,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType tmp( *this % (~rhs) );
+   assign( *this, tmp );
 
    return *this;
 }
