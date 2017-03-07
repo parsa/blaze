@@ -66,6 +66,8 @@ ProxyTest::ProxyTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
+   testModAssign();
    testScaling();
    testSubscript();
    testFunctionCall();
@@ -517,7 +519,7 @@ void ProxyTest::testSubAssign()
 
       checkSize    ( vec[0], 0UL );
       checkSize    ( vec[1], 3UL );
-      checkCapacity( vec[1], 3UL );
+      checkCapacity( vec[1], 1UL );
       checkNonZeros( vec[1], 0UL );
       checkSize    ( vec[2], 0UL );
 
@@ -558,7 +560,7 @@ void ProxyTest::testMultAssign()
       tmp[1] = 2;
       tmp[2] = 3;
       DVV vec( 3UL, 1UL );
-      vec[1] =  tmp;
+      vec[1] = tmp;
 
       vec[1] *= tmp;
 
@@ -645,7 +647,7 @@ void ProxyTest::testDivAssign()
       tmp[1] = 2;
       tmp[2] = 3;
       DVV vec( 3UL, 1UL );
-      vec[1] =  tmp;
+      vec[1] = tmp;
 
       vec[1] /= tmp;
 
@@ -666,6 +668,93 @@ void ProxyTest::testDivAssign()
              << " Details:\n"
              << "   Result:\n" << vec[1] << "\n"
              << "   Expected result:\n( 1 1 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy modulo assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the modulo assignment operators of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testModAssign()
+{
+   //=====================================================================================
+   // Dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector cross product assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] %= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 0 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy sparse vector cross product assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] %= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 0 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
