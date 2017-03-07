@@ -95,6 +95,8 @@ class ProxyTest
    void testAddAssign();
    void testSubAssign();
    void testMultAssign();
+   void testDivAssign();
+   void testModAssign();
    void testScaling();
    void testSubscript();
    void testFunctionCall();

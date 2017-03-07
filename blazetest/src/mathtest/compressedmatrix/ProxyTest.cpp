@@ -66,6 +66,8 @@ ProxyTest::ProxyTest()
    testAddAssign();
    testSubAssign();
    testMultAssign();
+   testDivAssign();
+   testModAssign();
    testScaling();
    testSubscript();
    testFunctionCall();
@@ -989,11 +991,11 @@ void ProxyTest::testSubAssign()
 void ProxyTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major dense vector subtraction assignment
+   // Row-major dense vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major MatrixAccessProxy dense vector subtraction assignment";
+      test_ = "Row-major MatrixAccessProxy dense vector multiplication assignment";
 
       DV tmp( 3UL );
       tmp[0] = 1;
@@ -1029,11 +1031,11 @@ void ProxyTest::testMultAssign()
 
 
    //=====================================================================================
-   // Row-major sparse vector subtraction assignment
+   // Row-major sparse vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major MatrixAccessProxy sparse vector subtraction assignment";
+      test_ = "Row-major MatrixAccessProxy sparse vector multiplication assignment";
 
       SV tmp( 3UL );
       tmp[1] = 2;
@@ -1067,11 +1069,11 @@ void ProxyTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major dense vector subtraction assignment
+   // Column-major dense vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major MatrixAccessProxy dense vector subtraction assignment";
+      test_ = "Column-major MatrixAccessProxy dense vector multiplication assignment";
 
       DV tmp( 3UL );
       tmp[0] = 1;
@@ -1107,11 +1109,11 @@ void ProxyTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major sparse vector subtraction assignment
+   // Column-major sparse vector multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major MatrixAccessProxy sparse vector subtraction assignment";
+      test_ = "Column-major MatrixAccessProxy sparse vector multiplication assignment";
 
       SV tmp( 3UL );
       tmp[1] = 2;
@@ -1139,6 +1141,268 @@ void ProxyTest::testMultAssign()
              << " Details:\n"
              << "   Result:\n" << mat(0,1) << "\n"
              << "   Expected result:\n( 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the MatrixAccessProxy division assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the division assignment operators of the MatrixAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testDivAssign()
+{
+   //=====================================================================================
+   // Row-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy dense vector division assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) /= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 3UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 1 || mat(0,1)[1] != 1 || mat(0,1)[2] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 1 1 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector division assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy dense vector division assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) /= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 3UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 1 || mat(0,1)[1] != 1 || mat(0,1)[2] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 1 1 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the MatrixAccessProxy modulo assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the modulo assignment operators of the MatrixAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testModAssign()
+{
+   //=====================================================================================
+   // Row-major dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy dense vector cross product assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) %= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 0 || mat(0,1)[1] != 0 || mat(0,1)[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy sparse vector cross product assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) %= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 1UL );
+      checkNonZeros( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 0 || mat(0,1)[1] != 0 || mat(0,1)[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy dense vector cross product assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) %= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 3UL );
+      checkNonZeros( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 0 || mat(0,1)[1] != 0 || mat(0,1)[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy sparse vector cross product assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVM mat( 2UL, 2UL, 1UL );
+      mat(0,1) = tmp;
+
+      mat(0,1) %= tmp;
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 3UL );
+      checkCapacity( mat(0,1), 1UL );
+      checkNonZeros( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( mat(0,1)[0] != 0 || mat(0,1)[1] != 0 || mat(0,1)[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(0,1) << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
