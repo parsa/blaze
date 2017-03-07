@@ -78,6 +78,7 @@ AlignedPaddedTest::AlignedPaddedTest()
    testSubAssign();
    testMultAssign();
    testDivAssign();
+   testCrossAssign();
    testScaling();
    testSubscript();
    testAt();
@@ -1291,6 +1292,163 @@ void AlignedPaddedTest::testDivAssign()
              << " Details:\n"
              << "   Result:\n" << vec2 << "\n"
              << "   Expected result:\n( 2 0 1 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CustomVector cross product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the cross product assignment operators of the CustomVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedPaddedTest::testCrossAssign()
+{
+   //=====================================================================================
+   // Dense vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector dense vector cross product assignment (mixed type)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec1( blaze::allocate<short>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  0;
+      vec1[2] = -2;
+
+      VT vec2( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -1;
+
+      vec2 %= vec1;
+
+      checkSize    ( vec2, 3UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 1UL );
+
+      if( vec2[0] != 0 || vec2[1] != 3 || vec2[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CustomVector dense vector cross product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec1( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec1[0] =  1;
+      vec1[1] =  0;
+      vec1[2] = -2;
+
+      VT vec2( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -1;
+
+      vec2 %= vec1;
+
+      checkSize    ( vec2, 3UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 1UL );
+
+      if( vec2[0] != 0 || vec2[1] != 3 || vec2[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CustomVector dense vector cross product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[4UL] );
+      UnalignedUnpadded vec1( array.get()+1UL, 3UL );
+      vec1[0] =  1;
+      vec1[1] =  0;
+      vec1[2] = -2;
+
+      VT vec2( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -1;
+
+      vec2 %= vec1;
+
+      checkSize    ( vec2, 3UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 1UL );
+
+      if( vec2[0] != 0 || vec2[1] != 3 || vec2[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector cross product assignment
+   //=====================================================================================
+
+   {
+      test_ = "CustomVector sparse vector cross product assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec1( 3UL, 2UL );
+      vec1[0] =  1;
+      vec1[2] = -2;
+      VT vec2( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
+      vec2[0] =  2;
+      vec2[1] =  0;
+      vec2[2] = -1;
+
+      vec2 %= vec1;
+
+      checkSize    ( vec2, 3UL );
+      checkCapacity( vec2, 3UL );
+      checkNonZeros( vec2, 1UL );
+
+      if( vec2[0] != 0 || vec2[1] != 3 || vec2[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Cross product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 0 3 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
