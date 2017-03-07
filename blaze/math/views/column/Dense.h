@@ -61,6 +61,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
@@ -209,6 +210,7 @@ class Column<MT,true,true,SF>
    template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
@@ -1092,6 +1094,57 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator/=( const Dense
    else {
       smpDivAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side vector
+inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator%=( const Vector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType right( *this % (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -2524,6 +2577,7 @@ class Column<MT,false,true,false>
    template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
@@ -3316,6 +3370,57 @@ inline Column<MT,false,true,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side vector
+inline Column<MT,false,true,false>&
+   Column<MT,false,true,false>::operator%=( const Vector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType right( *this % (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, right );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication between a dense column and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
@@ -4005,6 +4110,7 @@ class Column<MT,false,true,true>
    template< typename VT > inline Column& operator*=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator*=( const SparseVector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
@@ -4873,6 +4979,57 @@ inline Column<MT,false,true,true>&
    else {
       smpDivAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}%=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side vector
+inline Column<MT,false,true,true>&
+   Column<MT,false,true,true>::operator%=( const Vector<VT,false>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType right( *this % (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   assign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
