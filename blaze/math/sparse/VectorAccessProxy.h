@@ -137,6 +137,7 @@ class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> 
    template< typename T > inline const VectorAccessProxy& operator-=( const T& value ) const;
    template< typename T > inline const VectorAccessProxy& operator*=( const T& value ) const;
    template< typename T > inline const VectorAccessProxy& operator/=( const T& value ) const;
+   template< typename T > inline const VectorAccessProxy& operator%=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
@@ -374,6 +375,25 @@ template< typename T >   // Type of the right-hand side value
 inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator/=( const T& value ) const
 {
    get() /= value;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed sparse vector element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned access proxy.
+//
+// If the access proxy represents an element of numeric type, this function performs a modulo
+// assignment, if the proxy represents a dense or sparse vector, a cross product is computed.
+*/
+template< typename VT >  // Type of the sparse vector
+template< typename T >   // Type of the right-hand side value
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator%=( const T& value ) const
+{
+   get() %= value;
    return *this;
 }
 //*************************************************************************************************
