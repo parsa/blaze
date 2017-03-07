@@ -106,6 +106,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Square.h>
+#include <blaze/math/constraints/Static.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>

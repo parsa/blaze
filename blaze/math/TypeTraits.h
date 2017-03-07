@@ -139,6 +139,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
