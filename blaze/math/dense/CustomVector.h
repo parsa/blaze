@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <memory>
 #include <utility>
-#include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -232,7 +232,7 @@ namespace blaze {
    struct ArrayDelete
    {
       template< typename Type >
-      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
    };
 
    struct Deallocate
@@ -713,13 +713,13 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;                  //!< The size/dimension of the custom vector.
-   boost::shared_array<Type> v_;  //!< The custom array of elements.
-                                  /*!< Access to the array of elements is gained via the
-                                       subscript operator. The order of the elements is
-                                       \f[\left(\begin{array}{*{5}{c}}
-                                       0 & 1 & 2 & \cdots & N-1 \\
-                                       \end{array}\right)\f] */
+   size_t size_;              //!< The size/dimension of the custom vector.
+   std::shared_ptr<Type> v_;  //!< The custom array of elements.
+                              /*!< Access to the array of elements is gained via the
+                                   subscript operator. The order of the elements is
+                                   \f[\left(\begin{array}{*{5}{c}}
+                                   0 & 1 & 2 & \cdots & N-1 \\
+                                   \end{array}\right)\f] */
    //@}
    //**********************************************************************************************
 
@@ -974,7 +974,7 @@ inline typename CustomVector<Type,AF,PF,TF>::Reference
    CustomVector<Type,AF,PF,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
-   return v_[index];
+   return v_.get()[index];
 }
 //*************************************************************************************************
 
@@ -996,7 +996,7 @@ inline typename CustomVector<Type,AF,PF,TF>::ConstReference
    CustomVector<Type,AF,PF,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
-   return v_[index];
+   return v_.get()[index];
 }
 //*************************************************************************************************
 
@@ -1212,7 +1212,7 @@ template< typename Type  // Data type of the vector
 inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
+      v_.get()[i] = rhs;
    return *this;
 }
 //*************************************************************************************************
@@ -1299,7 +1299,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
    }
 
    for( size_t i=0UL; i<N; ++i )
-      v_[i] = array[i];
+      v_.get()[i] = array[i];
 
    return *this;
 }
@@ -1696,7 +1696,7 @@ inline size_t CustomVector<Type,AF,PF,TF>::nonZeros() const
    size_t nonzeros( 0 );
 
    for( size_t i=0UL; i<size_; ++i ) {
-      if( !isDefault( v_[i] ) )
+      if( !isDefault( v_.get()[i] ) )
          ++nonzeros;
    }
 
@@ -1718,7 +1718,7 @@ inline void CustomVector<Type,AF,PF,TF>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
-      clear( v_[i] );
+      clear( v_.get()[i] );
 }
 //*************************************************************************************************
 
@@ -1785,7 +1785,7 @@ template< typename Other >  // Data type of the scalar value
 inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= scalar;
+      v_.get()[i] *= scalar;
    return *this;
 }
 //*************************************************************************************************
@@ -2282,11 +2282,11 @@ inline DisableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorize
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] = (~rhs)[i    ];
-      v_[i+1UL] = (~rhs)[i+1UL];
+      v_.get()[i    ] = (~rhs)[i    ];
+      v_.get()[i+1UL] = (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] = (~rhs)[ipos];
+      v_.get()[ipos] = (~rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2325,7 +2325,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
          stream( i, (~rhs).load(i) );
       }
       for( ; i<size_; ++i ) {
-         v_[i] = (~rhs)[i];
+         v_.get()[i] = (~rhs)[i];
       }
    }
    else
@@ -2347,7 +2347,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
          store( i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
-         v_[i] = *it;
+         v_.get()[i] = *it;
       }
    }
 }
@@ -2375,7 +2375,7 @@ inline void CustomVector<Type,AF,PF,TF>::assign( const SparseVector<VT,TF>& rhs 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] = element->value();
+      v_.get()[element->index()] = element->value();
 }
 //*************************************************************************************************
 
@@ -2405,11 +2405,11 @@ inline DisableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorize
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] += (~rhs)[i    ];
-      v_[i+1UL] += (~rhs)[i+1UL];
+      v_.get()[i    ] += (~rhs)[i    ];
+      v_.get()[i+1UL] += (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] += (~rhs)[ipos];
+      v_.get()[ipos] += (~rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2457,7 +2457,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
-      v_[i] += *it;
+      v_.get()[i] += *it;
    }
 }
 //*************************************************************************************************
@@ -2484,7 +2484,7 @@ inline void CustomVector<Type,AF,PF,TF>::addAssign( const SparseVector<VT,TF>& r
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] += element->value();
+      v_.get()[element->index()] += element->value();
 }
 //*************************************************************************************************
 
@@ -2514,11 +2514,11 @@ inline DisableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorize
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] -= (~rhs)[i    ];
-      v_[i+1UL] -= (~rhs)[i+1UL];
+      v_.get()[i    ] -= (~rhs)[i    ];
+      v_.get()[i+1UL] -= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] -= (~rhs)[ipos];
+      v_.get()[ipos] -= (~rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2566,7 +2566,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
-      v_[i] -= *it;
+      v_.get()[i] -= *it;
    }
 }
 //*************************************************************************************************
@@ -2593,7 +2593,7 @@ inline void CustomVector<Type,AF,PF,TF>::subAssign( const SparseVector<VT,TF>& r
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] -= element->value();
+      v_.get()[element->index()] -= element->value();
 }
 //*************************************************************************************************
 
@@ -2623,11 +2623,11 @@ inline DisableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorize
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] *= (~rhs)[i    ];
-      v_[i+1UL] *= (~rhs)[i+1UL];
+      v_.get()[i    ] *= (~rhs)[i    ];
+      v_.get()[i+1UL] *= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] *= (~rhs)[ipos];
+      v_.get()[ipos] *= (~rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2675,7 +2675,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
-      v_[i] *= *it;
+      v_.get()[i] *= *it;
    }
 }
 //*************************************************************************************************
@@ -2706,7 +2706,7 @@ inline void CustomVector<Type,AF,PF,TF>::multAssign( const SparseVector<VT,TF>& 
    reset();
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] = tmp[element->index()] * element->value();
+      v_.get()[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
 
@@ -2736,11 +2736,11 @@ inline DisableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorize
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] /= (~rhs)[i    ];
-      v_[i+1UL] /= (~rhs)[i+1UL];
+      v_.get()[i    ] /= (~rhs)[i    ];
+      v_.get()[i+1UL] /= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] /= (~rhs)[ipos];
+      v_.get()[ipos] /= (~rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2788,7 +2788,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       store( i, load(i) / it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
-      v_[i] /= *it;
+      v_.get()[i] /= *it;
    }
 }
 //*************************************************************************************************
@@ -3091,14 +3091,14 @@ class CustomVector<Type,AF,padded,TF>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;                  //!< The size/dimension of the custom vector.
-   size_t capacity_;              //!< The maximum capacity of the custom vector.
-   boost::shared_array<Type> v_;  //!< The custom array of elements.
-                                  /*!< Access to the array of elements is gained via the
-                                       subscript operator. The order of the elements is
-                                       \f[\left(\begin{array}{*{5}{c}}
-                                       0 & 1 & 2 & \cdots & N-1 \\
-                                       \end{array}\right)\f] */
+   size_t size_;              //!< The size/dimension of the custom vector.
+   size_t capacity_;          //!< The maximum capacity of the custom vector.
+   std::shared_ptr<Type> v_;  //!< The custom array of elements.
+                              /*!< Access to the array of elements is gained via the
+                                   subscript operator. The order of the elements is
+                                   \f[\left(\begin{array}{*{5}{c}}
+                                   0 & 1 & 2 & \cdots & N-1 \\
+                                   \end{array}\right)\f] */
    //@}
    //**********************************************************************************************
 
@@ -3182,7 +3182,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
 
    if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
+         v_.get()[i] = Type();
    }
 }
 /*! \endcond */
@@ -3235,7 +3235,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
 
    if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
+         v_.get()[i] = Type();
    }
 }
 /*! \endcond */
@@ -3310,7 +3310,7 @@ inline typename CustomVector<Type,AF,padded,TF>::Reference
    CustomVector<Type,AF,padded,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
-   return v_[index];
+   return v_.get()[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3333,7 +3333,7 @@ inline typename CustomVector<Type,AF,padded,TF>::ConstReference
    CustomVector<Type,AF,padded,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
-   return v_[index];
+   return v_.get()[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3561,7 +3561,7 @@ inline CustomVector<Type,AF,padded,TF>&
    CustomVector<Type,AF,padded,TF>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] = rhs;
+      v_.get()[i] = rhs;
    return *this;
 }
 /*! \endcond */
@@ -3652,7 +3652,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    for( size_t i=0UL; i<N; ++i )
-      v_[i] = array[i];
+      v_.get()[i] = array[i];
 
    return *this;
 }
@@ -4070,7 +4070,7 @@ inline size_t CustomVector<Type,AF,padded,TF>::nonZeros() const
    size_t nonzeros( 0 );
 
    for( size_t i=0UL; i<size_; ++i ) {
-      if( !isDefault( v_[i] ) )
+      if( !isDefault( v_.get()[i] ) )
          ++nonzeros;
    }
 
@@ -4093,7 +4093,7 @@ inline void CustomVector<Type,AF,padded,TF>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
-      clear( v_[i] );
+      clear( v_.get()[i] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4166,7 +4166,7 @@ inline CustomVector<Type,AF,padded,TF>&
    CustomVector<Type,AF,padded,TF>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= scalar;
+      v_.get()[i] *= scalar;
    return *this;
 }
 /*! \endcond */
@@ -4602,11 +4602,11 @@ inline DisableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] = (~rhs)[i    ];
-      v_[i+1UL] = (~rhs)[i+1UL];
+      v_.get()[i    ] = (~rhs)[i    ];
+      v_.get()[i+1UL] = (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] = (~rhs)[ipos];
+      v_.get()[ipos] = (~rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4648,7 +4648,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
          stream( i, (~rhs).load(i) );
       }
       for( ; remainder && i<size_; ++i ) {
-         v_[i] = (~rhs)[i];
+         v_.get()[i] = (~rhs)[i];
       }
    }
    else
@@ -4670,7 +4670,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
          store( i, it.load() );
       }
       for( ; remainder && i<size_; ++i, ++it ) {
-         v_[i] = *it;
+         v_.get()[i] = *it;
       }
    }
 }
@@ -4699,7 +4699,7 @@ inline void CustomVector<Type,AF,padded,TF>::assign( const SparseVector<VT,TF>& 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] = element->value();
+      v_.get()[element->index()] = element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4730,11 +4730,11 @@ inline DisableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] += (~rhs)[i    ];
-      v_[i+1UL] += (~rhs)[i+1UL];
+      v_.get()[i    ] += (~rhs)[i    ];
+      v_.get()[i+1UL] += (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] += (~rhs)[ipos];
+      v_.get()[ipos] += (~rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4785,7 +4785,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       store( i, load(i) + it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] += *it;
+      v_.get()[i] += *it;
    }
 }
 /*! \endcond */
@@ -4813,7 +4813,7 @@ inline void CustomVector<Type,AF,padded,TF>::addAssign( const SparseVector<VT,TF
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] += element->value();
+      v_.get()[element->index()] += element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4844,11 +4844,11 @@ inline DisableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] -= (~rhs)[i    ];
-      v_[i+1UL] -= (~rhs)[i+1UL];
+      v_.get()[i    ] -= (~rhs)[i    ];
+      v_.get()[i+1UL] -= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] -= (~rhs)[ipos];
+      v_.get()[ipos] -= (~rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4899,7 +4899,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       store( i, load(i) - it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] -= *it;
+      v_.get()[i] -= *it;
    }
 }
 /*! \endcond */
@@ -4927,7 +4927,7 @@ inline void CustomVector<Type,AF,padded,TF>::subAssign( const SparseVector<VT,TF
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] -= element->value();
+      v_.get()[element->index()] -= element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4958,11 +4958,11 @@ inline DisableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] *= (~rhs)[i    ];
-      v_[i+1UL] *= (~rhs)[i+1UL];
+      v_.get()[i    ] *= (~rhs)[i    ];
+      v_.get()[i+1UL] *= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] *= (~rhs)[ipos];
+      v_.get()[ipos] *= (~rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5013,7 +5013,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       store( i, load(i) * it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
-      v_[i] *= *it;
+      v_.get()[i] *= *it;
    }
 }
 /*! \endcond */
@@ -5045,7 +5045,7 @@ inline void CustomVector<Type,AF,padded,TF>::multAssign( const SparseVector<VT,T
    reset();
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      v_[element->index()] = tmp[element->index()] * element->value();
+      v_.get()[element->index()] = tmp[element->index()] * element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5076,11 +5076,11 @@ inline DisableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] /= (~rhs)[i    ];
-      v_[i+1UL] /= (~rhs)[i+1UL];
+      v_.get()[i    ] /= (~rhs)[i    ];
+      v_.get()[i+1UL] /= (~rhs)[i+1UL];
    }
    if( ipos < (~rhs).size() )
-      v_[ipos] /= (~rhs)[ipos];
+      v_.get()[ipos] /= (~rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5129,7 +5129,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       store( i, load(i) / it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
-      v_[i] /= *it;
+      v_.get()[i] /= *it;
    }
 }
 /*! \endcond */
