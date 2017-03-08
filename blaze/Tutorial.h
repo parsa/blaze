@@ -9770,9 +9770,9 @@
    blaze::DynamicMatrix<double,blaze::columnMajor> A( N, N );
    // ... Initializing the matrix
 
-   const int m    ( boost::numeric_cast<int>( A.rows()    ) );  // == N
-   const int n    ( boost::numeric_cast<int>( A.columns() ) );  // == N
-   const int lda  ( boost::numeric_cast<int>( A.spacing() ) );  // >= N
+   const int m    ( numeric_cast<int>( A.rows()    ) );  // == N
+   const int n    ( numeric_cast<int>( A.columns() ) );  // == N
+   const int lda  ( numeric_cast<int>( A.spacing() ) );  // >= N
    const int lwork( n*lda );
 
    const std::unique_ptr<int[]> ipiv( new int[N] );        // No initialization required
