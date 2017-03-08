@@ -169,15 +169,6 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/BLAS.h.in"
                 "${CMAKE_CURRENT_LIST_DIR}/blaze/config/BLAS.h")
 
 ###################################################################################################
-# Configure floating point precision
-###################################################################################################
-set(BLAZE_PRECISION "double" CACHE STRING "Specify the floating point precision")
-set_property(CACHE BLAZE_PRECISION PROPERTY STRINGS "float;double;long double")
-
-configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Precision.h.in"
-                "${CMAKE_CURRENT_LIST_DIR}/blaze/config/Precision.h")
-
-###################################################################################################
 # Configure transpose flag
 ###################################################################################################
 set(BLAZE_TRANSPOSE_FLAG "columnVector" CACHE STRING "Specify the default transpose flag for all vectors of the Blaze library.")

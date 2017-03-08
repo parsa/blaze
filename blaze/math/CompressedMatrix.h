@@ -46,7 +46,6 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/SparseMatrix.h>
-#include <blaze/system/Precision.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
