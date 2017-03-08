@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/checked_delete.hpp>
+#include <blaze/util/CheckedDelete.h>
 
 
 namespace blaze {
@@ -95,7 +95,7 @@ struct ArrayDelete
 template< typename Type >
 inline void ArrayDelete::operator()( Type ptr ) const
 {
-   boost::checked_array_delete( ptr );
+   checkedArrayDelete( ptr );
 }
 //*************************************************************************************************
 

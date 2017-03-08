@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/checked_delete.hpp>
+#include <blaze/util/CheckedDelete.h>
 
 
 namespace blaze {
@@ -95,7 +95,7 @@ struct PtrDelete
 template< typename Type >
 inline void PtrDelete::operator()( Type ptr ) const
 {
-   boost::checked_delete( ptr );
+   checkedDelete( ptr );
 }
 //*************************************************************************************************
 
