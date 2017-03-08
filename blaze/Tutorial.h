@@ -729,7 +729,7 @@
    struct ArrayDelete
    {
       template< typename Type >
-      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
    };
 
    struct Deallocate
@@ -2230,7 +2230,7 @@
    struct ArrayDelete
    {
       template< typename Type >
-      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
    };
 
    struct Deallocate
