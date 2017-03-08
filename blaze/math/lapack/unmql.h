@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -54,6 +53,7 @@
 #include <blaze/math/lapack/clapack/unmrq.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Complex.h>
+#include <blaze/util/NumericCast.h>
 
 
 namespace blaze {
@@ -143,8 +143,6 @@ template< typename MT1, bool SO, typename MT2 >
 inline void unmql( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
                    char side, char trans, const ElementType_<MT2>* tau )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );

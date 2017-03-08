@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -52,6 +51,7 @@
 #include <blaze/math/lapack/clapack/orgrq.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
+#include <blaze/util/NumericCast.h>
 
 
 namespace blaze {
@@ -117,8 +117,6 @@ inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 template< typename MT, bool SO >
 inline void orgrq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );

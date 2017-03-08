@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -53,6 +52,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/StaticAssert.h>
 
 
@@ -246,8 +246,6 @@ template< typename VT  // Type of the target vector
 BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
@@ -292,8 +290,6 @@ template< typename VT  // Type of the target vector
 BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A,
                                CBLAS_UPLO uplo )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 

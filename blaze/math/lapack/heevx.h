@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -56,6 +55,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Complex.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 
@@ -119,8 +119,6 @@ template< typename MT    // Type of the matrix A
 inline size_t heevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
                              char uplo, char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
@@ -351,8 +349,6 @@ template< typename MT    // Type of the matrix A
         , typename ST >  // Type of the scalar boundary values
 inline size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
@@ -439,8 +435,6 @@ inline size_t heevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
                              DenseMatrix<MT2,SO2>& Z, char uplo, char range,
                              ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
@@ -706,8 +700,6 @@ template< typename MT1   // Type of the matrix A
 inline size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
                      DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );

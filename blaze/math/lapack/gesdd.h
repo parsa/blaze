@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -57,6 +56,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
 
@@ -113,8 +113,6 @@ template< typename MT  // Type of the matrix A
 inline DisableIf_< IsComplex< ElementType_<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using ET = ElementType_<MT>;
@@ -168,8 +166,6 @@ template< typename MT  // Type of the matrix A
 inline EnableIf_< IsComplex< ElementType_<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT>;
@@ -321,8 +317,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~U ), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
@@ -388,8 +382,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~U ), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
@@ -599,8 +591,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~V ), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
@@ -666,8 +656,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~V ), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
@@ -870,8 +858,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~U ), "Invalid non-square matrix detected" );
@@ -942,8 +928,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'N', "Invalid jobz flag detected" );
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~U ), "Invalid non-square matrix detected" );

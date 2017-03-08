@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -60,6 +59,7 @@
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -138,8 +138,6 @@ inline DisableIf_< IsComplex< ElementType_<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -230,8 +228,6 @@ inline EnableIf_< IsComplex< ElementType_<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -466,8 +462,6 @@ template< typename MT    // Type of the matrix A
         , typename ST >  // Type of the scalar boundary values
 inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
@@ -552,8 +546,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -674,8 +666,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -961,8 +951,6 @@ template< typename MT1   // Type of the matrix A
 inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                       DenseVector<VT,TF>& s, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
@@ -1057,8 +1045,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1179,8 +1165,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1466,8 +1450,6 @@ template< typename MT1   // Type of the matrix A
 inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                       DenseMatrix<MT2,SO>& V, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
@@ -1564,8 +1546,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1706,8 +1686,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -2031,8 +2009,6 @@ template< typename MT1   // Type of the matrix A
 inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                       DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );

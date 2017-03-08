@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -60,6 +59,7 @@
 #include <blaze/util/constraints/Complex.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
 
@@ -114,8 +114,6 @@ template< typename MT  // Type of the matrix A
 inline DisableIf_< IsComplex< ElementType_<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
 
@@ -175,8 +173,6 @@ template< typename MT  // Type of the matrix A
 inline EnableIf_< IsComplex< ElementType_<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
 
@@ -322,8 +318,6 @@ template< typename MT1  // Type of the matrix A
 inline DisableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -416,8 +410,6 @@ template< typename MT1  // Type of the matrix A
 inline EnableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -591,8 +583,6 @@ template< typename MT1  // Type of the matrix A
 inline DisableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -685,8 +675,6 @@ template< typename MT1  // Type of the matrix A
 inline EnableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -864,8 +852,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
@@ -969,8 +955,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );

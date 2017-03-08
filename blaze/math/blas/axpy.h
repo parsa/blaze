@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -50,6 +49,7 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/StaticAssert.h>
 
 
@@ -212,8 +212,6 @@ BLAZE_ALWAYS_INLINE void axpy( int n, complex<double> alpha, const complex<doubl
 template< typename VT1, bool TF1, typename VT2, bool TF2, typename ST >
 void axpy( DenseVector<VT1,TF1>& y, const DenseVector<VT2,TF2>& x, ST alpha )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT2 );
 

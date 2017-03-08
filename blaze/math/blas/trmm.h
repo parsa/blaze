@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -52,6 +51,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/StaticAssert.h>
 
 
@@ -262,8 +262,6 @@ template< typename MT1   // Type of the left-hand side target matrix
 BLAZE_ALWAYS_INLINE void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
                                CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 

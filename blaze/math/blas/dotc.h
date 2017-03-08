@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
@@ -50,6 +49,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/StaticAssert.h>
 
 
@@ -227,8 +227,6 @@ BLAZE_ALWAYS_INLINE complex<double> dotc( int n, const complex<double>* x, int i
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT2 );
 

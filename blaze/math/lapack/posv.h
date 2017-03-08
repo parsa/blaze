@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -53,6 +52,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/NumericCast.h>
 
 
 namespace blaze {
@@ -139,8 +139,6 @@ template< typename MT  // Type of the system matrix
         , bool TF >    // Transpose flag of the right-hand side vector
 inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -253,8 +251,6 @@ template< typename MT1  // Type of the system matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo )
 {
-   using boost::numeric_cast;
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );

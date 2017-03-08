@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
@@ -57,6 +56,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
 
@@ -115,8 +115,6 @@ template< typename MT  // Type of the matrix A
 inline DisableIf_< IsComplex< ElementType_<MT> > >
    gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu != 'O' || jobv != 'O', "Invalid combination of jobu and jobv detected" );
@@ -174,8 +172,6 @@ template< typename MT  // Type of the matrix A
 inline EnableIf_< IsComplex< ElementType_<MT> > >
    gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu != 'O' || jobv != 'O', "Invalid combination of jobu and jobv detected" );
@@ -364,8 +360,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -432,8 +426,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -652,8 +644,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'N' || (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
@@ -720,8 +710,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'N' || (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
@@ -942,8 +930,6 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
@@ -1016,8 +1002,6 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
 {
-   using boost::numeric_cast;
-
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
    BLAZE_INTERNAL_ASSERT( jobu == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );

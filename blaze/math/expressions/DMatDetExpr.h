@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <memory>
-#include <boost/cast.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -56,6 +55,7 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
 
 
@@ -336,8 +336,8 @@ ElementType_<MT> detNxN( const DenseMatrix<MT,SO>& dm )
 
    URT A( ~dm );
 
-   int n   ( boost::numeric_cast<int>( A.rows()      ) );
-   int lda ( boost::numeric_cast<int>( A.spacing() ) );
+   int n   ( numeric_cast<int>( A.rows()    ) );
+   int lda ( numeric_cast<int>( A.spacing() ) );
    int info( 0 );
 
    const std::unique_ptr<int[]> ipiv( new int[n] );
