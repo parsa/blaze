@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <memory>
 #include <utility>
-#include <boost/smart_ptr/shared_array.hpp>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
@@ -239,7 +239,7 @@ namespace blaze {
    struct ArrayDelete
    {
       template< typename Type >
-      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
    };
 
    struct Deallocate
@@ -705,19 +705,19 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                     //!< The current number of rows of the matrix.
-   size_t n_;                     //!< The current number of columns of the matrix.
-   size_t nn_;                    //!< The number of elements between two rows.
-   boost::shared_array<Type> v_;  //!< The dynamically allocated matrix elements.
-                                  /*!< Access to the matrix elements is gained via the function call
-                                       operator. In case of row-major order the memory layout of the
-                                       elements is
-                                       \f[\left(\begin{array}{*{5}{c}}
-                                       0            & 1             & 2             & \cdots & N-1         \\
-                                       N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
-                                       \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
-                                       M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
-                                       \end{array}\right)\f]. */
+   size_t m_;                 //!< The current number of rows of the matrix.
+   size_t n_;                 //!< The current number of columns of the matrix.
+   size_t nn_;                //!< The number of elements between two rows.
+   std::shared_ptr<Type> v_;  //!< The dynamically allocated matrix elements.
+                              /*!< Access to the matrix elements is gained via the function call
+                                   operator. In case of row-major order the memory layout of the
+                                   elements is
+                                   \f[\left(\begin{array}{*{5}{c}}
+                                   0            & 1             & 2             & \cdots & N-1         \\
+                                   N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
+                                   \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
+                                   M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
+                                   \end{array}\right)\f]. */
    //@}
    //**********************************************************************************************
 
@@ -850,7 +850,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
-            v_[i*nn_+j] = Type();
+            v_.get()[i*nn_+j] = Type();
       }
    }
 }
@@ -953,7 +953,7 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
-            v_[i*nn_+j] = Type();
+            v_.get()[i*nn_+j] = Type();
       }
    }
 }
@@ -1031,7 +1031,7 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Reference
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
-   return v_[i*nn_+j];
+   return v_.get()[i*nn_+j];
 }
 //*************************************************************************************************
 
@@ -1055,7 +1055,7 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
-   return v_[i*nn_+j];
+   return v_.get()[i*nn_+j];
 }
 //*************************************************************************************************
 
@@ -1374,7 +1374,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         v_[i*nn_+j] = rhs;
+         v_.get()[i*nn_+j] = rhs;
 
    return *this;
 }
@@ -1477,7 +1477,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
-         v_[i*nn_+j] = array[i][j];
+         v_.get()[i*nn_+j] = array[i][j];
 
    return *this;
 }
@@ -1847,7 +1847,7 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros() const
 
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         if( !isDefault( v_[i*nn_+j] ) )
+         if( !isDefault( v_.get()[i*nn_+j] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -1878,7 +1878,7 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros( size_t i ) const
    size_t nonzeros( 0UL );
 
    for( size_t j=i*nn_; j<jend; ++j )
-      if( !isDefault( v_[j] ) )
+      if( !isDefault( v_.get()[j] ) )
          ++nonzeros;
 
    return nonzeros;
@@ -1901,7 +1901,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset()
 
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         clear( v_[i*nn_+j] );
+         clear( v_.get()[i*nn_+j] );
 }
 //*************************************************************************************************
 
@@ -1927,7 +1927,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( size_t i )
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    for( size_t j=0UL; j<n_; ++j )
-      clear( v_[i*nn_+j] );
+      clear( v_.get()[i*nn_+j] );
 }
 //*************************************************************************************************
 
@@ -2005,7 +2005,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::transpose()
 
    for( size_t i=1UL; i<m_; ++i )
       for( size_t j=0UL; j<i; ++j )
-         swap( v_[i*nn_+j], v_[j*nn_+i] );
+         swap( v_.get()[i*nn_+j], v_.get()[j*nn_+i] );
 
    return *this;
 }
@@ -2032,9 +2032,9 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::ctranspose()
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {
-         cswap( v_[i*nn_+j], v_[j*nn_+i] );
+         cswap( v_.get()[i*nn_+j], v_.get()[j*nn_+i] );
       }
-      conjugate( v_[i*nn_+i] );
+      conjugate( v_.get()[i*nn_+i] );
    }
 
    return *this;
@@ -2057,7 +2057,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::scale( const Ot
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         v_[i*nn_+j] *= scalar;
+         v_.get()[i*nn_+j] *= scalar;
 
    return *this;
 }
@@ -2585,11 +2585,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         v_[i*nn_+j    ] = (~rhs)(i,j    );
-         v_[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
+         v_.get()[i*nn_+j    ] = (~rhs)(i,j    );
+         v_.get()[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
       }
       if( jpos < n_ ) {
-         v_[i*nn_+jpos] = (~rhs)(i,jpos);
+         v_.get()[i*nn_+jpos] = (~rhs)(i,jpos);
       }
    }
 }
@@ -2636,7 +2636,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
             stream( i, j, (~rhs).load(i,j) );
          }
          for( ; remainder && j<n_; ++j ) {
-            v_[i*nn_+j] = (~rhs)(i,j);
+            v_.get()[i*nn_+j] = (~rhs)(i,j);
          }
       }
    }
@@ -2657,7 +2657,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
             store( i, j, it.load() );
          }
          for( ; remainder && j<n_; ++j, ++it ) {
-            v_[i*nn_+j] = *it;
+            v_.get()[i*nn_+j] = *it;
          }
       }
    }
@@ -2696,7 +2696,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,!SO>& rhs 
          const size_t jend( min( n_, jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               v_[i*nn_+j] = (~rhs)(i,j);
+               v_.get()[i*nn_+j] = (~rhs)(i,j);
             }
          }
       }
@@ -2728,7 +2728,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,SO>& rhs 
 
    for( size_t i=0UL; i<m_; ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i*nn_+element->index()] = element->value();
+         v_.get()[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
 
@@ -2758,7 +2758,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,!SO>& rhs
 
    for( size_t j=0UL; j<n_; ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()*nn_+j] = element->value();
+         v_.get()[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
 
@@ -2789,7 +2789,7 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[i*nn_+i] += (~rhs)(i,i);
+         v_.get()[i*nn_+i] += (~rhs)(i,i);
       }
       else
       {
@@ -2804,11 +2804,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
          size_t j( jbegin );
 
          for( ; (j+2UL) <= jend; j+=2UL ) {
-            v_[i*nn_+j    ] += (~rhs)(i,j    );
-            v_[i*nn_+j+1UL] += (~rhs)(i,j+1UL);
+            v_.get()[i*nn_+j    ] += (~rhs)(i,j    );
+            v_.get()[i*nn_+j+1UL] += (~rhs)(i,j+1UL);
          }
          if( j < jend ) {
-            v_[i*nn_+j] += (~rhs)(i,j);
+            v_.get()[i*nn_+j] += (~rhs)(i,j);
          }
       }
    }
@@ -2869,7 +2869,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
          store( i, j, load(i,j) + it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
-         v_[i*nn_+j] += *it;
+         v_.get()[i*nn_+j] += *it;
       }
    }
 }
@@ -2919,7 +2919,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,!SO>& r
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[i*nn_+j] += (~rhs)(i,j);
+               v_.get()[i*nn_+j] += (~rhs)(i,j);
             }
          }
       }
@@ -2951,7 +2951,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,SO>& r
 
    for( size_t i=0UL; i<m_; ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i*nn_+element->index()] += element->value();
+         v_.get()[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
 
@@ -2981,7 +2981,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,!SO>& 
 
    for( size_t j=0UL; j<n_; ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()*nn_+j] += element->value();
+         v_.get()[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
 
@@ -3012,7 +3012,7 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[i*nn_+i] -= (~rhs)(i,i);
+         v_.get()[i*nn_+i] -= (~rhs)(i,i);
       }
       else
       {
@@ -3027,11 +3027,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
          size_t j( jbegin );
 
          for( ; (j+2UL) <= jend; j+=2UL ) {
-            v_[i*nn_+j    ] -= (~rhs)(i,j    );
-            v_[i*nn_+j+1UL] -= (~rhs)(i,j+1UL);
+            v_.get()[i*nn_+j    ] -= (~rhs)(i,j    );
+            v_.get()[i*nn_+j+1UL] -= (~rhs)(i,j+1UL);
          }
          if( j < jend ) {
-            v_[i*nn_+j] -= (~rhs)(i,j);
+            v_.get()[i*nn_+j] -= (~rhs)(i,j);
          }
       }
    }
@@ -3092,7 +3092,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
          store( i, j, load(i,j) - it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
-         v_[i*nn_+j] -= *it;
+         v_.get()[i*nn_+j] -= *it;
       }
    }
 }
@@ -3142,7 +3142,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,!SO>& r
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[i*nn_+j] -= (~rhs)(i,j);
+               v_.get()[i*nn_+j] -= (~rhs)(i,j);
             }
          }
       }
@@ -3174,7 +3174,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,SO>& r
 
    for( size_t i=0UL; i<m_; ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i*nn_+element->index()] -= element->value();
+         v_.get()[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
 
@@ -3204,7 +3204,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
 
    for( size_t j=0UL; j<n_; ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()*nn_+j] -= element->value();
+         v_.get()[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
 
@@ -3499,12 +3499,12 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                     //!< The current number of rows of the matrix.
-   size_t mm_;                    //!< The number of elements between two columns.
-   size_t n_;                     //!< The current number of columns of the matrix.
-   boost::shared_array<Type> v_;  //!< The dynamically allocated matrix elements.
-                                  /*!< Access to the matrix elements is gained via the function
-                                       call operator. */
+   size_t m_;                 //!< The current number of rows of the matrix.
+   size_t mm_;                //!< The number of elements between two columns.
+   size_t n_;                 //!< The current number of columns of the matrix.
+   std::shared_ptr<Type> v_;  //!< The dynamically allocated matrix elements.
+                              /*!< Access to the matrix elements is gained via the function
+                                   call operator. */
    //@}
    //**********************************************************************************************
 
@@ -3638,7 +3638,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
-            v_[i+j*mm_] = Type();
+            v_.get()[i+j*mm_] = Type();
       }
    }
 }
@@ -3743,7 +3743,7 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
-            v_[i+j*mm_] = Type();
+            v_.get()[i+j*mm_] = Type();
       }
    }
 }
@@ -3825,7 +3825,7 @@ inline typename CustomMatrix<Type,AF,PF,true>::Reference
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
-   return v_[i+j*mm_];
+   return v_.get()[i+j*mm_];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3850,7 +3850,7 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
-   return v_[i+j*mm_];
+   return v_.get()[i+j*mm_];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4150,7 +4150,7 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::operator=( 
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*mm_] = rhs;
+         v_.get()[i+j*mm_] = rhs;
 
    return *this;
 }
@@ -4202,11 +4202,11 @@ inline CustomMatrix<Type,AF,PF,true>&
    for( const auto& rowList : list ) {
       size_t j( 0UL );
       for( const auto& element : rowList ) {
-         v_[i+j*mm_] = element;
+         v_.get()[i+j*mm_] = element;
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*mm_] = Type();
+         v_.get()[i+j*mm_] = Type();
       }
       ++i;
    }
@@ -4262,7 +4262,7 @@ inline CustomMatrix<Type,AF,PF,true>&
 
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
-         v_[i+j*mm_] = array[i][j];
+         v_.get()[i+j*mm_] = array[i][j];
 
    return *this;
 }
@@ -4644,7 +4644,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros() const
 
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         if( !isDefault( v_[i+j*mm_] ) )
+         if( !isDefault( v_.get()[i+j*mm_] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -4671,7 +4671,7 @@ inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros( size_t j ) const
    size_t nonzeros( 0UL );
 
    for( size_t i=j*mm_; i<iend; ++i )
-      if( !isDefault( v_[i] ) )
+      if( !isDefault( v_.get()[i] ) )
          ++nonzeros;
 
    return nonzeros;
@@ -4695,7 +4695,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset()
 
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         clear( v_[i+j*mm_] );
+         clear( v_.get()[i+j*mm_] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4720,7 +4720,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( size_t j )
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    for( size_t i=0UL; i<m_; ++i )
-      clear( v_[i+j*mm_] );
+      clear( v_.get()[i+j*mm_] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4801,7 +4801,7 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::transpose()
 
    for( size_t j=1UL; j<n_; ++j )
       for( size_t i=0UL; i<j; ++i )
-         swap( v_[i+j*mm_], v_[j+i*mm_] );
+         swap( v_.get()[i+j*mm_], v_.get()[j+i*mm_] );
 
    return *this;
 }
@@ -4829,9 +4829,9 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::ctranspose(
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<j; ++i ) {
-         cswap( v_[i+j*mm_], v_[j+i*mm_] );
+         cswap( v_.get()[i+j*mm_], v_.get()[j+i*mm_] );
       }
-      conjugate( v_[j+j*mm_] );
+      conjugate( v_.get()[j+j*mm_] );
    }
 
    return *this;
@@ -4855,7 +4855,7 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( cons
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*mm_] *= scalar;
+         v_.get()[i+j*mm_] *= scalar;
 
    return *this;
 }
@@ -5392,11 +5392,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         v_[i    +j*mm_] = (~rhs)(i    ,j);
-         v_[i+1UL+j*mm_] = (~rhs)(i+1UL,j);
+         v_.get()[i    +j*mm_] = (~rhs)(i    ,j);
+         v_.get()[i+1UL+j*mm_] = (~rhs)(i+1UL,j);
       }
       if( ipos < m_ ) {
-         v_[ipos+j*mm_] = (~rhs)(ipos,j);
+         v_.get()[ipos+j*mm_] = (~rhs)(ipos,j);
       }
    }
 }
@@ -5444,7 +5444,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
             stream( i, j, (~rhs).load(i,j) );
          }
          for( ; remainder && i<m_; ++i ) {
-            v_[i+j*mm_] = (~rhs)(i,j);
+            v_.get()[i+j*mm_] = (~rhs)(i,j);
          }
       }
    }
@@ -5465,7 +5465,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
             store( i, j, it.load() );
          }
          for( ; remainder && i<m_; ++i, ++it ) {
-            v_[i+j*mm_] = *it;
+            v_.get()[i+j*mm_] = *it;
          }
       }
    }
@@ -5505,7 +5505,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,false>& 
          const size_t iend( min( m_, ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               v_[i+j*mm_] = (~rhs)(i,j);
+               v_.get()[i+j*mm_] = (~rhs)(i,j);
             }
          }
       }
@@ -5538,7 +5538,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,true>& 
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()+j*mm_] = element->value();
+         v_.get()[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5569,7 +5569,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,false>&
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i+element->index()*mm_] = element->value();
+         v_.get()[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5601,7 +5601,7 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[j+j*mm_] += (~rhs)(j,j);
+         v_.get()[j+j*mm_] += (~rhs)(j,j);
       }
       else
       {
@@ -5616,11 +5616,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
          size_t i( ibegin );
 
          for( ; (i+2UL) <= iend; i+=2UL ) {
-            v_[i    +j*mm_] += (~rhs)(i    ,j);
-            v_[i+1UL+j*mm_] += (~rhs)(i+1UL,j);
+            v_.get()[i    +j*mm_] += (~rhs)(i    ,j);
+            v_.get()[i+1UL+j*mm_] += (~rhs)(i+1UL,j);
          }
          if( i < iend ) {
-            v_[i+j*mm_] += (~rhs)(i,j);
+            v_.get()[i+j*mm_] += (~rhs)(i,j);
          }
       }
    }
@@ -5682,7 +5682,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
          store( i, j, load(i,j) + it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
-         v_[i+j*mm_] += *it;
+         v_.get()[i+j*mm_] += *it;
       }
    }
 }
@@ -5733,7 +5733,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,false
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             for( size_t i=ibegin; i<iend; ++i ) {
-               v_[i+j*mm_] += (~rhs)(i,j);
+               v_.get()[i+j*mm_] += (~rhs)(i,j);
             }
          }
       }
@@ -5766,7 +5766,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,true
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()+j*mm_] += element->value();
+         v_.get()[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5797,7 +5797,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,fals
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i+element->index()*mm_] += element->value();
+         v_.get()[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5829,7 +5829,7 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[j+j*mm_] -= (~rhs)(j,j);
+         v_.get()[j+j*mm_] -= (~rhs)(j,j);
       }
       else
       {
@@ -5844,11 +5844,11 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
          size_t i( ibegin );
 
          for( ; (i+2UL) <= iend; i+=2UL ) {
-            v_[i  +j*mm_] -= (~rhs)(i  ,j);
-            v_[i+1+j*mm_] -= (~rhs)(i+1,j);
+            v_.get()[i  +j*mm_] -= (~rhs)(i  ,j);
+            v_.get()[i+1+j*mm_] -= (~rhs)(i+1,j);
          }
          if( i < iend ) {
-            v_[i+j*mm_] -= (~rhs)(i,j);
+            v_.get()[i+j*mm_] -= (~rhs)(i,j);
          }
       }
    }
@@ -5911,7 +5911,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
          store( i, j, load(i,j) - it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
-         v_[i+j*mm_] -= *it;
+         v_.get()[i+j*mm_] -= *it;
       }
    }
 }
@@ -5962,7 +5962,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,false
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             for( size_t i=ibegin; i<iend; ++i ) {
-               v_[i+j*mm_] -= (~rhs)(i,j);
+               v_.get()[i+j*mm_] -= (~rhs)(i,j);
             }
          }
       }
@@ -5995,7 +5995,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,true
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         v_[element->index()+j*mm_] -= element->value();
+         v_.get()[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6026,7 +6026,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i+element->index()*mm_] -= element->value();
+         v_.get()[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
