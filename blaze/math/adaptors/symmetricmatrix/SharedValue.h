@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -107,7 +107,7 @@ class SharedValue
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   mutable boost::shared_ptr<Type> value_;  //!< The shared value.
+   mutable std::shared_ptr<Type> value_;  //!< The shared value.
    //@}
    //**********************************************************************************************
 
