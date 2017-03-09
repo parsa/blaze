@@ -945,8 +945,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,SO>::Reference
    HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) noexcept
 {
-   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i*NN+j];
 }
 //*************************************************************************************************
@@ -969,8 +969,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,SO>::ConstReference
    HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const noexcept
 {
-   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i*NN+j];
 }
 //*************************************************************************************************
@@ -3888,8 +3888,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,true>::Reference
    HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) noexcept
 {
-   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i+j*MM];
 }
 /*! \endcond */
@@ -3913,8 +3913,8 @@ template< typename Type  // Data type of the matrix
 inline typename HybridMatrix<Type,M,N,true>::ConstReference
    HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const noexcept
 {
-   BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
+   BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
    return v_[i+j*MM];
 }
 /*! \endcond */
