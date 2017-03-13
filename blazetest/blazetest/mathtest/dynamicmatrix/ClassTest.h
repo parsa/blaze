@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <boost/container/static_vector.hpp>
-#include <boost/container/vector.hpp>
+#include <vector>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -299,7 +299,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const RowMajorMatrixType init( 7UL, 5UL );
-      const boost::container::static_vector<RowMajorMatrixType,7UL> mats( 7UL, init );
+      const std::array<RowMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -325,7 +325,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const ColumnMajorMatrixType init( 7UL, 5UL );
-      const boost::container::static_vector<ColumnMajorMatrixType,7UL> mats( 7UL, init );
+      const std::array<ColumnMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -356,7 +356,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const RowMajorMatrixType init( 7UL, 5UL );
-      const boost::container::vector<RowMajorMatrixType> mats( 7UL, init );
+      const std::vector<RowMajorMatrixType> mats( 7UL, init );
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -382,7 +382,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const ColumnMajorMatrixType init( 7UL, 5UL );
-      const boost::container::vector<ColumnMajorMatrixType> mats( 7UL, init );
+      const std::vector<ColumnMajorMatrixType> mats( 7UL, init );
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {

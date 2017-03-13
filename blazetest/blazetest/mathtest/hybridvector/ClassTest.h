@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <boost/container/static_vector.hpp>
-#include <boost/container/vector.hpp>
+#include <vector>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -247,7 +247,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const VectorType init( 7UL );
-      const boost::container::static_vector<VectorType,7UL> vecs( 7UL, init );
+      const std::array<VectorType,7UL> vecs{ init, init, init, init, init, init, init };
 
       for( size_t i=0; i<vecs.size(); ++i )
       {
@@ -273,7 +273,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       const VectorType init( 7UL );
-      const boost::container::vector<VectorType,AllocatorType> vecs( 7UL, init );
+      const std::vector<VectorType,AllocatorType> vecs( 7UL, init );
 
       for( size_t i=0; i<vecs.size(); ++i )
       {
