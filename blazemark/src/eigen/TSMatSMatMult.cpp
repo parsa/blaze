@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <Eigen/Sparse>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/init/SparseMatrix.h>
 #include <blazemark/eigen/TSMatSMatMult.h>
@@ -70,7 +70,7 @@ namespace eigen {
 double tsmatsmatmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
    using ::Eigen::RowMajor;
    using ::Eigen::ColMajor;
 

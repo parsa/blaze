@@ -104,6 +104,6 @@ double dvecdvecinner( size_t N, size_t steps )
 }
 //*************************************************************************************************
 
-} // namespace boost
+} // namespace eigen
 
 } // namespace blazemark

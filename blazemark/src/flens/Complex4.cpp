@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <flens/flens.cxx>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/flens/Complex4.h>
 #include <blazemark/flens/init/DenseVector.h>
@@ -70,7 +70,7 @@ namespace flens {
 double complex4( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
 
    typedef ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::ColMajor> >  ColGeMatrix;
    typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;

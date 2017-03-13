@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <flens/flens.cxx>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/flens/init/DenseVector.h>
 #include <blazemark/flens/init/GeCRSMatrix.h>
@@ -71,7 +71,7 @@ namespace flens {
 double smatdvecmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
 
    typedef ::flens::IndexBaseZero<int>                                IndexBase;
    typedef ::flens::GeCRSMatrix< ::flens::CRS<element_t,IndexBase> >  RowGeCRSMatrix;

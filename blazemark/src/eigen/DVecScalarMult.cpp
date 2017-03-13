@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <Eigen/Dense>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/DVecScalarMult.h>
 #include <blazemark/eigen/init/Matrix.h>
@@ -69,7 +69,7 @@ namespace eigen {
 double dvecscalarmult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
    using ::Eigen::Dynamic;
 
    ::blaze::setSeed( seed );

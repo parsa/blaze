@@ -38,9 +38,9 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/CG.h>
 #include <blazemark/eigen/init/Matrix.h>
@@ -71,7 +71,7 @@ namespace eigen {
 double cg( size_t N, size_t steps, size_t iterations )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::RowMajor;
 

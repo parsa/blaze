@@ -38,7 +38,6 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <flens/flens.cxx>
 #include <blaze/util/Timing.h>
 #include <blazemark/flens/init/DenseVector.h>
@@ -69,7 +68,6 @@ namespace flens {
 double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
 
    typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;
 

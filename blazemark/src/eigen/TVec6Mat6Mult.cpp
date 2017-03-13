@@ -39,7 +39,6 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/cast.hpp>
 #include <Eigen/Dense>
 #include <blaze/util/Timing.h>
 #include <blazemark/eigen/init/Matrix.h>
@@ -70,7 +69,6 @@ namespace eigen {
 double tvec6mat6mult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
    using ::Eigen::Dynamic;
    using ::Eigen::RowMajor;
 

@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <boost/cast.hpp>
 #include <flens/flens.cxx>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/flens/Daxpy.h>
 #include <blazemark/flens/init/DenseVector.h>
@@ -68,7 +68,7 @@ namespace flens {
 double daxpy( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
 
    typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;
 

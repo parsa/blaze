@@ -39,7 +39,7 @@
 
 #include <iostream>
 #include <blitz/array.h>
-#include <boost/cast.hpp>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blitz/DVecDVecMult.h>
 #include <blazemark/blitz/init/Array.h>
@@ -69,7 +69,7 @@ namespace blitz {
 double dvecdvecmult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
-   using ::boost::numeric_cast;
+   using ::blaze::numeric_cast;
 
    ::blaze::setSeed( seed );
 
