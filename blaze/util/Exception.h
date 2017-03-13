@@ -380,4 +380,100 @@
 #endif
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\def BLAZE_THROW_OVERFLOW_ERROR
+// \brief Macro for the emission of a \a std::overflow_error exception.
+// \ingroup util
+//
+// This macro encapsulates the default way of \b Blaze to throw a \a std::overflow_error exception.
+// Also, since it may be desirable to replace the type of exception by a custom exception type
+// this macro provides an opportunity to customize the behavior.
+//
+// The macro excepts a single argument, which specifies the message of the exception:
+
+   \code
+   #define BLAZE_THROW_OVERFLOW_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::overflow_error( MESSAGE ) )
+   \endcode
+
+// In order to customize the type of exception all that needs to be done is to define the macro
+// prior to including any \a Blaze header file. This will override the \b Blaze default behavior.
+// The following example demonstrates this by replacing \a std::overflow_error by a custom
+// exception type:
+
+   \code
+   class OverflowError
+   {
+    public:
+      OverflowError();
+      explicit OverflowError( const std::string& message );
+      // ...
+   };
+
+   #define BLAZE_THROW_OVERFLOW_ERROR( MESSAGE ) \
+      throw OverflowError( MESSAGE )
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// \note It is recommended to define the macro such that a subsequent semicolon is required!
+//
+// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
+// conditions and environments. However, the customization of the type of exception via this
+// macro may have an effect on the library. Thus be advised to use the macro with due care!
+*/
+#ifndef BLAZE_THROW_OVERFLOW_ERROR
+#  define BLAZE_THROW_OVERFLOW_ERROR( MESSAGE ) BLAZE_THROW( std::overflow_error( MESSAGE ) )
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\def BLAZE_THROW_UNDERFLOW_ERROR
+// \brief Macro for the emission of a \a std::underflow_error exception.
+// \ingroup util
+//
+// This macro encapsulates the default way of \b Blaze to throw a \a std::underflow_error
+// exception. Also, since it may be desirable to replace the type of exception by a custom
+// exception type this macro provides an opportunity to customize the behavior.
+//
+// The macro excepts a single argument, which specifies the message of the exception:
+
+   \code
+   #define BLAZE_THROW_UNDERFLOW_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::underflow_error( MESSAGE ) )
+   \endcode
+
+// In order to customize the type of exception all that needs to be done is to define the macro
+// prior to including any \a Blaze header file. This will override the \b Blaze default behavior.
+// The following example demonstrates this by replacing \a std::underflow_error by a custom
+// exception type:
+
+   \code
+   class UnderflowError
+   {
+    public:
+      UnderflowError();
+      explicit UnderflowError( const std::string& message );
+      // ...
+   };
+
+   #define BLAZE_THROW_UNDERFLOW_ERROR( MESSAGE ) \
+      throw UnderflowError( MESSAGE )
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// \note It is recommended to define the macro such that a subsequent semicolon is required!
+//
+// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
+// conditions and environments. However, the customization of the type of exception via this
+// macro may have an effect on the library. Thus be advised to use the macro with due care!
+*/
+#ifndef BLAZE_THROW_UNDERFLOW_ERROR
+#  define BLAZE_THROW_UNDERFLOW_ERROR( MESSAGE ) BLAZE_THROW( std::underflow_error( MESSAGE ) )
+#endif
+//*************************************************************************************************
+
 #endif
