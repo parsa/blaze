@@ -54,6 +54,7 @@
 #include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blaze/SVecDVecOuter.h>
 #include <blazemark/boost/SVecDVecOuter.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Types.h>
 #include <blazemark/util/Benchmarks.h>
@@ -218,6 +219,7 @@ void svecdvecouter( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -234,6 +236,7 @@ void svecdvecouter( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
    for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
       std::cout << *run;

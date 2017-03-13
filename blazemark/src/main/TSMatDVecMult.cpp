@@ -57,6 +57,7 @@
 #include <blazemark/flens/TSMatDVecMult.h>
 #include <blazemark/gmm/TSMatDVecMult.h>
 #include <blazemark/mtl/TSMatDVecMult.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/FLENS.h>
@@ -223,6 +224,7 @@ void tsmatdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -239,6 +241,7 @@ void tsmatdvecmult( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {

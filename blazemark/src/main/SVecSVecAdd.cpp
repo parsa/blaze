@@ -52,6 +52,7 @@
 #include <blazemark/blaze/SVecSVecAdd.h>
 #include <blazemark/boost/SVecSVecAdd.h>
 #include <blazemark/gmm/SVecSVecAdd.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/Types.h>
@@ -212,6 +213,7 @@ void svecsvecadd( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -228,6 +230,7 @@ void svecsvecadd( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {

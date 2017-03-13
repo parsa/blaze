@@ -53,6 +53,7 @@
 #include <blazemark/boost/TSMatSMatAdd.h>
 #include <blazemark/gmm/TSMatSMatAdd.h>
 #include <blazemark/mtl/TSMatSMatAdd.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/MTL.h>
@@ -217,6 +218,7 @@ void tsmatsmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -233,6 +235,7 @@ void tsmatsmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {

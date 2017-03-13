@@ -54,6 +54,7 @@
 #include <blazemark/blaze/init/DynamicMatrix.h>
 #include <blazemark/boost/DMatSMatAdd.h>
 #include <blazemark/mtl/DMatSMatAdd.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/MTL.h>
 #include <blazemark/system/Types.h>
@@ -216,6 +217,7 @@ void dmatsmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -232,6 +234,7 @@ void dmatsmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_MTL_MODE
    if( benchmarks.runMTL ) {

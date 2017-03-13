@@ -54,6 +54,7 @@
 #include <blazemark/blaze/TDVecTSMatMult.h>
 #include <blazemark/boost/TDVecTSMatMult.h>
 #include <blazemark/eigen/TDVecTSMatMult.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/Types.h>
@@ -217,6 +218,7 @@ void tdvectsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -233,6 +235,7 @@ void tdvectsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_EIGEN_MODE
    if( benchmarks.runEigen ) {

@@ -55,6 +55,7 @@
 #include <blazemark/boost/TSMatDMatMult.h>
 #include <blazemark/eigen/TSMatDMatMult.h>
 #include <blazemark/mtl/TSMatDMatMult.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/MTL.h>
@@ -220,6 +221,7 @@ void tsmatdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -236,6 +238,7 @@ void tsmatdmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_MTL_MODE
    if( benchmarks.runMTL ) {

@@ -54,6 +54,7 @@
 #include <blazemark/eigen/SMatScalarMult.h>
 #include <blazemark/gmm/SMatScalarMult.h>
 #include <blazemark/mtl/SMatScalarMult.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/Eigen.h>
 #include <blazemark/system/GMM.h>
@@ -216,6 +217,7 @@ void smatscalarmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -232,6 +234,7 @@ void smatscalarmult( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {

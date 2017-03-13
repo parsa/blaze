@@ -52,6 +52,7 @@
 #include <blazemark/blaze/SVecScalarMult.h>
 #include <blazemark/boost/SVecScalarMult.h>
 #include <blazemark/gmm/SVecScalarMult.h>
+#include <blazemark/system/Boost.h>
 #include <blazemark/system/Config.h>
 #include <blazemark/system/GMM.h>
 #include <blazemark/system/Types.h>
@@ -211,6 +212,7 @@ void svecscalarmult( std::vector<Run>& runs, Benchmarks benchmarks )
       }
    }
 
+#if BLAZEMARK_BOOST_MODE
    if( benchmarks.runBoost ) {
       std::vector<Run>::iterator run=runs.begin();
       while( run != runs.end() ) {
@@ -227,6 +229,7 @@ void svecscalarmult( std::vector<Run>& runs, Benchmarks benchmarks )
          }
       }
    }
+#endif
 
 #if BLAZEMARK_GMM_MODE
    if( benchmarks.runGMM ) {
