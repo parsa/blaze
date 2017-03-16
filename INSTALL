@@ -9,20 +9,21 @@ preceded only by a short summary of the requirements.
 Requirements
 ************
 
-In order for Blaze to work properly, the Boost library must be installed on the system. It is
-recommended to use the newest Boost library available, but Blaze requires at minimum the Boost
-version 1.54.0. If you don't have Boost installed on your system, you can download it for free
-from 'www.boost.org'.
-
-Additionally, for maximum performance Blaze expects you to have a BLAS library installed (Intel
+For maximum performance the Blaze library expects you to have a BLAS library installed (Intel
 MKL, ACML, Atlas, Goto, ...). If you don't have a BLAS library installed on your system, Blaze
 will still work and will not be reduced in functionality, but performance may be limited. Thus
 it is strongly recommended to install a BLAS library.
 
-Furthermore, for computing the determinant of a dense matrix and for the dense matrix inversion
-Blaze requires LAPACK. When either of these features is used it is necessary to link the LAPACK
-library to the final executable. If no LAPACK library is available the use of these features will
-result in a linker error.
+Additionally, for computing the determinant of a dense matrix, for the decomposition of dense
+matrices, for the dense matrix inversion, and for the computation of eigenvalues and singular
+values Blaze requires LAPACK. When either of these features is used it is necessary to link
+the LAPACK library to the final executable. If no LAPACK library is available the use of these
+features will result in a linker error.
+
+Furthermore, it is possible to use Boost threads to run numeric operations in parallel. In this
+case the Boost library is required to be installed on your system. It is recommended to use the
+newest Boost library available, but Blaze requires at minimum the Boost version 1.54.0. If you
+don't have Boost installed on your system, you can download it for free from 'www.boost.org'.
 
 
 Step 1: Installation
