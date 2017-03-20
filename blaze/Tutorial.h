@@ -142,12 +142,7 @@
 // \n \section requirements Requirements
 // <hr>
 //
-// In order for \b Blaze to work properly, the Boost library must be installed on the system. It
-// is recommended to use the newest Boost library available, but \b Blaze requires at minimum the
-// Boost version 1.54.0. If you don't have Boost installed on your system, you can download it for
-// free from 'http://www.boost.org'.
-//
-// Additionally, for maximum performance \b Blaze expects you to have a BLAS library installed
+// For maximum performance the \b Blaze library expects you to have a BLAS library installed
 // (<a href="http://software.intel.com/en-us/articles/intel-mkl/">Intel MKL</a>,
 // <a href="http://developer.amd.com/libraries/acml/">ACML</a>,
 // <a href="http://math-atlas.sourceforge.net">Atlas</a>,
@@ -156,10 +151,17 @@
 // in functionality, but performance may be limited. Thus it is strongly recommended to install a
 // BLAS library.
 //
-// Furthermore, for computing the determinant of a dense matrix and for the dense matrix inversion
-// \b Blaze requires <a href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a>. When either of
-// these features is used it is necessary to link the LAPACK library to the final executable. If
-// no LAPACK library is available the use of these features will result in a linker error.
+// Additionally, for computing the determinant of a dense matrix, for the decomposition of dense
+// matrices, for the dense matrix inversion, and for the computation of eigenvalues and singular
+// values Blaze requires <a href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a>. When either
+// of these features is used it is necessary to link the LAPACK library to the final executable.
+// If no LAPACK library is available the use of these features will result in a linker error.
+//
+// Furthermore, it is possible to use Boost threads to run numeric operations in parallel. In this
+// case the Boost library is required to be installed on your system. It is recommended to use the
+// newest Boost library available, but Blaze requires at minimum the Boost version 1.54.0. If you
+// don't have Boost installed on your system, you can download it for free from
+// <a href="http://www.boost.org">www.boost.org</a>.
 //
 //
 // \n \section step_1_installation Step 1: Installation
