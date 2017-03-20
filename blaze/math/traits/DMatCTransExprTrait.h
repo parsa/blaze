@@ -79,24 +79,24 @@ struct DMatCTransExprTrait
  private:
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Failure { typedef INVALID_TYPE  Type; };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-              , DMatTransExprTrait< DMatForEachExprTrait_<MT,Conj> >
-              , Failure >  Tmp;
+   using Tmp = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                  , DMatTransExprTrait< DMatForEachExprTrait_<MT,Conj> >
+                  , Failure >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                       , DMatCTransExprTrait< Decay_<MT> >
-                       , Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                            , DMatCTransExprTrait< Decay_<MT> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -77,18 +77,18 @@ struct DMatForEachExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-             , DMatForEachExpr<MT,OP,false>
-             , INVALID_TYPE >  Tmp;
+   using Tmp = If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                 , DMatForEachExpr<MT,OP,false>
+                 , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                       , DMatForEachExprTrait< Decay_<MT>, OP >
-                       , Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                            , DMatForEachExprTrait< Decay_<MT>, OP >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

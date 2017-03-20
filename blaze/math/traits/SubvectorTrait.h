@@ -94,7 +94,7 @@ namespace blaze {
    template< typename T1, bool TF >
    struct SubvectorTrait< DynamicVector<T1,TF> >
    {
-      typedef DynamicVector<T1,TF>  Type;
+      using Type = DynamicVector<T1,TF>;
    };
    \endcode
 
@@ -108,12 +108,12 @@ namespace blaze {
    using blaze::rowVector;
 
    // Definition of the result type of a dynamic column vector
-   typedef blaze::DynamicVector<int,columnVector>      VectorType1;
-   typedef typename SubvectorTrait<VectorType1>::Type  ResultType1;
+   using VectorType1 = blaze::DynamicVector<int,columnVector>;
+   using ResultType1 = typename SubvectorTrait<VectorType1>::Type;
 
    // Definition of the result type of the static row vector
-   typedef blaze::StaticVector<int,3UL,rowVector>      VectorType2;
-   typedef typename SubvectorTrait<VectorType2>::Type  ResultType2;
+   using VectorType2 = blaze::StaticVector<int,3UL,rowVector>;
+   using ResultType2 = typename SubvectorTrait<VectorType2>::Type;
    \endcode
 */
 template< typename VT >  // Type of the vector

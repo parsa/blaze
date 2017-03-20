@@ -119,7 +119,7 @@ namespace blaze {
    template< typename T1, typename T2 >
    struct SubTrait< DynamicVector<T1,columnVector>, DynamicVector<T2,columnVector> >
    {
-      typedef DynamicVector< typename SubTrait<T1,T2>::Type, columnVector >  Type;
+      using Type = DynamicVector< typename SubTrait<T1,T2>::Type, columnVector >;
    };
    \endcode
 

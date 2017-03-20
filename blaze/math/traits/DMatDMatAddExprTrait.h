@@ -78,20 +78,20 @@ struct DMatDMatAddExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                  , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-             , DMatDMatAddExpr<MT1,MT2,false>
-             , INVALID_TYPE >  Tmp;
+   using Tmp = If< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
+                      , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
+                 , DMatDMatAddExpr<MT1,MT2,false>
+                 , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
-                           , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
-                       , DMatDMatAddExprTrait< Decay_<MT1>, Decay_<MT2> >
-                       , Tmp >::Type  Type;
+   using Type = typename If_< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                                , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                            , DMatDMatAddExprTrait< Decay_<MT1>, Decay_<MT2> >
+                            , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

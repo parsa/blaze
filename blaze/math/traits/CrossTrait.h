@@ -75,7 +75,9 @@ namespace blaze {
 //
 // <ul>
 //    <li>blaze::StaticVector</li>
+//    <li>blaze::HybridVector</li>
 //    <li>blaze::DynamicVector</li>
+//    <li>blaze::CustomVector</li>
 //    <li>blaze::CompressedVector</li>
 // </ul>
 //
@@ -90,8 +92,8 @@ namespace blaze {
    template< typename T1, typename T2 >
    struct CrossTrait< StaticVector<T1,3UL,false>, StaticVector<T2,3UL,false> >
    {
-      typedef StaticVector< typename SubTrait< typename MultTrait<T1,T2>::Type
-                                             , typename MultTrait<T1,T2>::Type >::Type, 3UL, false >  Type;
+      using Type = StaticVector< typename SubTrait< typename MultTrait<T1,T2>::Type
+                                                  , typename MultTrait<T1,T2>::Type >::Type, 3UL, false >;
    };
    \endcode
 

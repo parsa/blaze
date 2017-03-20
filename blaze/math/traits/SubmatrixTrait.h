@@ -92,7 +92,7 @@ namespace blaze {
    template< typename T1, bool SO >
    struct SubmatrixTrait< DynamicMatrix<T1,SO> >
    {
-      typedef DynamicMatrix<T1,SO>  Type;
+      using Type = DynamicMatrix<T1,SO>;
    };
    \endcode
 
@@ -106,12 +106,12 @@ namespace blaze {
    using blaze::columnMajor;
 
    // Definition of the result type of a row-major dynamic matrix
-   typedef blaze::DynamicMatrix<int,rowMajor>          MatrixType1;
-   typedef typename SubmatrixTrait<MatrixType1>::Type  ResultType1;
+   using MatrixType1 = blaze::DynamicMatrix<int,rowMajor>;
+   using ResultType1 = typename SubmatrixTrait<MatrixType1>::Type;
 
    // Definition of the result type of a column-major static matrix
-   typedef blaze::StaticMatrix<int,3UL,3UL,columnMajor>  MatrixType2;
-   typedef typename SubmatrixTrait<MatrixType2>::Type    ResultType2;
+   using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,columnMajor>;
+   using ResultType2 = typename SubmatrixTrait<MatrixType2>::Type;
    \endcode
 */
 template< typename MT >  // Type of the matrix
