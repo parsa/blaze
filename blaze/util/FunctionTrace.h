@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Debugging.h>
 #if BLAZE_USE_FUNCTION_TRACES
 #  include <blaze/util/functiontrace/FunctionTrace.h>
 #endif
