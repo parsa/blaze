@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecTransposer.h>
+#include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecTransExprTrait.h>
@@ -62,7 +63,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
@@ -92,7 +92,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
                     , private VecTransExpr
-                    , private If< IsComputation<VT>, Computation, EmptyType >::Type
+                    , private If< IsComputation<VT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************

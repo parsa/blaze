@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DVecTransposer.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SVecTransposer.h>
+#include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
@@ -67,7 +68,6 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -96,7 +96,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
                     , private VecTransExpr
-                    , private If< IsComputation<VT>, Computation, EmptyType >::Type
+                    , private If< IsComputation<VT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************

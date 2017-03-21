@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SMatTransposer.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -76,7 +77,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -108,7 +108,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
                     , private MatTransExpr
-                    , private If< IsComputation<MT>, Computation, EmptyType >::Type
+                    , private If< IsComputation<MT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************

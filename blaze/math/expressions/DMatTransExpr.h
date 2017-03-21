@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DMatTransposer.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatTransExpr.h>
+#include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
@@ -80,7 +81,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
-#include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -111,7 +111,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
                     , private MatTransExpr
-                    , private If< IsComputation<MT>, Computation, EmptyType >::Type
+                    , private If< IsComputation<MT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************
