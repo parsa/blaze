@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -74,7 +74,6 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
-#include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -105,7 +104,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatDeclSymExpr : public SparseMatrix< SMatDeclSymExpr<MT,SO>, SO >
                       , private DeclSymExpr
-                      , private If< IsComputation<MT>, Computation, EmptyType >::Type
+                      , private Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
