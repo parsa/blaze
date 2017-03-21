@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: alignedallocator memory typetraits valuetraits
+all: alignedallocator memory numericcast typetraits valuetraits
 
 essential: all
 
@@ -55,6 +55,11 @@ memory:
 	@echo "Building the memory tests..."
 	@$(MAKE) --no-print-directory -C ./memory $(MAKECMDGOALS)
 
+numericcast:
+	@echo
+	@echo "Building the numeric cast tests..."
+	@$(MAKE) --no-print-directory -C ./numericcast $(MAKECMDGOALS)
+
 typetraits:
 	@echo
 	@echo "Building the type traits tests..."
@@ -67,14 +72,21 @@ valuetraits:
 
 
 # Cleanup
+reset:
+	@$(MAKE) --no-print-directory -C ./alignedallocator reset
+	@$(MAKE) --no-print-directory -C ./memory reset
+	@$(MAKE) --no-print-directory -C ./numericcast reset
+	@$(MAKE) --no-print-directory -C ./typetraits reset
+	@$(MAKE) --no-print-directory -C ./valuetraits reset
+
 clean:
 	@$(MAKE) --no-print-directory -C ./alignedallocator clean
 	@$(MAKE) --no-print-directory -C ./memory clean
+	@$(MAKE) --no-print-directory -C ./numericcast clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./valuetraits clean
-	@$(RM) $(OBJ) $(DEP)
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean \
-        alignedallocator memory typetraits valuetraits
+.PHONY: default all essential single reset clean \
+        alignedallocator memory numericcast typetraits valuetraits

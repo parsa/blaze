@@ -529,6 +529,98 @@ matrixserializer:
 
 
 # Cleanup
+reset:
+	@$(MAKE) --no-print-directory -C ./functions reset
+	@$(MAKE) --no-print-directory -C ./simd reset
+	@$(MAKE) --no-print-directory -C ./blas reset
+	@$(MAKE) --no-print-directory -C ./lapack reset
+	@$(MAKE) --no-print-directory -C ./typetraits reset
+	@$(MAKE) --no-print-directory -C ./densevector reset
+	@$(MAKE) --no-print-directory -C ./sparsevector reset
+	@$(MAKE) --no-print-directory -C ./densematrix reset
+	@$(MAKE) --no-print-directory -C ./sparsematrix reset
+	@$(MAKE) --no-print-directory -C ./staticvector reset
+	@$(MAKE) --no-print-directory -C ./hybridvector reset
+	@$(MAKE) --no-print-directory -C ./dynamicvector reset
+	@$(MAKE) --no-print-directory -C ./customvector reset
+	@$(MAKE) --no-print-directory -C ./compressedvector reset
+	@$(MAKE) --no-print-directory -C ./staticmatrix reset
+	@$(MAKE) --no-print-directory -C ./hybridmatrix reset
+	@$(MAKE) --no-print-directory -C ./dynamicmatrix reset
+	@$(MAKE) --no-print-directory -C ./custommatrix reset
+	@$(MAKE) --no-print-directory -C ./compressedmatrix reset
+	@$(MAKE) --no-print-directory -C ./symmetricmatrix reset
+	@$(MAKE) --no-print-directory -C ./hermitianmatrix reset
+	@$(MAKE) --no-print-directory -C ./lowermatrix reset
+	@$(MAKE) --no-print-directory -C ./unilowermatrix reset
+	@$(MAKE) --no-print-directory -C ./strictlylowermatrix reset
+	@$(MAKE) --no-print-directory -C ./uppermatrix reset
+	@$(MAKE) --no-print-directory -C ./uniuppermatrix reset
+	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix reset
+	@$(MAKE) --no-print-directory -C ./diagonalmatrix reset
+	@$(MAKE) --no-print-directory -C ./subvector reset
+	@$(MAKE) --no-print-directory -C ./submatrix reset
+	@$(MAKE) --no-print-directory -C ./row reset
+	@$(MAKE) --no-print-directory -C ./column reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecadd reset
+	@$(MAKE) --no-print-directory -C ./dvecsvecadd reset
+	@$(MAKE) --no-print-directory -C ./svecdvecadd reset
+	@$(MAKE) --no-print-directory -C ./svecsvecadd reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecsub reset
+	@$(MAKE) --no-print-directory -C ./dvecsvecsub reset
+	@$(MAKE) --no-print-directory -C ./svecdvecsub reset
+	@$(MAKE) --no-print-directory -C ./svecsvecsub reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecmult reset
+	@$(MAKE) --no-print-directory -C ./dvecsvecmult reset
+	@$(MAKE) --no-print-directory -C ./svecdvecmult reset
+	@$(MAKE) --no-print-directory -C ./svecsvecmult reset
+	@$(MAKE) --no-print-directory -C ./dvecdveccross reset
+	@$(MAKE) --no-print-directory -C ./dvecsveccross reset
+	@$(MAKE) --no-print-directory -C ./svecdveccross reset
+	@$(MAKE) --no-print-directory -C ./svecsveccross reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecinner reset
+	@$(MAKE) --no-print-directory -C ./dvecsvecinner reset
+	@$(MAKE) --no-print-directory -C ./svecdvecinner reset
+	@$(MAKE) --no-print-directory -C ./svecsvecinner reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecouter reset
+	@$(MAKE) --no-print-directory -C ./dvecsvecouter reset
+	@$(MAKE) --no-print-directory -C ./svecdvecouter reset
+	@$(MAKE) --no-print-directory -C ./svecsvecouter reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecdiv reset
+	@$(MAKE) --no-print-directory -C ./svecdvecdiv reset
+	@$(MAKE) --no-print-directory -C ./dmatdvecmult reset
+	@$(MAKE) --no-print-directory -C ./dmatsvecmult reset
+	@$(MAKE) --no-print-directory -C ./smatdvecmult reset
+	@$(MAKE) --no-print-directory -C ./smatsvecmult reset
+	@$(MAKE) --no-print-directory -C ./tdvecdmatmult reset
+	@$(MAKE) --no-print-directory -C ./tsvecdmatmult reset
+	@$(MAKE) --no-print-directory -C ./tdvecsmatmult reset
+	@$(MAKE) --no-print-directory -C ./tsvecsmatmult reset
+	@$(MAKE) --no-print-directory -C ./dmatdmatadd reset
+	@$(MAKE) --no-print-directory -C ./dmatsmatadd reset
+	@$(MAKE) --no-print-directory -C ./smatdmatadd reset
+	@$(MAKE) --no-print-directory -C ./smatsmatadd reset
+	@$(MAKE) --no-print-directory -C ./dmatdmatsub reset
+	@$(MAKE) --no-print-directory -C ./dmatsmatsub reset
+	@$(MAKE) --no-print-directory -C ./smatdmatsub reset
+	@$(MAKE) --no-print-directory -C ./smatsmatsub reset
+	@$(MAKE) --no-print-directory -C ./dmatdmatmult reset
+	@$(MAKE) --no-print-directory -C ./dmatsmatmult reset
+	@$(MAKE) --no-print-directory -C ./smatdmatmult reset
+	@$(MAKE) --no-print-directory -C ./smatsmatmult reset
+	@$(MAKE) --no-print-directory -C ./determinant reset
+	@$(MAKE) --no-print-directory -C ./lu reset
+	@$(MAKE) --no-print-directory -C ./llh reset
+	@$(MAKE) --no-print-directory -C ./qr reset
+	@$(MAKE) --no-print-directory -C ./rq reset
+	@$(MAKE) --no-print-directory -C ./ql reset
+	@$(MAKE) --no-print-directory -C ./lq reset
+	@$(MAKE) --no-print-directory -C ./inversion reset
+	@$(MAKE) --no-print-directory -C ./eigen reset
+	@$(MAKE) --no-print-directory -C ./svd reset
+	@$(MAKE) --no-print-directory -C ./vectorserializer reset
+	@$(MAKE) --no-print-directory -C ./matrixserializer reset
+
 clean:
 	@$(MAKE) --no-print-directory -C ./functions clean
 	@$(MAKE) --no-print-directory -C ./simd clean
@@ -620,11 +712,10 @@ clean:
 	@$(MAKE) --no-print-directory -C ./svd clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
 	@$(MAKE) --no-print-directory -C ./matrixserializer clean
-	@$(RM) $(OBJ) $(DEP)
 
 
 # Setting the independent commands
-.PHONY: default all essential single noop clean \
+.PHONY: default all essential single noop reset clean \
         functions simd blas lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector compressedvector \

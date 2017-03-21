@@ -34,7 +34,9 @@
 
 # Including the compiler and library settings
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),reset)
 -include ../../Makeconfig
+endif
 endif
 
 
@@ -73,13 +75,17 @@ SubmatrixTest: SubmatrixTest.o
 
 
 # Cleanup
+reset:
+	@$(RM) $(OBJ) $(BIN)
 clean:
-	@$(RM) $(DEP) $(OBJ) $(BIN)
+	@$(RM) $(OBJ) $(BIN) $(DEP)
 
 
 # Makefile includes
+ifneq ($(MAKECMDGOALS),reset)
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEP)
+endif
 endif
 
 
@@ -89,4 +95,4 @@ endif
 
 
 # Setting the independent commands
-.PHONY: default all essential single noop clean
+.PHONY: default all essential single noop reset clean

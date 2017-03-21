@@ -228,15 +228,19 @@ utiltest:
 
 
 # Cleanup
+reset:
+	@echo "Cleaning up..."
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest reset
+	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest reset
+
 clean:
 	@echo "Cleaning up..."
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/mathtest clean
 	@\$(MAKE) --no-print-directory -C $INSTALL_PATH/src/utiltest clean
-	@\$(RM) bin/* *.o
 
 
 # Setting the independent commands
-.PHONY: default all essential single noop clean \
+.PHONY: default all essential single noop reset clean \
         mathtest utiltest
 EOF
 
