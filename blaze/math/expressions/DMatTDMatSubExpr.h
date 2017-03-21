@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -289,8 +290,8 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsOperation<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsOperation<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -401,7 +402,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -640,7 +641,7 @@ class DMatTDMatSubExpr : public DenseMatrix< DMatTDMatSubExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSubAssign( ~lhs, rhs.rhs_ );
       }
       else {

@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -269,7 +270,7 @@ class TSMatDMatSubExpr : public DenseMatrix< TSMatDMatSubExpr<MT1,MT2>, false >
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
       return ( lhs_.canAlias( alias ) ) ||
-             ( IsExpression<MT2>::value && rhs_.canAlias( alias ) );
+             ( IsOperation<MT2>::value && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

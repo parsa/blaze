@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -267,7 +268,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && lhs_.canAlias( alias ) ) ||
+      return ( IsOperation<MT1>::value && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
@@ -311,7 +312,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -452,7 +453,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsExpression<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSubAssign( ~lhs, rhs.rhs_ );
       }
       else {

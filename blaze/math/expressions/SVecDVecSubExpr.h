@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -243,7 +244,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
       return ( lhs_.canAlias( alias ) ) ||
-             ( IsExpression<VT2>::value && rhs_.canAlias( alias ) );
+             ( IsOperation<VT2>::value && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 
