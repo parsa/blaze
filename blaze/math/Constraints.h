@@ -86,6 +86,7 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/NumericMatrix.h>
 #include <blaze/math/constraints/NumericVector.h>
+#include <blaze/math/constraints/Operation.h>
 #include <blaze/math/constraints/OpposedView.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Proxy.h>
