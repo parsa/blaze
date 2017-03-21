@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_EXPRESSIONS_TRANSFORMATION_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/expressions/Operation.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -55,7 +62,7 @@ namespace blaze {
 // Transformation base class, the IsTransformation type trait recognizes the class as valid
 // transformation expression template.
 */
-struct Transformation
+struct Transformation : private Operation
 {};
 //*************************************************************************************************
 

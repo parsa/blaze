@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_EXPRESSIONS_COMPUTATION_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/expressions/Operation.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -56,7 +63,7 @@ namespace blaze {
 // class, the IsComputation type trait recognizes the class as valid computational expression
 // template.
 */
-struct Computation
+struct Computation : private Operation
 {};
 //*************************************************************************************************
 
