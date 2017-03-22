@@ -57,6 +57,7 @@
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/util/NumericCast.h>
 
 
 namespace blaze {
@@ -102,10 +103,10 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
    typedef ElementType_<MT2>  ET;
 
-   const size_t m( (~A).rows()    );
-   const size_t n( (~A).columns() );
-   const size_t mindim( min( m, n ) );
-   const size_t size( SO1 ? m : n );
+   const int m( numeric_cast<int>( (~A).rows()    ) );
+   const int n( numeric_cast<int>( (~A).columns() ) );
+   const int mindim( min( m, n ) );
+   const int size( SO1 ? m : n );
 
    const std::unique_ptr<int[]> helper( new int[mindim + size] );
    int* ipiv  ( helper.get() );
@@ -113,7 +114,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
    getrf( ~A, ipiv );
 
-   for( size_t i=0UL; i<size; ++i ) {
+   for( int i=0; i<size; ++i ) {
       permut[i] = i;
    }
 
@@ -126,7 +127,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
    resize( ~P, size, size, false );
    reset( ~P );
-   for( size_t i=0UL; i<size; ++i ) {
+   for( int i=0; i<size; ++i ) {
       (~P)( ( SO1 ? permut[i] : i ), ( SO1 ? i : permut[i] ) ) = ET(1);
    }
 }
