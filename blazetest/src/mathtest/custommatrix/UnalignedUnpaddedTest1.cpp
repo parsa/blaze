@@ -1029,16 +1029,16 @@ void UnalignedUnpaddedTest::testAssignment()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<10UL; ++i )
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
 
-         typedef blaze::CustomMatrix<unsigned int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-         std::unique_ptr<unsigned int[]> array( new unsigned int[rows*columns+1UL] );
+         typedef blaze::CustomMatrix<short,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+         std::unique_ptr<short[]> array( new short[rows*columns+1UL] );
          UnalignedUnpadded mat1( array.get()+1UL, rows, columns );
          randomize( mat1, min, max );
 
@@ -2184,16 +2184,16 @@ void UnalignedUnpaddedTest::testAssignment()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<10UL; ++i )
       {
          const size_t rows   ( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
 
-         typedef blaze::CustomMatrix<unsigned int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-         std::unique_ptr<unsigned int[]> array( new unsigned int[rows*columns+1UL] );
+         typedef blaze::CustomMatrix<short,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+         std::unique_ptr<short[]> array( new short[rows*columns+1UL] );
          UnalignedUnpadded mat1( array.get()+1UL, rows, columns );
          randomize( mat1, min, max );
 

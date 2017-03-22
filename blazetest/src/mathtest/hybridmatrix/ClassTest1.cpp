@@ -43,7 +43,6 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
@@ -1485,11 +1484,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major HybridMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      typedef blaze::HybridMatrix<short,10UL,10UL,blaze::rowMajor>  RandomMatrixType;
 
       blaze::HybridMatrix<int,10UL,10UL,blaze::rowMajor> mat1;
-      const int min( randmin );
-      const int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -1617,11 +1616,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major HybridMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      typedef blaze::HybridMatrix<short,10UL,10UL,blaze::columnMajor>  RandomMatrixType;
 
       blaze::HybridMatrix<int,10UL,10UL,blaze::rowMajor> mat1;
-      const int min( randmin );
-      const int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -2274,11 +2273,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major HybridMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      typedef blaze::HybridMatrix<short,10UL,10UL,blaze::rowMajor>  RandomMatrixType;
 
       blaze::HybridMatrix<int,10UL,10UL,blaze::columnMajor> mat1;
-      const int min( randmin );
-      const int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -2409,11 +2408,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major HybridMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      typedef blaze::HybridMatrix<short,10UL,10UL,blaze::columnMajor>  RandomMatrixType;
 
       blaze::HybridMatrix<int,10UL,10UL,blaze::columnMajor> mat1;
-      const int min( randmin );
-      const int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {

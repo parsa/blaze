@@ -721,11 +721,11 @@ void ClassTest::testAssignment()
    {
       test_ = "DynamicVector dense vector assignment stress test";
 
-      typedef blaze::DynamicVector<unsigned int,blaze::rowVector>  RandomVectorType;
+      typedef blaze::DynamicVector<short,blaze::rowVector>  RandomVectorType;
 
       blaze::DynamicVector<int,blaze::rowVector> vec1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {

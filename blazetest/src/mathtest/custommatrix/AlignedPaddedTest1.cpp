@@ -1034,8 +1034,8 @@ void AlignedPaddedTest::testAssignment()
       using blaze::padded;
       using blaze::rowMajor;
 
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<10UL; ++i )
       {
@@ -1043,8 +1043,8 @@ void AlignedPaddedTest::testAssignment()
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t spacing( blaze::nextMultiple<size_t>( columns, 16UL ) );
 
-         typedef blaze::CustomMatrix<unsigned int,aligned,padded,rowMajor>  AlignedPadded;
-         AlignedPadded mat1( blaze::allocate<unsigned int>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
+         typedef blaze::CustomMatrix<short,aligned,padded,rowMajor>  AlignedPadded;
+         AlignedPadded mat1( blaze::allocate<short>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
          randomize( mat1, min, max );
 
          MT mat2( blaze::allocate<int>( rows*spacing ), rows, columns, spacing, blaze::Deallocate() );
@@ -2195,8 +2195,8 @@ void AlignedPaddedTest::testAssignment()
       using blaze::padded;
       using blaze::columnMajor;
 
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<10UL; ++i )
       {
@@ -2204,8 +2204,8 @@ void AlignedPaddedTest::testAssignment()
          const size_t columns( blaze::rand<size_t>( 0UL, 16UL ) );
          const size_t spacing( blaze::nextMultiple<size_t>( rows, 16UL ) );
 
-         typedef blaze::CustomMatrix<unsigned int,aligned,padded,columnMajor>  AlignedPadded;
-         AlignedPadded mat1( blaze::allocate<unsigned int>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );
+         typedef blaze::CustomMatrix<short,aligned,padded,columnMajor>  AlignedPadded;
+         AlignedPadded mat1( blaze::allocate<short>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );
          randomize( mat1, min, max );
 
          OMT mat2( blaze::allocate<int>( spacing*columns ), rows, columns, spacing, blaze::Deallocate() );

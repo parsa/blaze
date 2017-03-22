@@ -444,11 +444,11 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector sparse vector assignment stress test";
 
-      typedef blaze::CompressedVector<unsigned int,blaze::rowVector>  RandomVectorType;
+      typedef blaze::CompressedVector<short,blaze::rowVector>  RandomVectorType;
 
       blaze::CompressedVector<int,blaze::rowVector> vec1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {

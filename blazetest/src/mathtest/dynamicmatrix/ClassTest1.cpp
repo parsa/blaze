@@ -1645,11 +1645,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<unsigned int,blaze::rowMajor>  RandomMatrixType;
+      typedef blaze::DynamicMatrix<short,blaze::rowMajor>  RandomMatrixType;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -1777,11 +1777,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<unsigned int,blaze::columnMajor>  RandomMatrixType;
+      typedef blaze::DynamicMatrix<short,blaze::columnMajor>  RandomMatrixType;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -2526,11 +2526,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<unsigned int,blaze::rowMajor>  RandomMatrixType;
+      typedef blaze::DynamicMatrix<short,blaze::rowMajor>  RandomMatrixType;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
@@ -2661,11 +2661,11 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<unsigned int,blaze::columnMajor>  RandomMatrixType;
+      typedef blaze::DynamicMatrix<short,blaze::columnMajor>  RandomMatrixType;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {

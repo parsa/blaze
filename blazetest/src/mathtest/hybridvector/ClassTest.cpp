@@ -726,11 +726,11 @@ void ClassTest::testAssignment()
    {
       test_ = "HybridVector dense vector assignment stress test";
 
-      typedef blaze::HybridVector<unsigned int,25UL,blaze::rowVector>  RandomVectorType;
+      typedef blaze::HybridVector<short,20UL,blaze::rowVector>  RandomVectorType;
 
       blaze::HybridVector<int,20UL,blaze::rowVector> vec1;
-      const unsigned int min( randmin );
-      const unsigned int max( randmax );
+      const short min( randmin );
+      const short max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
