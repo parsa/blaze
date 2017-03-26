@@ -296,7 +296,8 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const std::array<RowMajorMatrixType,7UL> mats;
+      const RowMajorMatrixType init;
+      const std::array<RowMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -321,7 +322,8 @@ void ClassTest::testAlignment( const std::string& type )
    }
 
    {
-      const std::array<ColumnMajorMatrixType,7UL> mats;
+      const ColumnMajorMatrixType init;
+      const std::array<ColumnMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -351,7 +353,8 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const std::vector<RowMajorMatrixType,RowMajorAllocatorType> mats( 7UL );
+      const RowMajorMatrixType init;
+      const std::vector<RowMajorMatrixType,RowMajorAllocatorType> mats( 7UL, init );
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
@@ -376,7 +379,8 @@ void ClassTest::testAlignment( const std::string& type )
    }
 
    {
-      const std::vector<ColumnMajorMatrixType,ColumnMajorAllocatorType> mats( 7UL );
+      const ColumnMajorMatrixType init;
+      const std::vector<ColumnMajorMatrixType,ColumnMajorAllocatorType> mats( 7UL, init );
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {

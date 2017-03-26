@@ -244,7 +244,8 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const std::array<VectorType,7UL> vecs;
+      const VectorType init;
+      const std::array<VectorType,7UL> vecs{ init, init, init, init, init, init, init };
 
       for( size_t i=0; i<vecs.size(); ++i )
       {
@@ -269,7 +270,8 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const std::vector<VectorType,AllocatorType> vecs( 7UL );
+      const VectorType init;
+      const std::vector<VectorType,AllocatorType> vecs( 7UL, init );
 
       for( size_t i=0; i<vecs.size(); ++i )
       {
