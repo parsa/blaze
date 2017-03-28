@@ -127,8 +127,8 @@ struct MatchAdaptor
 // two type definitions are identical:
 
    \code
-   using Type1 = typename MatchAdaptor<T>::Type;
-   using Type2 = MatchAdaptor_<T>;
+   using Type1 = typename MatchAdaptor<T1,T2>::Type;
+   using Type2 = MatchAdaptor_<T1,T2>;
    \endcode
 */
 template< typename T1    // The adapted type

@@ -112,8 +112,8 @@ struct MatchSymmetry
 // two type definitions are identical:
 
    \code
-   using Type1 = typename MatchSymmetry<T>::Type;
-   using Type2 = MatchSymmetry_<T>;
+   using Type1 = typename MatchSymmetry<T1,T2>::Type;
+   using Type2 = MatchSymmetry_<T1,T2>;
    \endcode
 */
 template< typename T1    // The adapted type
