@@ -72,11 +72,11 @@ int main()
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-            for( size_t j=0UL; j<=i*i; ++j ) {
-               for( size_t k=0UL; k<=i; ++k ) {
-                  RUN_SMATSMATSUB_OPERATION_TEST( CHCb( i, j ), CDCb( i, k ) );
-               }
+         for( size_t j=0UL; j<=i*i; ++j ) {
+            for( size_t k=0UL; k<=i; ++k ) {
+               RUN_SMATSMATSUB_OPERATION_TEST( CHCb( i, j ), CDCb( i, k ) );
             }
+         }
       }
 
       // Running tests with large matrices
