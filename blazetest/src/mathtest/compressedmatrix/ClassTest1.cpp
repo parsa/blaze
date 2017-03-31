@@ -102,7 +102,6 @@ void ClassTest::testConstructors()
    // Row-major default constructor
    //=====================================================================================
 
-   // Default constructor
    {
       test_ = "Row-major CompressedMatrix default constructor";
 
@@ -405,6 +404,134 @@ void ClassTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense matrix constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix constructor";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 1 },
+                                                      { 0, 2 },
+                                                      { 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix constructor";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 1 },
+                                                         { 0, 2 },
+                                                         { 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix constructor";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( trans( mat1 ) );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 1 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 )\n( 0 3 )\n( 1 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix constructor";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -720,6 +847,132 @@ void ClassTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix constructor";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 1 },
+                                                      { 0, 2 },
+                                                      { 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix dense matrix constructor";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 1 },
+                                                         { 0, 2 },
+                                                         { 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 1 ||
+          mat2(1,0) != 0 || mat2(1,1) != 2 ||
+          mat2(2,0) != 3 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 2 )\n( 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix constructor
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix constructor";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) = 1;
+      mat1(0,2) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 2UL );
+
+      if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 || mat2(1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 1 0 2 )\n( 0 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/Column-major CompressedMatrix sparse matrix constructor";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( trans( mat1 ) );
+
+      checkRows    ( mat2, 3UL );
+      checkColumns ( mat2, 2UL );
+      checkNonZeros( mat2, 4UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 3UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) != 2 ||
+          mat2(1,0) != 0 || mat2(1,1) != 3 ||
+          mat2(2,0) != 1 || mat2(2,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0 2 )\n( 0 3 )\n( 1 4 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
