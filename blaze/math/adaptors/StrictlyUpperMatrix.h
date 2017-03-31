@@ -1174,6 +1174,18 @@ struct AddTrait< CompressedMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
    using Type = AddTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct AddTrait< StrictlyUpperMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = UniUpperMatrix< AddTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct AddTrait< IdentityMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
+{
+   using Type = UniUpperMatrix< AddTrait_< IdentityMatrix<T,SO1>, MT > >;
+};
+
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct AddTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
@@ -1335,6 +1347,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct SubTrait< CompressedMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
 {
    using Type = SubTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SubTrait< StrictlyUpperMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = UpperMatrix< SubTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SubTrait< IdentityMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
+{
+   using Type = UniUpperMatrix< SubTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
@@ -1570,6 +1594,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct MultTrait< CompressedMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
 {
    using Type = MultTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct MultTrait< StrictlyUpperMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = StrictlyUpperMatrix< MultTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct MultTrait< IdentityMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
+{
+   using Type = StrictlyUpperMatrix< MultTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
