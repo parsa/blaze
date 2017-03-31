@@ -46,6 +46,7 @@ namespace blaze {
 
 template< typename, bool > class CompressedMatrix;
 template< typename, bool > class CompressedVector;
+template< typename, bool > class IdentityMatrix;
 
 } // namespace blaze
 
