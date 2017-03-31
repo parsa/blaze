@@ -712,6 +712,18 @@ struct AddTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
    using Type = AddTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
+{
+   using Type = SymmetricMatrix< AddTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct AddTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SymmetricMatrix< AddTrait_< IdentityMatrix<T,SO1>, MT > >;
+};
+
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
@@ -789,6 +801,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    using Type = SubTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
+{
+   using Type = SymmetricMatrix< SubTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SubTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SymmetricMatrix< SubTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
@@ -940,6 +964,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    using Type = MultTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
+{
+   using Type = SymmetricMatrix< MultTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct MultTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SymmetricMatrix< MultTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
