@@ -73,11 +73,11 @@ int main()
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-            for( size_t j=0UL; j<=i; ++j ) {
-               for( size_t k=0UL; k<=LCb::maxNonZeros( i ); ++k ) {
-                  RUN_SMATSMATADD_OPERATION_TEST( CDCa( i, j ), CLCb( i, k ) );
-               }
+         for( size_t j=0UL; j<=i; ++j ) {
+            for( size_t k=0UL; k<=LCb::maxNonZeros( i ); ++k ) {
+               RUN_SMATSMATADD_OPERATION_TEST( CDCa( i, j ), CLCb( i, k ) );
             }
+         }
       }
 
       // Running tests with large matrices

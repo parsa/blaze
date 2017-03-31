@@ -72,11 +72,11 @@ int main()
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-            for( size_t j=0UL; j<=UCa::maxNonZeros( i ); ++j ) {
-               for( size_t k=0UL; k<=i*i; ++k ) {
-                  RUN_SMATSMATADD_OPERATION_TEST( CUCa( i, j ), CMCb( i, i, k ) );
-               }
+         for( size_t j=0UL; j<=UCa::maxNonZeros( i ); ++j ) {
+            for( size_t k=0UL; k<=i*i; ++k ) {
+               RUN_SMATSMATADD_OPERATION_TEST( CUCa( i, j ), CMCb( i, i, k ) );
             }
+         }
       }
 
       // Running tests with large matrices
