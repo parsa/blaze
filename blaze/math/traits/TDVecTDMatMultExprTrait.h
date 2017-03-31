@@ -74,8 +74,9 @@ namespace blaze {
 // \a MT is not a column-major dense matrix type, the resulting data type \a Type is set to
 // \a INVALID_TYPE.
 */
-template< typename VT    // Type of the left-hand side transpose dense vector
-        , typename MT >  // Type of the right-hand side column-major dense matrix
+template< typename VT        // Type of the left-hand side transpose dense vector
+        , typename MT        // Type of the right-hand side column-major dense matrix
+        , typename = void >  // Restricting condition
 struct TDVecTDMatMultExprTrait
 {
  private:

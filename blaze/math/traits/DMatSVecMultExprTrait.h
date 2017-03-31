@@ -75,8 +75,9 @@ namespace blaze {
 // expression type. In case either \a MT is not a row-major dense matrix type or \a VT is not
 // a non-transpose sparse vector type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT    // Type of the left-hand side row-major dense matrix
-        , typename VT >  // Type of the right-hand side non-transpose sparse vector
+template< typename MT        // Type of the left-hand side row-major dense matrix
+        , typename VT        // Type of the right-hand side non-transpose sparse vector
+        , typename = void >  // Restricting condition
 struct DMatSVecMultExprTrait
 {
  private:

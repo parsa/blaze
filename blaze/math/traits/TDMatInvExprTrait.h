@@ -70,7 +70,8 @@ namespace blaze {
 // corresponds to the resulting expression type. In case \a MT is not a column-major dense matrix
 // type, the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT >  // Type of the dense matrix
+template< typename MT        // Type of the dense matrix
+        , typename = void >  // Restricting condition
 struct TDMatInvExprTrait
 {
  private:

@@ -71,8 +71,9 @@ namespace blaze {
 // or \a MT2 is not a row-major dense matrix, the resulting data type \a Type is set to
 // \a INVALID_TYPE.
 */
-template< typename MT1    // Type of the left-hand side row-major dense matrix
-        , typename MT2 >  // Type of the right-hand side row-major dense matrix
+template< typename MT1       // Type of the left-hand side row-major dense matrix
+        , typename MT2       // Type of the right-hand side row-major dense matrix
+        , typename = void >  // Restricting condition
 struct DMatDMatAddExprTrait
 {
  private:

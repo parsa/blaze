@@ -70,7 +70,8 @@ namespace blaze {
 // \a Type corresponds to the resulting expression type. In case \a VT is not a transpose
 // sparse vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT >  // Type of the sparse vector
+template< typename VT        // Type of the sparse vector
+        , typename = void >  // Restricting condition
 struct TSVecTransExprTrait
 {
  private:

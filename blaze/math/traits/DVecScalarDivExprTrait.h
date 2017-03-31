@@ -129,8 +129,9 @@ struct DVecScalarDivExprTraitHelper<VT,ST,false>
 // \a VT is not a non-transpose dense vector type or \a ST is not a scalar type, the resulting
 // \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT    // Type of the left-hand side dense vector
-        , typename ST >  // Type of the right-hand side scalar
+template< typename VT        // Type of the left-hand side dense vector
+        , typename ST        // Type of the right-hand side scalar
+        , typename = void >  // Restricting condition
 struct DVecScalarDivExprTrait
 {
  private:

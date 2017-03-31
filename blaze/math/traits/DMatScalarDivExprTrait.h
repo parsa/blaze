@@ -129,8 +129,9 @@ struct DMatScalarDivExprTraitHelper<MT,ST,false>
 // either \a MT is not a row-major dense matrix type or \a ST is not a scalar type, the
 // resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , typename ST >  // Type of the right-hand side scalar
+template< typename MT        // Type of the left-hand side dense matrix
+        , typename ST        // Type of the right-hand side scalar
+        , typename = void >  // Restricting condition
 struct DMatScalarDivExprTrait
 {
  private:

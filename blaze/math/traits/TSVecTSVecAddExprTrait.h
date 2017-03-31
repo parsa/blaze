@@ -72,8 +72,9 @@ namespace blaze {
 // case either \a VT1 or \a VT2 is not a transpose sparse vector type, the resulting \a Type is
 // set to \a INVALID_TYPE.
 */
-template< typename VT1    // Type of the left-hand side transpose sparse vector
-        , typename VT2 >  // Type of the right-hand side transpose sparse vector
+template< typename VT1       // Type of the left-hand side transpose sparse vector
+        , typename VT2       // Type of the right-hand side transpose sparse vector
+        , typename = void >  // Restricting condition
 struct TSVecTSVecAddExprTrait
 {
  private:

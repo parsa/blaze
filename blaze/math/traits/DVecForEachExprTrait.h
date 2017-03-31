@@ -70,8 +70,9 @@ namespace blaze {
 // \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT is
 // not a non-transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT    // Type of the dense vector
-        , typename OP >  // Type of the custom operation
+template< typename VT        // Type of the dense vector
+        , typename OP        // Type of the custom operation
+        , typename = void >  // Restricting condition
 struct DVecForEachExprTrait
 {
  private:

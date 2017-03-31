@@ -71,7 +71,8 @@ namespace blaze {
 // \a Type corresponds to the resulting expression type. In case \a MT is not a row-major
 // sparse matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT >  // Type of the sparse matrix
+template< typename MT        // Type of the sparse matrix
+        , typename = void >  // Restricting condition
 struct SMatDeclLowExprTrait
 {
  private:

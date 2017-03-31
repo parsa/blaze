@@ -76,8 +76,9 @@ namespace blaze {
 // \a MT is not a column-major sparse matrix type, the resulting data type \a Type is set to
 // \a INVALID_TYPE.
 */
-template< typename VT    // Type of the left-hand side transpose sparse vector
-        , typename MT >  // Type of the right-hand side column-major sparse matrix
+template< typename VT        // Type of the left-hand side transpose sparse vector
+        , typename MT        // Type of the right-hand side column-major sparse matrix
+        , typename = void >  // Restricting condition
 struct TSVecTSMatMultExprTrait
 {
  private:

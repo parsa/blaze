@@ -128,8 +128,9 @@ struct TSVecScalarDivExprTraitHelper<VT,ST,false>
 // either \a VT is not a transpose sparse vector type or \a ST is not a scalar type, the
 // resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT    // Type of the left-hand side sparse vector
-        , typename ST >  // Type of the right-hand side scalar
+template< typename VT        // Type of the left-hand side sparse vector
+        , typename ST        // Type of the right-hand side scalar
+        , typename = void >  // Restricting condition
 struct TSVecScalarDivExprTrait
 {
  private:

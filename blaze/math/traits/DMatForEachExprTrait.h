@@ -70,8 +70,9 @@ namespace blaze {
 // \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a MT is
 // not a row-major dense matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT    // Type of the dense matrix
-        , typename OP >  // Type of the custom operation
+template< typename MT        // Type of the dense matrix
+        , typename OP        // Type of the custom operation
+        , typename = void >  // Restricting condition
 struct DMatForEachExprTrait
 {
  private:

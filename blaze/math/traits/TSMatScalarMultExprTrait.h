@@ -121,8 +121,9 @@ struct TSMatScalarMultExprTraitHelper<MT,ST,false>
 // case either \a MT is not a column-major sparse matrix type or \a ST is not a scalar type,
 // the resulting \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT    // Type of the left-hand side sparse matrix
-        , typename ST >  // Type of the right-hand side scalar
+template< typename MT        // Type of the left-hand side sparse matrix
+        , typename ST        // Type of the right-hand side scalar
+        , typename = void >  // Restricting condition
 struct TSMatScalarMultExprTrait
 {
  private:
