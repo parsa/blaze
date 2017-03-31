@@ -43,7 +43,9 @@
 #include <cmath>
 #include <vector>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/adaptors/LowerMatrix.h>
 #include <blaze/math/adaptors/StrictlyLowerMatrix.h>
+#include <blaze/math/adaptors/UniLowerMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
