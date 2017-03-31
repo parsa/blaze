@@ -49,6 +49,7 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: VCaMCa VCaMCb VCbMCa VCbMCb \
+         VCaMIa VCaMIb VCbMIa VCbMIb \
          VCaSCa VCaSCb VCbSCa VCbSCb \
          VCaHCa VCaHCb VCbHCa VCbHCb \
          VCaLCa VCaLCb VCbLCa VCbLCb \
@@ -77,6 +78,10 @@ VCaMCa: VCaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaMCb: VCaMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaMIa: VCaMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaMIb: VCaMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaSCa: VCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaSCb: VCaSCb.o
@@ -101,6 +106,10 @@ VCbLCb: VCbLCb.o
 VCbMCa: VCbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMCb: VCbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbMIa: VCbMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbMIb: VCbMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbSCa: VCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
