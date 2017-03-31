@@ -51,6 +51,9 @@ BIN = $(SRC:.cpp=)
 default: MCaV3a MCaV3b MCbV3a MCbV3b \
          MCaVHa MCaVHb MCbVHa MCbVHb \
          MCaVDa MCaVDb MCbVDa MCbVDb \
+         MIaV3a MIaV3b MIbV3a MIbV3b \
+         MIaVHa MIaVHb MIbVHa MIbVHb \
+         MIaVDa MIaVDb MIbVDa MIbVDb \
          SCaVDa SCaVDb SCbVDa SCbVDb \
          HCaVDa HCaVDb HCbVDa HCbVDb \
          LCaVDa LCaVDb LCbVDa LCbVDb \
@@ -58,7 +61,7 @@ default: MCaV3a MCaV3b MCbV3a MCbV3b \
          DCaVDa DCaVDb DCbVDa DCbVDb \
          AliasingTest
 all: $(BIN)
-essential: MCaV3a MCaVHa MCaVDa SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
+essential: MCaV3a MCaVHa MCaVDa MIaV3a MIaVHa MIaVDa SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
 single: MCaVDa
 
 
@@ -146,6 +149,31 @@ MCbVDb: MCbVDb.o
 MCbVHa: MCbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbVHb: MCbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MIaV3a: MIaV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaV3b: MIaV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVDa: MIaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVDb: MIaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVHa: MIaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVHb: MIaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbV3a: MIbV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbV3b: MIbV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVDa: MIbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVDb: MIbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVHa: MIbVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVHb: MIbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 SCaVDa: SCaVDa.o
