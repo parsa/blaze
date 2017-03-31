@@ -46,14 +46,12 @@
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/StaticMatrix.h>
@@ -249,11 +247,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
 
-   BLAZE_CONSTRAINT_MUST_BE_TVECMATMULTEXPR_TYPE( TVecMatMultExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_TVECMATMULTEXPR_TYPE( TVecTMatMultExprType );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecMatMultExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecTMatMultExprType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVecMatMultExprType , decltype( lhs_ * rhs_  ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVecTMatMultExprType, decltype( lhs_ * orhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

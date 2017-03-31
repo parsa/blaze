@@ -46,9 +46,7 @@
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
@@ -313,15 +311,10 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
 
-   BLAZE_CONSTRAINT_MUST_BE_MATMATADDEXPR_TYPE( MatMatAddExprType   );
-   BLAZE_CONSTRAINT_MUST_BE_MATMATADDEXPR_TYPE( MatTMatAddExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_MATMATADDEXPR_TYPE( TMatMatAddExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_MATMATADDEXPR_TYPE( TMatTMatAddExprType );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( MatMatAddExprType   );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( MatTMatAddExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TMatMatAddExprType  );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TMatTMatAddExprType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatMatAddExprType  , decltype( lhs_  + rhs_  ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatTMatAddExprType , decltype( lhs_  + orhs_ ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatMatAddExprType , decltype( olhs_ + rhs_  ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatTMatAddExprType, decltype( olhs_ + orhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

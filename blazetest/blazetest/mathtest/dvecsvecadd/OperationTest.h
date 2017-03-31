@@ -46,11 +46,9 @@
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/constraints/VecVecAddExpr.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
@@ -251,11 +249,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_<TRT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_<TRT2> );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECVECADDEXPR_TYPE( VecVecAddExprType   );
-   BLAZE_CONSTRAINT_MUST_BE_VECVECADDEXPR_TYPE( TVecTVecAddExprType );
-
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( VecVecAddExprType   );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecTVecAddExprType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VecVecAddExprType  , decltype( lhs_  + rhs_  ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVecTVecAddExprType, decltype( tlhs_ + trhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };
