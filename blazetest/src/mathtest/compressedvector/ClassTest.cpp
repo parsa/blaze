@@ -253,6 +253,60 @@ void ClassTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Dense vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector dense vector constructor";
+
+      blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2( vec1 );
+
+      checkSize    ( vec2, 5UL );
+      checkCapacity( vec2, 4UL );
+      checkNonZeros( vec2, 4UL );
+
+      if( vec2[0] != 10 || vec2[1] != 11 || vec2[2] != 12 || vec2[3] != 0 || vec2[4] != 13 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 10 11 12 0 13 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector constructor
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector sparse vector assignment";
+
+      blaze::CompressedVector<int,blaze::columnVector> vec1( 7UL, 3UL );
+      vec1[0] = 1;
+      vec1[1] = 2;
+      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2( trans( vec1 ) );
+
+      checkSize    ( vec2, 7UL );
+      checkNonZeros( vec2, 3UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 0 4 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
