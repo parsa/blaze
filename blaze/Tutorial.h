@@ -2404,6 +2404,43 @@
    blaze::CompressedMatrix<double,blaze::columnMajor> C;
    \endcode
 
+// \n \section matrix_types_identity_matrix IdentityMatrix
+// <hr>
+//
+// The blaze::IdentityMatrix class template is the representation of an immutable, arbitrary
+// sized identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. It can be included
+// via the header file
+
+   \code
+   #include <blaze/math/IdentityMatrix.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the two
+// template parameters:
+
+   \code
+   template< typename Type, bool SO >
+   class IdentityMatrix;
+   \endcode
+
+//  - Type: specifies the type of the matrix elements. IdentityMatrix can be used with any
+//          non-cv-qualified, non-reference, non-pointer element type.
+//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//          The default value is blaze::rowMajor.
+//
+// The blaze::IdentityMatrix is the perfect choice to represent an identity matrix:
+
+   \code
+   // Definition of a 3x3 integral row-major identity matrix
+   blaze::IdentityMatrix<int> A( 3UL );
+
+   // Definition of a 6x6 single precision row-major identity matrix
+   blaze::IdentityMatrix<float,blaze::rowMajor> B( 6UL );
+
+   // Definition of a double precision column-major identity matrix with 0 rows and columns
+   blaze::IdentityMatrix<double,blaze::columnMajor> C;
+   \endcode
+
 // \n Previous: \ref matrices &nbsp; &nbsp; Next: \ref matrix_operations
 */
 //*************************************************************************************************
