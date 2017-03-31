@@ -42,7 +42,7 @@ all: functions simd blas lapack typetraits \
      symmetricmatrix hermitianmatrix \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
-     diagonalmatrix \
+     diagonalmatrix identitymatrix \
      subvector submatrix row column \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
@@ -70,7 +70,7 @@ noop: functions simd blas lapack typetraits \
       symmetricmatrix hermitianmatrix \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
-      diagonalmatrix \
+      diagonalmatrix identitymatrix \
       subvector submatrix row column \
       determinant lu llh qr rq ql lq inversion eigen svd \
       vectorserializer matrixserializer
@@ -216,6 +216,11 @@ diagonalmatrix:
 	@echo
 	@echo "Building the DiagonalMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix $(MAKECMDGOALS)
+
+identitymatrix:
+	@echo
+	@echo "Building the IdentityMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./identitymatrix $(MAKECMDGOALS)
 
 subvector:
 	@echo
@@ -558,6 +563,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./uniuppermatrix reset
 	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix reset
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix reset
+	@$(MAKE) --no-print-directory -C ./identitymatrix reset
 	@$(MAKE) --no-print-directory -C ./subvector reset
 	@$(MAKE) --no-print-directory -C ./submatrix reset
 	@$(MAKE) --no-print-directory -C ./row reset
@@ -650,6 +656,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./uniuppermatrix clean
 	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix clean
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
+	@$(MAKE) --no-print-directory -C ./identitymatrix clean
 	@$(MAKE) --no-print-directory -C ./subvector clean
 	@$(MAKE) --no-print-directory -C ./submatrix clean
 	@$(MAKE) --no-print-directory -C ./row clean
@@ -723,7 +730,7 @@ clean:
         symmetricmatrix hermitianmatrix \
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
-        diagonalmatrix \
+        diagonalmatrix identitymatrix \
         subvector submatrix row column \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
