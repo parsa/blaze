@@ -42,6 +42,7 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/Dense.h>
 #include <blaze/math/adaptors/unilowermatrix/Sparse.h>
@@ -1785,6 +1786,18 @@ struct AddTrait< CompressedMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
    using Type = AddTrait_< CompressedMatrix<T,SO1>, MT >;
 };
 
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct AddTrait< UniLowerMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = LowerMatrix< AddTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct AddTrait< IdentityMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< AddTrait_< IdentityMatrix<T,SO1>, MT > >;
+};
+
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct AddTrait< UniLowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
@@ -1898,6 +1911,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct SubTrait< CompressedMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
 {
    using Type = SubTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SubTrait< UniLowerMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = StrictlyLowerMatrix< SubTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SubTrait< IdentityMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = StrictlyLowerMatrix< SubTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
@@ -2085,6 +2110,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct MultTrait< CompressedMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
 {
    using Type = MultTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct MultTrait< UniLowerMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = UniLowerMatrix< MultTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct MultTrait< IdentityMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = UniLowerMatrix< MultTrait_< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
