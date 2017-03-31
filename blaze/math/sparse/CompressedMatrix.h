@@ -169,7 +169,7 @@ namespace blaze {
    \endcode
 
 // The use of CompressedMatrix is very natural and intuitive. All operations (addition, subtraction,
-// multiplication, scaling, ...) can be performed on all possible combination of row-major and
+// multiplication, scaling, ...) can be performed on all possible combinations of row-major and
 // column-major dense and sparse matrices with fitting element types. The following example gives
 // an impression of the use of CompressedMatrix:
 
@@ -179,14 +179,14 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   CompressedMatrix<double,rowMajor> A( 2, 3 );  // Default constructed, non-initialized, row-major 2x3 matrix
+   CompressedMatrix<double,rowMajor> A( 2, 3 );  // Empty row-major compressed double precision 2x3 matrix
    A(0,0) = 1.0; A(0,2) = 3.0; A(1,1) = 5.0;     // Element initialization
 
-   CompressedMatrix<float,columnMajor> B( 2, 3 );  // Default constructed column-major single precision 2x3 matrix
-   B(0,1) = 3.0; B(1,0) = 2.0; B(1,2) = 6.0;       // Element initialization
+   CompressedMatrix<float,columnMajor> B( 2, 3 );  // Empty column-major compressed single precision 2x3 matrix
+   B(0,1) = 3.0F; B(1,0) = 2.0F; B(1,2) = 6.0F;    // Element initialization
 
    DynamicMatrixMatrix<float> C( 2, 3, 4.0F );  // Directly, homogeneously initialized single precision dense 2x3 matrix
-   CompressedMatrix<float>    D( 3, 2 );        // Empty row-major sparse single precision matrix
+   CompressedMatrix<float>    D( 3, 2 );        // Empty row-major compressed single precision 3x2 matrix
 
    CompressedMatrix<double,rowMajor>    E( A );  // Creation of a new row-major matrix as a copy of A
    CompressedMatrix<double,columnMajor> F;       // Creation of a default column-major matrix

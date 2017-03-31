@@ -169,7 +169,7 @@ namespace blaze {
                           \end{array}\right)\f]
 
 // The use of StaticMatrix is very natural and intuitive. All operations (addition, subtraction,
-// multiplication, scaling, ...) can be performed on all possible combination of row-major and
+// multiplication, scaling, ...) can be performed on all possible combinations of row-major and
 // column-major dense and sparse matrices with fitting element types. The following example gives
 // an impression of the use of StaticMatrix:
 
