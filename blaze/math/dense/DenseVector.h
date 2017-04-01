@@ -491,10 +491,10 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 
    CT a( ~dv );  // Evaluation of the dense vector operand
 
-   ConstReference cmp( (~dv)[0UL] );
+   ConstReference cmp( a[0UL] );
 
-   for( size_t i=1UL; i<(~dv).size(); ++i ) {
-      if( (~dv)[i] != cmp )
+   for( size_t i=1UL; i<a.size(); ++i ) {
+      if( a[i] != cmp )
          return false;
    }
 

@@ -269,21 +269,21 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
-   if( (~sv).nonZeros() != (~sv).size() )
+   if( a.nonZeros() != a.size() )
    {
-      for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element ) {
+      for( ConstIterator element=a.begin(); element!=a.end(); ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
    }
    else
    {
-      ConstReference cmp( (~sv)[0] );
-      ConstIterator element( (~sv).begin() );
+      ConstReference cmp( a[0] );
+      ConstIterator element( a.begin() );
 
       ++element;
 
-      for( ; element!=(~sv).end(); ++element ) {
+      for( ; element!=a.end(); ++element ) {
          if( element->value() != cmp )
             return false;
       }
