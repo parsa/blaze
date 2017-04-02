@@ -3768,7 +3768,7 @@
 
    S = declsym( A );  // Omit any runtime check for symmetry
 
-   C = declsym( A * B );  // Declare the result of the matrix multiplication as symmetric
+   C = declsym( A * B );  // Declare the result of the matrix multiplication as symmetric,
                           // i.e. perform an optimized matrix multiplication
    \endcode
 
@@ -3806,7 +3806,7 @@
 
    S = declherm( A );  // Omit any runtime check for Hermitian symmetry
 
-   C = declherm( A * B );  // Declare the result of the matrix multiplication as Hermitian
+   C = declherm( A * B );  // Declare the result of the matrix multiplication as Hermitian,
                            // i.e. perform an optimized matrix multiplication
    \endcode
 
@@ -3844,7 +3844,7 @@
 
    L = decllow( A );  // Omit any runtime check for A being a lower matrix
 
-   C = decllow( A * B );  // Declare the result of the matrix multiplication as lower triangular
+   C = decllow( A * B );  // Declare the result of the matrix multiplication as lower triangular,
                           // i.e. perform an optimized matrix multiplication
    \endcode
 
@@ -3875,14 +3875,14 @@
    using blaze::UpperMatrix;
 
    DynamicMatrix<double> A, B, C;
-   UpperMatrix< DynamicMatrix<double> > L;
+   UpperMatrix< DynamicMatrix<double> > U;
    // ... Resizing and initialization
 
    isUpper( declupp( A ) );  // Will always return true without runtime effort
 
-   L = declupp( A );  // Omit any runtime check for A being a upper matrix
+   U = declupp( A );  // Omit any runtime check for A being a upper matrix
 
-   C = declupp( A * B );  // Declare the result of the matrix multiplication as upper triangular
+   C = declupp( A * B );  // Declare the result of the matrix multiplication as upper triangular,
                           // i.e. perform an optimized matrix multiplication
    \endcode
 
@@ -3913,20 +3913,58 @@
    using blaze::DiagonalMatrix;
 
    DynamicMatrix<double> A, B, C;
-   DiagonalMatrix< DynamicMatrix<double> > L;
+   DiagonalMatrix< DynamicMatrix<double> > D;
    // ... Resizing and initialization
 
    isDiagonal( decldiag( A ) );  // Will always return true without runtime effort
 
-   L = decldiag( A );  // Omit any runtime check for A being a diagonal matrix
+   D = decldiag( A );  // Omit any runtime check for A being a diagonal matrix
 
-   C = decldiag( A * B );  // Declare the result of the matrix multiplication as diagonal
+   C = decldiag( A * B );  // Declare the result of the matrix multiplication as diagonal,
                            // i.e. perform an optimized matrix multiplication
    \endcode
 
 // \warning The \c decldiag() operation has the semantics of a cast: The caller is completely
 // responsible and the system trusts the given information. Declaring a non-diagonal matrix
 // or matrix expression as diagonal via the \c decldiag() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declid declid()
+//
+// The \c declid() operation can be used to explicitly declare any matrix or matrix expression
+// as identity matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declid( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as identity matrix via \c declid() will
+// gain all the benefits of an identity matrix, which range from reduced runtime checking to a
+// considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DiagonalMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   DiagonalMatrix< DynamicMatrix<double> > D;
+   // ... Resizing and initialization
+
+   isIdentity( declid( A ) );  // Will always return true without runtime effort
+
+   D = declid( A );  // Omit any runtime check for A being a diagonal matrix
+
+   C = declid( A ) * B;  // Declare the left operand of the matrix multiplication as an
+                         // identity matrix, i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declid() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-identity matrix
+// or matrix expression as identity matrix via the \c declid() operation leads to undefined
 // behavior (which can be violated invariants or wrong computation results)!
 //
 //
