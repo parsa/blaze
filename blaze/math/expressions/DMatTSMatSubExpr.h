@@ -269,7 +269,7 @@ class DMatTSMatSubExpr : public DenseMatrix< DMatTSMatSubExpr<MT1,MT2>, false >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsOperation<MT1>::value && lhs_.canAlias( alias ) ) ||
+      return ( IsExpression<MT1>::value && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************

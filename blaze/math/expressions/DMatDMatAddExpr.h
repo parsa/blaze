@@ -588,8 +588,8 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsOperation<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsOperation<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
