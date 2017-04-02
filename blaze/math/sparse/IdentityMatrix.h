@@ -105,10 +105,13 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1237,6 +1240,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool isIntact( const IdentityMatrix<Type,SO>& m )
 {
+   UNUSED_PARAMETER( m );
+
    return true;
 }
 //*************************************************************************************************
@@ -1637,7 +1642,7 @@ template< typename T1  // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename T2  // Data type of the right-hand side dense matrix
         , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline const IdentityMatrix< MultTrait_<T1,T2>, false >
+inline const IdentityMatrix< MultTrait_<T1,T2>, SO1 >
    operator*( const IdentityMatrix<T1,SO1>& lhs, const IdentityMatrix<T2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2319,7 +2324,8 @@ struct ColumnTrait< IdentityMatrix<T1,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct SMatDVecMultExprTrait< IdentityMatrix<T,false>, VT, EnableIf_< IsSame< T, ElementType_<VT> > > >
+struct SMatDVecMultExprTrait< IdentityMatrix<T,false>, VT
+                            , EnableIf_< IsSame< T, ElementType_<VT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2335,7 +2341,8 @@ struct SMatDVecMultExprTrait< IdentityMatrix<T,false>, VT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TSMatDVecMultExprTrait< IdentityMatrix<T,true>, VT, EnableIf_< IsSame< T, ElementType_<VT> > > >
+struct TSMatDVecMultExprTrait< IdentityMatrix<T,true>, VT
+                             , EnableIf_< IsSame< T, ElementType_<VT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2351,7 +2358,8 @@ struct TSMatDVecMultExprTrait< IdentityMatrix<T,true>, VT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TDVecSMatMultExprTrait< VT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<VT>, T > > >
+struct TDVecSMatMultExprTrait< VT, IdentityMatrix<T,false>
+                             , EnableIf_< IsSame< ElementType_<VT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2367,7 +2375,8 @@ struct TDVecSMatMultExprTrait< VT, IdentityMatrix<T,false>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TDVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<VT>, T > > >
+struct TDVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>
+                              , EnableIf_< IsSame< ElementType_<VT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2383,7 +2392,8 @@ struct TDVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct SMatSVecMultExprTrait< IdentityMatrix<T,false>, VT, EnableIf_< IsSame< T, ElementType_<VT> > > >
+struct SMatSVecMultExprTrait< IdentityMatrix<T,false>, VT
+                            , EnableIf_< IsSame< T, ElementType_<VT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2399,7 +2409,8 @@ struct SMatSVecMultExprTrait< IdentityMatrix<T,false>, VT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TSMatSVecMultExprTrait< IdentityMatrix<T,true>, VT, EnableIf_< IsSame< T, ElementType_<VT> > > >
+struct TSMatSVecMultExprTrait< IdentityMatrix<T,true>, VT
+                             , EnableIf_< IsSame< T, ElementType_<VT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2415,7 +2426,8 @@ struct TSMatSVecMultExprTrait< IdentityMatrix<T,true>, VT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TSVecSMatMultExprTrait< VT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<VT>, T > > >
+struct TSVecSMatMultExprTrait< VT, IdentityMatrix<T,false>
+                             , EnableIf_< IsSame< ElementType_<VT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2431,7 +2443,8 @@ struct TSVecSMatMultExprTrait< VT, IdentityMatrix<T,false>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename VT >
-struct TSVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<VT>, T > > >
+struct TSVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>
+                              , EnableIf_< IsSame< ElementType_<VT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2447,7 +2460,8 @@ struct TSVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct DMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct DMatSMatMultExprTrait< MT, IdentityMatrix<T,false>
+                            , EnableIf_< IsSame< ElementType_<MT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2463,7 +2477,8 @@ struct DMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< El
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct DMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct DMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>
+                             , EnableIf_< IsSame< ElementType_<MT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2479,7 +2494,8 @@ struct DMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< El
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct TDMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct TDMatSMatMultExprTrait< MT, IdentityMatrix<T,false>
+                             , EnableIf_< IsSame< ElementType_<MT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2495,7 +2511,8 @@ struct TDMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct TDMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct TDMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>
+                              , EnableIf_< IsSame< ElementType_<MT>, T > > >
 {
  public:
    //**********************************************************************************************
@@ -2511,7 +2528,8 @@ struct TDMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< E
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct SMatDMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct SMatDMatMultExprTrait< IdentityMatrix<T,false>, MT
+                            , EnableIf_< IsSame< T, ElementType_<MT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2527,7 +2545,8 @@ struct SMatDMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct SMatTDMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct SMatTDMatMultExprTrait< IdentityMatrix<T,false>, MT
+                             , EnableIf_< IsSame< T, ElementType_<MT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2543,7 +2562,8 @@ struct SMatTDMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct TSMatDMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct TSMatDMatMultExprTrait< IdentityMatrix<T,true>, MT
+                             , EnableIf_< IsSame< T, ElementType_<MT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2559,7 +2579,8 @@ struct TSMatDMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct TSMatTDMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct TSMatTDMatMultExprTrait< IdentityMatrix<T,true>, MT
+                              , EnableIf_< IsSame< T, ElementType_<MT> > > >
 {
  public:
    //**********************************************************************************************
@@ -2575,7 +2596,9 @@ struct TSMatTDMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct SMatSMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct SMatSMatMultExprTrait< IdentityMatrix<T,false>, MT
+                            , EnableIf_< And< Not< IsIdentity<MT> >
+                                            , IsSame< T, ElementType_<MT> > > > >
 {
  public:
    //**********************************************************************************************
@@ -2591,7 +2614,9 @@ struct SMatSMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct SMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct SMatSMatMultExprTrait< MT, IdentityMatrix<T,false>
+                            , EnableIf_< And< Not< IsIdentity<MT> >
+                                            , IsSame< ElementType_<MT>, T > > > >
 {
  public:
    //**********************************************************************************************
@@ -2621,7 +2646,9 @@ struct SMatSMatMultExprTrait< IdentityMatrix<T1,false>, IdentityMatrix<T2,false>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct SMatTSMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct SMatTSMatMultExprTrait< IdentityMatrix<T,false>, MT
+                             , EnableIf_< And< Not< IsIdentity<MT> >
+                                             , IsSame< T, ElementType_<MT> > > > >
 {
  public:
    //**********************************************************************************************
@@ -2637,7 +2664,9 @@ struct SMatTSMatMultExprTrait< IdentityMatrix<T,false>, MT, EnableIf_< IsSame< T
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct SMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct SMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>
+                             , EnableIf_< And< Not< IsIdentity<MT> >
+                                             , IsSame< ElementType_<MT>, T > > > >
 {
  public:
    //**********************************************************************************************
@@ -2667,7 +2696,9 @@ struct SMatTSMatMultExprTrait< IdentityMatrix<T1,false>, IdentityMatrix<T2,true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct TSMatSMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct TSMatSMatMultExprTrait< IdentityMatrix<T,true>, MT
+                             , EnableIf_< And< Not< IsIdentity<MT> >
+                                             , IsSame< T, ElementType_<MT> > > > >
 {
  public:
    //**********************************************************************************************
@@ -2683,7 +2714,9 @@ struct TSMatSMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct TSMatSMatMultExprTrait< MT, IdentityMatrix<T,false>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct TSMatSMatMultExprTrait< MT, IdentityMatrix<T,false>
+                             , EnableIf_< And< Not< IsIdentity<MT> >
+                                             , IsSame< ElementType_<MT>, T > > > >
 {
  public:
    //**********************************************************************************************
@@ -2703,7 +2736,7 @@ struct TSMatSMatMultExprTrait< IdentityMatrix<T1,true>, IdentityMatrix<T2,false>
 {
  public:
    //**********************************************************************************************
-   using Type = IdentityMatrix< MultTrait_<T1,T2>, false >;
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, true >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2713,7 +2746,9 @@ struct TSMatSMatMultExprTrait< IdentityMatrix<T1,true>, IdentityMatrix<T2,false>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename MT >
-struct TSMatTSMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T, ElementType_<MT> > > >
+struct TSMatTSMatMultExprTrait< IdentityMatrix<T,true>, MT
+                              , EnableIf_< And< Not< IsIdentity<MT> >
+                                              , IsSame< T, ElementType_<MT> > > > >
 {
  public:
    //**********************************************************************************************
@@ -2729,7 +2764,9 @@ struct TSMatTSMatMultExprTrait< IdentityMatrix<T,true>, MT, EnableIf_< IsSame< T
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename T >
-struct TSMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>, EnableIf_< IsSame< ElementType_<MT>, T > > >
+struct TSMatTSMatMultExprTrait< MT, IdentityMatrix<T,true>
+                              , EnableIf_< And< Not< IsIdentity<MT> >
+                                              , IsSame< ElementType_<MT>, T > > > >
 {
  public:
    //**********************************************************************************************
