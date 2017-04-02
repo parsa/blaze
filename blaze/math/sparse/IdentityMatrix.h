@@ -104,6 +104,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -1273,9 +1274,10 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of an identity matrix and a dense vector
 //        (\f$ \vec{y}=A*\vec{x} \f$).
-// \ingroup dense_vector
+// \ingroup identity_matrix
 //
 // \param mat The left-hand side identity matrix for the multiplication.
 // \param vec The right-hand side dense vector for the multiplication.
@@ -1313,13 +1315,15 @@ inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
 
    return (~vec);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a transpose dense vector and an
 //        identity matrix (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-// \ingroup dense_vector
+// \ingroup identity_matrix
 //
 // \param vec The left-hand side transpose dense vector for the multiplication.
 // \param mat The right-hand side identity matrix for the multiplication.
@@ -1357,13 +1361,15 @@ inline EnableIf_< IsSame< ElementType_<VT>, T >, const VT& >
 
    return (~vec);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a identity matrix and a sparse vector
 //        (\f$ \vec{y}=A*\vec{x} \f$).
-// \ingroup sparse_vector
+// \ingroup identity_matrix
 //
 // \param mat The left-hand side identity matrix for the multiplication.
 // \param vec The right-hand side sparse vector for the multiplication.
@@ -1401,13 +1407,15 @@ inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
 
    return (~vec);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a transpose sparse vector and an
 //        identity matrix (\f$ \vec{y}^T=\vec{x}^T*A \f$).
-// \ingroup sparse_vector
+// \ingroup identity_matrix
 //
 // \param vec The left-hand side transpose sparse vector for the multiplication.
 // \param mat The right-hand side identity matrix for the multiplication.
@@ -1445,13 +1453,15 @@ inline EnableIf_< IsSame< ElementType_<VT>, T >, const VT& >
 
    return (~vec);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of an identity matrix and a dense
 //        matrix (\f$ A=B*C \f$).
-// \ingroup dense_matrix
+// \ingroup identity_matrix
 //
 // \param lhs The left-hand side identity matrix for the multiplication.
 // \param rhs The right-hand side dense matrix for the multiplication.
@@ -1487,13 +1497,15 @@ inline EnableIf_< IsSame< T, ElementType_<MT> >, const MT& >
 
    return (~rhs);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a dense matrix and an identity matrix
 //        (\f$ A=B*C \f$).
-// \ingroup dense_matrix
+// \ingroup identity_matrix
 //
 // \param lhs The left-hand side dense matrix for the multiplication.
 // \param rhs The right-hand side identity matrix for the multiplication.
@@ -1529,13 +1541,15 @@ inline EnableIf_< IsSame< ElementType_<MT>, T >, const MT& >
 
    return (~lhs);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of an identity matrix and a sparse
 //        matrix (\f$ A=B*C \f$).
-// \ingroup sparse_matrix
+// \ingroup identity_matrix
 //
 // \param lhs The left-hand side identity matrix for the multiplication.
 // \param rhs The right-hand side sparse matrix for the multiplication.
@@ -1571,13 +1585,15 @@ inline EnableIf_< IsSame< T, ElementType_<MT> >, const MT& >
 
    return (~rhs);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a sparse matrix and an identity matrix
 //        (\f$ A=B*C \f$).
-// \ingroup sparse_matrix
+// \ingroup identity_matrix
 //
 // \param lhs The left-hand side sparse matrix for the multiplication.
 // \param rhs The right-hand side identity matrix for the multiplication.
@@ -1613,12 +1629,14 @@ inline EnableIf_< IsSame< ElementType_<MT>, T >, const MT& >
 
    return (~lhs);
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of two identity matrices (\f$ A=B*C \f$).
-// \ingroup dense_matrix
+// \ingroup identity_matrix
 //
 // \param lhs The left-hand side identity matrix for the multiplication.
 // \param rhs The right-hand side identity matrix for the multiplication.
@@ -1652,6 +1670,50 @@ inline const IdentityMatrix< MultTrait_<T1,T2>, SO1 >
    }
 
    return IdentityMatrix< MultTrait_<T1,T2>, SO1 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Declares the given matrix expression \a m as identity matrix.
+// \ingroup identity_matrix
+//
+// \param m The input matrix.
+// \return The redeclared matrix.
+// \exception std::invalid_argument Invalid identity matrix specification.
+//
+// The \a declid function declares the given dense or sparse matrix expression \a m as identity
+// matrix. In case the given matrix is not a square matrix, a \a std::invalid_argument exception
+// is thrown.\n
+// The following example demonstrates the use of the \a declid function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = declid( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline IdentityMatrix<ElementType_<MT>,SO>
+   declid( const Matrix<MT,SO>& m )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~m ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid identity matrix specification" );
+   }
+
+   return IdentityMatrix<ElementType_<MT>,SO>( (~m).rows() );
 }
 //*************************************************************************************************
 
