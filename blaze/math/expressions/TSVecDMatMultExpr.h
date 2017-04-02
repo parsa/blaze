@@ -1339,7 +1339,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
             y[j] -= v1 * A(i1,j) + v2 * A(i2,j) + v3 * A(i3,j) + v4 * A(i4,j);
          }
       }
-      for( ; element!=x.end(); ++element )
+      for( ; element!=end; ++element )
       {
          const size_t i1( element->index() );
          const VET    v1( element->value() );
