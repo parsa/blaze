@@ -294,8 +294,8 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
       //
       // \return The previous position of the iterator.
       */
-      inline ConstIterator operator++(int) {
-         ConstIterator tmp;
+      inline ConstIterator operator++( int ) {
+         ConstIterator tmp( *this );
          ++index_;
          return tmp;
       }
@@ -535,7 +535,8 @@ inline IdentityMatrix<Type,SO>::IdentityMatrix( size_t n ) noexcept
 // \param m Identity matrix to be copied.
 // \exception std::invalid_argument Invalid setup of identity matrix.
 //
-// TODO
+// The matrix is sized according to the given \f$ N \times N \f$ identity matrix and
+// initialized as a copy of this matrix.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -574,8 +575,8 @@ template< typename Type  // Data type of the matrix
 inline typename IdentityMatrix<Type,SO>::ConstReference
    IdentityMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
-   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid identity matrix row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid identity matrix column access index" );
 
    if( i == j )
       return Type( 1 );
@@ -801,7 +802,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
-   BLAZE_USER_ASSERT( i < rows(), "Invalid row/column access index" );
+   BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
    return 1UL;
 }
 //*************************************************************************************************
@@ -836,7 +837,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const
 {
-   BLAZE_USER_ASSERT( i < rows(), "Invalid row/column access index" );
+   BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
    return 1UL;
 }
 //*************************************************************************************************
@@ -918,8 +919,8 @@ template< typename Type  // Data type of the matrix
 inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::find( size_t i, size_t j ) const
 {
-   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid column access index" );
+   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
+   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
 
    if( i == j )
       return begin( i );
@@ -947,8 +948,8 @@ template< typename Type  // Data type of the matrix
 inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
 {
-   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid column access index" );
+   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
+   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
 
    if( ( !SO && j <= i ) || ( SO && i <= j ) )
       return begin( SO ? j : i );
@@ -976,8 +977,8 @@ template< typename Type  // Data type of the matrix
 inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
 {
-   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid row access index"    );
-   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid column access index" );
+   BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
+   BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
 
    if( ( !SO && j < i ) || ( SO && i < j ) )
       return begin( SO ? j : i );
