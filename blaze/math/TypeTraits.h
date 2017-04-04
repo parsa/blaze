@@ -154,6 +154,7 @@
 #include <blaze/math/typetraits/IsTransformation.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
