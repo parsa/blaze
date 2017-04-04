@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -73,6 +74,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -704,7 +706,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
-   if( (~dm).rows() < 2UL )
+   if( IsUniform<MT>::value || (~dm).rows() < 2UL )
       return true;
 
    if( IsTriangular<MT>::value )
@@ -782,6 +784,9 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
 
    if( !IsNumeric<ET>::value || !isSquare( ~dm ) )
       return false;
+
+   if( IsBuiltin<ET>::value && IsUniform<MT>::value )
+      return true;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
@@ -1006,7 +1011,8 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
    if( IsUniTriangular<MT>::value )
       return false;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
+   if( IsUniform<MT>::value ||
+       (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
        ( (~dm).rows() == 1UL && (~dm).columns() == 1UL ) )
       return true;
 

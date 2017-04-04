@@ -50,6 +50,7 @@
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -264,7 +265,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
    typedef ConstReference_< RemoveReference_<CT> >  ConstReference;
    typedef ConstIterator_< RemoveReference_<CT> >   ConstIterator;
 
-   if( (~sv).size() < 2UL )
+   if( IsUniform<VT>::value || (~sv).size() < 2UL )
       return true;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand

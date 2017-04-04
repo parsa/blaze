@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -71,6 +72,8 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -439,7 +442,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
-   if( (~sm).rows() < 2UL )
+   if( IsUniform<MT>::value || (~sm).rows() < 2UL )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -532,6 +535,9 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
 
    if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
       return false;
+
+   if( IsBuiltin<ET>::value && IsUniform<MT>::value )
+      return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -794,7 +800,8 @@ bool isUniform( const SparseMatrix<MT,SO>& sm )
    if( IsUniTriangular<MT>::value )
       return false;
 
-   if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
+   if( IsUniform<MT>::value ||
+       (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
        ( (~sm).rows() == 1UL && (~sm).columns() == 1UL ) )
       return true;
 

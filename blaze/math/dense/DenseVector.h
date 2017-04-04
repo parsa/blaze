@@ -52,6 +52,7 @@
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
@@ -486,7 +487,7 @@ bool isUniform( const DenseVector<VT,TF>& dv )
    typedef CompositeType_<VT>  CT;
    typedef ConstReference_< RemoveReference_<CT> >  ConstReference;
 
-   if( (~dv).size() < 2UL )
+   if( IsUniform<VT>::value || (~dv).size() < 2UL )
       return true;
 
    CT a( ~dv );  // Evaluation of the dense vector operand
