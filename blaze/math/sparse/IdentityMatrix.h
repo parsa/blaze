@@ -630,6 +630,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return ConstIterator( i );
 }
 //*************************************************************************************************
@@ -652,6 +653,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return ConstIterator( i );
 }
 //*************************************************************************************************
@@ -674,6 +676,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return ConstIterator( i+1UL );
 }
 //*************************************************************************************************
@@ -696,6 +699,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return ConstIterator( i+1UL );
 }
 //*************************************************************************************************
@@ -802,7 +806,10 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return 1UL;
 }
 //*************************************************************************************************
@@ -837,7 +844,10 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
+
    return 1UL;
 }
 //*************************************************************************************************
