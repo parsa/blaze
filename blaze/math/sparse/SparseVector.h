@@ -296,13 +296,13 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the sparse vector square length \f$|\vec{a}|^2\f$.
+/*!\brief Calculation of the square length (magnitude) of the sparse vector \f$|\vec{a}|^2\f$.
 // \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
-// \return The square length of the vector.
+// \return The square length (magnitude) of the vector.
 //
-// This function calculates the actual square length of the sparse vector.
+// This function calculates the actual square length (magnitude) of the sparse vector.
 //
 // \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
@@ -326,14 +326,14 @@ const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the sparse vector length \f$|\vec{a}|\f$.
+/*!\brief Calculation of the length (magnitude) of the sparse vector \f$|\vec{a}|\f$.
 // \ingroup sparse_vector
 //
 // \param sv The given sparse vector.
-// \return The length of the sparse vector.
+// \return The length (magnitude) of the sparse vector.
 //
-// This function calculates the actual length of the sparse vector. The return type of the
-// length() function depends on the actual element type of the vector instance:
+// This function calculates the actual length (magnitude) of the sparse vector. The return type
+// of the length() function depends on the actual element type of the vector instance:
 //
 // <table border="0" cellspacing="0" cellpadding="1">
 //    <tr>

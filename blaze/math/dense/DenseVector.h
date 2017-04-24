@@ -505,13 +505,13 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the dense vector square length \f$|\vec{a}|^2\f$.
+/*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
 // \ingroup dense_vector
 //
 // \param dv The given dense vector.
-// \return The square length of the dense vector.
+// \return The square length (magnitude) of the dense vector.
 //
-// This function calculates the actual square length of the dense vector.
+// This function calculates the actual square length (magnitude) of the dense vector.
 //
 // \note This operation is only defined for numeric data types. In case the element type is
 // not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
@@ -534,14 +534,14 @@ const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the dense vector length \f$|\vec{a}|\f$.
+/*!\brief Calculation of the length (magnitude) of the dense vector \f$|\vec{a}|\f$.
 // \ingroup dense_vector
 //
 // \param dv The given dense vector.
-// \return The length of the dense vector.
+// \return The length (magnitude) of the dense vector.
 //
-// This function calculates the actual length of the dense vector. The return type of the
-// length() function depends on the actual element type of the vector instance:
+// This function calculates the actual length (magnitude) of the dense vector. The return type
+// of the length() function depends on the actual element type of the vector instance:
 //
 // <table border="0" cellspacing="0" cellpadding="1">
 //    <tr>
