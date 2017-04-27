@@ -147,3 +147,5 @@ byzhang -- Bug fixes
 Emerson Ferreira -- Bug fixes
 
 Fabien Péan -- CMake support
+
+Denis Demidov -- Export CMake package configuration
