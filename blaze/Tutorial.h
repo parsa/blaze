@@ -1768,8 +1768,8 @@
 //
 // \n \subsection vector_operations_length length() / sqrLength()
 //
-// In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
-// can be used:
+// In order to calculate the length (magnitude) of a dense or sparse vector, both the \c length()
+// and \c sqrLength() function can be used:
 
    \code
    blaze::StaticVector<float,3UL,rowVector> v{ -1.2F, 2.7F, -2.3F };
