@@ -34,10 +34,13 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(blaze INTERFACE)
-target_include_directories(blaze INTERFACE "${CMAKE_CURRENT_LIST_DIR}")
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    target_compile_options(blaze INTERFACE -std=c++14)
-endif ()
+target_include_directories(blaze INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+    $<INSTALL_INTERFACE:install>
+    )
+
+target_compile_options(blaze INTERFACE
+    $<$<CXX_COMPILER_ID:Clang>:-std=c++14>)
 
 ###################################################################################################
 # Configure LAPACK
@@ -293,3 +296,33 @@ endif ()
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Inline.h.in"
                 "${CMAKE_CURRENT_LIST_DIR}/blaze/config/Inline.h")
+
+###################################################################################################
+# Installation
+###################################################################################################
+install(DIRECTORY blaze DESTINATION include)
+install(TARGETS blaze EXPORT blazeTargets)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/blaze-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/blaze-config.cmake"
+    COPYONLY
+    )
+
+export(EXPORT blazeTargets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/blaze-targets.cmake"
+    NAMESPACE blaze::
+    )
+
+export(PACKAGE blaze)
+
+install(EXPORT blazeTargets
+    FILE blaze-targets.cmake
+    NAMESPACE blaze::
+    DESTINATION share/blaze/cmake
+    )
+
+install(
+    FILES cmake/blaze-config.cmake
+    DESTINATION share/blaze/cmake
+    )
