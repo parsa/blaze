@@ -158,6 +158,7 @@ class UniLowerProxy : public Proxy< UniLowerProxy<MT> >
    template< typename T > inline const UniLowerProxy& operator-=( const T& value ) const;
    template< typename T > inline const UniLowerProxy& operator*=( const T& value ) const;
    template< typename T > inline const UniLowerProxy& operator/=( const T& value ) const;
+   template< typename T > inline const UniLowerProxy& operator%=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
@@ -408,6 +409,31 @@ inline const UniLowerProxy<MT>& UniLowerProxy<MT>::operator/=( const T& value ) 
    }
 
    value_ /= value;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal or upper matrix element.
+//
+// In case the proxy represents an element on the diagonal or in the upper part of the matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const UniLowerProxy<MT>& UniLowerProxy<MT>::operator%=( const T& value ) const
+{
+   if( isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or upper matrix element" );
+   }
+
+   value_ %= value;
 
    return *this;
 }

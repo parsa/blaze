@@ -66,6 +66,7 @@
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1455,6 +1456,61 @@ inline bool tryMultAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the Schur product assignment of a matrix to an unilower
+//        matrix.
+// \ingroup unilower_matrix
+//
+// \param lhs The target left-hand side unilower matrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySchurAssign( const UniLowerMatrix<MT1,SO1,DF>& lhs,
+                            const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( ( row + 1UL >= column + N ) || ( column + 1UL >= row + M ) )
+      return true;
+
+   size_t i( row < column ? column - row : 0UL );
+   size_t j( column < row ? row - column : 0UL );
+
+   for( ; i<M && j<N; ++i, ++j )
+   {
+      if( !isOne( (~rhs)(i,j) ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the division assignment of a vector to an unilower matrix.
 // \ingroup unilower_matrix
 //
@@ -1965,6 +2021,133 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 {
    using Type = LowerMatrix< SubTrait_<MT1,MT2> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, StaticMatrix<T,M,N,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, StaticMatrix<T,M,N,SO2> > >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< StaticMatrix<T,M,N,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< StaticMatrix<T,M,N,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, HybridMatrix<T,M,N,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, HybridMatrix<T,M,N,SO2> > >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< HybridMatrix<T,M,N,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< HybridMatrix<T,M,N,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, DynamicMatrix<T,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, DynamicMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< DynamicMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< DynamicMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, CustomMatrix<T,AF,PF,SO2> > >;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< CustomMatrix<T,AF,PF,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< CustomMatrix<T,AF,PF,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, CompressedMatrix<T,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, CompressedMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< CompressedMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< CompressedMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< UniLowerMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = IdentityMatrix< MultTrait_< ElementType_<MT>, T >, SO2 >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< IdentityMatrix<T,SO1>, UniLowerMatrix<MT,SO2,DF> >
+{
+   using Type = IdentityMatrix< MultTrait_< T, ElementType_<MT> >, SO1 >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, UniLowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< HermitianMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = UniLowerMatrix< SchurTrait_<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
