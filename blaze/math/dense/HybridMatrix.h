@@ -64,12 +64,14 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -322,6 +324,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
@@ -421,6 +424,20 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT::simdEnabled &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_<MT> >::value &&
+                            IsRowMajorMatrix<MT>::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
@@ -476,6 +493,15 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 
    template< typename MT > inline void subAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,!SO>& rhs );
+
+   template< typename MT, bool SO2 >
+   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO2>& rhs );
+
+   template< typename MT, bool SO2 >
+   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO2>& rhs );
+
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,SO>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,!SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1553,6 +1579,45 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
    }
    else {
       subAssign( *this, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator%=( const Matrix<MT,SO2>& rhs )
+{
+   using blaze::schurAssign;
+
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_<MT> tmp( ~rhs );
+      schurAssign( *this, tmp );
+   }
+   else {
+      schurAssign( *this, ~rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3122,6 +3187,145 @@ inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO2 >     // Storage order of the right-hand side dense matrix
+inline DisableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         v_[i*NN+j] *= (~rhs)(i,j);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO2 >     // Storage order of the right-hand side dense matrix
+inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
+
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         store( i, j, load(i,j) * (~rhs).load(i,j) );
+      }
+      for( ; remainder && j<n_; ++j ) {
+         v_[i*NN+j] *= (~rhs)(i,j);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const HybridMatrix tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t i=0UL; i<m_; ++i )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const HybridMatrix tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t j=0UL; j<n_; ++j )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
+}
+//*************************************************************************************************
+
+
 
 
 
@@ -3258,6 +3462,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
@@ -3351,6 +3556,18 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //**********************************************************************************************
 
    //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT::simdEnabled &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_<MT> >::value &&
+                            IsColumnMajorMatrix<MT>::value };
+   };
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
    //**********************************************************************************************
@@ -3406,6 +3623,15 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
 
    template< typename MT > inline void subAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,false>& rhs );
+
+   template< typename MT, bool SO >
+   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+
+   template< typename MT, bool SO >
+   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,true>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -4494,6 +4720,46 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
    }
    else {
       subAssign( *this, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename MT    // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator%=( const Matrix<MT,SO>& rhs )
+{
+   using blaze::schurAssign;
+
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_<MT> tmp( ~rhs );
+      schurAssign( *this, tmp );
+   }
+   else {
+      schurAssign( *this, ~rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -6058,10 +6324,8 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef ConstIterator_<MT>  RhsConstIterator;
-
    for( size_t j=0UL; j<n_; ++j )
-      for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -6090,11 +6354,152 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   typedef ConstIterator_<MT>  RhsConstIterator;
+   for( size_t i=0UL; i<m_; ++i )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         v_[i+element->index()*MM] -= element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO >      // Storage order of the right-hand side dense matrix
+inline DisableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<m_; ++i ) {
+         v_[i+j*MM] *= (~rhs)(i,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO >      // Storage order of the right-hand side dense matrix
+inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
+
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         store( i, j, load(i,j) * (~rhs).load(i,j) );
+      }
+      for( ; remainder && i<m_; ++i ) {
+         v_[i+j*MM] *= (~rhs)(i,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const HybridMatrix tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t j=0UL; j<n_; ++j )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const HybridMatrix tmp( serial( *this ) );
+
+   reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         v_[i+element->index()*MM] -= element->value();
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6459,6 +6864,55 @@ template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, s
 struct SubTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
 {
    using Type = HybridMatrix< SubTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
+struct SchurTrait< HybridMatrix<T1,M1,N1,SO>, StaticMatrix<T2,M2,N2,SO> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M2, N2, SO >;
+};
+
+template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
+struct SchurTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M2, N2, false >;
+};
+
+template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
+struct SchurTrait< StaticMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M2, N2, SO >;
+};
+
+template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
+struct SchurTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M2, N2, false >;
+};
+
+template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
+struct SchurTrait< HybridMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >;
+};
+
+template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
+struct SchurTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >;
 };
 /*! \endcond */
 //*************************************************************************************************
