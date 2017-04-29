@@ -159,6 +159,7 @@ template< typename, typename > class TSMatDMatSchurExpr;
 template< typename, typename > class TSMatDMatSubExpr;
 template< typename, typename > class TSMatDVecMultExpr;
 template< typename, typename > class TSMatSMatMultExpr;
+template< typename, typename > class TSMatSMatSchurExpr;
 template< typename, typename > class TSMatSMatSubExpr;
 template< typename, typename > class TSMatSVecMultExpr;
 template< typename, typename, bool, bool, bool, bool > class TSMatTDMatMultExpr;

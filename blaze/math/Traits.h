@@ -239,6 +239,7 @@
 #include <blaze/math/traits/TSMatSerialExprTrait.h>
 #include <blaze/math/traits/TSMatSMatAddExprTrait.h>
 #include <blaze/math/traits/TSMatSMatMultExprTrait.h>
+#include <blaze/math/traits/TSMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/TSMatSMatSubExprTrait.h>
 #include <blaze/math/traits/TSMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatSVecMultExprTrait.h>
