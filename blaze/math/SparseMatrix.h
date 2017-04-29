@@ -69,6 +69,7 @@
 #include <blaze/math/expressions/SVecSVecOuterExpr.h>
 #include <blaze/math/expressions/TDVecSMatMultExpr.h>
 #include <blaze/math/expressions/TDVecTSMatMultExpr.h>
+#include <blaze/math/expressions/TSMatDMatSchurExpr.h>
 #include <blaze/math/expressions/TSMatDVecMultExpr.h>
 #include <blaze/math/expressions/TSMatSMatMultExpr.h>
 #include <blaze/math/expressions/TSMatSMatSubExpr.h>
