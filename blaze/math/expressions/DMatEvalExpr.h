@@ -401,6 +401,58 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Schur product assignment to dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense matrix evaluation expression to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      schurAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to sparse matrices*************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense matrix evaluation expression to a sparse matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void schurAssign( SparseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      schurAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Multiplication assignment to dense matrices*************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Multiplication assignment of a dense matrix evaluation expression to a dense matrix.
@@ -605,6 +657,58 @@ class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       smpSubAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP Schur product assignment of a dense matrix evaluation expression to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side evaluation expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized SMP Schur product assignment of a dense
+   // matrix evaluation expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSchurAssign( ~lhs, rhs.dm_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to sparse matrices*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP Schur product assignment of a dense matrix evaluation expression to a sparse matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side evaluation expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized SMP Schur product assignment of a dense
+   // matrix evaluation expression to a sparse matrix.
+   */
+   template< typename MT2  // Type of the target sparse matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void smpSchurAssign( SparseMatrix<MT2,SO2>& lhs, const DMatEvalExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      smpSchurAssign( ~lhs, rhs.dm_ );
    }
    /*! \endcond */
    //**********************************************************************************************
