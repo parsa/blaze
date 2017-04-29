@@ -778,6 +778,243 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 
 //=================================================================================================
 //
+//  SCHUR PRODUCT ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP Schur product assignment of a dense matrix to a dense
+//        matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP Schur product assignment
+// of a dense matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef ElementType_<MT1>                   ET1;
+   typedef ElementType_<MT2>                   ET2;
+   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
+
+   const bool lhsAligned( (~lhs).isAligned() );
+   const bool rhsAligned( (~rhs).isAligned() );
+
+   const int threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
+
+   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
+   const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
+   const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
+
+   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
+   const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
+   const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( int i=0; i<threads; ++i )
+   {
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
+
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
+
+      if( simdEnabled && lhsAligned && rhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && lhsAligned ) {
+         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      }
+      else if( simdEnabled && rhsAligned ) {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+      }
+      else {
+         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the OpenMP-based SMP Schur product assignment of a sparse matrix to a dense
+//        matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function is the backend implementation of the OpenMP-based SMP Schur product assignment
+// of a sparse matrix to a dense matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , bool SO2 >    // Storage order of the right-hand side sparse matrix
+void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
+
+   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+
+   const size_t threads( omp_get_num_threads() );
+   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
+
+   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
+
+   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
+
+#pragma omp for schedule(dynamic,1) nowait
+   for( size_t i=0; i<threads; ++i )
+   {
+      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
+      const size_t column( ( i % threadmap.second ) * colsPerThread );
+
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+         continue;
+
+      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+
+      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the OpenMP-based SMP Schur product assignment to a dense matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \return void
+//
+// This function implements the default OpenMP-based SMP Schur product assignment to a dense
+// matrix. Due to the explicit application of the SFINAE principle, this function can only be
+// selected by the compiler in case both operands are SMP-assignable and the element types of
+// both operands are not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsDenseMatrix<MT1>
+                     , Or< Not< IsSMPAssignable<MT1> >
+                         , Not< IsSMPAssignable<MT2> > > > >
+   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   schurAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Implementation of the OpenMP-based SMP Schur product assignment to a dense matrix.
+// \ingroup math
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \return void
+//
+// This function implements the OpenMP-based SMP Schur product assignment to a dense matrix. Due
+// to the explicit application of the SFINAE principle, this function can only be selected by the
+// compiler in case both operands are SMP-assignable and the element types of both operands are
+// not SMP-assignable.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >
+   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<MT2> );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_PARALLEL_SECTION
+   {
+      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+         schurAssign( ~lhs, ~rhs );
+      }
+      else {
+#pragma omp parallel shared( lhs, rhs )
+         smpSchurAssign_backend( ~lhs, ~rhs );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  MULTIPLICATION ASSIGNMENT
 //
 //=================================================================================================
