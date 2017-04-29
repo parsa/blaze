@@ -61,6 +61,7 @@
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -428,6 +429,38 @@ template< typename MT1  // Type of the adapted matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the Schur product assignment of a matrix to a symmetric
+//        matrix.
+// \ingroup symmetric_matrix
+//
+// \param lhs The target left-hand side symmetric matrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , bool NF       // Numeric flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySchurAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
+                            const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    return tryAssign( lhs, ~rhs, row, column );
 }
@@ -819,6 +852,97 @@ template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bo
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
    using Type = SymmetricMatrix< SubTrait_<MT1,MT2> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
+{
+   using Type = SchurTrait_< MT, StaticMatrix<T,M,N,SO2> >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SchurTrait_< StaticMatrix<T,M,N,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
+{
+   using Type = SchurTrait_< MT, HybridMatrix<T,M,N,SO2> >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SchurTrait_< HybridMatrix<T,M,N,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
+{
+   using Type = SchurTrait_< MT, DynamicMatrix<T,SO2> >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SchurTrait_< DynamicMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   using Type = SchurTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SchurTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
+{
+   using Type = SchurTrait_< MT, CompressedMatrix<T,SO2> >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = SchurTrait_< CompressedMatrix<T,SO1>, MT >;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
+struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
+{
+   using Type = DiagonalMatrix< SchurTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SchurTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   using Type = DiagonalMatrix< SchurTrait_< IdentityMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
+struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
+{
+   using Type = SymmetricMatrix< SchurTrait_<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************

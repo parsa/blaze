@@ -525,6 +525,12 @@ class SymmetricMatrix<MT,SO,false,false>
    template< typename MT2 >
    inline SymmetricMatrix& operator-=( const Matrix<MT2,!SO>& rhs );
 
+   template< typename MT2 >
+   inline SymmetricMatrix& operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline SymmetricMatrix& operator%=( const Matrix<MT2,!SO>& rhs );
+
    template< typename MT2, bool SO2 >
    inline SymmetricMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
@@ -1459,6 +1465,78 @@ inline SymmetricMatrix<MT,SO,false,false>&
    SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator-=( trans( ~rhs ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the Schur product operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,false,false>&
+   SymmetricMatrix<MT,SO,false,false>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   using blaze::resize;
+
+   typedef SchurTrait_< MT, ResultType_<MT2> >  Tmp;
+
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   Tmp tmp( (*this) % ~rhs );
+
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   resize( matrix_, tmp.rows(), tmp.columns() );
+   reset();
+   assign( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix with opposite
+//        storage order (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the Schur product operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,false,false>&
+   SymmetricMatrix<MT,SO,false,false>::operator%=( const Matrix<MT2,!SO>& rhs )
+{
+   return this->operator%=( trans( ~rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************

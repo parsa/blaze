@@ -545,6 +545,15 @@ class SymmetricMatrix<MT,SO,true,false>
    template< typename MT2 >
    inline SymmetricMatrix& operator-=( const Matrix<MT2,!SO>& rhs );
 
+   template< typename MT2 >
+   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline SymmetricMatrix& operator%=( const Matrix<MT2,!SO>& rhs );
+
    template< typename MT2, bool SO2 >
    inline SymmetricMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
@@ -608,13 +617,15 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename MT2 > inline void assign   (       DenseMatrix <MT2,SO>& rhs );
-   template< typename MT2 > inline void assign   ( const DenseMatrix <MT2,SO>& rhs );
-   template< typename MT2 > inline void assign   ( const SparseMatrix<MT2,SO>& rhs );
-   template< typename MT2 > inline void addAssign( const DenseMatrix <MT2,SO>& rhs );
-   template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,SO>& rhs );
-   template< typename MT2 > inline void subAssign( const DenseMatrix <MT2,SO>& rhs );
-   template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > inline void assign     (       DenseMatrix <MT2,SO>& rhs );
+   template< typename MT2 > inline void assign     ( const DenseMatrix <MT2,SO>& rhs );
+   template< typename MT2 > inline void assign     ( const SparseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > inline void addAssign  ( const DenseMatrix <MT2,SO>& rhs );
+   template< typename MT2 > inline void addAssign  ( const SparseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > inline void subAssign  ( const DenseMatrix <MT2,SO>& rhs );
+   template< typename MT2 > inline void subAssign  ( const SparseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > inline void schurAssign( const DenseMatrix <MT2,SO>& rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1699,6 +1710,112 @@ inline SymmetricMatrix<MT,SO,true,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a general matrix
+//        (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side general matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the Schur product operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+   SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   schurAssign( ~rhs );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix computation
+//        (\f$ A&=B \f$).
+//
+// \param rhs The right-hand side matrix computation for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the Schur product operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+   SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   typedef If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >  Tmp;
+
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   Tmp tmp( ~rhs );
+
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( !tmp.canAlias( this ), "Aliasing detected" );
+
+   schurAssign( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix with opposite
+//        storage order (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the Schur product operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,true,false>&
+   SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,!SO>& rhs )
+{
+   return this->operator%=( trans( ~rhs ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
 //
 // \param rhs The right-hand side matrix for the multiplication.
@@ -2666,6 +2783,104 @@ inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2
          const ConstIterator last( (~rhs).upperBound(i,i) );
          for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) -= element->value();
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) *= (~rhs)(i,j);
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            matrix_(i,j) *= (~rhs)(i,j);
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   typedef ConstIterator_<MT2>  ConstIterator;
+
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+      {
+         size_t i( 0UL );
+
+         const ConstIterator last( (~rhs).upperBound(j,j) );
+         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element ) {
+            for( ; i<element->index(); ++i )
+               reset( matrix_(i,j) );
+            matrix_(i,j) *= element->value();
+            ++i;
+         }
+
+         for( ; i<rows(); ++i ) {
+            reset( matrix_(i,j) );
+         }
+      }
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+      {
+         size_t j( 0UL );
+
+         const ConstIterator last( (~rhs).upperBound(i,i) );
+         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element ) {
+            for( ; j<element->index(); ++j )
+               reset( matrix_(i,j) );
+            matrix_(i,j) *= element->value();
+            ++j;
+         }
+
+         for( ; j<columns(); ++j ) {
+            reset( matrix_(i,j) );
+         }
       }
    }
 }

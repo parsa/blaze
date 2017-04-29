@@ -151,6 +151,7 @@ class NonNumericProxy : public Proxy< NonNumericProxy<MT>, ValueType_< ElementTy
    template< typename T > inline NonNumericProxy& operator-=( const T& value );
    template< typename T > inline NonNumericProxy& operator*=( const T& value );
    template< typename T > inline NonNumericProxy& operator/=( const T& value );
+   template< typename T > inline NonNumericProxy& operator%=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -417,6 +418,22 @@ template< typename T >   // Type of the right-hand side value
 inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator/=( const T& value )
 {
    get() /= value;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the represented matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned access proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline NonNumericProxy<MT>& NonNumericProxy<MT>::operator%=( const T& value )
+{
+   get() %= value;
    return *this;
 }
 //*************************************************************************************************

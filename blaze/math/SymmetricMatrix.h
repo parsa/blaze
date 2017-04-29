@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/adaptors/DiagonalMatrix.h>
 #include <blaze/math/adaptors/SymmetricMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>

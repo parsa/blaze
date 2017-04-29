@@ -151,6 +151,7 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    template< typename T > inline NumericProxy& operator-=( const T& value );
    template< typename T > inline NumericProxy& operator*=( const T& value );
    template< typename T > inline NumericProxy& operator/=( const T& value );
+   template< typename T > inline NumericProxy& operator%=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -371,6 +372,25 @@ inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
    matrix_(row_,column_) /= value;
    if( row_ != column_ )
       matrix_(column_,row_) /= value;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline NumericProxy<MT>& NumericProxy<MT>::operator%=( const T& value )
+{
+   matrix_(row_,column_) %= value;
+   if( row_ != column_ )
+      matrix_(column_,row_) %= value;
 
    return *this;
 }
