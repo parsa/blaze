@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/SMatSerialExpr.h>
 #include <blaze/math/expressions/SMatSMatAddExpr.h>
 #include <blaze/math/expressions/SMatSMatMultExpr.h>
+#include <blaze/math/expressions/SMatSMatSchurExpr.h>
 #include <blaze/math/expressions/SMatSMatSubExpr.h>
 #include <blaze/math/expressions/SMatSVecMultExpr.h>
 #include <blaze/math/expressions/SMatTransExpr.h>

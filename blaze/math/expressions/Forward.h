@@ -112,6 +112,7 @@ template< typename, typename, bool > class SMatScalarMultExpr;
 template< typename, bool > class SMatSerialExpr;
 template< typename, typename > class SMatSMatAddExpr;
 template< typename, typename > class SMatSMatMultExpr;
+template< typename, typename > class SMatSMatSchurExpr;
 template< typename, typename > class SMatSMatSubExpr;
 template< typename, typename > class SMatSVecMultExpr;
 template< typename, typename, bool, bool, bool, bool > class SMatTDMatMultExpr;
