@@ -66,12 +66,14 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsCustom.h>
@@ -553,6 +555,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    template< typename MT, bool SO2 > inline CustomMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline CustomMatrix& operator%=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
@@ -645,6 +648,19 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT::simdEnabled &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_<MT> >::value };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -698,6 +714,16 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    template< typename MT > inline void subAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,!SO>& rhs );
+
+   template< typename MT >
+   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+
+   template< typename MT >
+   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+
+   template< typename MT > inline void schurAssign( const DenseMatrix<MT,!SO>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,SO>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,!SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1650,6 +1676,41 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator-=( con
    }
    else {
       smpSubAssign( *this, ~rhs );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( const Matrix<MT,SO2>& rhs )
+{
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_<MT> tmp( ~rhs );
+      smpSchurAssign( *this, tmp );
+   }
+   else {
+      smpSchurAssign( *this, ~rhs );
    }
 
    return *this;
@@ -2631,12 +2692,14 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
+         Iterator left( begin(i) );
+         ConstIterator_<MT> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE, right += SIMDSIZE;
          }
          for( ; remainder && j<n_; ++j ) {
-            v_.get()[i*nn_+j] = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -2645,19 +2708,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
-         ConstIterator_<MT> it( (~rhs).begin(i) );
+         Iterator left( begin(i) );
+         ConstIterator_<MT> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-            store( i, j             , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE    , it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*2UL, it.load() ); it += SIMDSIZE;
-            store( i, j+SIMDSIZE*3UL, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.store( right.load() ); left+=SIMDSIZE, right+=SIMDSIZE;
          }
-         for( ; remainder && j<n_; ++j, ++it ) {
-            v_.get()[i*nn_+j] = *it;
+         for( ; remainder && j<n_; ++j ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -2857,19 +2921,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) + it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
-         v_.get()[i*nn_+j] += *it;
+      for( ; remainder && j<jend; ++j ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -3080,19 +3145,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
-      ConstIterator_<MT> it( (~rhs).begin(i) + jbegin );
+      Iterator left( begin(i) + jbegin );
+      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         store( i, j             , load(i,j             ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE    , load(i,j+SIMDSIZE    ) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*2UL, load(i,j+SIMDSIZE*2UL) - it.load() ); it += SIMDSIZE;
-         store( i, j+SIMDSIZE*3UL, load(i,j+SIMDSIZE*3UL) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; j<jpos; j+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
-         v_.get()[i*nn_+j] -= *it;
+      for( ; remainder && j<jend; ++j ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -3205,6 +3271,202 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
    for( size_t j=0UL; j<n_; ++j )
       for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_.get()[element->index()*nn_+j] -= element->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side dense matrix
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         v_.get()[i*nn_+j    ] *= (~rhs)(i,j    );
+         v_.get()[i*nn_+j+1UL] *= (~rhs)(i,j+1UL);
+      }
+      if( jpos < n_ ) {
+         v_.get()[i*nn_+jpos] *= (~rhs)(i,jpos);
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SIMD optimized implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side dense matrix
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_<MT> right( (~rhs).begin(i) );
+
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; remainder && j<n_; ++j ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side dense matrix
+inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,!SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t ii=0UL; ii<m_; ii+=block ) {
+      const size_t iend( min( m_, ii+block ) );
+      for( size_t jj=0UL; jj<n_; jj+=block ) {
+         const size_t jend( min( n_, jj+block ) );
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               v_.get()[i*nn_+j] *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const ResultType tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t i=0UL; i<m_; ++i )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         v_.get()[i*nn_+element->index()] = tmp(i,element->index()) * element->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const ResultType tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t j=0UL; j<n_; ++j )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         v_.get()[element->index()*nn_+j] = tmp(element->index(),j) * element->value();
 }
 //*************************************************************************************************
 
@@ -3353,6 +3615,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    template< typename MT, bool SO > inline CustomMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline CustomMatrix& operator%=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
@@ -3439,6 +3702,17 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT::simdEnabled &&
+                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_<MT> >::value };
+   };
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -3492,6 +3766,16 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    template< typename MT > inline void subAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,false>& rhs );
+
+   template< typename MT >
+   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign ( const DenseMatrix<MT,true>& rhs );
+
+   template< typename MT >
+   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign ( const DenseMatrix<MT,true>& rhs );
+
+   template< typename MT > inline void schurAssign( const DenseMatrix<MT,false>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,true>&  rhs );
+   template< typename MT > inline void schurAssign( const SparseMatrix<MT,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -4444,6 +4728,43 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
    else {
       smpSubAssign( *this, ~rhs );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT    // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline CustomMatrix<Type,AF,PF,true>&
+   CustomMatrix<Type,AF,PF,true>::operator%=( const Matrix<MT,SO>& rhs )
+{
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_<MT> tmp( ~rhs );
+      smpSchurAssign( *this, tmp );
+   }
+   else {
+      smpSchurAssign( *this, ~rhs );
    }
 
    return *this;
@@ -5439,12 +5760,14 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
+         Iterator left( begin(j) );
+         ConstIterator_<MT> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            stream( i, j, (~rhs).load(i,j) );
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; remainder && i<m_; ++i ) {
-            v_.get()[i+j*mm_] = (~rhs)(i,j);
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5453,19 +5776,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
-         ConstIterator_<MT> it( (~rhs).begin(j) );
+         Iterator left( begin(j) );
+         ConstIterator_<MT> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-            store( i             , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE    , j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*2UL, j, it.load() ); it += SIMDSIZE;
-            store( i+SIMDSIZE*3UL, j, it.load() ); it += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-            store( i, j, it.load() );
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
-         for( ; remainder && i<m_; ++i, ++it ) {
-            v_.get()[i+j*mm_] = *it;
+         for( ; remainder && i<m_; ++i ) {
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -5670,19 +5994,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) + it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) + it.load() ); it += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) + it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<iend; ++i, ++it ) {
-         v_.get()[i+j*mm_] += *it;
+      for( ; remainder && i<iend; ++i ) {
+         *left += *right; ++left; ++right;
       }
    }
 }
@@ -5899,19 +6224,20 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
-      ConstIterator_<MT> it( (~rhs).begin(j) + ibegin );
+      Iterator left( begin(j) + ibegin );
+      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         store( i             , j, load(i             ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE    , j, load(i+SIMDSIZE    ,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*2UL, j, load(i+SIMDSIZE*2UL,j) - it.load() ); it += SIMDSIZE;
-         store( i+SIMDSIZE*3UL, j, load(i+SIMDSIZE*3UL,j) - it.load() ); it += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; i<ipos; i+=SIMDSIZE, it+=SIMDSIZE ) {
-         store( i, j, load(i,j) - it.load() );
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
       }
-      for( ; remainder && i<iend; ++i, ++it ) {
-         v_.get()[i+j*mm_] -= *it;
+      for( ; remainder && i<iend; ++i ) {
+         *left -= *right; ++left; ++right;
       }
    }
 }
@@ -6027,6 +6353,208 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_.get()[i+element->index()*mm_] -= element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT >  // Type of the right-hand side dense matrix
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
+         v_.get()[i    +j*mm_] *= (~rhs)(i    ,j);
+         v_.get()[i+1UL+j*mm_] *= (~rhs)(i+1UL,j);
+      }
+      if( ipos < m_ ) {
+         v_.get()[ipos+j*mm_] *= (~rhs)(ipos,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a column-major
+//        dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT >  // Type of the right-hand side dense matrix
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+   CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
+      Iterator left( begin(j) );
+      ConstIterator_<MT> right( (~rhs).begin(j) );
+
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; remainder && i<m_; ++i ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT >  // Type of the right-hand side dense matrix
+inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t jj=0UL; jj<n_; jj+=block ) {
+      const size_t jend( min( n_, jj+block ) );
+      for( size_t ii=0UL; ii<m_; ii+=block ) {
+         const size_t iend( min( m_, ii+block ) );
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               v_.get()[i+j*mm_] *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const ResultType tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t j=0UL; j<(~rhs).columns(); ++j )
+      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+         v_.get()[element->index()+j*mm_] = tmp(element->index(),j) * element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+template< typename MT >  // Type of the right-hand side sparse matrix
+inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const ResultType tmp( serial( *this ) );
+
+   reset();
+
+   for( size_t i=0UL; i<(~rhs).rows(); ++i )
+      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+         v_.get()[i+element->index()*mm_] = tmp(i,element->index()) * element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6493,6 +7021,103 @@ template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool
 struct SubTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 {
    using Type = DynamicMatrix< SubTrait_<T1,T2>, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
+struct SchurTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SchurTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
+struct SchurTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SchurTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO, typename T2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+};
+
+template< typename T1, bool SO, typename T2, bool AF, bool PF >
+struct SchurTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SchurTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+};
+
+template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
+struct SchurTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
+{
+   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
