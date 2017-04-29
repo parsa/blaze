@@ -70,6 +70,10 @@ inline EnableIf_< IsSparseMatrix<MT1> >
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline EnableIf_< IsSparseMatrix<MT1> >
    smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+inline EnableIf_< IsSparseMatrix<MT1> >
+   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -163,6 +167,38 @@ inline EnableIf_< IsSparseMatrix<MT1> >
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    subAssign( ~lhs, ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Default implementation of the SMP Schur product assignment of a matrix to sparse matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side sparse matrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \return void
+//
+// This function implements the default SMP Schur product assignment of a matrix to a sparse
+// matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , bool SO1      // Storage order of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline EnableIf_< IsSparseMatrix<MT1> >
+   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   schurAssign( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
