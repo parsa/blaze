@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
@@ -932,6 +933,8 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
+         if( isDefault( element->value() ) ) continue;
+
          const SIMDTrait_<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
@@ -1104,6 +1107,8 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
+         if( isDefault( element->value() ) ) continue;
+
          const SIMDTrait_<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
@@ -1169,6 +1174,217 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
 
    //**Subtraction assignment to sparse matrices***************************************************
    // No special implementation for the subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**Schur product assignment to row-major dense matrices****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a sparse vector-dense vector outer product to a row-major
+   //        dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side outer product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a sparse
+   // vector-dense vector outer product expression to a row-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT,false>& lhs, const SVecDVecOuterExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+
+      SVecDVecOuterExpr::selectSchurAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default Schur product assignment to row-major dense matrices********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default Schur product assignment of a sparse vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side sparse vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default Schur product assignment kernel for the sparse vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+
+      const ConstIterator end( x.end() );
+
+      size_t i( 0UL );
+
+      for( ConstIterator element=x.begin(); element!=end; ++element )
+      {
+         if( isDefault( element->value() ) ) continue;
+
+         for( ; i<element->index(); ++i ) {
+            for( size_t j=0UL; j<y.size(); ++j )
+               reset( (~A)(i,j) );
+         }
+
+         for( size_t j=0UL; j<y.size(); ++j ) {
+            (~A)(element->index(),j) *= element->value() * y[j];
+         }
+
+         ++i;
+      }
+
+      for( ; i<x.size(); ++i ) {
+         for( size_t j=0UL; j<y.size(); ++j )
+            reset( (~A)(i,j) );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized Schur product assignment to row-major dense matrices*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized Schur product assignment of a sparse vector-dense vector outer product
+   //        to a row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side sparse vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized Schur product assignment kernel for the sparse
+   // vector-dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+
+      const size_t M( (~A).rows()    );
+      const size_t N( (~A).columns() );
+
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+
+      const ConstIterator begin( x.begin() );
+      const ConstIterator end  ( x.end()   );
+
+      size_t i( 0UL );
+
+      for( ConstIterator element=begin; element!=end; ++element )
+      {
+         if( isDefault( element->value() ) ) continue;
+
+         for( ; i<element->index(); ++i ) {
+            for( size_t j=0UL; j<N; ++j )
+               reset( (~A)(i,j) );
+         }
+
+         const SIMDTrait_<ElementType> x1( set( element->value() ) );
+
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            (~A).store( element->index(), j, (~A).load(element->index(),j) * ( x1 * y.load(j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(element->index(),j) *= element->value() * y[j];
+         }
+
+         ++i;
+      }
+
+      for( ; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j )
+            reset( (~A)(i,j) );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to column-major dense matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a sparse vector-dense vector outer product to a
+   //        column-major dense matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side outer product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a sparse
+   // vector-dense vector outer product expression to a column-major dense matrix. Due to the
+   // explicit application of the SFINAE principle, this function can only be selected by the
+   // compiler in case either of the two operands is an expression or any of the two involved
+   // element types is non-numeric data type.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline EnableIf_< UseAssign<MT> >
+      schurAssign( DenseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+
+      const ConstIterator end( x.end() );
+
+      for( size_t j=0UL; j<y.size(); ++j )
+      {
+         size_t i( 0UL );
+
+         for( ConstIterator element=x.begin(); element!=end; ++element, ++i ) {
+            for( ; i<element->index(); ++i )
+               reset( (~lhs)(i,j) );
+            (~lhs)(element->index(),j) *= element->value() * y[j];
+         }
+
+         for( ; i<x.size(); ++i ) {
+            reset( (~lhs)(i,j) );
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Addition assignment to sparse matrices******************************************************
+   // No special implementation for the addition assignment to sparse matrices.
    //**********************************************************************************************
 
    //**Multiplication assignment to dense matrices*************************************************
