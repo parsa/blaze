@@ -55,27 +55,40 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatSMatMultExprTrait.h>
+#include <blaze/math/traits/DMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/DMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/DMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
+#include <blaze/math/traits/SMatDMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatSMatMultExprTrait.h>
+#include <blaze/math/traits/SMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/SMatTDMatMultExprTrait.h>
+#include <blaze/math/traits/SMatTDMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/SMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TDMatSMatMultExprTrait.h>
+#include <blaze/math/traits/TDMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/TDMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/TDMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatDMatMultExprTrait.h>
+#include <blaze/math/traits/TSMatDMatSchurExprTrait.h>
 #include <blaze/math/traits/TSMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatSMatMultExprTrait.h>
+#include <blaze/math/traits/TSMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/TSMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatTDMatMultExprTrait.h>
+#include <blaze/math/traits/TSMatTDMatSchurExprTrait.h>
 #include <blaze/math/traits/TSMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/TSMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -94,6 +107,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/StorageOrder.h>
@@ -260,8 +274,6 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
 
       //**Default constructor**********************************************************************
       /*!\brief Default constructor for the ConstIterator class.
-      //
-      // \param index Index to the initial matrix element.
       */
       inline ConstIterator()
          : index_()  // Index to the current identity matrix element
@@ -1286,6 +1298,275 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of two unitriangular matrices (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side unilower/uniupper matrix for the Schur product.
+// \param rhs The right-hand side uniupper/unilower matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of two unitriangular matrices:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > A;
+   blaze::UniUpperMatrix< blaze::DynamicMatrix<double,rowMajor> > B;
+   blaze::DynamicMatrix<double,rowMajor> C;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns an identity matrix. In case the current sizes of the two given matrices
+// don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Data type of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
+                , const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 > >
+   operator%( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of an identity matrix and an unitriangular dense matrix
+//        (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side identity matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of an identity matrix and an unitriangular dense
+// matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::IdentityMatrix<double,rowMajor> A, C;
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > B;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns an identity matrix. In case the current sizes of the two given matrices
+// don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename T   // Data type of the left-hand side identity matrix
+        , bool SO1     // Storage order of the left-hand side identity matrix
+        , typename MT  // Type of the right-hand side dense matrix
+        , bool SO2 >   // Storage order of the right-hand side dense matrix
+inline EnableIf_< IsUniTriangular<MT>
+                , const IdentityMatrix< MultTrait_< T, ElementType_<MT> >, SO1 > >
+   operator%( const IdentityMatrix<T,SO1>& lhs, const DenseMatrix<MT,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_< T, ElementType_<MT> >, SO1 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of an unitriangular dense matrix and an identity matrix
+//        (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side identity matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of an unitriangular dense matrix and an identity
+// matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > A;
+   blaze::IdentityMatrix<double,rowMajor> B, C;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns a reference to the given dense matrix. In case the current sizes of the
+// two given matrices don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO1     // Storage order of the left-hand side dense matrix
+        , typename T   // Data type of the right-hand side identity matrix
+        , bool SO2 >   // Storage order of the right-hand side identity matrix
+inline EnableIf_< IsUniTriangular<MT>
+                , const IdentityMatrix< MultTrait_< ElementType_<MT>, T >, SO2 > >
+   operator%( const DenseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT>, T >, SO2 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of an identity matrix and an unitriangular sparse matrix
+//        (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side identity matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of an identity matrix and a sparse matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::IdentityMatrix<double,rowMajor> A, C;
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > B;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns a reference to the given sparse matrix. In case the current sizes of the
+// two given matrices don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename T   // Data type of the left-hand side identity matrix
+        , bool SO1     // Storage order of the left-hand side identity matrix
+        , typename MT  // Type of the right-hand side sparse matrix
+        , bool SO2 >   // Storage order of the right-hand side sparse matrix
+inline EnableIf_< IsUniTriangular<MT>
+                , const IdentityMatrix< MultTrait_< T, ElementType_<MT> >, SO1 > >
+   operator%( const IdentityMatrix<T,SO1>& lhs, const SparseMatrix<MT,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_< T, ElementType_<MT> >, SO1 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of an unitriangular sparse matrix and an identity matrix
+//        (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side sparse matrix for the Schur product.
+// \param rhs The right-hand side identity matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of an unitriangular sparse matrix and an identity
+// matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > A;
+   blaze::IdentityMatrix<double,rowMajor> B, C;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns a reference to the given sparse matrix. In case the current sizes of the
+// two given matrices don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO1     // Storage order of the left-hand side sparse matrix
+        , typename T   // Data type of the right-hand side identity matrix
+        , bool SO2 >   // Storage order of the right-hand side identity matrix
+inline EnableIf_< IsUniTriangular<MT>
+                , const IdentityMatrix< MultTrait_< ElementType_<MT>, T >, SO2 > >
+   operator%( const SparseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT>, T >, SO2 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Operator for the Schur product of two identity matrices (\f$ A=B%C \f$).
+// \ingroup identity_matrix
+//
+// \param lhs The left-hand side identity matrix for the Schur product.
+// \param rhs The right-hand side identity matrix for the Schur product.
+// \return The resulting matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the Schur product of two identity matrices:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::IdentityMatrix<double,rowMajor> A, B, C;
+   // ... Resizing and initialization
+   C = A % B;
+   \endcode
+
+// The operator returns an identity matrix. In case the current sizes of the two given matrices
+// don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename T1  // Data type of the left-hand side identity matrix
+        , bool SO1     // Storage order of the left-hand side identity matrix
+        , typename T2  // Data type of the right-hand side dense matrix
+        , bool SO2 >   // Storage order of the right-hand side dense matrix
+inline const IdentityMatrix< MultTrait_<T1,T2>, SO1 >
+   operator%( const IdentityMatrix<T1,SO1>& lhs, const IdentityMatrix<T2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   return IdentityMatrix< MultTrait_<T1,T2>, SO1 >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of an identity matrix and a dense vector
 //        (\f$ \vec{y}=A*\vec{x} \f$).
 // \ingroup identity_matrix
@@ -2125,6 +2406,97 @@ struct SubTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 
 //=================================================================================================
 //
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct SchurTrait< IdentityMatrix<T1,SO>, CompressedMatrix<T2,SO> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, false >;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct SchurTrait< CompressedMatrix<T1,SO>, IdentityMatrix<T2,SO> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, false >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
+{
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  MULTTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2524,6 +2896,334 @@ struct TSVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
                    , const VT&
                    , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct DMatSMatSchurExprTrait< MT, IdentityMatrix<T,false>
+                             , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct DMatTSMatSchurExprTrait< MT, IdentityMatrix<T,true>
+                              , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct TDMatSMatSchurExprTrait< MT, IdentityMatrix<T,false>
+                              , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct TDMatTSMatSchurExprTrait< MT, IdentityMatrix<T,true>
+                               , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct SMatDMatSchurExprTrait< IdentityMatrix<T,false>, MT
+                             , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct SMatTDMatSchurExprTrait< IdentityMatrix<T,false>, MT
+                              , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct TSMatDMatSchurExprTrait< IdentityMatrix<T,true>, MT
+                              , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct TSMatTDMatSchurExprTrait< IdentityMatrix<T,true>, MT
+                               , EnableIf_< IsUniTriangular<MT> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct SMatSMatSchurExprTrait< IdentityMatrix<T,false>, MT
+                             , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct SMatSMatSchurExprTrait< MT, IdentityMatrix<T,false>
+                             , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct SMatSMatSchurExprTrait< IdentityMatrix<T1,false>, IdentityMatrix<T2,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, false >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct SMatTSMatSchurExprTrait< IdentityMatrix<T,false>, MT
+                              , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct SMatTSMatSchurExprTrait< MT, IdentityMatrix<T,true>
+                              , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct SMatTSMatSchurExprTrait< IdentityMatrix<T1,false>, IdentityMatrix<T2,true> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, false >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct TSMatSMatSchurExprTrait< IdentityMatrix<T,true>, MT
+                              , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct TSMatSMatSchurExprTrait< MT, IdentityMatrix<T,false>
+                              , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, false >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct TSMatSMatSchurExprTrait< IdentityMatrix<T1,true>, IdentityMatrix<T2,false> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, true >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename MT >
+struct TSMatTSMatSchurExprTrait< IdentityMatrix<T,true>, MT
+                               , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< T, ElementType_<MT> >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename T >
+struct TSMatTSMatSchurExprTrait< MT, IdentityMatrix<T,true>
+                               , EnableIf_< And< Not< IsIdentity<MT> >, IsUniTriangular<MT> > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
+                   , IdentityMatrix< MultTrait_< ElementType_<MT>, T >, true >
+                   , INVALID_TYPE >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct TSMatTSMatSchurExprTrait< IdentityMatrix<T1,true>, IdentityMatrix<T2,true> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = IdentityMatrix< MultTrait_<T1,T2>, true >;
    //**********************************************************************************************
 };
 /*! \endcond */
