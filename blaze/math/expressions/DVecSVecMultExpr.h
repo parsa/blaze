@@ -191,6 +191,9 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
 
       //**Constructor******************************************************************************
       /*!\brief Constructor for the ConstIterator class.
+      //
+      // \param vec Handle to the left-hand side dense vector expression.
+      // \param it Iterator to the current position in the right-hand side sparse vector expression.
       */
       inline ConstIterator( LeftOperand vec, IteratorType it )
          : vec_( vec )  // Left-hand side dense vector expression
