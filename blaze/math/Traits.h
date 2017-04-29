@@ -110,6 +110,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RealTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/SMatCTransExprTrait.h>
 #include <blaze/math/traits/SMatDeclDiagExprTrait.h>
