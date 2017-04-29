@@ -62,6 +62,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -719,6 +720,9 @@ class UniUpperMatrix<MT,SO,true>
 
    template< typename MT2, bool SO2 >
    inline EnableIf_< IsComputation<MT2>, UniUpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+
+   template< typename MT2, bool SO2 >
+   inline UniUpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline UniUpperMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
@@ -1955,6 +1959,49 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
 
       matrix_ -= tmp;
    }
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A&=B \f$).
+//
+// \param rhs The right-hand side general matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to uniupper matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument
+// exception is thrown. Also note that the result of the Schur product operation must be an
+// uniupper matrix, i.e. the given matrix must be a strictly upper matrix. In case the result
+// is not an uniupper matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline UniUpperMatrix<MT,SO,true>&
+   UniUpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+{
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
+
+   If_< IsComputation<MT2>, ResultType_<MT2>, const MT2& > tmp( ~rhs );
+
+   for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
+      if( !isOne( tmp(i,i) ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+      }
+   }
+
+   matrix_ %= tmp;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
