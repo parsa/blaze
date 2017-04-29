@@ -55,8 +55,8 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
-#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -251,9 +251,9 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    //**********************************************************************************************
 
    //**Right operand access************************************************************************
-   /*!\brief Returns the right-hand side dense matrix operand.
+   /*!\brief Returns the right-hand side sparse matrix operand.
    //
-   // \return The right-hand side dense matrix operand.
+   // \return The right-hand side sparse matrix operand.
    */
    inline RightOperand rightOperand() const noexcept {
       return rhs_;
@@ -421,6 +421,41 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
 
+   //**Schur product assignment to dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense matrix-sparse matrix subtraction to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side subtraction expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // matrix-sparse matrix subtraction expression to a dense matrix.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatSMatSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( serial( rhs ) );
+      schurAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to sparse matrices*************************************************
+   // No special implementation for the Schur product assignment to sparse matrices.
+   //**********************************************************************************************
+
    //**Multiplication assignment to dense matrices*************************************************
    // No special implementation for the multiplication assignment to dense matrices.
    //**********************************************************************************************
@@ -571,11 +606,50 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    // No special implementation for the SMP subtraction assignment to sparse matrices.
    //**********************************************************************************************
 
+   //**SMP Schur product assignment to dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP Schur product assignment of a dense matrix-sparse matrix subtraction to a dense
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side subtraction expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized SMP Schur product assignment of a dense
+   // matrix-sparse matrix subtraction expression to a dense matrix. Due to the explicit application
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline EnableIf_< UseSMPAssign<MT> >
+      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatSMatSubExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
+      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<ResultType> );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( rhs );
+      smpSchurAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to sparse matrices*********************************************
+   // No special implementation for the SMP Schur product assignment to sparse matrices.
+   //**********************************************************************************************
+
    //**SMP multiplication assignment to dense matrices*********************************************
    // No special implementation for the SMP multiplication assignment to dense matrices.
    //**********************************************************************************************
 
-   //**SMP multiplication assignment to sparse matrices************************************************
+   //**SMP multiplication assignment to sparse matrices********************************************
    // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
