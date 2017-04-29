@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/Dense.h>
 #include <blaze/math/adaptors/lowermatrix/Sparse.h>
@@ -65,6 +66,7 @@
 #include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1372,6 +1374,121 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< LowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 {
    using Type = LowerMatrix< SubTrait_<MT1,MT2> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, StaticMatrix<T,M,N,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, StaticMatrix<T,M,N,SO2> > >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< StaticMatrix<T,M,N,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< StaticMatrix<T,M,N,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, HybridMatrix<T,M,N,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, HybridMatrix<T,M,N,SO2> > >;
+};
+
+template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< HybridMatrix<T,M,N,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< HybridMatrix<T,M,N,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, DynamicMatrix<T,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, DynamicMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< DynamicMatrix<T,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< DynamicMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, CustomMatrix<T,AF,PF,SO2> > >;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< CustomMatrix<T,AF,PF,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< CustomMatrix<T,AF,PF,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, CompressedMatrix<T,SO2> >
+{
+   using Type = LowerMatrix< SchurTrait_< MT, CompressedMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< CompressedMatrix<T,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = LowerMatrix< SchurTrait_< CompressedMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
+struct SchurTrait< LowerMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
+{
+   using Type = DiagonalMatrix< SchurTrait_< MT, IdentityMatrix<T,SO2> > >;
+};
+
+template< typename T, bool SO1, typename MT, bool SO2, bool DF >
+struct SchurTrait< IdentityMatrix<T,SO1>, LowerMatrix<MT,SO2,DF> >
+{
+   using Type = DiagonalMatrix< SchurTrait_< IdentityMatrix<T,SO1>, MT > >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, LowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< HermitianMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
+{
+   using Type = LowerMatrix< SchurTrait_<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
