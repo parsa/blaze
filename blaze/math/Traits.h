@@ -144,6 +144,7 @@
 #include <blaze/math/traits/SMatTransExprTrait.h>
 #include <blaze/math/traits/SMatTSMatAddExprTrait.h>
 #include <blaze/math/traits/SMatTSMatMultExprTrait.h>
+#include <blaze/math/traits/SMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>

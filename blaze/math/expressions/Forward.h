@@ -121,6 +121,7 @@ template< typename, bool > class SMatTransExpr;
 template< typename, bool > class SMatTransposer;
 template< typename, typename > class SMatTSMatAddExpr;
 template< typename, typename > class SMatTSMatMultExpr;
+template< typename, typename > class SMatTSMatSchurExpr;
 template< typename, typename > class SMatTSMatSubExpr;
 template< typename, bool > struct SparseMatrix;
 template< typename, bool > struct SparseVector;
