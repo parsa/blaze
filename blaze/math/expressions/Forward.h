@@ -64,6 +64,7 @@ template< typename, typename, bool > class DMatScalarMultExpr;
 template< typename, bool > class DMatSerialExpr;
 template< typename, typename, bool > class DMatSMatAddExpr;
 template< typename, typename, bool, bool, bool, bool > class DMatSMatMultExpr;
+template< typename, typename > class DMatSMatSchurExpr;
 template< typename, typename, bool > class DMatSMatSubExpr;
 template< typename, typename > class DMatSVecMultExpr;
 template< typename, typename > class DMatTDMatAddExpr;
