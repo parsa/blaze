@@ -340,6 +340,37 @@ class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
 
+   //**Schur product assignment to dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense matrix inversion expression to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side inversion expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // matrix inversion expression to a dense matrix.
+   */
+   template< typename MT2  // Type of the target dense matrix
+           , bool SO2 >    // Storage order of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatInvExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( serial( rhs ) );
+      schurAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to sparse matrices*************************************************
+   // No special implementation for the Schur product assignment to sparse matrices.
+   //**********************************************************************************************
+
    //**Multiplication assignment to dense matrices*************************************************
    // No special implementation for the multiplication assignment to dense matrices.
    //**********************************************************************************************
