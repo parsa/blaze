@@ -138,6 +138,7 @@ class DiagonalProxy : public Proxy< DiagonalProxy<MT>, ElementType_<MT> >
    template< typename T > inline DiagonalProxy& operator-=( const T& value );
    template< typename T > inline DiagonalProxy& operator*=( const T& value );
    template< typename T > inline DiagonalProxy& operator/=( const T& value );
+   template< typename T > inline DiagonalProxy& operator%=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -423,6 +424,31 @@ inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator/=( const T& value )
    }
 
    value_ /= value;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to non-diagonal matrix element.
+//
+// In case the proxy represents a non-diagonal matrix element, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator%=( const T& value )
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to non-diagonal matrix element" );
+   }
+
+   value_ %= value;
 
    return *this;
 }

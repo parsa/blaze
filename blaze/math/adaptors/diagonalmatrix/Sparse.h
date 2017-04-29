@@ -206,6 +206,9 @@ class DiagonalMatrix<MT,SO,false>
    inline EnableIf_< IsComputation<MT2>, DiagonalMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
+   inline DiagonalMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+
+   template< typename MT2, bool SO2 >
    inline DiagonalMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
@@ -854,7 +857,7 @@ inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = decldiag( ~rhs );
 
    if( !IsDiagonal<MT2>::value )
       resetNonDiagonal();
@@ -941,7 +944,7 @@ inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += decldiag( ~rhs );
 
    if( !IsDiagonal<MT2>::value )
       resetNonDiagonal();
@@ -989,7 +992,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += decldiag( tmp );
    }
 
    if( !IsDiagonal<MT2>::value )
@@ -1028,7 +1031,7 @@ inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= decldiag( ~rhs );
 
    if( !IsDiagonal<MT2>::value )
       resetNonDiagonal();
@@ -1076,8 +1079,44 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= decldiag( tmp );
    }
+
+   if( !IsDiagonal<MT2>::value )
+      resetNonDiagonal();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side general matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT   // Type of the adapted sparse matrix
+        , bool SO >     // Storage order of the adapted sparse matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline DiagonalMatrix<MT,SO,false>&
+   DiagonalMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+{
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
+
+   matrix_ %= decldiag( ~rhs );
 
    if( !IsDiagonal<MT2>::value )
       resetNonDiagonal();
@@ -1097,7 +1136,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
 //
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also note that the result of the multiplication operation must be a diagonal matrix.
