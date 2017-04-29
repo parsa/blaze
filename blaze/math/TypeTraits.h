@@ -132,6 +132,7 @@
 #include <blaze/math/typetraits/IsRow.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSchurExpr.h>
 #include <blaze/math/typetraits/IsSerialExpr.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
