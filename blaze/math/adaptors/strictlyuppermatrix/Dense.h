@@ -723,6 +723,9 @@ class StrictlyUpperMatrix<MT,SO,true>
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
+   inline StrictlyUpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+
+   template< typename MT2, bool SO2 >
    inline StrictlyUpperMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
@@ -1755,7 +1758,7 @@ inline DisableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1837,7 +1840,7 @@ inline DisableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1882,7 +1885,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += declupp( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
@@ -1918,7 +1921,7 @@ inline DisableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1963,8 +1966,41 @@ inline EnableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= declupp( tmp );
    }
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to strictly upper matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline StrictlyUpperMatrix<MT,SO,true>&
+   StrictlyUpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+{
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
+
+   matrix_ %= declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1981,7 +2017,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
 //
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to strictly upper matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also note that the result of the multiplication operation must be a strictly upper

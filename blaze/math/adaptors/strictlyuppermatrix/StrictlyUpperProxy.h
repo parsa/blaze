@@ -140,6 +140,7 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, ElementType_<MT
    template< typename T > inline const StrictlyUpperProxy& operator-=( const T& value ) const;
    template< typename T > inline const StrictlyUpperProxy& operator*=( const T& value ) const;
    template< typename T > inline const StrictlyUpperProxy& operator/=( const T& value ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator%=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
@@ -427,6 +428,31 @@ inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator/=( const T
    }
 
    value_ /= value;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
+//
+// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator%=( const T& value ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
+
+   value_ %= value;
 
    return *this;
 }
