@@ -44,6 +44,7 @@
 #include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -374,6 +376,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator-=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO2>&  rhs );
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
@@ -461,13 +465,14 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename MT, bool SO2 > inline void assign   ( const DenseMatrix<MT,SO2>&  rhs );
-   template< typename MT >           inline void assign   ( const SparseMatrix<MT,SO>&  rhs );
-   template< typename MT >           inline void assign   ( const SparseMatrix<MT,!SO>& rhs );
-   template< typename MT, bool SO2 > inline void addAssign( const DenseMatrix<MT,SO2>&  rhs );
-   template< typename MT, bool SO2 > inline void addAssign( const SparseMatrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline void subAssign( const DenseMatrix<MT,SO2>&  rhs );
-   template< typename MT, bool SO2 > inline void subAssign( const SparseMatrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline void assign     ( const DenseMatrix<MT,SO2>&  rhs );
+   template< typename MT >           inline void assign     ( const SparseMatrix<MT,SO>&  rhs );
+   template< typename MT >           inline void assign     ( const SparseMatrix<MT,!SO>& rhs );
+   template< typename MT, bool SO2 > inline void addAssign  ( const DenseMatrix<MT,SO2>&  rhs );
+   template< typename MT, bool SO2 > inline void addAssign  ( const SparseMatrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline void subAssign  ( const DenseMatrix<MT,SO2>&  rhs );
+   template< typename MT, bool SO2 > inline void subAssign  ( const SparseMatrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline void schurAssign( const DenseMatrix<MT,SO2>&  rhs );
    //@}
    //**********************************************************************************************
 
@@ -1226,6 +1231,72 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const M
    }
 
    subAssign( *this, ~rhs );
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a dense matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO2 >     // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,SO>&
+   CompressedMatrix<Type,SO>::operator%=( const DenseMatrix<MT,SO2>& rhs )
+{
+   using blaze::schurAssign;
+
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *this % (~rhs) );
+      swap( tmp );
+   }
+   else {
+      CompositeType_<MT> tmp( ~rhs );
+      schurAssign( *this, tmp );
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a sparse matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side sparse matrix
+        , bool SO2 >     // Storage order of the right-hand side sparse matrix
+inline CompressedMatrix<Type,SO>&
+   CompressedMatrix<Type,SO>::operator%=( const SparseMatrix<MT,SO2>& rhs )
+{
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   CompressedMatrix tmp( *this % (~rhs) );
+   swap( tmp );
+
    return *this;
 }
 //*************************************************************************************************
@@ -2824,6 +2895,37 @@ inline void CompressedMatrix<Type,SO>::subAssign( const SparseMatrix<MT,SO2>& rh
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Default implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+template< typename MT    // Type of the right-hand side dense matrix
+        , bool SO2 >     // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      const Iterator last( end(i) );
+      for( Iterator element=begin(i); element!=last; ++element )
+         element->value_ *= (~rhs)(i,element->index_);
+   }
+}
+//*************************************************************************************************
+
+
 
 
 
@@ -3013,6 +3115,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    template< typename MT, bool SO > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator-=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO>&  rhs );
+   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
@@ -3100,13 +3204,14 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename MT, bool SO > inline void assign   ( const DenseMatrix<MT,SO>&     rhs );
-   template< typename MT >          inline void assign   ( const SparseMatrix<MT,true>&  rhs );
-   template< typename MT >          inline void assign   ( const SparseMatrix<MT,false>& rhs );
-   template< typename MT, bool SO > inline void addAssign( const DenseMatrix<MT,SO>&     rhs );
-   template< typename MT, bool SO > inline void addAssign( const SparseMatrix<MT,SO>&    rhs );
-   template< typename MT, bool SO > inline void subAssign( const DenseMatrix<MT,SO>&     rhs );
-   template< typename MT, bool SO > inline void subAssign( const SparseMatrix<MT,SO>&    rhs );
+   template< typename MT, bool SO > inline void assign     ( const DenseMatrix<MT,SO>&     rhs );
+   template< typename MT >          inline void assign     ( const SparseMatrix<MT,true>&  rhs );
+   template< typename MT >          inline void assign     ( const SparseMatrix<MT,false>& rhs );
+   template< typename MT, bool SO > inline void addAssign  ( const DenseMatrix<MT,SO>&     rhs );
+   template< typename MT, bool SO > inline void addAssign  ( const SparseMatrix<MT,SO>&    rhs );
+   template< typename MT, bool SO > inline void subAssign  ( const DenseMatrix<MT,SO>&     rhs );
+   template< typename MT, bool SO > inline void subAssign  ( const SparseMatrix<MT,SO>&    rhs );
+   template< typename MT, bool SO > inline void schurAssign( const DenseMatrix<MT,SO>&     rhs );
    //@}
    //**********************************************************************************************
 
@@ -3858,6 +3963,74 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( con
    }
 
    subAssign( *this, ~rhs );
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a dense matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type >  // Data type of the matrix
+template< typename MT      // Type of the right-hand side dense matrix
+        , bool SO >        // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,true>&
+   CompressedMatrix<Type,true>::operator%=( const DenseMatrix<MT,SO>& rhs )
+{
+   using blaze::schurAssign;
+
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( (~rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *this % (~rhs) );
+      swap( tmp );
+   }
+   else {
+      CompositeType_<MT> tmp( ~rhs );
+      schurAssign( *this, tmp );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a sparse matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename Type >  // Data type of the matrix
+template< typename MT      // Type of the right-hand side sparse matrix
+        , bool SO >        // Storage order of the right-hand side sparse matrix
+inline CompressedMatrix<Type,true>&
+   CompressedMatrix<Type,true>::operator%=( const SparseMatrix<MT,SO>& rhs )
+{
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   CompressedMatrix tmp( *this % (~rhs) );
+   swap( tmp );
+
    return *this;
 }
 /*! \endcond */
@@ -5470,6 +5643,38 @@ inline void CompressedMatrix<Type,true>::subAssign( const SparseMatrix<MT,SO>& r
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename Type >  // Data type of the matrix
+template< typename MT      // Type of the right-hand side dense matrix
+        , bool SO >        // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      const Iterator last( end(j) );
+      for( Iterator element=begin(j); element!=last; ++element )
+         element->value_ *= (~rhs)(element->index_,j);
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -5886,13 +6091,86 @@ struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, CompressedMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2> , SO >;
+   using Type = CompressedMatrix< SubTrait_<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2> , false >;
+   using Type = CompressedMatrix< SubTrait_<T1,T2>, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SCHURTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< StaticMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< HybridMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+};
+
+template< typename T1, bool SO, typename T2 >
+struct SchurTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2 >
+struct SchurTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
+{
+   using Type = CompressedMatrix< MultTrait_<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
