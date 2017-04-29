@@ -152,6 +152,7 @@ class HermitianProxy : public Proxy< HermitianProxy<MT> >
    template< typename T > inline HermitianProxy& operator-=( const T& value );
    template< typename T > inline HermitianProxy& operator*=( const T& value );
    template< typename T > inline HermitianProxy& operator/=( const T& value );
+   template< typename T > inline HermitianProxy& operator%=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -434,6 +435,35 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator/=( const T& value )
    }
 
    value1_ /= value;
+   if( !diagonal_ )
+      value2_ = conj( value1_ );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
+//
+// In case the proxy represents a diagonal element and the assigned value does not represent
+// a real number, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline HermitianProxy<MT>& HermitianProxy<MT>::operator%=( const T& value )
+{
+   typedef ElementType_<MT>  ET;
+
+   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+   }
+
+   value1_ %= value;
    if( !diagonal_ )
       value2_ = conj( value1_ );
 
