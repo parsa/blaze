@@ -1434,6 +1434,251 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
 
+   //**Schur product assignment to row-major dense matrices****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense vector-dense vector outer product to a row-major
+   //        dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side outer product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // vector-dense vector outer product expression to a row-major dense matrix. Due to the
+   // explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case either of the two operands requires an intermediate evaluation.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline EnableIf_< UseAssign<MT> >
+      schurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+
+      DVecDVecOuterExpr::selectSchurAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default Schur product assignment to row-major dense matrices********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default Schur product assignment of a dense vector-dense vector outer product to a
+   //        row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default Schur product assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
+
+      const size_t jpos( N & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<M; ++i ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
+            (~A)(i,j    ) *= x[i] * y[j    ];
+            (~A)(i,j+1UL) *= x[i] * y[j+1UL];
+         }
+         if( jpos < N ) {
+            (~A)(i,jpos) *= x[i] * y[jpos];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized Schur product assignment to row-major dense matrices*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized Schur product assignment of a dense vector-dense vector outer product to
+   //        a row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized Schur product assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
+
+      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const SIMDType x1( set( x[i] ) );
+
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            (~A).store( i, j, (~A).load(i,j) * ( x1 * y.load(j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(i,j) *= x[i] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to column-major dense matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side outer product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a dense
+   // vector-dense vector outer product expression to a column-major dense matrix.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT,true>& lhs, const DVecDVecOuterExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+
+      DVecDVecOuterExpr::selectSchurAssignKernel( ~lhs, x, y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default Schur product assignment to column dense matrices***********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default Schur product assignment of a dense vector-dense vector outer product to a
+   //        column-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the default Schur product assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
+
+      const size_t ipos( M & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<N; ++j ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
+            (~A)(i    ,j) *= x[i    ] * y[j];
+            (~A)(i+1UL,j) *= x[i+1UL] * y[j];
+         }
+         if( ipos < M ) {
+            (~A)(ipos,j) *= x[ipos] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized Schur product assignment to column-major dense matrices**************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized Schur product assignment of a dense vector-dense vector outer product to
+   //        a column-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   // \ingroup dense_matrix
+   //
+   // \param A The target left-hand side dense matrix.
+   // \param x The left-hand side dense vector operand.
+   // \param y The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized Schur product assignment kernel for the dense vector-
+   // dense vector outer product.
+   */
+   template< typename MT     // Type of the left-hand side target matrix
+           , typename VT3    // Type of the left-hand side vector operand
+           , typename VT4 >  // Type of the right-hand side vector operand
+   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+      selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   {
+      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
+
+      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<N; ++j )
+      {
+         const SIMDType y1( set( y[j] ) );
+
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            (~A).store( i, j, (~A).load(i,j) * ( x.load(i) * y1 ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            (~A)(i,j) *= x[i] * y[j];
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to sparse matrices*************************************************
+   // No special implementation for the Schur product assignment to sparse matrices.
+   //**********************************************************************************************
+
    //**Multiplication assignment to dense matrices*************************************************
    // No special implementation for the multiplication assignment to dense matrices.
    //**********************************************************************************************
@@ -1597,6 +1842,47 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
 
    //**SMP subtraction assignment to sparse matrices***********************************************
    // No special implementation for the SMP subtraction assignment to sparse matrices.
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP Schur product assignment of a dense vector-dense vector outer product to a dense
+   //        matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side outer product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized SMP Schur product assignment of a
+   // dense vector-dense vector outer product expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT >  // Type of the target dense matrix
+   friend inline EnableIf_< UseSMPAssign<MT> >
+      smpSchurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
+      RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+
+      smpSchurAssign( ~lhs, x * y );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to sparse matrices*********************************************
+   // No special implementation for the SMP Schur product assignment to sparse matrices.
    //**********************************************************************************************
 
    //**SMP multiplication assignment to dense matrices*********************************************
