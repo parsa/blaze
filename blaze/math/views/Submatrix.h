@@ -1975,6 +1975,42 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF>& lhs, const Vector<VT,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the Schur product assignment of a matrix to a submatrix.
+// \ingroup submatrix
+//
+// \param lhs The target left-hand side submatrix.
+// \param rhs The right-hand side matrix for the Schur product.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySchurAssign( const Submatrix<MT1,AF,SO1,DF>& lhs, const Matrix<MT2,SO2>& rhs,
+                            size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return trySchurAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removal of all restrictions on the data access to the given submatrix.
 // \ingroup submatrix
 //

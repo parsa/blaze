@@ -62,6 +62,7 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -468,6 +469,7 @@ class Submatrix<MT,AF,false,false>
    template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
@@ -553,13 +555,12 @@ class Submatrix<MT,AF,false,false>
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&    rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&    rhs );
-   template< typename MT2, bool SO > inline void addAssign( const SparseMatrix<MT2,SO>&   rhs );
-   template< typename MT2, bool SO > inline void subAssign( const DenseMatrix<MT2,SO>&    rhs );
-   template< typename MT2, bool SO > inline void subAssign( const SparseMatrix<MT2,SO>&   rhs );
+   template< typename MT2, bool SO > inline void assign     ( const DenseMatrix<MT2,SO>& rhs );
+   template< typename MT2 >          inline void assign     ( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >          inline void assign     ( const SparseMatrix<MT2,true>& rhs );
+   template< typename MT2, bool SO > inline void addAssign  ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline void subAssign  ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline void schurAssign( const Matrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -626,6 +627,10 @@ class Submatrix<MT,AF,false,false>
    template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
    friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
+                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
    friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
@@ -1179,6 +1184,60 @@ inline Submatrix<MT,AF,false,false>&
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix to be for the Schur product.
+// \return Reference to the sparse submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT   // Type of the sparse matrix
+        , bool AF >     // Alignment flag
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false>&
+   Submatrix<MT,AF,false,false>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -2505,9 +2564,9 @@ inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,true>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the addition assignment of a dense matrix.
+/*!\brief Default implementation of the addition assignment of a matrix.
 //
-// \param rhs The right-hand side dense matrix to be added.
+// \param rhs The right-hand side matrix to be added.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -2517,13 +2576,12 @@ inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,true>& 
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order of the right-hand side dense matrix
-inline void Submatrix<MT,AF,false,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false>::addAssign( const Matrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2539,9 +2597,9 @@ inline void Submatrix<MT,AF,false,false>::addAssign( const DenseMatrix<MT2,SO>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the addition assignment of a sparse matrix.
+/*!\brief Default implementation of the subtraction assignment of a matrix.
 //
-// \param rhs The right-hand side sparse matrix to be added.
+// \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -2551,47 +2609,12 @@ inline void Submatrix<MT,AF,false,false>::addAssign( const DenseMatrix<MT2,SO>& 
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order of the right-hand side sparse matrix
-inline void Submatrix<MT,AF,false,false>::addAssign( const SparseMatrix<MT2,SO>& rhs )
-{
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
-
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   const AddType tmp( serial( *this + (~rhs) ) );
-   reset();
-   assign( tmp );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the subtraction assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be subtracted.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT   // Type of the sparse matrix
-        , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order of the right-hand side dense matrix
-inline void Submatrix<MT,AF,false,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false>::subAssign( const Matrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2607,9 +2630,9 @@ inline void Submatrix<MT,AF,false,false>::subAssign( const DenseMatrix<MT2,SO>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the subtraction assignment of a sparse matrix.
+/*!\brief Default implementation of the Schur product assignment of a matrix.
 //
-// \param rhs The right-hand side sparse matrix to be subtracted.
+// \param rhs The right-hand side matrix for the Schur product.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -2619,19 +2642,19 @@ inline void Submatrix<MT,AF,false,false>::subAssign( const DenseMatrix<MT2,SO>& 
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order of the right-hand sparse matrix
-inline void Submatrix<MT,AF,false,false>::subAssign( const SparseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SubType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SchurType tmp( serial( *this % (~rhs) ) );
    reset();
    assign( tmp );
 }
@@ -3044,6 +3067,7 @@ class Submatrix<MT,AF,true,false>
    template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
@@ -3129,13 +3153,12 @@ class Submatrix<MT,AF,true,false>
 
    inline bool canSMPAssign() const noexcept;
 
-   template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2, bool SO > inline void addAssign( const SparseMatrix<MT2,SO>&    rhs );
-   template< typename MT2, bool SO > inline void subAssign( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2, bool SO > inline void subAssign( const SparseMatrix<MT2,SO>&    rhs );
+   template< typename MT2, bool SO > inline void assign     ( const DenseMatrix<MT2,SO>& rhs );
+   template< typename MT2 >          inline void assign     ( const SparseMatrix<MT2,true>& rhs );
+   template< typename MT2 >          inline void assign     ( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2, bool SO > inline void addAssign  ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline void subAssign  ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline void schurAssign( const Matrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3725,6 +3748,60 @@ inline Submatrix<MT,AF,true,false>&
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the sparse submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT   // Type of the sparse matrix
+        , bool AF >     // Alignment flag
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false>&
+   Submatrix<MT,AF,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -5021,9 +5098,9 @@ inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,false>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the addition assignment of a dense matrix.
+/*!\brief Default implementation of the addition assignment of a matrix.
 //
-// \param rhs The right-hand side dense matrix to be added.
+// \param rhs The right-hand side matrix to be added.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -5033,13 +5110,12 @@ inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,false>& 
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order of the right-hand side dense matrix
-inline void Submatrix<MT,AF,true,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false>::addAssign( const Matrix<MT2,SO>& rhs )
 {
    typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5055,9 +5131,9 @@ inline void Submatrix<MT,AF,true,false>::addAssign( const DenseMatrix<MT2,SO>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the addition assignment of a sparse matrix.
+/*!\brief Default implementation of the subtraction assignment of a matrix.
 //
-// \param rhs The right-hand side sparse matrix to be added.
+// \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -5067,47 +5143,12 @@ inline void Submatrix<MT,AF,true,false>::addAssign( const DenseMatrix<MT2,SO>& r
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order of the right-hand side sparse matrix
-inline void Submatrix<MT,AF,true,false>::addAssign( const SparseMatrix<MT2,SO>& rhs )
-{
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
-
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( AddType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   const AddType tmp( serial( *this + (~rhs) ) );
-   reset();
-   assign( tmp );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the subtraction assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be subtracted.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT   // Type of the sparse matrix
-        , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order of the right-hand side dense matrix
-inline void Submatrix<MT,AF,true,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false>::subAssign( const Matrix<MT2,SO>& rhs )
 {
    typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5123,9 +5164,9 @@ inline void Submatrix<MT,AF,true,false>::subAssign( const DenseMatrix<MT2,SO>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the subtraction assignment of a sparse matrix.
+/*!\brief Default implementation of the Schur product assignment of a matrix.
 //
-// \param rhs The right-hand side sparse matrix to be subtracted.
+// \param rhs The right-hand side matrix for the Schur product.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -5135,19 +5176,18 @@ inline void Submatrix<MT,AF,true,false>::subAssign( const DenseMatrix<MT2,SO>& r
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order of the right-hand sparse matrix
-inline void Submatrix<MT,AF,true,false>::subAssign( const SparseMatrix<MT2,SO>& rhs )
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SubType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SchurType tmp( serial( *this % (~rhs) ) );
    reset();
    assign( tmp );
 }

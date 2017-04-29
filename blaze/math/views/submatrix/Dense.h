@@ -60,14 +60,17 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -633,6 +636,14 @@ class Submatrix<MT,unaligned,false,true>
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO2>& rhs );
+
+   template< typename MT2, bool SO2 >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO2>& rhs );
+
+   template< typename MT2, bool SO2 >
    inline Submatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
@@ -705,6 +716,17 @@ class Submatrix<MT,unaligned,false,true>
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT2::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+   };
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -767,6 +789,16 @@ class Submatrix<MT,unaligned,false,true>
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -842,6 +874,10 @@ class Submatrix<MT,unaligned,false,true>
    template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
    friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
+                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
    friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
@@ -1614,6 +1650,111 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true>& >
+   Submatrix<MT,unaligned,false,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( !trySchurAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SchurType tmp( *this % (~rhs) );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpSchurAssign( left, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true>& >
+   Submatrix<MT,unaligned,false,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3102,6 +3243,215 @@ inline void Submatrix<MT,unaligned,false,true>::subAssign( const SparseMatrix<MT
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         matrix_(row_+i,column_+j    ) *= (~rhs)(i,j    );
+         matrix_(row_+i,column_+j+1UL) *= (~rhs)(i,j+1UL);
+      }
+      if( jpos < n_ ) {
+         matrix_(row_+i,column_+jpos) *= (~rhs)(i,jpos);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jpos( n_ & size_t(-SIMDSIZE) );
+      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_<MT2> right( (~rhs).begin(i) );
+
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<n_; ++j ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,false,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t ii=0UL; ii<m_; ii+=block ) {
+      const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
+      for( size_t jj=0UL; jj<n_; jj+=block ) {
+         const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               matrix_(row_+i,column_+j) *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         for( ; j<element->index(); ++j )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++j;
+      }
+
+      for( ; j<n_; ++j ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         for( ; i<element->index(); ++i )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++i;
+      }
+
+      for( ; i<m_; ++i ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -3633,6 +3983,14 @@ class Submatrix<MT,unaligned,true,true>
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
    inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
@@ -3705,6 +4063,17 @@ class Submatrix<MT,unaligned,true,true>
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT2::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+   };
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -3767,6 +4136,16 @@ class Submatrix<MT,unaligned,true,true>
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3842,6 +4221,10 @@ class Submatrix<MT,unaligned,true,true>
    template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
    friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
+                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
    friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
@@ -4591,6 +4974,111 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO  >     // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true>& >
+   Submatrix<MT,unaligned,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( !trySchurAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SchurType tmp( *this % (~rhs) );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpSchurAssign( left, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO  >     // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true>& >
+   Submatrix<MT,unaligned,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -6057,6 +6545,216 @@ inline void Submatrix<MT,unaligned,true,true>::subAssign( const SparseMatrix<MT2
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
+         matrix_(row_+i    ,column_+j) *= (~rhs)(i    ,j);
+         matrix_(row_+i+1UL,column_+j) *= (~rhs)(i+1UL,j);
+      }
+      if( ipos < m_ ) {
+         matrix_(row_+ipos,column_+j) *= (~rhs)(ipos,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a column-major dense
+//        matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ipos( m_ & size_t(-SIMDSIZE) );
+      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
+      Iterator left( begin(j) );
+      ConstIterator_<MT2> right( (~rhs).begin(j) );
+
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; i<m_; ++i ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,true,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t jj=0UL; jj<n_; jj+=block ) {
+      const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
+      for( size_t ii=0UL; ii<m_; ii+=block ) {
+         const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               matrix_(row_+i,column_+j) *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         for( ; i<element->index(); ++i )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++i;
+      }
+
+      for( ; i<m_; ++i ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         for( ; j<element->index(); ++j )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++j;
+      }
+
+      for( ; j<n_; ++j ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -6186,6 +6884,14 @@ class Submatrix<MT,aligned,false,true>
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
    inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
@@ -6258,6 +6964,17 @@ class Submatrix<MT,aligned,false,true>
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT2::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+   };
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -6320,6 +7037,16 @@ class Submatrix<MT,aligned,false,true>
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -6388,6 +7115,10 @@ class Submatrix<MT,aligned,false,true>
    template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
    friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
+                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
    friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
@@ -7163,6 +7894,111 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true>& >
+   Submatrix<MT,aligned,false,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( !trySchurAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SchurType tmp( *this % (~rhs) );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpSchurAssign( left, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true>& >
+   Submatrix<MT,aligned,false,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -8644,6 +9480,215 @@ inline void Submatrix<MT,aligned,false,true>::subAssign( const SparseMatrix<MT2,
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         matrix_(row_+i,column_+j    ) *= (~rhs)(i,j    );
+         matrix_(row_+i,column_+j+1UL) *= (~rhs)(i,j+1UL);
+      }
+      if( jpos < n_ ) {
+         matrix_(row_+i,column_+jpos) *= (~rhs)(i,jpos);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jpos( n_ & size_t(-SIMDSIZE) );
+      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_<MT2> right( (~rhs).begin(i) );
+
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<n_; ++j ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,false,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t ii=0UL; ii<m_; ii+=block ) {
+      const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
+      for( size_t jj=0UL; jj<n_; jj+=block ) {
+         const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
+         for( size_t i=ii; i<iend; ++i ) {
+            for( size_t j=jj; j<jend; ++j ) {
+               matrix_(row_+i,column_+j) *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         for( ; j<element->index(); ++j )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++j;
+      }
+
+      for( ; j<n_; ++j ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         for( ; i<element->index(); ++i )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+element->index(),column_+j) *= element->value();
+         ++i;
+      }
+
+      for( ; i<m_; ++i ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 
@@ -8773,6 +9818,14 @@ class Submatrix<MT,aligned,true,true>
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+      operator%=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
    inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
@@ -8845,6 +9898,17 @@ class Submatrix<MT,aligned,true,true>
    };
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   template< typename MT2 >
+   struct VectorizedSchurAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && MT2::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+   };
+   //**********************************************************************************************
+
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
@@ -8907,6 +9971,16 @@ class Submatrix<MT,aligned,true,true>
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
+
+   template< typename MT2 >
+   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 >
+   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+
+   template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -8975,6 +10049,10 @@ class Submatrix<MT,aligned,true,true>
    template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
    friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
                               size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
+   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
+                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
    friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
@@ -9726,6 +10804,111 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    }
 
    const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO  >     // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true>& >
+   Submatrix<MT,aligned,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   if( !trySchurAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   DerestrictTrait_<This> left( derestrict( *this ) );
+
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SchurType tmp( *this % (~rhs) );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpSchurAssign( left, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+//
+// \param rhs The right-hand side matrix for the Schur product.
+// \return Reference to the dense submatrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
+// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
+// respectively, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO  >     // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true>& >
+   Submatrix<MT,aligned,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+
+   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   const SchurType tmp( *this % (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -11178,6 +12361,216 @@ inline void Submatrix<MT,aligned,true,true>::subAssign( const SparseMatrix<MT2,f
    for( size_t i=0UL; i<m_; ++i )
       for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row_+i,column_+element->index()) -= element->value();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
+         matrix_(row_+i    ,column_+j) *= (~rhs)(i    ,j);
+         matrix_(row_+i+1UL,column_+j) *= (~rhs)(i+1UL,j);
+      }
+      if( ipos < m_ ) {
+         matrix_(row_+ipos,column_+j) *= (~rhs)(ipos,j);
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized implementation of the Schur product assignment of a column-major dense
+//        matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ipos( m_ & size_t(-SIMDSIZE) );
+      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
+      Iterator left( begin(j) );
+      ConstIterator_<MT2> right( (~rhs).begin(j) );
+
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; i<m_; ++i ) {
+         *left *= *right; ++left; ++right;
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
+//
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,true,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   constexpr size_t block( BLOCK_SIZE );
+
+   for( size_t jj=0UL; jj<n_; jj+=block ) {
+      const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
+      for( size_t ii=0UL; ii<m_; ii+=block ) {
+         const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
+         for( size_t j=jj; j<jend; ++j ) {
+            for( size_t i=ii; i<iend; ++i ) {
+               matrix_(row_+i,column_+j) *= (~rhs)(i,j);
+            }
+         }
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a column-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         for( ; i<element->index(); ++i )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++i;
+      }
+
+      for( ; i<m_; ++i ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the Schur product assignment of a row-major sparse matrix.
+//
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >   // Type of the dense matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+{
+   using blaze::reset;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         for( ; j<element->index(); ++j )
+            reset( matrix_(row_+i,column_+j) );
+         matrix_(row_+i,column_+j) *= element->value();
+         ++j;
+      }
+
+      for( ; j<n_; ++j ) {
+         reset( matrix_(row_+i,column_+j) );
+      }
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
