@@ -399,7 +399,8 @@ inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator/=( const T& 
 // \return Reference to the assigned access proxy.
 //
 // If the access proxy represents an element of numeric type, this function performs a modulo
-// assignment, if the proxy represents a dense or sparse vector, a cross product is computed.
+// assignment, if the proxy represents a dense or sparse vector, a cross product is computed,
+// and if the proxy represents a dense or sparse matrix, a Schur product is computed.
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
