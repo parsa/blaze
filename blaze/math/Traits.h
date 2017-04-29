@@ -124,6 +124,7 @@
 #include <blaze/math/traits/SMatDeclUppExprTrait.h>
 #include <blaze/math/traits/SMatDMatAddExprTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
+#include <blaze/math/traits/SMatDMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatDMatSubExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatEvalExprTrait.h>
@@ -137,6 +138,7 @@
 #include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/SMatTDMatAddExprTrait.h>
 #include <blaze/math/traits/SMatTDMatMultExprTrait.h>
+#include <blaze/math/traits/SMatTDMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatTDMatSubExprTrait.h>
 #include <blaze/math/traits/SMatTransExprTrait.h>
 #include <blaze/math/traits/SMatTSMatAddExprTrait.h>
