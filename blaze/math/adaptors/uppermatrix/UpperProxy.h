@@ -138,6 +138,7 @@ class UpperProxy : public Proxy< UpperProxy<MT>, ElementType_<MT> >
    template< typename T > inline const UpperProxy& operator-=( const T& value ) const;
    template< typename T > inline const UpperProxy& operator*=( const T& value ) const;
    template< typename T > inline const UpperProxy& operator/=( const T& value ) const;
+   template< typename T > inline const UpperProxy& operator%=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
@@ -423,6 +424,31 @@ inline const UpperProxy<MT>& UpperProxy<MT>::operator/=( const T& value ) const
    }
 
    value_ /= value;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Modulo assignment to the accessed matrix element.
+//
+// \param value The right-hand side value for the modulo operation.
+// \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to lower matrix element.
+//
+// In case the proxy represents an element in the lower matrix, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline const UpperProxy<MT>& UpperProxy<MT>::operator%=( const T& value ) const
+{
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix element" );
+   }
+
+   value_ %= value;
 
    return *this;
 }
