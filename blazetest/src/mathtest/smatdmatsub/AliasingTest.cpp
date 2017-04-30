@@ -347,6 +347,89 @@ void AliasingTest::testSMatDMatSub()
 
 
    //=====================================================================================
+   // Subtraction with Schur product assignment
+   //=====================================================================================
+
+   // Schur product assignment to left-hand side operand
+   {
+      test_ = "SMatDMatSub - Schur product assignment to left-hand side operand";
+
+      initialize();
+
+      result_ =  sC3x3_;
+      result_ %= sC3x3_ - dC3x3_;
+      sC3x3_  %= sC3x3_ - dC3x3_;
+
+      checkResult( sC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of left-hand side compound
+   {
+      test_ = "SMatDMatSub - Schur product assignment to first operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  sC3x3_;
+      result_ %= ( sC3x3_ * sD3x3_ ) - dC3x3_;
+      sC3x3_  %= ( sC3x3_ * sD3x3_ ) - dC3x3_;
+
+      checkResult( sC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of left-hand side compound
+   {
+      test_ = "SMatDMatSub - Schur product assignment to second operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  sD3x3_;
+      result_ %= ( sC3x3_ * sD3x3_ ) - dC3x3_;
+      sD3x3_  %= ( sC3x3_ * sD3x3_ ) - dC3x3_;
+
+      checkResult( sD3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side operand
+   {
+      test_ = "SMatDMatSub - Schur product assignment to right-hand side operand";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= sC3x3_ - dC3x3_;
+      dC3x3_  %= sC3x3_ - dC3x3_;
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of right-hand side compound
+   {
+      test_ = "SMatDMatSub - Schur product assignment to first operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= sC3x3_ - ( dC3x3_ * dD3x3_ );
+      dC3x3_  %= sC3x3_ - ( dC3x3_ * dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of right-hand side compound
+   {
+      test_ = "SMatDMatSub - Schur product assignment to second operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ %= sC3x3_ - ( dC3x3_ * dD3x3_ );
+      dD3x3_  %= sC3x3_ - ( dC3x3_ * dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+
+   //=====================================================================================
    // Addition with multiplication assignment
    //=====================================================================================
 
@@ -438,7 +521,7 @@ void AliasingTest::testSMatDMatSub()
 // \exception std::runtime_error Error detected.
 //
 // This function performs aliasing tests for the sparse matrix/transpose dense matrix
-// addition. In case an error is detected, a \a std::runtime_error exception is thrown.
+// subtraction. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AliasingTest::testSMatTDMatSub()
 {
@@ -686,6 +769,89 @@ void AliasingTest::testSMatTDMatSub()
 
 
    //=====================================================================================
+   // Subtraction with Schur product assignment
+   //=====================================================================================
+
+   // Schur product assignment to left-hand side operand
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to left-hand side operand";
+
+      initialize();
+
+      result_ =  sC3x3_;
+      result_ %= sC3x3_ - tdC3x3_;
+      sC3x3_  %= sC3x3_ - tdC3x3_;
+
+      checkResult( sC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of left-hand side compound
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to first operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  sC3x3_;
+      result_ %= ( sC3x3_ * sD3x3_ ) - tdC3x3_;
+      sC3x3_  %= ( sC3x3_ * sD3x3_ ) - tdC3x3_;
+
+      checkResult( sC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of left-hand side compound
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to second operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  sD3x3_;
+      result_ %= ( sC3x3_ * sD3x3_ ) - tdC3x3_;
+      sD3x3_  %= ( sC3x3_ * sD3x3_ ) - tdC3x3_;
+
+      checkResult( sD3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side operand
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to right-hand side operand";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ %= sC3x3_ - tdC3x3_;
+      tdC3x3_ %= sC3x3_ - tdC3x3_;
+
+      checkResult( tdC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of right-hand side compound
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to first operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ %= sC3x3_ - ( tdC3x3_ * tdD3x3_ );
+      tdC3x3_ %= sC3x3_ - ( tdC3x3_ * tdD3x3_ );
+
+      checkResult( tdC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of right-hand side compound
+   {
+      test_ = "SMatTDMatSub - Schur product assignment to second operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  tdD3x3_;
+      result_ %= sC3x3_ - ( tdC3x3_ * tdD3x3_ );
+      tdD3x3_ %= sC3x3_ - ( tdC3x3_ * tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+
+   //=====================================================================================
    // Addition with multiplication assignment
    //=====================================================================================
 
@@ -777,7 +943,7 @@ void AliasingTest::testSMatTDMatSub()
 // \exception std::runtime_error Error detected.
 //
 // This function performs aliasing tests for the transpose sparse matrix/dense matrix
-// addition. In case an error is detected, a \a std::runtime_error exception is thrown.
+// subtraction. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void AliasingTest::testTSMatDMatSub()
 {
@@ -1019,6 +1185,89 @@ void AliasingTest::testTSMatDMatSub()
       result_ =  dD3x3_;
       result_ -= tsC3x3_ - ( dC3x3_ * dD3x3_ );
       dD3x3_  -= tsC3x3_ - ( dC3x3_ * dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+
+   //=====================================================================================
+   // Subtraction with Schur product assignment
+   //=====================================================================================
+
+   // Schur product assignment to left-hand side operand
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to left-hand side operand";
+
+      initialize();
+
+      result_ =  tsC3x3_;
+      result_ %= tsC3x3_ - dC3x3_;
+      tsC3x3_ %= tsC3x3_ - dC3x3_;
+
+      checkResult( tsC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of left-hand side compound
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to first operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  tsC3x3_;
+      result_ %= ( tsC3x3_ * tsD3x3_ ) - dC3x3_;
+      tsC3x3_ %= ( tsC3x3_ * tsD3x3_ ) - dC3x3_;
+
+      checkResult( tsC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of left-hand side compound
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to second operand of left-hand side compound";
+
+      initialize();
+
+      result_ =  tsD3x3_;
+      result_ %= ( tsC3x3_ * tsD3x3_ ) - dC3x3_;
+      tsD3x3_ %= ( tsC3x3_ * tsD3x3_ ) - dC3x3_;
+
+      checkResult( tsD3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side operand
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to right-hand side operand";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= tsC3x3_ - dC3x3_;
+      dC3x3_  %= tsC3x3_ - dC3x3_;
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to first operand of right-hand side compound
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to first operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= tsC3x3_ - ( dC3x3_ * dD3x3_ );
+      dC3x3_  %= tsC3x3_ - ( dC3x3_ * dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to second operand of right-hand side compound
+   {
+      test_ = "TSMatDMatSub - Schur product assignment to second operand of right-hand side compound";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ %= tsC3x3_ - ( dC3x3_ * dD3x3_ );
+      dD3x3_  %= tsC3x3_ - ( dC3x3_ * dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
