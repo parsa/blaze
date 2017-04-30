@@ -42,6 +42,9 @@
 #include <memory>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
+#include <blaze/math/DiagonalMatrix.h>
+#include <blaze/math/LowerMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
@@ -70,6 +73,7 @@ namespace dynamicmatrix {
 */
 ClassTest::ClassTest()
 {
+   testSchurAssign();
    testMultAssign();
    testScaling();
    testFunctionCall();
@@ -96,6 +100,1119 @@ ClassTest::ClassTest()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the DynamicMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the DynamicMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      AlignedPadded mat1( blaze::allocate<int>( 32UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[7UL] );
+      UnalignedUnpadded mat1( array.get()+1UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ {  1, 2, 0 },
+                                                           { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      AlignedPadded mat1( blaze::allocate<int>( 48UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[7UL] );
+      UnalignedUnpadded mat1( array.get()+1UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2{ { 0, -2, 6 },
+                                                      { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::rowMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      AlignedPadded mat1( blaze::allocate<int>( 32UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[7UL] );
+      UnalignedUnpadded mat1( array.get()+1UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (mixed type)";
+
+      blaze::DynamicMatrix<short,blaze::columnMajor> mat1{ {  1, 2, 0 },
+                                                        { -3, 0, 4 } };
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      AlignedPadded mat1( blaze::allocate<int>( 48UL ), 2UL, 3UL, 16UL, blaze::Deallocate() );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      std::unique_ptr<int[]> array( new int[7UL] );
+      UnalignedUnpadded mat1( array.get()+1UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,0) =  1;
+      mat1(0,1) =  2;
+      mat1(1,0) = -3;
+      mat1(1,2) =  4;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2{ { 0, -2, 6 },
+                                                         { 5,  0, 0 } };
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkCapacity( mat2, 6UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL );
+
+      if( mat2(0,0) !=   0 || mat2(0,1) != -4 || mat2(0,2) != 0 ||
+          mat2(1,0) != -15 || mat2(1,1) !=  0 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(   0 -4  0 )\n( -15  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 1 );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the DynamicMatrix multiplication assignment operators.
