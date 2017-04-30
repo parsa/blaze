@@ -101,7 +101,12 @@
 //          </li>
 //          <li> \ref vector_vector_division </li>
 //          <li> \ref matrix_vector_multiplication </li>
-//          <li> \ref matrix_matrix_multiplication </li>
+//          <li> \ref matrix_matrix_multiplication
+//             <ul>
+//                <li> \ref schur_product </li>
+//                <li> \ref matrix_product </li>
+//             </ul>
+//          </li>
 //       </ul>
 //    </li>
 //    <li> \ref custom_operations </li>
@@ -8606,7 +8611,29 @@
 //**Matrix/Matrix Multiplication*******************************************************************
 /*!\page matrix_matrix_multiplication Matrix/Matrix Multiplication
 //
-// The matrix/matrix multiplication can be formulated exactly as in mathematical textbooks:
+// \n \section schur_product Componentwise Multiplication / Schur product
+// <hr>
+//
+// Multiplying two matrices with the same dimensions (i.e. the same number of rows and columns)
+// via the modulo operator results in a componentwise multiplication (Schur product) of the two
+// matrices:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+
+   DynamicMatrix<double>   M1( 28UL, 35UL );
+   CompressedMatrix<float> M2( 28UL, 35UL );
+
+   // ... Initialization of the matrices
+
+   DynamicMatrix<double> M3 = M1 % M2;
+   \endcode
+
+// \n \section matrix_product Matrix Product
+// <hr>
+//
+// The matrix/matrix product can be formulated exactly as in mathematical textbooks:
 
    \code
    using blaze::DynamicMatrix;
