@@ -73,6 +73,7 @@ ClassTest::ClassTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
    testMultAssign();
    testScaling();
 }
@@ -2304,7 +2305,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2325,7 +2326,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2346,7 +2347,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2367,7 +2368,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2388,7 +2389,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2409,7 +2410,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2503,7 +2504,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2524,7 +2525,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2545,7 +2546,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2566,7 +2567,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2587,7 +2588,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2608,7 +2609,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2698,7 +2699,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2719,7 +2720,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2740,7 +2741,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2761,7 +2762,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2782,7 +2783,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2803,7 +2804,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2899,7 +2900,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2920,7 +2921,7 @@ void ClassTest::testAddAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2941,7 +2942,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2962,7 +2963,7 @@ void ClassTest::testAddAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -2983,7 +2984,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -3004,7 +3005,7 @@ void ClassTest::testAddAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 += mat1;
 
@@ -3105,7 +3106,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3126,7 +3127,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3147,7 +3148,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3168,7 +3169,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3189,7 +3190,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3210,7 +3211,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3304,7 +3305,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3325,7 +3326,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3346,7 +3347,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3367,7 +3368,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3388,7 +3389,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3409,7 +3410,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3499,7 +3500,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3520,7 +3521,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3541,7 +3542,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3562,7 +3563,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3583,7 +3584,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3604,7 +3605,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3700,7 +3701,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3721,7 +3722,7 @@ void ClassTest::testSubAssign()
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3742,7 +3743,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3763,7 +3764,7 @@ void ClassTest::testSubAssign()
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3784,7 +3785,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3805,7 +3806,7 @@ void ClassTest::testSubAssign()
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
 
       mat2 -= mat1;
 
@@ -3813,6 +3814,807 @@ void ClassTest::testSubAssign()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix Schur product assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                      { 2, 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix Schur product assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix Schur product assignment";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                      { 2, 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix dense matrix Schur product assignment";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix dense matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix dense matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix dense matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major CompressedMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major CompressedMatrix sparse matrix Schur product assignment";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
+      mat1(0,2) = 1;
+      mat1(1,0) = 2;
+      mat1(1,1) = 3;
+      mat1(1,2) = 4;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
+      mat2(0,0) = 5;
+      mat2(0,2) = 6;
+      mat2(1,1) = 7;
+
+      mat2 %= mat1;
+
+      checkRows    ( mat2, 2UL );
+      checkColumns ( mat2, 3UL );
+      checkNonZeros( mat2, 2UL );
+      checkNonZeros( mat2, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL );
+
+      if( mat2(0,0) != 0 || mat2(0,1) !=  0 || mat2(0,2) != 6 ||
+          mat2(1,0) != 0 || mat2(1,1) != 21 || mat2(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n( 0  0 6 )\n( 0 21 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( blaze::DynamicMatrix<int>( 3UL, 3UL, 1 ) );
+
+      mat2 %= mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat1 << "\n"
              << "   Expected result:\n" << mat2 << "\n";
