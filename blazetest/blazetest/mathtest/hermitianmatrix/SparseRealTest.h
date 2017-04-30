@@ -98,6 +98,7 @@ class SparseRealTest
    void testAssignment  ();
    void testAddAssign   ();
    void testSubAssign   ();
+   void testSchurAssign ();
    void testMultAssign  ();
    void testScaling     ();
    void testFunctionCall();

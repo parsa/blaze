@@ -64,18 +64,22 @@ SubmatrixRealTest::SubmatrixRealTest()
    testAssignment<DHT>();
    testAddAssign<DHT>();
    testSubAssign<DHT>();
+   testSchurAssign<DHT>();
 
    testAssignment<DOHT>();
    testAddAssign<DOHT>();
    testSubAssign<DOHT>();
+   testSchurAssign<DOHT>();
 
    testAssignment<SHT>();
    testAddAssign<SHT>();
    testSubAssign<SHT>();
+   testSchurAssign<SHT>();
 
    testAssignment<SOHT>();
    testAddAssign<SOHT>();
    testSubAssign<SOHT>();
+   testSchurAssign<SOHT>();
 }
 //*************************************************************************************************
 
