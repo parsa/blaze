@@ -71,6 +71,7 @@ DenseTest::DenseTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
    testMultAssign();
 }
 //*************************************************************************************************
@@ -4845,6 +4846,623 @@ void DenseTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << diag2 << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the DiagonalMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the DiagonalMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major DiagonalMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 0, 9 }, { 0, 0, 0 }, { 9, 0, 3 } };
+
+      DT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major DiagonalMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 9, 9 }, { 9, 0, 9 }, { 9, 9, 3 } };
+
+      DT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major dense matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Row-major/row-major DiagonalMatrix dense matrix Schur product assignment (DiagonalMatrix)";
+
+      DT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      DT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Row-major/column-major DiagonalMatrix dense matrix Schur product assignment (DiagonalMatrix)";
+
+      ODT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      DT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major DiagonalMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) = 1;
+      mat(0,2) = 9;
+      mat(2,0) = 9;
+      mat(2,2) = 3;
+      mat.insert( 1UL, 2UL, 0 );
+      mat.insert( 2UL, 1UL, 0 );
+
+      DT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major DiagonalMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,0) = 1;
+      mat(0,2) = 9;
+      mat(2,0) = 9;
+      mat(2,2) = 3;
+      mat.insert( 1UL, 2UL, 0 );
+      mat.insert( 2UL, 1UL, 0 );
+
+      DT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Row-major/row-major DiagonalMatrix sparse matrix Schur product assignment (DiagonalMatrix)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > diag1( 3UL, 2UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      DT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Row-major/column-major DiagonalMatrix sparse matrix Schur product assignment (DiagonalMatrix)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > diag1( 3UL, 2UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      DT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major DiagonalMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 0, 9 }, { 0, 0, 0 }, { 9, 0, 3 } };
+
+      ODT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major DiagonalMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 0, 9 }, { 0, 0, 0 }, { 9, 0, 3 } };
+
+      ODT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major dense matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Column-major/row-major DiagonalMatrix dense matrix Schur product assignment (DiagonalMatrix)";
+
+      DT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      ODT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Column-major/column-major DiagonalMatrix dense matrix Schur product assignment (DiagonalMatrix)";
+
+      ODT diag1( 3UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      ODT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major DiagonalMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) = 1;
+      mat(0,2) = 9;
+      mat(2,0) = 9;
+      mat(2,2) = 3;
+      mat.insert( 1UL, 2UL, 0 );
+      mat.insert( 2UL, 1UL, 0 );
+
+      ODT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major DiagonalMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) = 1;
+      mat(0,2) = 9;
+      mat(2,0) = 9;
+      mat(2,2) = 3;
+      mat.insert( 1UL, 2UL, 0 );
+      mat.insert( 2UL, 1UL, 0 );
+
+      ODT diag( 3UL );
+      diag(0,0) = 1;
+      diag(1,1) = 2;
+      diag(2,2) = 3;
+
+      diag %= mat;
+
+      checkRows    ( diag, 3UL );
+      checkColumns ( diag, 3UL );
+      checkCapacity( diag, 9UL );
+      checkNonZeros( diag, 2UL );
+      checkNonZeros( diag, 0UL, 1UL );
+      checkNonZeros( diag, 1UL, 0UL );
+      checkNonZeros( diag, 2UL, 1UL );
+
+      if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 || diag(1,2) != 0 ||
+          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Column-major/row-major DiagonalMatrix sparse matrix Schur product assignment (DiagonalMatrix)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > diag1( 3UL, 2UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      ODT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (DiagonalMatrix)
+   {
+      test_ = "Column-major/column-major DiagonalMatrix sparse matrix Schur product assignment (DiagonalMatrix)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > diag1( 3UL, 2UL );
+      diag1(0,0) = 1;
+      diag1(2,2) = 3;
+
+      ODT diag2( 3UL );
+      diag2(0,0) = 1;
+      diag2(1,1) = 2;
+      diag2(2,2) = 3;
+
+      diag2 %= diag1;
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 2UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 0UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 0 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 0 0 )\n( 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
