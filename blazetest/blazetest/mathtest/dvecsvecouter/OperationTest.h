@@ -661,8 +661,9 @@ void OperationTest<VT1,VT2>::testElementAccess()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the plain outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -804,6 +805,51 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Outer product with Schur product assignment
+      //=====================================================================================
+
+      // Outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= lhs_ * rhs_;
+            odres_  %= lhs_ * rhs_;
+            sres_   %= lhs_ * rhs_;
+            osres_  %= lhs_ * rhs_;
+            refres_ %= reflhs_ * refrhs_;
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= eval( lhs_ ) * eval( rhs_ );
+            odres_  %= eval( lhs_ ) * eval( rhs_ );
+            sres_   %= eval( lhs_ ) * eval( rhs_ );
+            osres_  %= eval( lhs_ ) * eval( rhs_ );
+            refres_ %= eval( reflhs_ ) * eval( refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -817,8 +863,9 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the negated outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -960,6 +1007,51 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Negated outer product with Schur product assignment
+      //=====================================================================================
+
+      // Negated outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Negated outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= -( lhs_ * rhs_ );
+            odres_  %= -( lhs_ * rhs_ );
+            sres_   %= -( lhs_ * rhs_ );
+            osres_  %= -( lhs_ * rhs_ );
+            refres_ %= -( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Negated outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Negated outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= -( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  %= -( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   %= -( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  %= -( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ %= -( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -974,8 +1066,9 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the scaled outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1574,6 +1667,141 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Scaled outer product with Schur product assignment (s*OP)
+      //=====================================================================================
+
+      // Scaled outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with the given vectors (s*OP)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= scalar * ( lhs_ * rhs_ );
+            odres_  %= scalar * ( lhs_ * rhs_ );
+            sres_   %= scalar * ( lhs_ * rhs_ );
+            osres_  %= scalar * ( lhs_ * rhs_ );
+            refres_ %= scalar * ( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Scaled outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with evaluated vectors (s*OP)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  %= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   %= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  %= scalar * ( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ %= scalar * ( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Scaled outer product with Schur product assignment (OP*s)
+      //=====================================================================================
+
+      // Scaled outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with the given vectors (OP*s)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= ( lhs_ * rhs_ ) * scalar;
+            odres_  %= ( lhs_ * rhs_ ) * scalar;
+            sres_   %= ( lhs_ * rhs_ ) * scalar;
+            osres_  %= ( lhs_ * rhs_ ) * scalar;
+            refres_ %= ( reflhs_ * refrhs_ ) * scalar;
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Scaled outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with evaluated vectors (OP*s)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            odres_  %= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            sres_   %= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            osres_  %= ( eval( lhs_ ) * eval( rhs_ ) ) * scalar;
+            refres_ %= ( eval( reflhs_ ) * eval( refrhs_ ) ) * scalar;
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Scaled outer product with Schur product assignment (OP/s)
+      //=====================================================================================
+
+      // Scaled outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with the given vectors (OP/s)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= ( lhs_ * rhs_ ) / scalar;
+            odres_  %= ( lhs_ * rhs_ ) / scalar;
+            sres_   %= ( lhs_ * rhs_ ) / scalar;
+            osres_  %= ( lhs_ * rhs_ ) / scalar;
+            refres_ %= ( reflhs_ * refrhs_ ) / scalar;
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Scaled outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Scaled outer product with Schur product assignment with evaluated vectors (OP/s)";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            odres_  %= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            sres_   %= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            osres_  %= ( eval( lhs_ ) * eval( rhs_ ) ) / scalar;
+            refres_ %= ( eval( reflhs_ ) * eval( refrhs_ ) ) / scalar;
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -1586,9 +1814,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 // \return void
 // \exception std::runtime_error Outer product error detected.
 //
-// This function tests the transpose outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// This function tests the transpose outer product with plain assignment. In case any
+// error resulting from the outer product or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1652,9 +1880,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
 // \return void
 // \exception std::runtime_error Outer product error detected.
 //
-// This function tests the conjugate transpose outer product with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the outer product
-// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// This function tests the conjugate transpose outer product with plain assignment. In case
+// any error resulting from the outer product or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1719,8 +1947,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the abs outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1743,8 +1972,9 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the conjugate outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1767,8 +1997,9 @@ void OperationTest<VT1,VT2>::testConjOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the \a real outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1791,8 +2022,9 @@ void OperationTest<VT1,VT2>::testRealOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the \a imag outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1815,8 +2047,9 @@ void OperationTest<VT1,VT2>::testImagOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the evaluated outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1839,8 +2072,9 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the serialized outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1863,8 +2097,9 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the symmetric outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -1921,7 +2156,6 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
          checkResults();
       }
 
-      /*
       // Declsym outer product with evaluated vectors
       {
          test_  = "Declsym outer product with evaluated vectors";
@@ -2031,7 +2265,51 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
 
          checkResults();
       }
-      */
+
+
+      //=====================================================================================
+      // Declsym outer product with Schur product assignment
+      //=====================================================================================
+
+      // Declsym outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Declsym outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declsym( lhs * rhs );
+            odres_  %= declsym( lhs * rhs );
+            sres_   %= declsym( lhs * rhs );
+            osres_  %= declsym( lhs * rhs );
+            refres_ %= declsym( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declsym outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Declsym outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declsym( eval( lhs ) * eval( rhs ) );
+            odres_  %= declsym( eval( lhs ) * eval( rhs ) );
+            sres_   %= declsym( eval( lhs ) * eval( rhs ) );
+            osres_  %= declsym( eval( lhs ) * eval( rhs ) );
+            refres_ %= declsym( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2045,8 +2323,9 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the Hermitian outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -2212,6 +2491,51 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Declherm outer product with Schur product assignment
+      //=====================================================================================
+
+      // Declherm outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Declherm outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declherm( lhs * rhs );
+            odres_  %= declherm( lhs * rhs );
+            sres_   %= declherm( lhs * rhs );
+            osres_  %= declherm( lhs * rhs );
+            refres_ %= declherm( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declherm outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Declherm outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declherm( eval( lhs ) * eval( rhs ) );
+            odres_  %= declherm( eval( lhs ) * eval( rhs ) );
+            sres_   %= declherm( eval( lhs ) * eval( rhs ) );
+            osres_  %= declherm( eval( lhs ) * eval( rhs ) );
+            refres_ %= declherm( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2225,8 +2549,9 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the lower outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -2382,6 +2707,51 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Decllow outer product with Schur product assignment
+      //=====================================================================================
+
+      // Decllow outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Decllow outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= decllow( lhs_ * rhs );
+            odres_  %= decllow( lhs_ * rhs );
+            sres_   %= decllow( lhs_ * rhs );
+            osres_  %= decllow( lhs_ * rhs );
+            refres_ %= decllow( reflhs_ * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decllow outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Decllow outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= decllow( eval( lhs_ ) * eval( rhs ) );
+            odres_  %= decllow( eval( lhs_ ) * eval( rhs ) );
+            sres_   %= decllow( eval( lhs_ ) * eval( rhs ) );
+            osres_  %= decllow( eval( lhs_ ) * eval( rhs ) );
+            refres_ %= decllow( eval( reflhs_ ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2395,8 +2765,9 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the upper outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -2552,6 +2923,51 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Declupp outer product with Schur product assignment
+      //=====================================================================================
+
+      // Declupp outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Declupp outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declupp( lhs * rhs_ );
+            odres_  %= declupp( lhs * rhs_ );
+            sres_   %= declupp( lhs * rhs_ );
+            osres_  %= declupp( lhs * rhs_ );
+            refres_ %= declupp( reflhs * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Declupp outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Declupp outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= declupp( eval( lhs ) * eval( rhs_ ) );
+            odres_  %= declupp( eval( lhs ) * eval( rhs_ ) );
+            sres_   %= declupp( eval( lhs ) * eval( rhs_ ) );
+            osres_  %= declupp( eval( lhs ) * eval( rhs_ ) );
+            refres_ %= declupp( eval( reflhs ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2565,8 +2981,9 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the diagonal outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -2732,6 +3149,51 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Decldiag outer product with Schur product assignment
+      //=====================================================================================
+
+      // Decldiag outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Decldiag outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= decldiag( lhs * rhs );
+            odres_  %= decldiag( lhs * rhs );
+            sres_   %= decldiag( lhs * rhs );
+            osres_  %= decldiag( lhs * rhs );
+            refres_ %= decldiag( reflhs * refrhs );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Decldiag outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Decldiag outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            dres_   %= decldiag( eval( lhs ) * eval( rhs ) );
+            odres_  %= decldiag( eval( lhs ) * eval( rhs ) );
+            sres_   %= decldiag( eval( lhs ) * eval( rhs ) );
+            osres_  %= decldiag( eval( lhs ) * eval( rhs ) );
+            refres_ %= decldiag( eval( reflhs ) * eval( refrhs ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2745,8 +3207,9 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the submatrix-wise outer product with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the outer product
-// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the outer product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -2928,6 +3391,63 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Submatrix-wise outer product with Schur product assignment
+      //=====================================================================================
+
+      // Submatrix-wise outer product with Schur product assignment with the given vectors
+      {
+         test_  = "Submatrix-wise outer product with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) %= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) %= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) %= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) %= submatrix( lhs_ * rhs_      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) %= submatrix( reflhs_ * refrhs_, row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Submatrix-wise outer product with Schur product assignment with evaluated vectors
+      {
+         test_  = "Submatrix-wise outer product with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t row=0UL, m=0UL; row<lhs_.size(); row+=m ) {
+               m = blaze::rand<size_t>( 1UL, lhs_.size() - row );
+               for( size_t column=0UL, n=0UL; column<rhs_.size(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, rhs_.size() - column );
+                  submatrix( dres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( odres_ , row, column, m, n ) %= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( sres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( osres_ , row, column, m, n ) %= submatrix( eval( lhs_ ) * eval( rhs_ )      , row, column, m, n );
+                  submatrix( refres_, row, column, m, n ) %= submatrix( eval( reflhs_ ) * eval( refrhs_ ), row, column, m, n );
+               }
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -2941,8 +3461,9 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the row-wise outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3096,6 +3617,55 @@ void OperationTest<VT1,VT2>::testRowOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Row-wise outer product with multiplication assignment
+      //=====================================================================================
+
+      // Row-wise outer product with multiplication assignment with the given vectors
+      {
+         test_  = "Row-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) *= row( lhs_ * rhs_, i );
+               row( odres_ , i ) *= row( lhs_ * rhs_, i );
+               row( sres_  , i ) *= row( lhs_ * rhs_, i );
+               row( osres_ , i ) *= row( lhs_ * rhs_, i );
+               row( refres_, i ) *= row( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Row-wise outer product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Row-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.size(); ++i ) {
+               row( dres_  , i ) *= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( odres_ , i ) *= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( sres_  , i ) *= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( osres_ , i ) *= row( eval( lhs_ ) * eval( rhs_ ), i );
+               row( refres_, i ) *= row( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -3109,8 +3679,9 @@ void OperationTest<VT1,VT2>::testRowOperation()
 // \exception std::runtime_error Outer product error detected.
 //
 // This function tests the column-wise outer product with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the outer product or the
-// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3264,6 +3835,55 @@ void OperationTest<VT1,VT2>::testColumnOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Column-wise outer product with multiplication assignment
+      //=====================================================================================
+
+      // Column-wise outer product with multiplication assignment with the given vectors
+      {
+         test_  = "Column-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) *= column( lhs_ * rhs_, i );
+               column( odres_ , i ) *= column( lhs_ * rhs_, i );
+               column( sres_  , i ) *= column( lhs_ * rhs_, i );
+               column( osres_ , i ) *= column( lhs_ * rhs_, i );
+               column( refres_, i ) *= column( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Column-wise outer product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Column-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<rhs_.size(); ++i ) {
+               column( dres_  , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( odres_ , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( sres_  , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( osres_ , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
+               column( refres_, i ) *= column( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
    }
 #endif
 }
@@ -3278,10 +3898,10 @@ void OperationTest<VT1,VT2>::testColumnOperation()
 // \return void
 // \exception std::runtime_error Outer product error detected.
 //
-// This function tests the outer product with plain assignment, addition assignment, and
-// subtraction assignment in combination with a custom operation. In case any error resulting
-// from the outer product or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// This function tests the outer product with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment in combination with a custom operation.
+// In case any error resulting from the outer product or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
@@ -3414,6 +4034,51 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
          sres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
          osres_  -= op( eval( lhs_ ) * eval( rhs_ ) );
          refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+
+   //=====================================================================================
+   // Customized outer product with Schur product assignment
+   //=====================================================================================
+
+   // Customized outer product with Schur product assignment with the given vectors
+   {
+      test_  = "Customized outer product with Schur product assignment with the given vectors (" + name + ")";
+      error_ = "Failed Schur product assignment operation";
+
+      try {
+         initResults();
+         dres_   %= op( lhs_ * rhs_ );
+         odres_  %= op( lhs_ * rhs_ );
+         sres_   %= op( lhs_ * rhs_ );
+         osres_  %= op( lhs_ * rhs_ );
+         refres_ %= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException( ex );
+      }
+
+      checkResults();
+   }
+
+   // Customized outer product with Schur product assignment with evaluated vectors
+   {
+      test_  = "Customized outer product with Schur product assignment with evaluated vectors (" + name + ")";
+      error_ = "Failed Schur product assignment operation";
+
+      try {
+         initResults();
+         dres_   %= op( eval( lhs_ ) * eval( rhs_ ) );
+         odres_  %= op( eval( lhs_ ) * eval( rhs_ ) );
+         sres_   %= op( eval( lhs_ ) * eval( rhs_ ) );
+         osres_  %= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ %= op( eval( reflhs_ ) * eval( refrhs_ ) );
       }
       catch( std::exception& ex ) {
          convertException( ex );
