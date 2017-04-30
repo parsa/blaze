@@ -187,6 +187,37 @@ void AliasingTest::testSVecDVecOuter()
 
 
    //=====================================================================================
+   // Outer product with Schur product assignment
+   //=====================================================================================
+
+   // Schur product assignment to left-hand side compound operand
+   {
+      test_ = "SVecDVecOuter - Schur product assignment to left-hand side compound operand";
+
+      initialize();
+
+      result_ =  sB3x3_;
+      result_ %= ( sB3x3_ * sb3_ ) * trans( db3_ );
+      sB3x3_  %= ( sB3x3_ * sb3_ ) * trans( db3_ );
+
+      checkResult( sB3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side compound operand
+   {
+      test_ = "SVecDVecOuter - Schur product assignment to right-hand side compound operand";
+
+      initialize();
+
+      result_ =  dB3x3_;
+      result_ %= sb3_ * trans( dB3x3_ * db3_ );
+      dB3x3_  %= sb3_ * trans( dB3x3_ * db3_ );
+
+      checkResult( dB3x3_, result_ );
+   }
+
+
+   //=====================================================================================
    // Outer product with multiplication assignment
    //=====================================================================================
 
