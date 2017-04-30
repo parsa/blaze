@@ -55,7 +55,7 @@ all: functions simd blas lapack typetraits \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-     dmatdmatschur dmatsmatschur \
+     dmatdmatschur dmatsmatschur smatdmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
      determinant lu llh qr rq ql lq inversion eigen svd \
      vectorserializer matrixserializer
@@ -463,6 +463,11 @@ dmatsmatschur:
 	@echo "Building the dense matrix/sparse matrix Schur product tests..."
 	@$(MAKE) --no-print-directory -C ./dmatsmatschur $(MAKECMDGOALS)
 
+smatdmatschur:
+	@echo
+	@echo "Building the sparse matrix/dense matrix Schur product tests..."
+	@$(MAKE) --no-print-directory -C ./smatdmatschur $(MAKECMDGOALS)
+
 dmatdmatmult:
 	@echo
 	@echo "Building the dense matrix/dense matrix multiplication tests..."
@@ -623,6 +628,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./smatsmatsub reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatschur reset
 	@$(MAKE) --no-print-directory -C ./dmatsmatschur reset
+	@$(MAKE) --no-print-directory -C ./smatdmatschur reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmult reset
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult reset
 	@$(MAKE) --no-print-directory -C ./smatdmatmult reset
@@ -718,6 +724,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatsmatsub clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatschur clean
 	@$(MAKE) --no-print-directory -C ./dmatsmatschur clean
+	@$(MAKE) --no-print-directory -C ./smatdmatschur clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
@@ -758,7 +765,7 @@ clean:
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
-        dmatdmatschur dmatsmatschur \
+        dmatdmatschur dmatsmatschur smatdmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
         determinant lu llh qr rq ql lq inversion eigen svd \
         vectorserializer matrixserializer
