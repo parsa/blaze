@@ -64,18 +64,22 @@ SubmatrixTest::SubmatrixTest()
    testAssignment<DLT>();
    testAddAssign<DLT>();
    testSubAssign<DLT>();
+   testSchurAssign<DLT>();
 
    testAssignment<DOLT>();
    testAddAssign<DOLT>();
    testSubAssign<DOLT>();
+   testSchurAssign<DOLT>();
 
    testAssignment<SLT>();
    testAddAssign<SLT>();
    testSubAssign<SLT>();
+   testSchurAssign<SLT>();
 
    testAssignment<SOLT>();
    testAddAssign<SOLT>();
    testSubAssign<SOLT>();
+   testSchurAssign<SOLT>();
 }
 //*************************************************************************************************
 

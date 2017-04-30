@@ -72,6 +72,7 @@ DenseTest::DenseTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
 }
 //*************************************************************************************************
 
@@ -4435,6 +4436,671 @@ void DenseTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the LowerMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the LowerMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major LowerMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 2, 0, 9 }, { 0, -2, 0 }, { 3, 5, 0 } };
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major LowerMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 2, 0, 9 }, { 0, -2, 0 }, { 3, 5, 0 } };
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major dense matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix dense matrix Schur product assignment (LowerMatrix)";
+
+      LT lower1( 3UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix dense matrix Schur product assignment (LowerMatrix)";
+
+      OLT lower1( 3UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  2;
+      mat(0,2) =  9;
+      mat(1,1) = -2;
+      mat(2,0) =  3;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  2;
+      mat(0,2) =  9;
+      mat(1,1) = -2;
+      mat(2,0) =  3;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix Schur product assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix Schur product assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major LowerMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 2, 0, 9 }, { 0, -2, 0 }, { 3, 5, 0 } };
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major LowerMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 2, 0, 9 }, { 0, -2, 0 }, { 3, 5, 0 } };
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major dense matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix dense matrix Schur product assignment (LowerMatrix)";
+
+      LT lower1( 3UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix dense matrix Schur product assignment (LowerMatrix)";
+
+      OLT lower1( 3UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  2;
+      mat(0,2) =  9;
+      mat(1,1) = -2;
+      mat(2,0) =  3;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  2;
+      mat(0,2) =  9;
+      mat(1,1) = -2;
+      mat(2,0) =  3;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower %= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) !=  0 || lower(1,1) != -4 || lower(1,2) != 0 ||
+          lower(2,0) != 21 || lower(2,1) !=  0 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix Schur product assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix Schur product assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      lower1(0,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  3;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 %= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 3UL );
+      checkNonZeros( lower2, 0UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 0UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) !=  0 || lower2(1,1) != -4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 21 || lower2(2,1) !=  0 || lower2(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2  0  0 )\n(  0 -4  0 )\n( 21  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
