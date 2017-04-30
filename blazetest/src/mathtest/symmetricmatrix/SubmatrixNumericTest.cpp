@@ -64,18 +64,22 @@ SubmatrixNumericTest::SubmatrixNumericTest()
    testAssignment<DST>();
    testAddAssign<DST>();
    testSubAssign<DST>();
+   testSchurAssign<DST>();
 
    testAssignment<DOST>();
    testAddAssign<DOST>();
    testSubAssign<DOST>();
+   testSchurAssign<DOST>();
 
    testAssignment<SST>();
    testAddAssign<SST>();
    testSubAssign<SST>();
+   testSchurAssign<SST>();
 
    testAssignment<SOST>();
    testAddAssign<SOST>();
    testSubAssign<SOST>();
+   testSchurAssign<SOST>();
 }
 //*************************************************************************************************
 

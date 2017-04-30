@@ -104,9 +104,10 @@ class SubmatrixNumericTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   template< typename ST > void testAssignment();
-   template< typename ST > void testAddAssign ();
-   template< typename ST > void testSubAssign ();
+   template< typename ST > void testAssignment ();
+   template< typename ST > void testAddAssign  ();
+   template< typename ST > void testSubAssign  ();
+   template< typename ST > void testSchurAssign();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
@@ -4860,6 +4861,1583 @@ void SubmatrixNumericTest::testSubAssign()
 
          try {
             sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Schur product assignment to a submatrix of a SymmetricMatrix.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment to a submatrix of a SymmetricMatrix.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename ST >  // Type of the symmetric matrix
+void SubmatrixNumericTest::testSchurAssign()
+{
+   typedef blaze::SubmatrixExprTrait_<ST,blaze::unaligned>  SMT;
+
+
+   //=====================================================================================
+   // Dense matrix Schur product assignment
+   //=====================================================================================
+
+   // (  1 -4  7 -2  5  0 )      ( 11 20 28 16  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( 20 12  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 28  0  3  1  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 16  0  1  5  7  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0  7  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 1";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(0,2) =  4;
+         mat(0,3) = -8;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(1,2) = 99;
+         mat(1,3) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 11 || sm(0,1) != 20 || sm(0,2) != 28 || sm(0,3) != 16 ||
+             sm(1,0) != 20 || sm(1,1) != 12 || sm(1,2) !=  0 || sm(1,3) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 11 20 28 16 )\n( 20 12  0  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 11 || sym(0,1) != 20 || sym(0,2) != 28 || sym(0,3) != 16 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != 20 || sym(1,1) != 12 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) != 28 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 16 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) !=  7 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) !=  7 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 11 20 28 16  5  0 )\n"
+                                        "( 20 12  0  0 -1  8 )\n"
+                                        "( 28  0  3  1  0 -2 )\n"
+                                        "( 16  0  1  5  7  0 )\n"
+                                        "(  5 -1  0  7  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(2,0) =  4;
+         mat(2,1) = 99;
+         mat(3,0) = -8;
+         mat(3,1) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 11 || sm(0,1) != 20 ||
+             sm(1,0) != 20 || sm(1,1) != 12 ||
+             sm(2,0) != 28 || sm(2,1) !=  0 ||
+             sm(3,0) != 16 || sm(3,1) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 11 20 )\n"
+                                        "( 20 12 )\n"
+                                        "( 28  0 )\n"
+                                        "( 16  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 11 || sym(0,1) != 20 || sym(0,2) != 28 || sym(0,3) != 16 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != 20 || sym(1,1) != 12 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) != 28 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 16 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) !=  7 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) !=  7 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 11 20 28 16  5  0 )\n"
+                                        "( 20 12  0  0 -1  8 )\n"
+                                        "( 28  0  3  1  0 -2 )\n"
+                                        "( 16  0  1  5  7  0 )\n"
+                                        "(  5 -1  0  7  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0 18 14  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( -2  0 14 20 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 2";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 99;
+         mat(0,1) =  6;
+         mat(0,2) = 14;
+         mat(0,3) = 99;
+         mat(1,0) = 99;
+         mat(1,1) = 14;
+         mat(1,2) =  4;
+         mat(1,3) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 0 || sm(0,1) != 18 || sm(0,2) != 14 || sm(0,3) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) != 14 || sm(1,2) != 20 || sm(1,3) != 21 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 18 14  0 )\n( 0 14 20 21 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 14 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) != 14 || sym(3,3) != 20 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0 18 14  0 -2 )\n"
+                                        "( -2  0 14 20 21  0 )\n"
+                                        "(  5 -1  0 21  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 99;
+         mat(0,1) = 99;
+         mat(1,0) =  6;
+         mat(1,1) = 14;
+         mat(2,0) = 14;
+         mat(2,1) =  4;
+         mat(3,0) = 99;
+         mat(3,1) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+             sm(1,0) != 18 || sm(1,1) != 14 ||
+             sm(2,0) != 14 || sm(2,1) != 20 ||
+             sm(3,0) !=  0 || sm(3,1) != 21 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0  0 )\n"
+                                        "( 18 14 )\n"
+                                        "( 14 20 )\n"
+                                        "(  0 21 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 14 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) != 14 || sym(3,3) != 20 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0 18 14  0 -2 )\n"
+                                        "( -2  0 14 20 21  0 )\n"
+                                        "(  5 -1  0 21  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0  3  1  0 16 )
+   // ( -2  0  1  5  7  0 )      ( -2  0  1  5 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21 14 20 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 16  0 20 28 )
+   {
+      test_ = "Dense matrix Schur product assignment test 3";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 99;
+         mat(0,1) =  3;
+         mat(0,2) = 14;
+         mat(0,3) = -5;
+         mat(1,0) = -8;
+         mat(1,1) = 99;
+         mat(1,2) = -5;
+         mat(1,3) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) != 21 || sm(0,2) != 14 || sm(0,3) != 20 ||
+             sm(1,0) != 16 || sm(1,1) !=  0 || sm(1,2) != 20 || sm(1,3) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0 21 14 20 )\n( 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != 16 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) != 14 || sym(4,5) != 20 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != 16 || sym(5,3) !=  0 || sym(5,4) != 20 || sym(5,5) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0  3  1  0 16 )\n"
+                                        "( -2  0  1  5 21  0 )\n"
+                                        "(  5 -1  0 21 14 20 )\n"
+                                        "(  0  8 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 99;
+         mat(0,1) = -8;
+         mat(1,0) =  3;
+         mat(1,1) = 99;
+         mat(2,0) = 14;
+         mat(2,1) = -5;
+         mat(3,0) = -5;
+         mat(3,1) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) != 16 ||
+             sm(1,0) != 21 || sm(1,1) !=  0 ||
+             sm(2,0) != 14 || sm(2,1) != 20 ||
+             sm(3,0) != 20 || sm(3,1) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0 16 )\n"
+                                        "( 21  0 )\n"
+                                        "( 14 20 )\n"
+                                        "( 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != 16 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) != 14 || sym(4,5) != 20 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != 16 || sym(5,3) !=  0 || sym(5,4) != 20 || sym(5,5) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0  3  1  0 16 )\n"
+                                        "( -2  0  1  5 21  0 )\n"
+                                        "(  5 -1  0 21 14 20 )\n"
+                                        "(  0  8 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4 14 18 25  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0  7  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 14  0 18 11  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 18  0 11 20 14  0 )
+   // (  5 -1  0  7  1 -4 )      ( 25  7  0 14  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 4";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) =  2;
+         mat(0,1) = 99;
+         mat(0,2) =  6;
+         mat(0,3) = 11;
+         mat(1,0) = -9;
+         mat(1,1) = 99;
+         mat(1,2) = 11;
+         mat(1,3) =  4;
+         mat(2,0) =  5;
+         mat(2,1) = -7;
+         mat(2,2) = 99;
+         mat(2,3) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 14 || sm(0,1) != 0 || sm(0,2) != 18 || sm(0,3) != 11 ||
+             sm(1,0) != 18 || sm(1,1) != 0 || sm(1,2) != 11 || sm(1,3) != 20 ||
+             sm(2,0) != 25 || sm(2,1) != 7 || sm(2,2) !=  0 || sm(2,3) != 14 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 14  0 18 11 )\n"
+                                        "( 18  0 11 20 )\n"
+                                        "( 25  7  0 14 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 14 || sym(0,3) != 18 || sym(0,4) != 25 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) !=  7 || sym(1,5) !=  8 ||
+             sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 11 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 18 || sym(3,1) !=  0 || sym(3,2) != 11 || sym(3,3) != 20 || sym(3,4) != 14 || sym(3,5) !=  0 ||
+             sym(4,0) != 25 || sym(4,1) !=  7 || sym(4,2) !=  0 || sym(4,3) != 14 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4 14 18 25  0 )\n"
+                                        "( -4  2  0  0  7  8 )\n"
+                                        "( 14  0 18 11  0 -2 )\n"
+                                        "( 18  0 11 20 14  0 )\n"
+                                        "( 25  7  0 14  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) =  2;
+         mat(0,1) = -9;
+         mat(0,2) =  5;
+         mat(1,0) = 99;
+         mat(1,1) = 99;
+         mat(1,2) = -7;
+         mat(2,0) =  6;
+         mat(2,1) = 11;
+         mat(2,2) = 99;
+         mat(3,0) = 11;
+         mat(3,1) =  4;
+         mat(3,2) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 14 || sm(0,1) != 18 || sm(0,2) != 25 ||
+             sm(1,0) !=  0 || sm(1,1) !=  0 || sm(1,2) !=  7 ||
+             sm(2,0) != 18 || sm(2,1) != 11 || sm(2,2) !=  0 ||
+             sm(3,0) != 11 || sm(3,1) != 20 || sm(3,2) != 14 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 14 18 25 )\n"
+                                        "(  0  0  7 )\n"
+                                        "( 18 11  0 )\n"
+                                        "( 11 20 14 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 14 || sym(0,3) != 18 || sym(0,4) != 25 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) !=  7 || sym(1,5) !=  8 ||
+             sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 11 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 18 || sym(3,1) !=  0 || sym(3,2) != 11 || sym(3,3) != 20 || sym(3,4) != 14 || sym(3,5) !=  0 ||
+             sym(4,0) != 25 || sym(4,1) !=  7 || sym(4,2) !=  0 || sym(4,3) != 14 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4 14 18 25  0 )\n"
+                                        "( -4  2  0  0  7  8 )\n"
+                                        "( 14  0 18 11  0 -2 )\n"
+                                        "( 18  0 11 20 14  0 )\n"
+                                        "( 25  7  0 14  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      ( 11 20 28 16  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( 24 12  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 28  0  3  1  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 16  0  1  5  7  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0  7  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 5";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(0,2) =  4;
+         mat(0,3) = -8;
+         mat(1,0) = -6;
+         mat(1,1) =  6;
+         mat(1,2) = 99;
+         mat(1,3) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 11;
+         mat(0,1) = -6;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(2,0) =  4;
+         mat(2,1) = 99;
+         mat(3,0) = -8;
+         mat(3,1) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0 18 14  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( -2  0 22 20 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 6";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 99;
+         mat(0,1) =  6;
+         mat(0,2) = 14;
+         mat(0,3) = 99;
+         mat(1,0) = 99;
+         mat(1,1) = 22;
+         mat(1,2) =  4;
+         mat(1,3) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 99;
+         mat(0,1) = 99;
+         mat(1,0) =  6;
+         mat(1,1) = 22;
+         mat(2,0) = 14;
+         mat(2,1) =  4;
+         mat(3,0) = 99;
+         mat(3,1) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0  3  1  0 16 )
+   // ( -2  0  1  5  7  0 )      ( -2  0  1  5 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21 14 20 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 16  0 24 28 )
+   {
+      test_ = "Dense matrix Schur product assignment test 7";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = 99;
+         mat(0,1) =  3;
+         mat(0,2) = 14;
+         mat(0,3) = -5;
+         mat(1,0) = -8;
+         mat(1,1) = 99;
+         mat(1,2) = -6;
+         mat(1,3) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = 99;
+         mat(0,1) = -8;
+         mat(1,0) =  3;
+         mat(1,1) = 99;
+         mat(2,0) = 14;
+         mat(2,1) = -6;
+         mat(3,0) = -5;
+         mat(3,1) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4 14 18 25  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0  7  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 14  0 18 11  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 18  0 22 20 14  0 )
+   // (  5 -1  0  7  1 -4 )      ( 25  7  0 14  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Dense matrix Schur product assignment test 8";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) =  2;
+         mat(0,1) = 99;
+         mat(0,2) =  6;
+         mat(0,3) = 11;
+         mat(1,0) = -9;
+         mat(1,1) = 99;
+         mat(1,2) = 22;
+         mat(1,3) =  4;
+         mat(2,0) =  5;
+         mat(2,1) = -7;
+         mat(2,2) = 99;
+         mat(2,3) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) =  2;
+         mat(0,1) = -9;
+         mat(0,2) =  5;
+         mat(1,0) = 99;
+         mat(1,1) = 99;
+         mat(1,2) = -7;
+         mat(2,0) =  6;
+         mat(2,1) = 22;
+         mat(2,2) = 99;
+         mat(3,0) = 11;
+         mat(3,1) =  4;
+         mat(3,2) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // (  1 -4  7 -2  5  0 )      ( 11 20 28 16  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( 20 12  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 28  0  3  1  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 16  0  1  5  7  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0  7  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 1";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(0,2) =  4;
+         mat(0,3) = -8;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(1,2) = 99;
+         mat(1,3) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 11 || sm(0,1) != 20 || sm(0,2) != 28 || sm(0,3) != 16 ||
+             sm(1,0) != 20 || sm(1,1) != 12 || sm(1,2) !=  0 || sm(1,3) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 11 20 28 16 )\n( 20 12  0  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 11 || sym(0,1) != 20 || sym(0,2) != 28 || sym(0,3) != 16 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != 20 || sym(1,1) != 12 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) != 28 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 16 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) !=  7 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) !=  7 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 11 20 28 16  5  0 )\n"
+                                        "( 20 12  0  0 -1  8 )\n"
+                                        "( 28  0  3  1  0 -2 )\n"
+                                        "( 16  0  1  5  7  0 )\n"
+                                        "(  5 -1  0  7  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(2,0) =  4;
+         mat(2,1) = 99;
+         mat(3,0) = -8;
+         mat(3,1) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 11 || sm(0,1) != 20 ||
+             sm(1,0) != 20 || sm(1,1) != 12 ||
+             sm(2,0) != 28 || sm(2,1) !=  0 ||
+             sm(3,0) != 16 || sm(3,1) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 11 20 )\n"
+                                        "( 20 12 )\n"
+                                        "( 28  0 )\n"
+                                        "( 16  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 11 || sym(0,1) != 20 || sym(0,2) != 28 || sym(0,3) != 16 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != 20 || sym(1,1) != 12 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) != 28 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 16 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) !=  7 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) !=  7 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 11 20 28 16  5  0 )\n"
+                                        "( 20 12  0  0 -1  8 )\n"
+                                        "( 28  0  3  1  0 -2 )\n"
+                                        "( 16  0  1  5  7  0 )\n"
+                                        "(  5 -1  0  7  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0 18 14  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( -2  0 14 20 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 2";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) =  6;
+         mat(0,2) = 14;
+         mat(0,3) = 99;
+         mat(1,0) = 99;
+         mat(1,1) = 14;
+         mat(1,2) =  4;
+         mat(1,3) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 0 || sm(0,1) != 18 || sm(0,2) != 14 || sm(0,3) !=  0 ||
+             sm(1,0) != 0 || sm(1,1) != 14 || sm(1,2) != 20 || sm(1,3) != 21 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 0 18 14  0 )\n( 0 14 20 21 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 14 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) != 14 || sym(3,3) != 20 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0 18 14  0 -2 )\n"
+                                        "( -2  0 14 20 21  0 )\n"
+                                        "(  5 -1  0 21  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) = 99;
+         mat(1,0) =  6;
+         mat(1,1) = 14;
+         mat(2,0) = 14;
+         mat(2,1) =  4;
+         mat(3,0) = 99;
+         mat(3,1) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+             sm(1,0) != 18 || sm(1,1) != 14 ||
+             sm(2,0) != 14 || sm(2,1) != 20 ||
+             sm(3,0) !=  0 || sm(3,1) != 21 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0  0 )\n"
+                                        "( 18 14 )\n"
+                                        "( 14 20 )\n"
+                                        "(  0 21 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 14 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) != 14 || sym(3,3) != 20 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0 18 14  0 -2 )\n"
+                                        "( -2  0 14 20 21  0 )\n"
+                                        "(  5 -1  0 21  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0  3  1  0 16 )
+   // ( -2  0  1  5  7  0 )      ( -2  0  1  5 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21 14 20 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 16  0 20 28 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 3";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) =  3;
+         mat(0,2) = 14;
+         mat(0,3) = -5;
+         mat(1,0) = -8;
+         mat(1,1) = 99;
+         mat(1,2) = -5;
+         mat(1,3) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) != 21 || sm(0,2) != 14 || sm(0,3) != 20 ||
+             sm(1,0) != 16 || sm(1,1) !=  0 || sm(1,2) != 20 || sm(1,3) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0 21 14 20 )\n( 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != 16 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) != 14 || sym(4,5) != 20 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != 16 || sym(5,3) !=  0 || sym(5,4) != 20 || sym(5,5) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0  3  1  0 16 )\n"
+                                        "( -2  0  1  5 21  0 )\n"
+                                        "(  5 -1  0 21 14 20 )\n"
+                                        "(  0  8 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) = -8;
+         mat(1,0) =  3;
+         mat(1,1) = 99;
+         mat(2,0) = 14;
+         mat(2,1) = -5;
+         mat(3,0) = -5;
+         mat(3,1) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) !=  0 || sm(0,1) != 16 ||
+             sm(1,0) != 21 || sm(1,1) !=  0 ||
+             sm(2,0) != 14 || sm(2,1) != 20 ||
+             sm(3,0) != 20 || sm(3,1) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n(  0 16 )\n"
+                                        "( 21  0 )\n"
+                                        "( 14 20 )\n"
+                                        "( 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) !=  7 || sym(0,3) != -2 || sym(0,4) !=  5 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) != -1 || sym(1,5) !=  8 ||
+             sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) !=  3 || sym(2,3) !=  1 || sym(2,4) !=  0 || sym(2,5) != 16 ||
+             sym(3,0) != -2 || sym(3,1) !=  0 || sym(3,2) !=  1 || sym(3,3) !=  5 || sym(3,4) != 21 || sym(3,5) !=  0 ||
+             sym(4,0) !=  5 || sym(4,1) != -1 || sym(4,2) !=  0 || sym(4,3) != 21 || sym(4,4) != 14 || sym(4,5) != 20 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != 16 || sym(5,3) !=  0 || sym(5,4) != 20 || sym(5,5) != 28 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4  7 -2  5  0 )\n"
+                                        "( -4  2  0  0 -1  8 )\n"
+                                        "(  7  0  3  1  0 16 )\n"
+                                        "( -2  0  1  5 21  0 )\n"
+                                        "(  5 -1  0 21 14 20 )\n"
+                                        "(  0  8 16  0 20 28 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4 14 18 25  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0  7  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 14  0 18 11  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 18  0 11 20 14  0 )
+   // (  5 -1  0  7  1 -4 )      ( 25  7  0 14  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 4";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) =  2;
+         mat(0,1) = 99;
+         mat(0,2) =  6;
+         mat(0,3) = 11;
+         mat(1,0) = -9;
+         mat(1,1) = 99;
+         mat(1,2) = 11;
+         mat(1,3) =  4;
+         mat(2,0) =  5;
+         mat(2,1) = -7;
+         mat(2,2) = 99;
+         mat(2,3) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 14 || sm(0,1) != 0 || sm(0,2) != 18 || sm(0,3) != 11 ||
+             sm(1,0) != 18 || sm(1,1) != 0 || sm(1,2) != 11 || sm(1,3) != 20 ||
+             sm(2,0) != 25 || sm(2,1) != 7 || sm(2,2) !=  0 || sm(2,3) != 14 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 14  0 18 11 )\n"
+                                        "( 18  0 11 20 )\n"
+                                        "( 25  7  0 14 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 14 || sym(0,3) != 18 || sym(0,4) != 25 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) !=  7 || sym(1,5) !=  8 ||
+             sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 11 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 18 || sym(3,1) !=  0 || sym(3,2) != 11 || sym(3,3) != 20 || sym(3,4) != 14 || sym(3,5) !=  0 ||
+             sym(4,0) != 25 || sym(4,1) !=  7 || sym(4,2) !=  0 || sym(4,3) != 14 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4 14 18 25  0 )\n"
+                                        "( -4  2  0  0  7  8 )\n"
+                                        "( 14  0 18 11  0 -2 )\n"
+                                        "( 18  0 11 20 14  0 )\n"
+                                        "( 25  7  0 14  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) =  2;
+         mat(0,1) = -9;
+         mat(0,2) =  5;
+         mat(1,0) = 99;
+         mat(1,1) = 99;
+         mat(1,2) = -7;
+         mat(2,0) =  6;
+         mat(2,1) = 11;
+         mat(2,2) = 99;
+         mat(3,0) = 11;
+         mat(3,1) =  4;
+         mat(3,2) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         sm %= mat;
+
+         checkRows    ( sym,  6UL );
+         checkColumns ( sym,  6UL );
+         checkNonZeros( sym, 26UL );
+
+         if( sm(0,0) != 14 || sm(0,1) != 18 || sm(0,2) != 25 ||
+             sm(1,0) !=  0 || sm(1,1) !=  0 || sm(1,2) !=  7 ||
+             sm(2,0) != 18 || sm(2,1) != 11 || sm(2,2) !=  0 ||
+             sm(3,0) != 11 || sm(3,1) != 20 || sm(3,2) != 14 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( 14 18 25 )\n"
+                                        "(  0  0  7 )\n"
+                                        "( 18 11  0 )\n"
+                                        "( 11 20 14 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 14 || sym(0,3) != 18 || sym(0,4) != 25 || sym(0,5) !=  0 ||
+             sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) !=  0 || sym(1,3) !=  0 || sym(1,4) !=  7 || sym(1,5) !=  8 ||
+             sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) != 18 || sym(2,3) != 11 || sym(2,4) !=  0 || sym(2,5) != -2 ||
+             sym(3,0) != 18 || sym(3,1) !=  0 || sym(3,2) != 11 || sym(3,3) != 20 || sym(3,4) != 14 || sym(3,5) !=  0 ||
+             sym(4,0) != 25 || sym(4,1) !=  7 || sym(4,2) !=  0 || sym(4,3) != 14 || sym(4,4) !=  1 || sym(4,5) != -4 ||
+             sym(5,0) !=  0 || sym(5,1) !=  8 || sym(5,2) != -2 || sym(5,3) !=  0 || sym(5,4) != -4 || sym(5,5) !=  7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n(  1 -4 14 18 25  0 )\n"
+                                        "( -4  2  0  0  7  8 )\n"
+                                        "( 14  0 18 11  0 -2 )\n"
+                                        "( 18  0 11 20 14  0 )\n"
+                                        "( 25  7  0 14  1 -4 )\n"
+                                        "(  0  8 -2  0 -4  7 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      ( 11 20 28 16  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( 24 12  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 28  0  3  1  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 16  0  1  5  7  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0  7  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 5";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 11;
+         mat(0,1) = -5;
+         mat(0,2) =  4;
+         mat(0,3) = -8;
+         mat(1,0) = -6;
+         mat(1,1) =  6;
+         mat(1,2) = 99;
+         mat(1,3) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 11;
+         mat(0,1) = -6;
+         mat(1,0) = -5;
+         mat(1,1) =  6;
+         mat(2,0) =  4;
+         mat(2,1) = 99;
+         mat(3,0) = -8;
+         mat(3,1) = 99;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0 18 14  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( -2  0 22 20 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 6";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) =  6;
+         mat(0,2) = 14;
+         mat(0,3) = 99;
+         mat(1,0) = 99;
+         mat(1,1) = 22;
+         mat(1,2) =  4;
+         mat(1,3) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) = 99;
+         mat(1,0) =  6;
+         mat(1,1) = 22;
+         mat(2,0) = 14;
+         mat(2,1) =  4;
+         mat(3,0) = 99;
+         mat(3,1) =  3;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4  7 -2  5  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0 -1  8 )
+   // (  7  0  3  1  0 -2 )  =>  (  7  0  3  1  0 16 )
+   // ( -2  0  1  5  7  0 )      ( -2  0  1  5 21  0 )
+   // (  5 -1  0  7  1 -4 )      (  5 -1  0 21 14 20 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 16  0 24 28 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 7";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) =  3;
+         mat(0,2) = 14;
+         mat(0,3) = -5;
+         mat(1,0) = -8;
+         mat(1,1) = 99;
+         mat(1,2) = -6;
+         mat(1,3) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = 99;
+         mat(0,1) = -8;
+         mat(1,0) =  3;
+         mat(1,1) = 99;
+         mat(2,0) = 14;
+         mat(2,1) = -6;
+         mat(3,0) = -5;
+         mat(3,1) =  4;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // (  1 -4  7 -2  5  0 )      (  1 -4 14 18 25  0 )
+   // ( -4  2  0  0 -1  8 )      ( -4  2  0  0  7  8 )
+   // (  7  0  3  1  0 -2 )  =>  ( 14  0 18 11  0 -2 )
+   // ( -2  0  1  5  7  0 )      ( 18  0 22 20 14  0 )
+   // (  5 -1  0  7  1 -4 )      ( 25  7  0 14  1 -4 )
+   // (  0  8 -2  0 -4  7 )      (  0  8 -2  0 -4  7 )
+   {
+      test_ = "Sparse matrix Schur product assignment test 8";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) =  2;
+         mat(0,1) = 99;
+         mat(0,2) =  6;
+         mat(0,3) = 11;
+         mat(1,0) = -9;
+         mat(1,1) = 99;
+         mat(1,2) = 22;
+         mat(1,3) =  4;
+         mat(2,0) =  5;
+         mat(2,1) = -7;
+         mat(2,2) = 99;
+         mat(2,3) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm %= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) =  2;
+         mat(0,1) = -9;
+         mat(0,2) =  5;
+         mat(1,0) = 99;
+         mat(1,1) = 99;
+         mat(1,2) = -7;
+         mat(2,0) =  6;
+         mat(2,1) = 22;
+         mat(2,2) = 99;
+         mat(3,0) = 11;
+         mat(3,1) =  4;
+         mat(3,2) =  2;
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm %= mat;
 
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"

@@ -72,6 +72,7 @@ DenseNumericTest::DenseNumericTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
    testMultAssign();
 }
 //*************************************************************************************************
@@ -4118,6 +4119,923 @@ void DenseNumericTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
              << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the SymmetricMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseNumericTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major dense matrix Schur product assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix Schur product assignment (symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix Schur product assignment (symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major dense matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix Schur product assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix Schur product assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major dense matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix Schur product assignment (SymmetricMatrix)";
+
+      ST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix Schur product assignment (SymmetricMatrix)";
+
+      OST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major sparse matrix Schur product assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix Schur product assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix Schur product assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix Schur product assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix Schur product assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix Schur product assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix Schur product assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix Schur product assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix Schur product assignment (symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix Schur product assignment (symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major dense matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix Schur product assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix Schur product assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major dense matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix Schur product assignment (SymmetricMatrix)";
+
+      ST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix Schur product assignment (SymmetricMatrix)";
+
+      OST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix Schur product assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix Schur product assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix Schur product assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym %= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
+          sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
+          sym(2,0) != 42 || sym(2,1) != 0 || sym(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix Schur product assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix Schur product assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym %= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix Schur product assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix Schur product assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 %= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 5UL );
+      checkNonZeros( sym2, 0UL, 2UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 1UL );
+
+      if( sym2(0,0) !=  0 || sym2(0,1) != 8 || sym2(0,2) != 42 ||
+          sym2(1,0) !=  8 || sym2(1,1) != 6 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 42 || sym2(2,1) != 0 || sym2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1  8 42 )\n(  8  6  0 )\n( 42  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
