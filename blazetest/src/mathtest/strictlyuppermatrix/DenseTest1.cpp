@@ -72,6 +72,7 @@ DenseTest::DenseTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
 }
 //*************************************************************************************************
 
@@ -4171,6 +4172,599 @@ void DenseTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 0 -2  0 )\n( 0  0 -5 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the StrictlyUpperMatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the StrictlyUpperMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major StrictlyUpperMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 0, 0, 3 }, { 0, 0, 5 }, { 9, 0, 0 } };
+
+      UT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major StrictlyUpperMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 0, 0, 3 }, { 0, 0, 5 }, { 9, 0, 0 } };
+
+      UT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major dense matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Row-major/row-major StrictlyUpperMatrix dense matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      UT upper1( 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      UT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 0UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Row-major/column-major StrictlyUpperMatrix dense matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      OUT upper1( 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      UT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 0UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Row-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/row-major StrictlyUpperMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,2) = 3;
+      mat(1,2) = 5;
+      mat(2,0) = 9;
+      mat.insert( 2UL, 1UL, 0 );
+
+      UT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Row-major/column-major StrictlyUpperMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,2) = 3;
+      mat(1,2) = 5;
+      mat(2,0) = 9;
+      mat.insert( 2UL, 1UL, 0 );
+
+      UT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Row-major/row-major StrictlyUpperMatrix sparse matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      UT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 0UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Row-major/column-major StrictlyUpperMatrix sparse matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      UT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 0UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major StrictlyUpperMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 0, 0, 3 }, { 0, 0, 5 }, { 9, 0, 0 } };
+
+      OUT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major StrictlyUpperMatrix dense matrix Schur product assignment (general)";
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 0, 0, 3 }, { 0, 0, 5 }, { 9, 0, 0 } };
+
+      OUT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major dense matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Column-major/row-major StrictlyUpperMatrix dense matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      UT upper1( 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      OUT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 0UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Column-major/column-major StrictlyUpperMatrix dense matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      OUT upper1( 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      OUT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 0UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/row-major StrictlyUpperMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,2) = 3;
+      mat(1,2) = 5;
+      mat(2,0) = 9;
+      mat.insert( 2UL, 1UL, 0 );
+
+      OUT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (general)
+   {
+      test_ = "Column-major/column-major StrictlyUpperMatrix sparse matrix Schur product assignment (general)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,2) = 3;
+      mat(1,2) = 5;
+      mat(2,0) = 9;
+      mat.insert( 2UL, 1UL, 0 );
+
+      OUT upper( 3UL );
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+
+      upper %= mat;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 9UL );
+      checkNonZeros( upper, 1UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 0UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 || upper(0,2) != 21 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Column-major/row-major StrictlyUpperMatrix sparse matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      OUT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 0UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix Schur product assignment (StrictlyUpperMatrix)
+   {
+      test_ = "Column-major/column-major StrictlyUpperMatrix sparse matrix Schur product assignment (StrictlyUpperMatrix)";
+
+      blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 3UL );
+      upper1(0,2) = 3;
+      upper1(1,2) = 5;
+
+      OUT upper2( 3UL );
+      upper2(0,1) = -4;
+      upper2(0,2) =  7;
+
+      upper2 %= upper1;
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 1UL );
+      checkNonZeros( upper2, 0UL, 0UL );
+      checkNonZeros( upper2, 1UL, 0UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 0 || upper2(0,1) != 0 || upper2(0,2) != 21 ||
+          upper2(1,0) != 0 || upper2(1,1) != 0 || upper2(1,2) !=  0 ||
+          upper2(2,0) != 0 || upper2(2,1) != 0 || upper2(2,2) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 0  0 21 )\n( 0  0  0 )\n( 0  0  0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
