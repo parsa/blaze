@@ -68,6 +68,7 @@ SparseTest::SparseTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
+   testSchurAssign();
    testMultAssign();
 }
 //*************************************************************************************************
@@ -2088,6 +2089,645 @@ void SparseTest::testSubAssign()
                                      "( 0 12 13  4 -8 )\n"
                                      "( 0  0 11  5  9 )\n"
                                      "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Submatrix Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the Submatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testSchurAssign()
+{
+   //=====================================================================================
+   // Row-major Submatrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Submatrix Schur product assignment (no aliasing)";
+
+      initialize();
+
+      MT mat( 5UL, 4UL, 3UL );
+      mat(1,0) = 1;
+      mat(2,0) = 2;
+      mat(2,2) = 3;
+
+      SMT sm = blaze::submatrix( mat, 1UL, 0UL, 2UL, 3UL );
+      sm %= blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+      checkRows    ( mat ,  5UL );
+      checkColumns ( mat ,  4UL );
+      checkNonZeros( mat ,  2UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) !=   0 ||
+          sm(1,0) != 8 || sm(1,1) != 0 || sm(1,2) != -18 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  0   0 )\n( 8  0 -18 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) !=   0 || mat(0,3) != 0 ||
+          mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) !=   0 || mat(1,3) != 0 ||
+          mat(2,0) != 8 || mat(2,1) != 0 || mat(2,2) != -18 || mat(2,3) != 0 ||
+          mat(3,0) != 0 || mat(3,1) != 0 || mat(3,2) !=   0 || mat(3,3) != 0 ||
+          mat(4,0) != 0 || mat(4,1) != 0 || mat(4,2) !=   0 || mat(4,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  0   0  0 )\n"
+                                     "( 0  0   0  0 )\n"
+                                     "( 8  0 -18  0 )\n"
+                                     "( 0  0   0  0 )\n"
+                                     "( 0  0   0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major Submatrix Schur product assignment (aliasing)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm %= blaze::submatrix( mat_, 2UL, 1UL, 2UL, 3UL );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != -3 || sm(0,2) !=  0 ||
+          sm(1,0) != -8 || sm(1,1) !=  0 || sm(1,2) != 18 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 -3  0 )\n( -8  0 18 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != -3 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -8 || mat_(2,1) !=  0 || mat_(2,2) != 18 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0 -3  0  0 )\n"
+                                     "( -8  0 18  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major dense matrix Schur product assignment";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 0, 1, 0 },
+                                                     { 2, 3, 4 } };
+
+      sm %= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=   0 ||
+          sm(1,0) != -4 || sm(1,1) != 0 || sm(1,2) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1   0 )\n( -4  0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0  0 )\n"
+                                     "( -4  0 -12  0 )\n"
+                                     "(  0  4   5 -6 )\n"
+                                     "(  7 -8   9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major dense matrix Schur product assignment";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 0, 1, 0 },
+                                                        { 2, 3, 4 } };
+
+      sm %= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=   0 ||
+          sm(1,0) != -4 || sm(1,1) != 0 || sm(1,2) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1   0 )\n( -4  0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0  0 )\n"
+                                     "( -4  0 -12  0 )\n"
+                                     "(  0  4   5 -6 )\n"
+                                     "(  7 -8   9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major sparse matrix Schur product assignment";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 4UL );
+      mat(0,1) = 1;
+      mat(1,0) = 2;
+      mat(1,1) = 3;
+      mat(1,2) = 4;
+
+      sm %= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=   0 ||
+          sm(1,0) != -4 || sm(1,1) != 0 || sm(1,2) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1   0 )\n( -4  0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0  0 )\n"
+                                     "( -4  0 -12  0 )\n"
+                                     "(  0  4   5 -6 )\n"
+                                     "(  7 -8   9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major sparse matrix Schur product assignment";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 4UL );
+      mat(0,1) = 1;
+      mat(1,0) = 2;
+      mat(1,1) = 3;
+      mat(1,2) = 4;
+
+      sm %= mat;
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != 1 || sm(0,2) !=   0 ||
+          sm(1,0) != -4 || sm(1,1) != 0 || sm(1,2) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  1   0 )\n( -4  0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0  0 )\n"
+                                     "( -4  0 -12  0 )\n"
+                                     "(  0  4   5 -6 )\n"
+                                     "(  7 -8   9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Submatrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Submatrix Schur product assignment (no aliasing)";
+
+      initialize();
+
+      OMT mat( 4UL, 5UL, 3UL );
+      mat(0,1) = 1;
+      mat(0,2) = 2;
+      mat(2,2) = 3;
+
+      OSMT sm = blaze::submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      sm %= blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+      checkRows    ( mat  ,  4UL );
+      checkColumns ( mat  ,  5UL );
+      checkNonZeros( mat  ,  2UL );
+
+      if( sm(0,0) != 0 || sm(0,1) !=   8 ||
+          sm(1,0) != 0 || sm(1,1) !=   0 ||
+          sm(2,0) != 0 || sm(2,1) != -18 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0   8 )\n( 0   0 )\n( 0 -18 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(0,0) != 0 || mat(0,1) != 0 || mat(0,2) !=   8 || mat(0,3) != 0 || mat(0,4) != 0 ||
+          mat(1,0) != 0 || mat(1,1) != 0 || mat(1,2) !=   0 || mat(1,3) != 0 || mat(1,4) != 0 ||
+          mat(2,0) != 0 || mat(2,1) != 0 || mat(2,2) != -18 || mat(2,3) != 0 || mat(2,4) != 0 ||
+          mat(3,0) != 0 || mat(3,1) != 0 || mat(3,2) !=   0 || mat(3,3) != 0 || mat(3,4) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0  0   8  0  0 )\n"
+                                     "( 0  0   0  0  0 )\n"
+                                     "( 0  0 -18  0  0 )\n"
+                                     "( 0  0   0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major Submatrix Schur product assignment (aliasing)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm %= blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) !=  0 || sm(0,1) != -8 ||
+          sm(1,0) != -3 || sm(1,1) !=  0 ||
+          sm(2,0) !=  0 || sm(2,1) != 18 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 -8 )\n( -3  0 )\n(  0 18 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != -8 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != -3 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 18 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -8  0  7 )\n"
+                                     "( 0 -3  0  4 -8 )\n"
+                                     "( 0  0 18  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major dense matrix Schur product assignment";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 0, 2 },
+                                                     { 1, 3 },
+                                                     { 0, 4 } };
+
+      sm %= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) !=  -4 ||
+          sm(1,0) != 1 || sm(1,1) !=   0 ||
+          sm(2,0) != 0 || sm(2,1) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  -4 )\n( 1   0 )\n( 0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -12 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  -4  0  7 )\n"
+                                     "( 0  1   0  4 -8 )\n"
+                                     "( 0  0 -12  5  9 )\n"
+                                     "( 0  0   0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major dense matrix Schur product assignment";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 0, 2 },
+                                                        { 1, 3 },
+                                                        { 0, 4 } };;
+
+      sm %= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) !=  -4 ||
+          sm(1,0) != 1 || sm(1,1) !=   0 ||
+          sm(2,0) != 0 || sm(2,1) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  -4 )\n( 1   0 )\n( 0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -12 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  -4  0  7 )\n"
+                                     "( 0  1   0  4 -8 )\n"
+                                     "( 0  0 -12  5  9 )\n"
+                                     "( 0  0   0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major/row-major sparse matrix Schur product assignment";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
+      mat(1,0) = 1;
+      mat(0,1) = 2;
+      mat(1,1) = 3;
+      mat(2,1) = 4;
+
+      sm %= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) !=  -4 ||
+          sm(1,0) != 1 || sm(1,1) !=   0 ||
+          sm(2,0) != 0 || sm(2,1) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  -4 )\n( 1   0 )\n( 0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -12 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  -4  0  7 )\n"
+                                     "( 0  1   0  4 -8 )\n"
+                                     "( 0  0 -12  5  9 )\n"
+                                     "( 0  0   0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major sparse matrix Schur product assignment";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
+      mat(1,0) = 1;
+      mat(0,1) = 2;
+      mat(1,1) = 3;
+      mat(2,1) = 4;
+
+      sm %= mat;
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 0 || sm(0,1) !=  -4 ||
+          sm(1,0) != 1 || sm(1,1) !=   0 ||
+          sm(2,0) != 0 || sm(2,1) != -12 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0  -4 )\n( 1   0 )\n( 0 -12 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -12 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  -4  0  7 )\n"
+                                     "( 0  1   0  4 -8 )\n"
+                                     "( 0  0 -12  5  9 )\n"
+                                     "( 0  0   0 -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
