@@ -147,7 +147,7 @@ template< typename MT  // Type of the adapted matrix
         , bool NF >    // Numeric flag
 inline const SymmetricMatrix<MT,SO,DF,NF> Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate() const
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
    SymmetricMatrix<MT,SO,DF,NF> matrix;
    randomize( matrix );
@@ -171,7 +171,7 @@ template< typename MT  // Type of the adapted matrix
 inline const SymmetricMatrix<MT,SO,DF,NF>
    Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate( size_t n ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    SymmetricMatrix<MT,SO,DF,NF> matrix( n );
    randomize( matrix );
@@ -197,7 +197,7 @@ template< typename MT  // Type of the adapted matrix
 inline const SymmetricMatrix<MT,SO,DF,NF>
    Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate( size_t n, size_t nonzeros ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    if( nonzeros > n*n ) {
@@ -229,7 +229,7 @@ template< typename Arg >  // Min/max argument type
 inline const SymmetricMatrix<MT,SO,DF,NF>
    Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate( const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
    SymmetricMatrix<MT,SO,DF,NF> matrix;
    randomize( matrix, min, max );
@@ -256,7 +256,7 @@ template< typename Arg >  // Min/max argument type
 inline const SymmetricMatrix<MT,SO,DF,NF>
    Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate( size_t n, const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    SymmetricMatrix<MT,SO,DF,NF> matrix( n );
    randomize( matrix, min, max );
@@ -286,7 +286,7 @@ inline const SymmetricMatrix<MT,SO,DF,NF>
    Rand< SymmetricMatrix<MT,SO,DF,NF> >::generate( size_t n, size_t nonzeros,
                                                    const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    if( nonzeros > n*n ) {

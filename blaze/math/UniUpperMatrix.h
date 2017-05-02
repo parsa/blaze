@@ -151,7 +151,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Numeric flag
 inline const UniUpperMatrix<MT,SO,DF> Rand< UniUpperMatrix<MT,SO,DF> >::generate() const
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
    UniUpperMatrix<MT,SO,DF> matrix;
    randomize( matrix );
@@ -174,7 +174,7 @@ template< typename MT  // Type of the adapted matrix
 inline const UniUpperMatrix<MT,SO,DF>
    Rand< UniUpperMatrix<MT,SO,DF> >::generate( size_t n ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UniUpperMatrix<MT,SO,DF> matrix( n );
    randomize( matrix );
@@ -199,7 +199,7 @@ template< typename MT  // Type of the adapted matrix
 inline const UniUpperMatrix<MT,SO,DF>
    Rand< UniUpperMatrix<MT,SO,DF> >::generate( size_t n, size_t nonzeros ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    if( nonzeros > UniUpperMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
@@ -230,7 +230,7 @@ template< typename Arg >  // Min/max argument type
 inline const UniUpperMatrix<MT,SO,DF>
    Rand< UniUpperMatrix<MT,SO,DF> >::generate( const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
    UniUpperMatrix<MT,SO,DF> matrix;
    randomize( matrix, min, max );
@@ -256,7 +256,7 @@ template< typename Arg >  // Min/max argument type
 inline const UniUpperMatrix<MT,SO,DF>
    Rand< UniUpperMatrix<MT,SO,DF> >::generate( size_t n, const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UniUpperMatrix<MT,SO,DF> matrix( n );
    randomize( matrix, min, max );
@@ -285,7 +285,7 @@ inline const UniUpperMatrix<MT,SO,DF>
    Rand< UniUpperMatrix<MT,SO,DF> >::generate( size_t n, size_t nonzeros,
                                                const Arg& min, const Arg& max ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    if( nonzeros > UniUpperMatrix<MT,SO,DF>::maxNonZeros( n ) ) {

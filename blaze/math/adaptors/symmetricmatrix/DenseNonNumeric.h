@@ -696,7 +696,7 @@ template< typename MT  // Type of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( size_t n )
    : matrix_( n, n )  // The adapted dense matrix
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
 }
@@ -2236,7 +2236,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 void SymmetricMatrix<MT,SO,true,false>::resize( size_t n, bool preserve )
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UNUSED_PARAMETER( preserve );
 
@@ -2273,7 +2273,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::extend( size_t n, bool preserve )
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UNUSED_PARAMETER( preserve );
 

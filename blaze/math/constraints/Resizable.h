@@ -47,7 +47,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_RESIZABLE CONSTRAINT
+//  MUST_BE_RESIZABLE_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not resizable, i.e. does not have a 'resize' member
 // function that could be used to change the size, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_RESIZABLE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE(T) \
    static_assert( ::blaze::IsResizable<T>::value, "Non-resizable type detected" )
 //*************************************************************************************************
 
@@ -67,7 +67,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_RESIZABLE CONSTRAINT
+//  MUST_NOT_BE_RESIZABLE_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -78,7 +78,7 @@ namespace blaze {
 // In case the given data type \a T is resizable, i.e. has a 'resize' member function that can
 // be used to change the size, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE(T) \
    static_assert( !::blaze::IsResizable<T>::value, "Resizable type detected" )
 //*************************************************************************************************
 

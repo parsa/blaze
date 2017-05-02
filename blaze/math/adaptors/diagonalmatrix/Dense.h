@@ -891,7 +891,7 @@ template< typename MT  // Type of the adapted dense matrix
 inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n, const ElementType& init )
    : matrix_( n, n, ElementType() )  // The adapted dense matrix
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    for( size_t i=0UL; i<n; ++i )
       matrix_(i,i) = init;
@@ -2309,7 +2309,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 void DiagonalMatrix<MT,SO,true>::resize( size_t n, bool preserve )
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UNUSED_PARAMETER( preserve );
 
@@ -2346,7 +2346,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void DiagonalMatrix<MT,SO,true>::extend( size_t n, bool preserve )
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    UNUSED_PARAMETER( preserve );
 
@@ -2644,7 +2644,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline const MT DiagonalMatrix<MT,SO,true>::construct( size_t n, TrueType )
 {
-   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    return MT( n, n, ElementType() );
 }
@@ -2663,7 +2663,7 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline const MT DiagonalMatrix<MT,SO,true>::construct( const ElementType& init, FalseType )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_SQUARE_MATRIX_TYPE( MT );
 
    MT tmp;
