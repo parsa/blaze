@@ -2747,7 +2747,7 @@ template< typename MT  // Type of the adapted dense matrix
 inline const MT UpperMatrix<MT,SO,true>::construct( const ElementType& init, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_SQUARE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SQUARE_MATRIX_TYPE( MT );
 
    MT tmp;
 
