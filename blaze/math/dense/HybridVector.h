@@ -2947,6 +2947,43 @@ struct MultTrait< HybridVector<T1,M,true>, HybridVector<T2,N,false> >
 
 //=================================================================================================
 //
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t M, bool TF, typename T2, size_t N >
+struct DivTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t M, bool TF, typename T2, size_t N >
+struct DivTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, M, TF >;
+};
+
+template< typename T1, size_t M, bool TF, typename T2, size_t N >
+struct DivTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, ( M < N )?( M ):( N ), TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CROSSTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2981,43 +3018,6 @@ struct CrossTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, typename T2 >
-struct DivTrait< HybridVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
-{
-   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct DivTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct DivTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = StaticVector< DivTrait_<T1,T2>, M, TF >;
-};
-
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct DivTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< DivTrait_<T1,T2>, ( M < N )?( M ):( N ), TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

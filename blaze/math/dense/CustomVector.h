@@ -5646,6 +5646,67 @@ struct MultTrait< CustomVector<T1,AF1,PF1,true>, CustomVector<T2,AF2,PF2,false> 
 
 //=================================================================================================
 //
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, T2, EnableIf_<IsNumeric<T2> > >
+{
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
+struct DivTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
+struct DivTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
+{
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, bool AF, bool PF >
+struct DivTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
+struct DivTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
+{
+   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CROSSTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -5720,67 +5781,6 @@ struct CrossTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, T2, EnableIf_<IsNumeric<T2> > >
-{
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
-struct DivTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
-struct DivTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct DivTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
-struct DivTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
-{
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

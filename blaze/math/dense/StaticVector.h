@@ -2829,29 +2829,6 @@ struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 
 //=================================================================================================
 //
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2, bool TF >
-struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DIVTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2868,6 +2845,29 @@ template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
    using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2, bool TF >
+struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
+{
+ private:
+   using T = MultTrait_<T1,T2>;
+
+ public:
+   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

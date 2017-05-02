@@ -2726,6 +2726,79 @@ struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
 
 //=================================================================================================
 //
+//  DIVTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct DivTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, size_t N >
+struct DivTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2 >
+struct DivTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, bool AF, bool PF >
+struct DivTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct DivTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+
+template< typename T1, bool TF, typename T2 >
+struct DivTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CROSSTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2800,79 +2873,6 @@ struct CrossTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct DivTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct DivTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct DivTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct DivTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct DivTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct DivTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct DivTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct DivTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

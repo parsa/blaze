@@ -1119,31 +1119,6 @@ struct MultTrait< T, Row<MT,SO,DF,SF> >
 
 //=================================================================================================
 //
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct CrossTrait< Row<MT,SO,DF,SF>, T >
-{
-   using Type = CrossTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct CrossTrait< T, Row<MT,SO,DF,SF> >
-{
-   using Type = CrossTrait_< T, RowTrait_<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DIVTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1160,6 +1135,31 @@ template< typename T, typename MT, bool SO, bool DF, bool SF >
 struct DivTrait< T, Row<MT,SO,DF,SF> >
 {
    using Type = DivTrait_< T, RowTrait_<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, typename T >
+struct CrossTrait< Row<MT,SO,DF,SF>, T >
+{
+   using Type = CrossTrait_< RowTrait_<MT>, T >;
+};
+
+template< typename T, typename MT, bool SO, bool DF, bool SF >
+struct CrossTrait< T, Row<MT,SO,DF,SF> >
+{
+   using Type = CrossTrait_< T, RowTrait_<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

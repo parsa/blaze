@@ -1429,31 +1429,6 @@ struct MultTrait< T, Subvector<VT,AF,TF,DF> >
 
 //=================================================================================================
 //
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, bool TF, bool DF, typename T >
-struct CrossTrait< Subvector<VT,AF,TF,DF>, T >
-{
-   using Type = CrossTrait_< SubvectorTrait_<VT>, T >;
-};
-
-template< typename T, typename VT, bool AF, bool TF, bool DF >
-struct CrossTrait< T, Subvector<VT,AF,TF,DF> >
-{
-   using Type = CrossTrait_< T, SubvectorTrait_<VT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  DIVTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1470,6 +1445,31 @@ template< typename T, typename VT, bool AF, bool TF, bool DF >
 struct DivTrait< T, Subvector<VT,AF,TF,DF> >
 {
    using Type = DivTrait_< T, SubvectorTrait_<VT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CROSSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, bool DF, typename T >
+struct CrossTrait< Subvector<VT,AF,TF,DF>, T >
+{
+   using Type = CrossTrait_< SubvectorTrait_<VT>, T >;
+};
+
+template< typename T, typename VT, bool AF, bool TF, bool DF >
+struct CrossTrait< T, Subvector<VT,AF,TF,DF> >
+{
+   using Type = CrossTrait_< T, SubvectorTrait_<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
