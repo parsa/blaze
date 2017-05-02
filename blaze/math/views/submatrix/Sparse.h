@@ -2719,33 +2719,7 @@ class Submatrix<MT,AF,true,false>
            , typename IteratorType >  // Type of the sparse matrix iterator
    class SubmatrixElement : private SparseElement
    {
-    private:
-      //*******************************************************************************************
-      //! Compilation switch for the return type of the value member function.
-      /*! The \a returnConst compile time constant expression represents a compilation switch for
-          the return type of the value member function. In case the given matrix type \a MatrixType
-          is const qualified, \a returnConst will be set to 1 and the value member function will
-          return a reference to const. Otherwise \a returnConst will be set to 0 and the value
-          member function will offer write access to the sparse matrix elements. */
-      enum : bool { returnConst = IsConst<MatrixType>::value };
-      //*******************************************************************************************
-
-      //**Type definitions*************************************************************************
-      //! Type of the underlying sparse elements.
-      typedef typename std::iterator_traits<IteratorType>::value_type  SET;
-
-      typedef Reference_<SET>       RT;   //!< Reference type of the underlying sparse element.
-      typedef ConstReference_<SET>  CRT;  //!< Reference-to-const type of the underlying sparse element.
-      //*******************************************************************************************
-
     public:
-      //**Type definitions*************************************************************************
-      typedef ValueType_<SET>              ValueType;       //!< The value type of the row element.
-      typedef size_t                       IndexType;       //!< The index type of the row element.
-      typedef IfTrue_<returnConst,CRT,RT>  Reference;       //!< Reference return type
-      typedef CRT                          ConstReference;  //!< Reference-to-const return type.
-      //*******************************************************************************************
-
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SubmatrixElement class.
       //
@@ -2761,7 +2735,7 @@ class Submatrix<MT,AF,true,false>
       //**Assignment operator**********************************************************************
       /*!\brief Assignment to the accessed sparse submatrix element.
       //
-      // \param value The new value of the sparse submatrix element.
+      // \param v The new value of the sparse submatrix element.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator=( const T& v ) {
@@ -2773,7 +2747,7 @@ class Submatrix<MT,AF,true,false>
       //**Addition assignment operator*************************************************************
       /*!\brief Addition assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the addition.
+      // \param v The right-hand side value for the addition.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator+=( const T& v ) {
@@ -2785,7 +2759,7 @@ class Submatrix<MT,AF,true,false>
       //**Subtraction assignment operator**********************************************************
       /*!\brief Subtraction assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the subtraction.
+      // \param v The right-hand side value for the subtraction.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator-=( const T& v ) {
@@ -2797,7 +2771,7 @@ class Submatrix<MT,AF,true,false>
       //**Multiplication assignment operator*******************************************************
       /*!\brief Multiplication assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the multiplication.
+      // \param v The right-hand side value for the multiplication.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator*=( const T& v ) {
@@ -2809,7 +2783,7 @@ class Submatrix<MT,AF,true,false>
       //**Division assignment operator*************************************************************
       /*!\brief Division assignment to the accessed sparse submatrix element.
       //
-      // \param value The right-hand side value for the division.
+      // \param v The right-hand side value for the division.
       // \return Reference to the sparse submatrix element.
       */
       template< typename T > inline SubmatrixElement& operator/=( const T& v ) {
@@ -2833,7 +2807,7 @@ class Submatrix<MT,AF,true,false>
       //
       // \return The current value of the sparse submatrix element.
       */
-      inline Reference value() const {
+      inline decltype(auto) value() const {
          return pos_->value();
       }
       //*******************************************************************************************
@@ -2843,7 +2817,7 @@ class Submatrix<MT,AF,true,false>
       //
       // \return The current index of the sparse element.
       */
-      inline IndexType index() const {
+      inline size_t index() const {
          return pos_->index() - offset_;
       }
       //*******************************************************************************************
