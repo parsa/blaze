@@ -40,9 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
@@ -79,7 +82,11 @@ struct SMatDeclUppExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                 , If_< IsUpper<MT>, const MT&, SMatDeclUppExpr<MT,false> >
+                 , If_< IsUniLower<MT>
+                      , IdentityMatrix< ElementType_<MT>, false >
+                      , If_< IsUpper<MT>
+                           , const MT&
+                           , SMatDeclUppExpr<MT,false> > >
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
