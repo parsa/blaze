@@ -45,11 +45,13 @@
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclDiagExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DeclDiagExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -68,6 +70,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -897,16 +900,16 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Declares the given non-diagonal sparse matrix expression \a sm as diagonal.
+/*!\brief Declares the given sparse matrix expression \a sm as diagonal.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid diagonal matrix specification.
 //
-// The \a decldiag function declares the given non-diagonal sparse matrix expression \a sm as
-// diagonal. The function returns an expression representing the operation. In case the given
-// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a decldiag function declares the given sparse matrix expression \a sm as diagonal. The
+// function returns an expression representing the operation. In case the given matrix is not
+// a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decldiag function:
 
    \code
@@ -917,7 +920,7 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline DisableIf_< IsDiagonal<MT>, const SMatDeclDiagExpr<MT,SO> >
+inline DisableIf_< Or< IsDiagonal<MT>, IsUniTriangular<MT> >, const SMatDeclDiagExpr<MT,SO> >
    decldiag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -948,7 +951,33 @@ inline EnableIf_< IsDiagonal<MT>, const MT& >
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return ~sm;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Redeclares the given unitriangular sparse matrix expression \a sm as diagonal.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// The \a decldiag function redeclares the given unitriangular sparse matrix expression \a sm as
+// diagonal. The function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
+   decldiag( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
 }
 //*************************************************************************************************
 

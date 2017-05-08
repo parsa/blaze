@@ -40,10 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -79,7 +82,11 @@ struct DMatDeclDiagExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                 , If_< IsDiagonal<MT>, const MT&, DMatDeclDiagExpr<MT,false> >
+                 , If_< IsUniTriangular<MT>
+                      , IdentityMatrix< ElementType_<MT>, false >
+                      , If_< IsDiagonal<MT>
+                           , const MT&
+                           , DMatDeclDiagExpr<MT,false> > >
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
