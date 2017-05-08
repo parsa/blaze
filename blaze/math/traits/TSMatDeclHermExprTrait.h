@@ -40,10 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -79,7 +82,11 @@ struct TSMatDeclHermExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                 , If_< IsHermitian<MT>, const MT&, SMatDeclHermExpr<MT,true> >
+                 , If_< IsUniTriangular<MT>
+                      , IdentityMatrix< ElementType_<MT>, true >
+                      , If_< IsHermitian<MT>
+                           , const MT&
+                           , SMatDeclHermExpr<MT,true> > >
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************

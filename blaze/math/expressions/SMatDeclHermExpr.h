@@ -45,11 +45,13 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclHermExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DeclHermExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -68,6 +70,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -897,16 +900,16 @@ class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Declares the given non-Hermitian sparse matrix expression \a sm as Hermitian.
+/*!\brief Declares the given sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
-// The \a declherm function declares the given non-Hermitian sparse matrix expression \a sm as
-// Hermitian. The function returns an expression representing the operation. In case the given
-// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a declherm function declares the given sparse matrix expression \a sm as Hermitian. The
+// function returns an expression representing the operation. In case the given matrix is not a
+// square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a declherm function:
 
    \code
@@ -917,7 +920,7 @@ class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline DisableIf_< IsHermitian<MT>, const SMatDeclHermExpr<MT,SO> >
+inline DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> >, const SMatDeclHermExpr<MT,SO> >
    declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -948,7 +951,33 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return ~sm;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Redeclares the given unitriangular sparse matrix expression \a sm as Hermitian.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// The \a declherm function redeclares the given unitriangular sparse matrix expression \a sm as
+// Hermitian. The function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
+   declherm( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
 }
 //*************************************************************************************************
 
