@@ -40,13 +40,18 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DMatTransExprTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/TDMatTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -85,11 +90,14 @@ struct TDMatDMatSchurExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseMatrix<MT1>, IsColumnMajorMatrix<MT1>
                       , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
-                 , If_< IsSymmetric<MT1>
-                      , DMatDMatSchurExpr< TDMatTransExprTrait_<MT1>, MT2, false >
-                      , If_< IsSymmetric<MT2>
-                           , DMatDMatSchurExpr< MT1, DMatTransExprTrait_<MT2>, true >
-                           , DMatTDMatSchurExpr<MT1,MT2> > >
+                 , If_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                          , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
+                      , IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+                      , If_< IsSymmetric<MT1>
+                           , DMatDMatSchurExpr< TDMatTransExprTrait_<MT1>, MT2, false >
+                           , If_< IsSymmetric<MT2>
+                                , DMatDMatSchurExpr< MT1, DMatTransExprTrait_<MT2>, true >
+                                , DMatTDMatSchurExpr<MT1,MT2> > > >
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
