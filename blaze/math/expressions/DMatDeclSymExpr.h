@@ -46,12 +46,14 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/simd/SIMDTrait.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DeclSymExprTrait.h>
 #include <blaze/math/traits/DMatDeclSymExprTrait.h>
@@ -71,6 +73,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -924,17 +927,17 @@ class DMatDeclSymExpr : public DenseMatrix< DMatDeclSymExpr<MT,SO>, SO >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Declares the given non-symmetric dense matrix expression \a dm as symmetric.
+/*!\brief Declares the given dense matrix expression \a dm as symmetric.
 // \ingroup dense_matrix
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
 // \exception std::invalid_argument Invalid symmetric matrix specification.
 //
-// The \a declsym function declares the given non-symmetric dense matrix expression \a dm as
-// symmetric. The function returns an expression representing the operation. In case the given
-// matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
-// The following example demonstrates the use of the \a declsym function:
+// The \a declsym function declares the given dense matrix expression \a dm as symmetric. The
+// function returns an expression representing the operation. In case the given matrix is not
+// a square matrix, a \a std::invalid_argument exception is thrown.\n The following example
+// demonstrates the use of the \a declsym function:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -944,7 +947,7 @@ class DMatDeclSymExpr : public DenseMatrix< DMatDeclSymExpr<MT,SO>, SO >
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< IsSymmetric<MT>, const DMatDeclSymExpr<MT,SO> >
+inline DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> >, const DMatDeclSymExpr<MT,SO> >
    declsym( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -975,7 +978,33 @@ inline EnableIf_< IsSymmetric<MT>, const MT& >
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return ~dm;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Redeclares the given unitriangular dense matrix expression \a dm as symmetric.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// The \a declsym function redeclares the given unitriangular dense matrix expression \a dm as
+// symmetric. The function returns an identity matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
+   declsym( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
 }
 //*************************************************************************************************
 

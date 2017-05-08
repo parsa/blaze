@@ -40,10 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -79,7 +82,11 @@ struct TDMatDeclSymExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                 , If_< IsSymmetric<MT>, const MT&, DMatDeclSymExpr<MT,true> >
+                 , If_< IsUniTriangular<MT>
+                      , IdentityMatrix< ElementType_<MT>, true >
+                      , If_< IsSymmetric<MT>
+                           , const MT&
+                           , DMatDeclSymExpr<MT,true> > >
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
