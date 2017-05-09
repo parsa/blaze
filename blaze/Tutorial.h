@@ -172,11 +172,26 @@
 // \n \section step_1_installation Step 1: Installation
 // <hr>
 //
-// \subsection step_1_installation_unix Linux/MacOSX User
+// \subsection step_1_cmake Installation via CMake
 //
-// The first step is the installation of the header files. Since \b Blaze only consists of header
-// files, the <tt>./blaze</tt> subdirectory can be simply copied to a standard include directory
-// (note that this requires root privileges):
+// The first step is the installation of the \b Blaze header files. The most convenient way to
+// do this is via <a href="https://cmake.org">CMake</a>. The headers in the <tt>./blaze</tt>
+// subdirectory will be copied to the directory \c ${CMAKE_INSTALL_PREFIX}/include and the package
+// configuration files to \c ${CMAKE_INSTALL_PREFIX}/share/blaze/cmake. Alternatively, it is
+// possible to include \b Blaze by adding the following lines in any \c CMakeLists.txt file:
+
+   \code
+   find_package( blaze )
+   if( blaze_FOUND )
+      add_library( blaze_target INTERFACE )
+      target_link_libraries( blaze_target INTERFACE blaze::blaze )
+   endif()
+   \endcode
+
+// \n \subsection step_1_installation_unix Manual Installation on Linux/MacOSX
+//
+// Since \b Blaze only consists of header files, the <tt>./blaze</tt> subdirectory can be simply
+// copied to a standard include directory (note that this requires root privileges):
 
    \code
    cp -r ./blaze /usr/local/include
@@ -200,7 +215,7 @@
    g++ -I/usr/home/jon/blaze -o BlazeTest BlazeTest.cpp
    \endcode
 
-// \n \subsection step_1_installation_windows Windows User
+// \n \subsection step_1_installation_windows Manual Installation on Windows
 //
 // Windows doesn't have a standard include directory. Therefore the \b Blaze header files can be
 // copied to any other directory or simply left in the default \b Blaze directory. However, the
@@ -212,11 +227,13 @@
 // \n \section step_2_configuration Step 2: Configuration
 // <hr>
 //
-// The second step is the configuration and customization of the \b Blaze library. Many aspects of
-// \b Blaze can be adapted to specific requirements, environments and architectures by customizing
-// the header files in the <tt>./blaze/config/</tt> subdirectory. Since the default settings are
-// reasonable for most systems this step can also be skipped. However, in order to achieve maximum
-// performance a customization of at least the following configuration files is required:
+// The second step is the configuration and customization of the \b Blaze library. Many aspects
+// of \b Blaze can be adapted to specific requirements, environments and architectures. The most
+// convenient way to configure \b Blaze is by means of <a href="https://cmake.org">CMake</a>.
+// Alternatively, the header files in the <tt>./blaze/config/</tt> subdirectory can be customized
+// manually. Since the default settings are reasonable for most systems this step can also be
+// skipped. However, in order to achieve maximum performance a customization of at least the
+// following configuration files is required:
 //
 //  - <b><tt>./blaze/config/BLAS.h</tt></b>: Via this configuration file \b Blaze can be enabled
 //    to use a third-party BLAS library for several basic linear algebra functions (such as for
@@ -8611,7 +8628,7 @@
 //**Matrix/Matrix Multiplication*******************************************************************
 /*!\page matrix_matrix_multiplication Matrix/Matrix Multiplication
 //
-// \n \section schur_product Componentwise Multiplication / Schur product
+// \n \section schur_product Componentwise Multiplication / Schur Product
 // <hr>
 //
 // Multiplying two matrices with the same dimensions (i.e. the same number of rows and columns)
