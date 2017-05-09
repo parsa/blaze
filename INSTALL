@@ -29,12 +29,27 @@ don't have Boost installed on your system, you can download it for free from 'ww
 Step 1: Installation
 ********************
 
-Linux/MacOSX Users
-------------------
+Installation via CMake
+----------------------
 
-The first step is the installation of the header files. Since Blaze only consists of header
-files, the './blaze' subdirectory can be simply copied to a standard include directory (note
-that this requires root privileges):
+The first step is the installation of the Blaze header files. The most convenient way to do this
+is via CMake (https://cmake.org). The headers in the './blaze' subdirectory will be copied to the
+directory '${CMAKE_INSTALL_PREFIX}/include' and the package configuration files to
+'${CMAKE_INSTALL_PREFIX}/share/blaze/cmake'. Alternatively, it is possible to include Blaze by
+adding the following lines in any ‘CMakeLists.txt' file:
+
+find_package( blaze )
+if( blaze_FOUND )
+   add_library( blaze_target INTERFACE )
+   target_link_libraries( blaze_target INTERFACE blaze::blaze )
+endif()
+
+
+Installation on Linux/MacOSX
+----------------------------
+
+Since Blaze only consists of header files, the './blaze' subdirectory can be simply copied to a
+standard include directory (note that this requires root privileges):
 
 cp -r ./blaze /usr/local/include
 
@@ -53,8 +68,8 @@ The following example demonstrates this by means of the GNU C++ compiler:
 g++ -I/usr/home/jon/blaze -o BlazeTest BlazeTest.cpp
 
 
-Windows Users
--------------
+Installation on Windows
+-----------------------
 
 Windows doesn't have a standard include directory. Therefore the Blaze header files can be copied
 to any other directory or simply left in the default Blaze directory. However, the chosen include
@@ -66,11 +81,20 @@ include directories can be specified.
 Step 2: Configuration
 *********************
 
-The second step is the configuration and customization of the Blaze library. Many aspects of
-Blaze can be adapted to specific requirements, environments and architectures by customizing
-the header files in the './blaze/config/' subdirectory. Since the default settings are
-reasonable for most systems this step can also be skipped. However, in order to achieve maximum
-performance a customization of at least the following configuration files is required:
+// The second step is the configuration and customization of the \b Blaze library. Many aspects
+// of \b Blaze can be adapted to specific requirements, environments and architectures. The most
+// convenient way to configure \b Blaze is by means of CMake. Alternatively, the header files
+// in the <tt>./blaze/config/</tt> subdirectory can be customized manually. Since the default
+// settings are reasonable for most systems this step can also be skipped. However, in order to
+// achieve maximum performance a customization of at least the following configuration files is
+// required:
+
+The second step is the configuration and customization of the Blaze library. Many aspects of Blaze
+can be adapted to specific requirements, environments and architectures. The most convenient way
+to configure Blaze is by means of CMake (https://cmake.org). Alternatively, the header files in
+the <tt>./blaze/config/</tt> subdirectory can be customized manually. Since the default settings
+are reasonable for most systems this step can also be skipped. However, in order to achieve
+maximum performance a customization of at least the following configuration files is required:
 
  - './blaze/config/BLAS.h': Via this configuration file Blaze can be enabled to use a third-party
    BLAS library for several basic linear algebra functions (such as for instance dense matrix
