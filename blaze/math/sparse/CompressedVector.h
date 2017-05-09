@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
-#include <blaze/util/Algorithm.h>
+#include <blaze/util/algorithms/Transfer.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>

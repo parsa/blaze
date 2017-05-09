@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithm.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/PolymorphicFind.h
+//  \brief Headerfile for the generic polymorphicFind algorithm
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,99 +32,28 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHM_H_
-#define _BLAZE_UTIL_ALGORITHM_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_POLYMORPHICFIND_H_
+#define _BLAZE_UTIL_ALGORITHMS_POLYMORPHICFIND_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/util/constraints/DerivedFrom.h>
-#include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsAssignable.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  TRANSFER
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Transfers the elements from the given source range to the destination range.
-//
-// \param first Iterator to the first element of the source range.
-// \param last Iterator to the element one past the last element of the source range.
-// \param dest Iterator to the first element of the destination range.
-// \return Output iterator to the element one past the last copied element.
-//
-// This function transfers the elements in the range \f$ [first,last) \f$ to the specified
-// destination range. In case the elements provide a no-throw move assignment, the transfer
-// operation is handled via move. Else the elements are copied.
-*/
-template< typename InputIterator
-        , typename OutputIterator >
-OutputIterator transfer( InputIterator first, InputIterator last, OutputIterator dest )
-{
-   using ValueType = typename std::iterator_traits<InputIterator>::value_type;
-
-   if( IsNothrowMoveAssignable<ValueType>::value ) {
-      return std::move( first, last, dest );
-   }
-   else {
-      return std::copy( first, last, dest );
-   }
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  POLYMORPHIC COUNT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Counts the pointer to objects with dynamic type \a D.
-//
-// \param first Iterator to the first pointer of the pointer range.
-// \param last Iterator to the pointer one past the last pointer of the pointer range.
-// \return The number of objects with dynamic type \a D.
-//
-// This function traverses the range \f$ [first,last) \f$ of pointers to objects with static
-// type \a S and counts all polymorphic pointers to objects of dynamic type \a D. Note that
-// in case \a D is not a type derived from \a S, a compile time error is created!
-*/
-template< typename D    // Dynamic type of the objects
-        , typename S >  // Static type of the objects
-inline size_t polymorphicCount( S *const * first, S *const * last )
-{
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_DERIVED_FROM( D, S );
-
-   size_t count( 0 );
-   for( S *const * it=first; it!=last; ++it )
-      if( dynamic_cast<D*>( *it ) ) ++count;
-   return count;
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  POLYMORPHIC FIND
+//  POLYMORPHIC FIND ALGORITHM
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Finds the next pointer to an object with dynamic type \a D.
+// \ingroup algorithms
 //
 // \param first Iterator to the first pointer of the pointer range.
 // \param last Iterator to the pointer one past the last pointer of the pointer range.

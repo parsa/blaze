@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <blaze/util/Algorithm.h>
+#include <blaze/util/algorithms/PolymorphicCount.h>
+#include <blaze/util/algorithms/PolymorphicFind.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Convertible.h>
 #include <blaze/util/constraints/DerivedFrom.h>

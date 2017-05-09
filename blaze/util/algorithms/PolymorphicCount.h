@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Util.h
-//  \brief Header file for the inclusion of the utility module of the Blaze library
+//  \file blaze/util/algorithms/PolymorphicCount.h
+//  \brief Headerfile for the generic polymorphicCount algorithm
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,58 +32,51 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MODULE_H_
-#define _BLAZE_UTIL_MODULE_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_POLYMORPHICCOUNT_H_
+#define _BLAZE_UTIL_ALGORITHMS_POLYMORPHICCOUNT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/AlignedAllocator.h>
-#include <blaze/util/AlignedArray.h>
-#include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/Algorithms.h>
-#include <blaze/util/Assert.h>
-#include <blaze/util/CheckedDelete.h>
-#include <blaze/util/ColorMacros.h>
-#include <blaze/util/Complex.h>
-#include <blaze/util/Constraints.h>
-#include <blaze/util/DimensionOf.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EmptyType.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
-#include <blaze/util/FunctionTrace.h>
-#include <blaze/util/Indices.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/InputString.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/Limits.h>
-#include <blaze/util/Memory.h>
-#include <blaze/util/MemoryPool.h>
-#include <blaze/util/MPL.h>
-#include <blaze/util/NonCopyable.h>
-#include <blaze/util/NonCreatable.h>
-#include <blaze/util/NullType.h>
-#include <blaze/util/NumericCast.h>
-#include <blaze/util/PointerCast.h>
-#include <blaze/util/Policies.h>
-#include <blaze/util/PtrIterator.h>
-#include <blaze/util/PtrVector.h>
-#include <blaze/util/Random.h>
-#include <blaze/util/Serialization.h>
-#include <blaze/util/Singleton.h>
-#include <blaze/util/StaticAssert.h>
-#include <blaze/util/Suffix.h>
-#include <blaze/util/Thread.h>
-#include <blaze/util/ThreadPool.h>
-#include <blaze/util/Time.h>
-#include <blaze/util/Timing.h>
-#include <blaze/util/TypeList.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/TypeTraits.h>
-#include <blaze/util/UnsignedValue.h>
-#include <blaze/util/ValueTraits.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  POLYMORPHIC COUNT ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Counts the pointer to objects with dynamic type \a D.
+// \ingroup algorithms
+//
+// \param first Iterator to the first pointer of the pointer range.
+// \param last Iterator to the pointer one past the last pointer of the pointer range.
+// \return The number of objects with dynamic type \a D.
+//
+// This function traverses the range \f$ [first,last) \f$ of pointers to objects with static
+// type \a S and counts all polymorphic pointers to objects of dynamic type \a D. Note that
+// in case \a D is not a type derived from \a S, a compile time error is created!
+*/
+template< typename D    // Dynamic type of the objects
+        , typename S >  // Static type of the objects
+inline size_t polymorphicCount( S *const * first, S *const * last )
+{
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_DERIVED_FROM( D, S );
+
+   size_t count( 0 );
+   for( S *const * it=first; it!=last; ++it )
+      if( dynamic_cast<D*>( *it ) ) ++count;
+   return count;
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
