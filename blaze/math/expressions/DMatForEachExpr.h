@@ -2917,6 +2917,11 @@ struct IsUniLower< DMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsUniLower< DMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
 struct IsUniLower< DMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
@@ -3152,6 +3157,11 @@ struct IsUniUpper< DMatForEachExpr<MT,Floor,SO> >
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatForEachExpr<MT,Ceil,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< DMatForEachExpr<MT,Conj,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
