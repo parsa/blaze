@@ -49,10 +49,11 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/lapack/clapack/gesdd.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>

@@ -71,6 +71,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>

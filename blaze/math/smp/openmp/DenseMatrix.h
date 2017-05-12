@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -58,6 +57,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/SMP.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>

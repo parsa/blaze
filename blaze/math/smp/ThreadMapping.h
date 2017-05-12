@@ -42,9 +42,10 @@
 
 #include <utility>
 #include <blaze/math/expressions/Matrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sqrt.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Types.h>
 
 

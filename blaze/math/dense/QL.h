@@ -51,7 +51,6 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/lapack/geqlf.h>
 #include <blaze/math/lapack/orgql.h>
 #include <blaze/math/lapack/ungql.h>
@@ -59,6 +58,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/views/Submatrix.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/EnableIf.h>
 
 

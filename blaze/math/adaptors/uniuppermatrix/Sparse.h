@@ -60,7 +60,6 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
@@ -75,6 +74,7 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>

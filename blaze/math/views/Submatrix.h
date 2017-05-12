@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/expressions/Matrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -86,6 +85,8 @@
 #include <blaze/math/views/submatrix/Dense.h>
 #include <blaze/math/views/submatrix/Sparse.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>

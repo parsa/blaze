@@ -56,7 +56,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/View.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -92,6 +91,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>

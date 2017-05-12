@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -59,6 +58,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>

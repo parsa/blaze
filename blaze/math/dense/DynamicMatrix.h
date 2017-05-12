@@ -94,6 +94,8 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/algorithms/Transfer.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>

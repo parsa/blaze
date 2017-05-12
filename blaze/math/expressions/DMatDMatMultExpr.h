@@ -58,7 +58,6 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/functors/DeclDiag.h>
 #include <blaze/math/functors/DeclHerm.h>
 #include <blaze/math/functors/DeclLow.h>
@@ -118,6 +117,8 @@
 #include <blaze/system/Debugging.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Numeric.h>

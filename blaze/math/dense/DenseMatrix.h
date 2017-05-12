@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -68,6 +67,8 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>

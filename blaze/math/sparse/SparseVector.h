@@ -43,7 +43,6 @@
 #include <cmath>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -51,6 +50,8 @@
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>

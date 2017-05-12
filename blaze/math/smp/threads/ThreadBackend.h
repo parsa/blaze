@@ -52,8 +52,8 @@
 
 #include <cstdlib>
 #include <blaze/math/constraints/Expression.h>
-#include <blaze/math/Functions.h>
 #include <blaze/system/SMP.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/ThreadPool.h>

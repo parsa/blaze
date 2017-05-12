@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
@@ -71,6 +70,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>

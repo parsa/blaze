@@ -57,7 +57,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Clear.h>
@@ -73,6 +72,7 @@
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>

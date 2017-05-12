@@ -44,13 +44,13 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Integral.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/All.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 
 
@@ -70,22 +70,6 @@ inline constexpr int sign( T a ) noexcept;
 
 template< typename T >
 inline size_t digits( T a ) noexcept;
-
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
-   min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
-
-template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
-   min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
-
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
-   max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value );
-
-template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
-   max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value );
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
@@ -154,92 +138,6 @@ inline size_t digits( T a ) noexcept
    }
 
    return count;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Minimum function for two data values.
-// \ingroup math
-//
-// \param a The first value.
-// \param b The second value.
-// \return The minimum of the two values.
-//
-// This function returns the minimum of the two given data values. The return type of the function
-// is determined by the data types of the given arguments (for further detail see the CommonType
-// class description).
-*/
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
-   min( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
-{
-   return ( a < b )?( a ):( b );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Minimum function for at least three data values.
-// \ingroup math
-//
-// \param a The first value.
-// \param b The second value.
-// \param args The pack of additional values.
-// \return The minimum of the given values.
-//
-// This function returns the minimum of the given data values. The return type of the function
-// is determined by the data types of the given arguments (for further detail see the CommonType
-// class description).
-*/
-template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
-   min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
-{
-   return min( a, min( b, args... ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Maximum function for two data values.
-// \ingroup math
-//
-// \param a The first value.
-// \param b The second value.
-// \return The maximum of the two values.
-//
-// This function returns the maximum of the two given data values. The return type of the function
-// is determined by the data types of the given arguments (for further detail see the CommonType
-// class description).
-*/
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2>
-   max( const T1& a, const T2& b ) noexcept( All<IsNumeric,T1,T2>::value )
-{
-   return ( a < b )?( b ):( a );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Maximum function for at least three data values.
-// \ingroup math
-//
-// \param a The first value.
-// \param b The second value.
-// \param args The pack of additional values.
-// \return The maximum of the given values.
-//
-// This function returns the maximum of the given data values. The return type of the function
-// is determined by the data types of the given arguments (for further detail see the CommonType
-// class description).
-*/
-template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr CommonType_<T1,T2,Ts...>
-   max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsNumeric,T1,T2,Ts...>::value )
-{
-   return max( a, max( b, args... ) );
 }
 //*************************************************************************************************
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/policies/OptimalGrowth.h
-//  \brief Header file for the OptimalGrowth policy classes.
+//  \file blaze/util/algorithms/Max.h
+//  \brief Headerfile for the generic max algorithm
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,67 +32,67 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_POLICIES_OPTIMALGROWTH_H_
-#define _BLAZE_UTIL_POLICIES_OPTIMALGROWTH_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_MAX_H_
+#define _BLAZE_UTIL_ALGORITHMS_MAX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/Types.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/All.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  MAX ALGORITHMS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Optimal growth policy class.
-// \ingroup util
+/*!\brief Maximum function for two values of builtin data type.
+// \ingroup algorithms
 //
-// The OptimalGrowth policy class implements the optimal growth strategy suggested by Andrew
-// Koenig for the std::vector class (see Andrew Koenig's column in the September 1998 issue of
-// JOOP (Journal of Object-Oriented Programming), or the Dr. Dobb's article 'C++ Made Easier:
-// How Vectors Grow', 2001). It applies an exponential growth strategy using a factor of 1.5
-// and additionally ensures that the sizes returns are always multiples of four.
+// \param a The first value.
+// \param b The second value.
+// \return The maximum of the two values.
+//
+// This function returns the maximum of the two given data values. The return type of the function
+// is determined by the data types of the given arguments.
 */
-struct OptimalGrowth
+template< typename T1, typename T2
+        , typename = EnableIf_< All<IsBuiltin,T1,T2> > >
+BLAZE_ALWAYS_INLINE constexpr auto
+   max( const T1& a, const T2& b ) noexcept( All<IsBuiltin,T1,T2>::value )
 {
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline size_t operator()( size_t oldSize, size_t minSize ) const;
-   //@}
-   //**********************************************************************************************
-};
+   return ( a < b )?( b ):( a );
+}
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  UTILITY FUNCTIONS
-//
-//=================================================================================================
-
 //*************************************************************************************************
-/*!\brief Returns a new size depending on the given old size and the required minimum size.
+/*!\brief Maximum function for at least three values of builtin data type.
+// \ingroup algorithms
 //
-// \param old The old size.
-// \param minimum The required minimum size.
-// \return The new size (at least the required minimum size).
+// \param a The first value.
+// \param b The second value.
+// \param args The pack of additional values.
+// \return The maximum of the given values.
+//
+// This function returns the maximum of the given data values. The return type of the function
+// is determined by the data types of the given arguments.
 */
-inline size_t OptimalGrowth::operator()( size_t old, size_t minimum ) const
+template< typename T1, typename T2, typename... Ts
+        , typename = EnableIf_< All<IsBuiltin,T1,T2,Ts...> > >
+BLAZE_ALWAYS_INLINE constexpr auto
+   max( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsBuiltin,T1,T2,Ts...>::value )
 {
-   const size_t needed( max( static_cast<size_t>( old*1.5 ), minimum ) );
-   return ( ( needed )?( 4 * ( (needed-1)/4 + 1 ) ):( 0 ) );
+   return max( a, max( b, args... ) );
 }
 //*************************************************************************************************
 

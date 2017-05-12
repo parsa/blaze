@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/math/shims/Clear.h>

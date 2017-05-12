@@ -57,7 +57,6 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/Serial.h>
@@ -69,6 +68,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Blocking.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>

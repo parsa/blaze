@@ -55,7 +55,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -85,6 +84,8 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Reference.h>

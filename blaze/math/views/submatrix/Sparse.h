@@ -58,7 +58,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/View.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
@@ -81,6 +80,8 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>

@@ -46,9 +46,10 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>

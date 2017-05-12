@@ -50,7 +50,6 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -79,6 +78,7 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>

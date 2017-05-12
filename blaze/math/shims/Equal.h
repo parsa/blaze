@@ -42,8 +42,8 @@
 
 #include <cmath>
 #include <blaze/math/Accuracy.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Complex.h>
 
 

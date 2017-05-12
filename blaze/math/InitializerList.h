@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <initializer_list>
-#include <blaze/math/Functions.h>
+#include <blaze/util/algorithms/Max.h>
 
 
 namespace blaze {

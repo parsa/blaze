@@ -48,7 +48,6 @@
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
@@ -63,6 +62,7 @@
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Real.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>

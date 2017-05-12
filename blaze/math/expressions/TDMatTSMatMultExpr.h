@@ -52,7 +52,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/functors/DeclDiag.h>
 #include <blaze/math/functors/DeclHerm.h>
 #include <blaze/math/functors/DeclLow.h>
@@ -108,6 +107,8 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>

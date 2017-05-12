@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Functions.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Types.h>
 
 
@@ -102,7 +102,7 @@ struct ConstantGrowth<0>;
 template< size_t Growth >
 inline size_t ConstantGrowth<Growth>::operator()( size_t old, size_t minimum ) const
 {
-   const size_t needed( max<size_t>( old+Growth, minimum ) );
+   const size_t needed( max( old+Growth, minimum ) );
    return ( ( needed )?( 4 * ( (needed-1)/4+1 ) ):( 0 ) );
 }
 //*************************************************************************************************
