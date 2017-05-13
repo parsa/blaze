@@ -45,6 +45,7 @@
 #include <blaze/math/sparse/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/IdentityMatrix.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Indices.h>

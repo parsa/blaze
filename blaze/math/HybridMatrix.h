@@ -44,6 +44,7 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/HybridVector.h>
+#include <blaze/math/IdentityMatrix.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/StaticMatrix.h>
