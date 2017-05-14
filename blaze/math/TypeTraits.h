@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/HasSIMDLog.h>
 #include <blaze/math/typetraits/HasSIMDLog2.h>
 #include <blaze/math/typetraits/HasSIMDLog10.h>
+#include <blaze/math/typetraits/HasSIMDMax.h>
 #include <blaze/math/typetraits/HasSIMDMin.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
