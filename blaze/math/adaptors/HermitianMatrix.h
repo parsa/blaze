@@ -1403,6 +1403,12 @@ struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename OP >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
 template< typename MT, bool SO, bool DF >
 struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Abs >
 {
@@ -1419,6 +1425,18 @@ template< typename MT, bool SO, bool DF >
 struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Ceil >
 {
    using Type = HermitianMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Trunc >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Round >
+{
+   using Type = HermitianMatrix< ForEachTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF >

@@ -2693,17 +2693,32 @@ struct IsUniLower< SMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Conj,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
-{};
-
-template< typename MT, bool SO >
 struct IsUniLower< SMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< SMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Sqrt,SO> >
+   : public BoolConstant< IsUniLower<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniLower< SMatForEachExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 

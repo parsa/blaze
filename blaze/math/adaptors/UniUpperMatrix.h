@@ -2526,6 +2526,66 @@ struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename OP >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Abs >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Floor >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Ceil >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Trunc >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Round >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Round> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Conj >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Real >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Sqrt >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Sqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Cbrt >
+{
+   using Type = UniUpperMatrix< ForEachTrait_<MT,Cbrt> >;
+};
+
 template< typename MT, bool SO, bool DF, typename ET >
 struct ForEachTrait< UniUpperMatrix<MT,SO,DF>, Pow<ET> >
 {

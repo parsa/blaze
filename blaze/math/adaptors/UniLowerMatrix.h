@@ -2381,6 +2381,66 @@ struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename OP >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Abs >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Abs> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Floor >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Floor> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Ceil >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Trunc >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Round >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Round> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Conj >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Conj> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Real >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Real> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Sqrt >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Sqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Cbrt >
+{
+   using Type = UniLowerMatrix< ForEachTrait_<MT,Cbrt> >;
+};
+
 template< typename MT, bool SO, bool DF, typename ET >
 struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Pow<ET> >
 {

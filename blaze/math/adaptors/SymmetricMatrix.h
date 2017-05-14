@@ -1140,6 +1140,12 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF, typename OP >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
 template< typename MT, bool SO, bool DF, bool NF >
 struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
 {
@@ -1156,6 +1162,18 @@ template< typename MT, bool SO, bool DF, bool NF >
 struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Ceil >
 {
    using Type = SymmetricMatrix< ForEachTrait_<MT,Ceil> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Trunc >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Round >
+{
+   using Type = SymmetricMatrix< ForEachTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >

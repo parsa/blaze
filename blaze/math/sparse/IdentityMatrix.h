@@ -58,6 +58,7 @@
 #include <blaze/math/traits/DMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/DMatTSMatMultExprTrait.h>
 #include <blaze/math/traits/DMatTSMatSchurExprTrait.h>
+#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -110,6 +111,7 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -2436,6 +2438,85 @@ template< typename T1, bool SO, typename T2 >
 struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 {
    using Type = CompressedMatrix< DivTrait_<T1,T2>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  FOREACHTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, typename OP >
+struct ForEachTrait< IdentityMatrix<T,SO>, OP >
+{
+   using Type = ForEachTrait_< CompressedMatrix<T,SO>, OP >;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Abs >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Floor >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Ceil >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Trunc >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Round >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Conj >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Real >
+{
+   using Type = IdentityMatrix<UnderlyingElement_<T>,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Sqrt >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct ForEachTrait< IdentityMatrix<T,SO>, Cbrt >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO, typename ET >
+struct ForEachTrait< IdentityMatrix<T,SO>, Pow<ET> >
+{
+   using Type = IdentityMatrix<HighType_<T,ET>,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************

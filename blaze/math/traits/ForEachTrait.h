@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
-#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
@@ -89,7 +89,7 @@ struct ForEachTrait
       template< typename U >
       static EnableIf_< Or< IsVector<U>, IsMatrix<U> >, ResultType_<U> > test( U&& );
 
-      using RT = RemoveAdaptor_< ResultType_<T> >;
+      using RT = ResultType_<T>;
       using RN = ReturnType_<T>;
 
       using OT = decltype( std::declval<OP>()( std::declval<RN>() ) );
@@ -110,9 +110,11 @@ struct ForEachTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< Or< IsMatrix<T>, IsVector<T> >
-                  , MatrixOrVector
-                  , Failure >;
+   using Tmp = If_< IsExpression<T>
+                  , ForEachTrait< ResultType_<T>, OP >
+                  , If_< Or< IsMatrix<T>, IsVector<T> >
+                       , MatrixOrVector
+                       , Failure > >;
    /*! \endcond */
    //**********************************************************************************************
 

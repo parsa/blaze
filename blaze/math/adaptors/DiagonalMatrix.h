@@ -2003,6 +2003,12 @@ struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename OP >
+struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
 template< typename MT, bool SO, bool DF >
 struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Abs >
 {
@@ -2022,6 +2028,18 @@ struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Ceil >
 };
 
 template< typename MT, bool SO, bool DF >
+struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Trunc >
+{
+   using Type = DiagonalMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Round >
+{
+   using Type = DiagonalMatrix< ForEachTrait_<MT,Round> >;
+};
+
+template< typename MT, bool SO, bool DF >
 struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Conj >
 {
    using Type = DiagonalMatrix< ForEachTrait_<MT,Conj> >;
@@ -2037,6 +2055,18 @@ template< typename MT, bool SO, bool DF >
 struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Imag >
 {
    using Type = DiagonalMatrix< ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Sqrt >
+{
+   using Type = DiagonalMatrix< ForEachTrait_<MT,Sqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< DiagonalMatrix<MT,SO,DF>, Cbrt >
+{
+   using Type = DiagonalMatrix< ForEachTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF >

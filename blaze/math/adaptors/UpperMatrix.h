@@ -1854,6 +1854,12 @@ struct DivTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, typename OP >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, OP >
+{
+   using Type = ForEachTrait_<MT,OP>;
+};
+
 template< typename MT, bool SO, bool DF >
 struct ForEachTrait< UpperMatrix<MT,SO,DF>, Abs >
 {
@@ -1873,6 +1879,18 @@ struct ForEachTrait< UpperMatrix<MT,SO,DF>, Ceil >
 };
 
 template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Trunc >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Trunc> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Round >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Round> >;
+};
+
+template< typename MT, bool SO, bool DF >
 struct ForEachTrait< UpperMatrix<MT,SO,DF>, Conj >
 {
    using Type = UpperMatrix< ForEachTrait_<MT,Conj> >;
@@ -1888,6 +1906,18 @@ template< typename MT, bool SO, bool DF >
 struct ForEachTrait< UpperMatrix<MT,SO,DF>, Imag >
 {
    using Type = UpperMatrix< ForEachTrait_<MT,Imag> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Sqrt >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Sqrt> >;
+};
+
+template< typename MT, bool SO, bool DF >
+struct ForEachTrait< UpperMatrix<MT,SO,DF>, Cbrt >
+{
+   using Type = UpperMatrix< ForEachTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
