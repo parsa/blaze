@@ -102,6 +102,8 @@
 #include <blaze/math/typetraits/HasSIMDLog.h>
 #include <blaze/math/typetraits/HasSIMDLog2.h>
 #include <blaze/math/typetraits/HasSIMDLog10.h>
+#include <blaze/math/typetraits/HasSIMDMax.h>
+#include <blaze/math/typetraits/HasSIMDMin.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/math/typetraits/HasSIMDRound.h>
@@ -112,6 +114,8 @@
 #include <blaze/math/typetraits/HasSIMDTan.h>
 #include <blaze/math/typetraits/HasSIMDTanh.h>
 #include <blaze/math/typetraits/HasSIMDTrunc.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Memory.h>
@@ -190,6 +194,11 @@ class OperationTest : private blaze::NonCopyable
    void testFmsub         ( blaze::FalseType );
    void testDivision      ( blaze::TrueType  );
    void testDivision      ( blaze::FalseType );
+
+   void testMin           ( blaze::TrueType  );
+   void testMin           ( blaze::FalseType );
+   void testMax           ( blaze::TrueType  );
+   void testMax           ( blaze::FalseType );
 
    void testAbs           ( blaze::TrueType  );
    void testAbs           ( blaze::FalseType );
@@ -335,6 +344,9 @@ OperationTest<T>::OperationTest()
    testFmadd         ( blaze::HasSIMDMult   <T,T>() );
    testFmsub         ( blaze::HasSIMDMult   <T,T>() );
    testDivision      ( blaze::HasSIMDDiv    <T,T>() );
+
+   testMin           ( blaze::HasSIMDMin    <T,T>() );
+   testMax           ( blaze::HasSIMDMax    <T,T>() );
 
    testAbs           ( blaze::HasSIMDAbs    < T >() );
    testConj          ( blaze::HasSIMDConj   < T >() );
@@ -769,6 +781,102 @@ void OperationTest<T>::testDivision( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testDivision( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the mininum operation.
+//
+// \return void
+// \exception std::runtime_error Error in minimum computation detected.
+//
+// This function tests the minimum operation by comparing the results of a vectorized and a
+// scalar minimum operation. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testMin( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+   using blaze::min;
+
+   test_ = "Minimum operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = min( a_[i], b_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, min( loada( a_+i ), loada( b_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the minimum operation.
+//
+// \return void
+//
+// This function is called in case the minimum operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testMin( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the maxinum operation.
+//
+// \return void
+// \exception std::runtime_error Error in maximum computation detected.
+//
+// This function tests the maximum operation by comparing the results of a vectorized and a
+// scalar maximum operation. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testMax( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+   using blaze::max;
+
+   test_ = "Maximum operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = max( a_[i], b_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, max( loada( a_+i ), loada( b_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the maximum operation.
+//
+// \return void
+//
+// This function is called in case the maximum operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testMax( blaze::FalseType )
 {}
 //*************************************************************************************************
 
