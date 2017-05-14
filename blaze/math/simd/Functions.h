@@ -68,6 +68,7 @@
 #include <blaze/math/simd/Log.h>
 #include <blaze/math/simd/Log2.h>
 #include <blaze/math/simd/Log10.h>
+#include <blaze/math/simd/Min.h>
 #include <blaze/math/simd/Multiplication.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Reduction.h>
