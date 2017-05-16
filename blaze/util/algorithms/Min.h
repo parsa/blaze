@@ -43,7 +43,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/All.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/IsUnsigned.h>
 
 
 namespace blaze {
@@ -66,9 +67,9 @@ namespace blaze {
 // is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2
-        , typename = EnableIf_< All<IsBuiltin,T1,T2> > >
+        , typename = EnableIf_< Or< All<IsSigned,T1,T2>, All<IsUnsigned,T1,T2> > > >
 BLAZE_ALWAYS_INLINE constexpr auto
-   min( const T1& a, const T2& b ) noexcept( All<IsBuiltin,T1,T2>::value )
+   min( const T1& a, const T2& b ) noexcept
 {
    return ( a < b )?( a ):( b );
 }
@@ -88,9 +89,9 @@ BLAZE_ALWAYS_INLINE constexpr auto
 // is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2, typename... Ts
-        , typename = EnableIf_< All<IsBuiltin,T1,T2,Ts...> > >
+        , typename = EnableIf_< Or< All<IsSigned,T1,T2>, All<IsUnsigned,T1,T2> > > >
 BLAZE_ALWAYS_INLINE constexpr auto
-   min( const T1& a, const T2& b, const Ts&... args ) noexcept( All<IsBuiltin,T1,T2,Ts...>::value )
+   min( const T1& a, const T2& b, const Ts&... args ) noexcept
 {
    return min( a, min( b, args... ) );
 }
