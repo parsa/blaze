@@ -66,7 +66,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Max.h>
+#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -741,7 +741,7 @@ inline const SVecDVecMultExpr<T1,T2,TF>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< SVecDVecMultExpr<VT1,VT2,TF> >
-   : public Max< Size<VT1>, Size<VT2> >
+   : public Maximum< Size<VT1>, Size<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

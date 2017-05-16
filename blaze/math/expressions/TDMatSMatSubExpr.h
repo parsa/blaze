@@ -84,7 +84,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Max.h>
+#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 
 
@@ -803,7 +803,7 @@ inline const SubExprTrait_< TDMatSMatSubExpr<T1,T2>, T3 >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Rows< TDMatSMatSubExpr<MT1,MT2> >
-   : public Max< Rows<MT1>, Rows<MT2> >
+   : public Maximum< Rows<MT1>, Rows<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -821,7 +821,7 @@ struct Rows< TDMatSMatSubExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Columns< TDMatSMatSubExpr<MT1,MT2> >
-   : public Max< Columns<MT1>, Columns<MT2> >
+   : public Maximum< Columns<MT1>, Columns<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

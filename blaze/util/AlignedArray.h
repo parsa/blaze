@@ -43,7 +43,6 @@
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/mpl/Max.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 

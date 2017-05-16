@@ -70,7 +70,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Max.h>
+#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 
 
@@ -791,7 +791,7 @@ inline const SubExprTrait_< DVecSVecSubExpr<T1,T2,TF>, T3 >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecSVecSubExpr<VT1,VT2,TF> >
-   : public Max< Size<VT1>, Size<VT2> >
+   : public Maximum< Size<VT1>, Size<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

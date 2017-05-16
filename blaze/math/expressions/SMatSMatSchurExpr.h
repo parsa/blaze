@@ -79,7 +79,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Max.h>
+#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -967,7 +967,7 @@ inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Rows< SMatSMatSchurExpr<MT1,MT2> >
-   : public Max< Rows<MT1>, Rows<MT2> >
+   : public Maximum< Rows<MT1>, Rows<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -985,7 +985,7 @@ struct Rows< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Columns< SMatSMatSchurExpr<MT1,MT2> >
-   : public Max< Columns<MT1>, Columns<MT2> >
+   : public Maximum< Columns<MT1>, Columns<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

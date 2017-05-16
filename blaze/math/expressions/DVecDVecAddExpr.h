@@ -75,7 +75,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Max.h>
+#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 
 
@@ -1082,7 +1082,7 @@ inline const DVecDVecAddExpr<T1,T2,TF>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecDVecAddExpr<VT1,VT2,TF> >
-   : public Max< Size<VT1>, Size<VT2> >
+   : public Maximum< Size<VT1>, Size<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
