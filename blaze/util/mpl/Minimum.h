@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/mpl/Min.h
-//  \brief Header file for the Min class template
+//  \file blaze/util/mpl/Minimum.h
+//  \brief Header file for the Minimum class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_MIN_H_
-#define _BLAZE_UTIL_MPL_MIN_H_
+#ifndef _BLAZE_UTIL_MPL_MINIMUM_H_
+#define _BLAZE_UTIL_MPL_MINIMUM_H_
 
 
 //*************************************************************************************************
@@ -56,20 +56,21 @@ namespace blaze {
 /*!\brief Compile time value evaluation.
 // \ingroup mpl
 //
-// The Min class template selects the smaller of the two given template arguments \a T1 and \a T2.
-// In order for Min to be able to determine the smaller type, both arguments are required to have
-// a nested member \a value. The result of the minimum operation can be accessed via the nested
-// member \a value, the resulting type is available via the nested type \a ValueType.
+// The Minimum class template selects the smaller of the two given template arguments \a T1
+// and \a T2. In order for Minimum to be able to determine the smaller type, both arguments
+// are required to have a nested member \a value. The result of the minimum operation can be
+// accessed via the nested member \a value, the resulting type is available via the nested
+// type \a ValueType.
 
    \code
-   blaze::Min< Int<3> , Int<2>  >::value      // Results in 2
-   blaze::Min< Long<3>, Int<2>  >::ValueType  // Results in int
-   blaze::Min< Int<3> , Long<2> >::ValueType  // Results in long
+   blaze::Minimum< Int<3> , Int<2>  >::value      // Results in 2
+   blaze::Minimum< Long<3>, Int<2>  >::ValueType  // Results in int
+   blaze::Minimum< Int<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Min : public If_< Less<T1,T2>, T1, T2 >
+struct Minimum : public If_< Less<T1,T2>, T1, T2 >
 {};
 //*************************************************************************************************
 
