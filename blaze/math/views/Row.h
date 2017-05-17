@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSchurExpr.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
@@ -259,6 +260,30 @@ inline const EnableIf_< IsMatMatSubExpr<MT>, RowExprTrait_<MT> >
    BLAZE_FUNCTION_TRACE;
 
    return row( (~matrix).leftOperand(), index ) - row( (~matrix).rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given Schur product.
+// \ingroup views
+//
+// \param matrix The constant Schur product.
+// \param index The index of the row.
+// \return View on the specified row of the Schur product.
+//
+// This function returns an expression representing the specified row of the given Schur product.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const EnableIf_< IsSchurExpr<MT>, RowExprTrait_<MT> >
+   row( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row( (~matrix).leftOperand(), index ) * row( (~matrix).rightOperand(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
