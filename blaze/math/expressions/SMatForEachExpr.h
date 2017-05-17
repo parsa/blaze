@@ -2792,17 +2792,32 @@ struct IsUniUpper< SMatForEachExpr<MT,Ceil,SO> >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Conj,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
-{};
-
-template< typename MT, bool SO >
 struct IsUniUpper< SMatForEachExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< SMatForEachExpr<MT,Round,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Conj,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Real,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Sqrt,SO> >
+   : public BoolConstant< IsUniUpper<MT>::value >
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< SMatForEachExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
