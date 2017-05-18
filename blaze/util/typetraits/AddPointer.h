@@ -71,7 +71,7 @@ struct AddPointer
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::add_pointer<T>::type  Type;
+   using Type = typename std::add_pointer<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

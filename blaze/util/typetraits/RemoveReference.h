@@ -71,7 +71,7 @@ struct RemoveReference
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::remove_reference<T>::type  Type;
+   using Type = typename std::remove_reference<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

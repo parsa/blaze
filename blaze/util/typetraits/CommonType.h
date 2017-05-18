@@ -71,7 +71,7 @@ struct CommonType
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::common_type<T...>::type  Type;
+   using Type = typename std::common_type<T...>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

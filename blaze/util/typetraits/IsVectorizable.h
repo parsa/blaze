@@ -67,16 +67,16 @@ struct IsVectorizableHelper
  private:
    //**struct Builtin******************************************************************************
    template< typename BT >
-   struct Builtin { typedef BT  Type; };
+   struct Builtin { using Type = BT ; };
    //**********************************************************************************************
 
    //**struct Complex******************************************************************************
    template< typename CT >
-   struct Complex { typedef typename CT::value_type  Type; };
+   struct Complex { using Type = typename CT::value_type; };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   typedef typename If_< IsComplex<T>, Complex<T>, Builtin<T> >::Type  T2;
+   using T2 = typename If_< IsComplex<T>, Complex<T>, Builtin<T> >::Type;
    //**********************************************************************************************
 
  public:

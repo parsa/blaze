@@ -75,7 +75,7 @@ struct MakeSigned
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::make_signed<T>::type  Type;
+   using Type = typename std::make_signed<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

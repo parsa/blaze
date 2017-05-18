@@ -72,7 +72,7 @@ struct RemoveConst
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::remove_const<T>::type  Type;
+   using Type = typename std::remove_const<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

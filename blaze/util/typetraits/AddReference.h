@@ -71,7 +71,7 @@ struct AddReference
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::add_lvalue_reference<T>::type  Type;
+   using Type = typename std::add_lvalue_reference<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

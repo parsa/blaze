@@ -71,7 +71,7 @@ struct RemoveExtent
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::remove_extent<T>::type  Type;
+   using Type = typename std::remove_extent<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

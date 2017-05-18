@@ -74,7 +74,7 @@ struct Decay
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::decay<T>::type  Type;
+   using Type = typename std::decay<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

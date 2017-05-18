@@ -73,7 +73,7 @@ struct RemoveVolatile
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::remove_volatile<T>::type  Type;
+   using Type = typename std::remove_volatile<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

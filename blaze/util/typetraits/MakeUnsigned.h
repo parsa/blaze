@@ -75,7 +75,7 @@ struct MakeUnsigned
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::make_unsigned<T>::type  Type;
+   using Type = typename std::make_unsigned<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

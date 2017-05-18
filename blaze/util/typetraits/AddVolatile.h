@@ -71,7 +71,7 @@ struct AddVolatile
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename std::add_volatile<T>::type  Type;
+   using Type = typename std::add_volatile<T>::type;
    /*! \endcond */
    //**********************************************************************************************
 };

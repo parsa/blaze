@@ -98,8 +98,8 @@ template< typename Type1233 >                                                   
 struct TYPE_TRAIT_NAME                                                                          \
 {                                                                                               \
  private:                                                                                       \
-   struct SUCCESS { typedef typename Type1233::MEMBER_NAME  Type; };                            \
-   struct FAILURE { typedef FALLBACK_TYPE  Type; };                                             \
+   struct SUCCESS { using Type = typename Type1233::MEMBER_NAME; };                             \
+   struct FAILURE { using Type = FALLBACK_TYPE; };                                              \
                                                                                                 \
    BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( LOCAL_TYPE_TRAIT, MEMBER_NAME );                    \
                                                                                                 \
