@@ -42,6 +42,7 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/All.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
