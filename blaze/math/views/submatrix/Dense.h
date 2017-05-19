@@ -1433,8 +1433,9 @@ inline Submatrix<MT,unaligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value )
+   if( IsSparseMatrix<MT2>::value ) {
       reset();
+   }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
@@ -1709,6 +1710,8 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
+      if( IsSparseMatrix<SchurType>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
@@ -1759,6 +1762,10 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   if( IsSparseMatrix<SchurType>::value ) {
+      reset();
    }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
@@ -4757,8 +4764,9 @@ inline Submatrix<MT,unaligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value )
+   if( IsSparseMatrix<MT2>::value ) {
       reset();
+   }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
@@ -5033,6 +5041,8 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
+      if( IsSparseMatrix<SchurType>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
@@ -5083,6 +5093,10 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   if( IsSparseMatrix<SchurType>::value ) {
+      reset();
    }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
@@ -7677,8 +7691,9 @@ inline Submatrix<MT,aligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value )
+   if( IsSparseMatrix<MT2>::value ) {
       reset();
+   }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
@@ -7953,6 +7968,8 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
+      if( IsSparseMatrix<SchurType>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
@@ -8003,6 +8020,10 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   if( IsSparseMatrix<SchurType>::value ) {
+      reset();
    }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
@@ -10587,8 +10608,9 @@ inline Submatrix<MT,aligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value )
+   if( IsSparseMatrix<MT2>::value ) {
       reset();
+   }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
 
@@ -10863,6 +10885,8 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
+      if( IsSparseMatrix<SchurType>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
@@ -10913,6 +10937,10 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   if( IsSparseMatrix<SchurType>::value ) {
+      reset();
    }
 
    DerestrictTrait_<This> left( derestrict( *this ) );
