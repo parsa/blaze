@@ -42,7 +42,7 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/functors/Forward.h>
-#include <blaze/math/traits/SVecForEachExprTrait.h>
+#include <blaze/math/traits/SVecMapExprTrait.h>
 #include <blaze/math/traits/SVecTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -87,7 +87,7 @@ struct SVecCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                  , SVecTransExprTrait< SVecForEachExprTrait_<VT,Conj> >
+                  , SVecTransExprTrait< SVecMapExprTrait_<VT,Conj> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

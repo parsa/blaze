@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/SVecForEachExprTrait.h
-//  \brief Header file for the SVecForEachExprTrait class template
+//  \file blaze/math/traits/SVecMapExprTrait.h
+//  \brief Header file for the SVecMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_SVECFOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_SVECFOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_SVECMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_SVECMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a sparse vector for-each operation.
+/*!\brief Evaluation of the expression type of a unary sparse vector map operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a sparse vector
-// custom operation. Given the non-transpose sparse vector type \a VT and the custom operation type
-// \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT is
-// not a non-transpose sparse vector type, the resulting \a Type is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the resulting expression type of a unary sparse
+// vector map operation. Given the non-transpose sparse vector type \a VT and the custom operation
+// type \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT
+// is not a non-transpose sparse vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT        // Type of the sparse vector
         , typename OP        // Type of the custom operation
         , typename = void >  // Restricting condition
-struct SVecForEachExprTrait
+struct SVecMapExprTrait
 {
  private:
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct SVecForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , SVecForEachExprTrait< Decay_<VT>, OP >
+                            , SVecMapExprTrait< Decay_<VT>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -97,22 +97,22 @@ struct SVecForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the SVecForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the SVecMapExprTrait class template.
 // \ingroup math_traits
 //
-// The SVecForEachExprTrait_ alias declaration provides a convenient shortcut to access the nested
-// \a Type of the SVecForEachExprTrait class template. For instance, given the non-transpose sparse
+// The SVecMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the SVecMapExprTrait class template. For instance, given the non-transpose sparse
 // vector type \a VT and the custom operation type \a OP the following two type definitions are
 // identical:
 
    \code
-   using Type1 = typename SVecForEachExprTrait<VT,OP>::Type;
-   using Type2 = SVecForEachExprTrait_<VT,OP>;
+   using Type1 = typename SVecMapExprTrait<VT,OP>::Type;
+   using Type2 = SVecMapExprTrait_<VT,OP>;
    \endcode
 */
 template< typename VT    // Type of the sparse vector
         , typename OP >  // Type of the custom operation
-using SVecForEachExprTrait_ = typename SVecForEachExprTrait<VT,OP>::Type;
+using SVecMapExprTrait_ = typename SVecMapExprTrait<VT,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

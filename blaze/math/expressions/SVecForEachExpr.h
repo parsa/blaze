@@ -57,6 +57,8 @@
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/SVecMapExprTrait.h>
+#include <blaze/math/traits/TSVecForEachExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -2137,7 +2139,7 @@ struct Size< SVecForEachExpr<VT,OP,TF> > : public Size<VT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Abs,false>, Abs >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Abs,false>, Abs >
 {
  public:
    //**********************************************************************************************
@@ -2169,7 +2171,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Abs,true>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Floor,false>, Floor >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Floor,false>, Floor >
 {
  public:
    //**********************************************************************************************
@@ -2201,7 +2203,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Floor,true>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Ceil,false>, Ceil >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Ceil,false>, Ceil >
 {
  public:
    //**********************************************************************************************
@@ -2233,7 +2235,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Ceil,true>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Trunc,false>, Trunc >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Trunc,false>, Trunc >
 {
  public:
    //**********************************************************************************************
@@ -2265,7 +2267,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Trunc,true>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Round,false>, Round >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Round,false>, Round >
 {
  public:
    //**********************************************************************************************
@@ -2297,7 +2299,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Round,true>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Conj,false>, Conj >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Conj,false>, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2329,7 +2331,7 @@ struct TSVecForEachExprTrait< SVecForEachExpr<VT,Conj,true>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,true>, false >, Conj >
+struct SVecMapExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,true>, false >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2361,7 +2363,7 @@ struct TSVecForEachExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,false>, tru
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecForEachExprTrait< SVecForEachExpr<VT,Real,false>, Real >
+struct SVecMapExprTrait< SVecForEachExpr<VT,Real,false>, Real >
 {
  public:
    //**********************************************************************************************
