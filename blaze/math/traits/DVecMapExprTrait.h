@@ -79,7 +79,7 @@ struct DVecMapExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                 , DVecForEachExpr<VT,OP,false>
+                 , DVecMapExpr<VT,OP,false>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/DVecForEachExpr.h
-//  \brief Header file for the dense vector for-each expression
+//  \file blaze/math/expressions/DVecMapExpr.h
+//  \brief Header file for the dense vector map expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_DVECFOREACHEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_DVECFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DVECMAPEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DVECMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -85,23 +85,23 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DVECFOREACHEXPR
+//  CLASS DVECMAPEXPR
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the dense vector forEach() function.
+/*!\brief Expression object for the dense vector map() function.
 // \ingroup dense_vector_expression
 //
-// The DVecForEachExpr class represents the compile time expression for the evaluation of a
-// custom operation on each element of a dense vector via the forEach() function.
+// The DVecMapExpr class represents the compile time expression for the evaluation of a custom
+// operation on each element of a dense vector via the map() function.
 */
 template< typename VT  // Type of the dense vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
-class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
-                      , private VecMapExpr
-                      , private Computation
+class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
+                  , private VecMapExpr
+                  , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -117,13 +117,13 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
-   //! Compilation switch for the serial evaluation strategy of the for-each expression.
+   //! Compilation switch for the serial evaluation strategy of the map expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the for-each expression. In case the given dense
-       vector expression of type \a VT requires an intermediate evaluation, \a useAssign will
-       be set to 1 and the for-each expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
-       via the subscript operator. */
+       the serial evaluation strategy of the map expression. In case the given dense vector
+       expression of type \a VT requires an intermediate evaluation, \a useAssign will be
+       set to 1 and the map expression will be evaluated via the \a assign function family.
+       Otherwise \a useAssign will be set to 0 and the expression will be evaluated via the
+       subscript operator. */
    enum : bool { useAssign = RequiresEvaluation<VT>::value };
 
    /*! \cond BLAZE_INTERNAL */
@@ -161,7 +161,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecForEachExpr<VT,OP,TF>   This;           //!< Type of this DVecForEachExpr instance.
+   typedef DVecMapExpr<VT,OP,TF>       This;           //!< Type of this DVecMapExpr instance.
    typedef UnaryMapTrait_<VT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
@@ -170,7 +170,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DVecForEachExpr& >  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const DVecMapExpr& >  CompositeType;
 
    //! Composite data type of the dense vector expression.
    typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
@@ -180,7 +180,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
-   /*!\brief Iterator over the elements of the dense vector.
+   /*!\brief Iterator over the elements of the dense vector map expression.
    */
    class ConstIterator
    {
@@ -438,13 +438,13 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DVecForEachExpr class.
+   /*!\brief Constructor for the DVecMapExpr class.
    //
-   // \param dv The dense vector operand of the for-each expression.
+   // \param dv The dense vector operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline DVecForEachExpr( const VT& dv, OP op ) noexcept
-      : dv_( dv )  // Dense vector of the for-each expression
+   explicit inline DVecMapExpr( const VT& dv, OP op ) noexcept
+      : dv_( dv )  // Dense vector of the map expression
       , op_( op )  // The custom unary operation
    {}
    //**********************************************************************************************
@@ -585,20 +585,20 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
  private:
    //**Member variables****************************************************************************
-   Operand   dv_;  //!< Dense vector of the for-each expression.
+   Operand   dv_;  //!< Dense vector of the map expression.
    Operation op_;  //!< The custom unary operation.
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector for-each
+   // This function implements the performance optimized assignment of a dense vector map
    // expression to a dense vector. Due to the explicit application of the SFINAE principle,
    // this function can only be selected by the compiler in case the operand requires an
    // intermediate evaluation and the underlying numeric data type of the operand and the
@@ -607,28 +607,28 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< And< UseAssign<VT2>
                                , IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > >
-      assign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      assign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.dv_ );
-      assign( ~lhs, forEach( ~lhs, rhs.op_ ) );
+      assign( ~lhs, map( ~lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector for-each
+   // This function implements the performance optimized assignment of a dense vector map
    // expression to a dense vector. Due to the explicit application of the SFINAE principle,
    // this function can only be selected by the compiler in case the operand requires an
    // intermediate evaluation and the underlying numeric data type of the operand and the
@@ -637,7 +637,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< And< UseAssign<VT2>
                                , Not< IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > > >
-      assign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      assign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -648,28 +648,28 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector for-each expression to a sparse vector.
+   /*!\brief Assignment of a dense vector map expression to a sparse vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector for-each
+   // This function implements the performance optimized assignment of a dense vector map
    // expression to a sparse vector. Due to the explicit application of the SFINAE principle,
    // this function can only be selected by the compiler in case the operand requires an
    // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline EnableIf_< UseAssign<VT2> >
-      assign( SparseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      assign( SparseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -680,28 +680,28 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Addition assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense vector
-   // for-each expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand
-   // requires an intermediate evaluation.
+   // map expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      addAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -712,7 +712,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      addAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      addAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -723,21 +723,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Subtraction assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the operand
+   // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      subAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -748,7 +748,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      subAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      subAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -759,21 +759,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Multiplication assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be multiplied.
+   // \param rhs The right-hand side map expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      multAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -784,7 +784,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      multAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      multAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -795,21 +795,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**Division assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Division assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief Division assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression divisor.
+   // \param rhs The right-hand side map expression divisor.
    // \return void
    //
-   // This function implements the performance optimized division assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // This function implements the performance optimized division assignment of a dense vector
+   // map expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      divAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      divAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -820,7 +820,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      divAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      divAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -831,23 +831,23 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector
-   // for-each expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected and the underlying numeric data
-   // type of the operand and the target vector are identical
+   // This function implements the performance optimized SMP assignment of a dense vector map
+   // expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the expression specific parallel
+   // evaluation strategy is selected and the underlying numeric data type of the operand and the
+   // target vector are identical
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< And< UseSMPAssign<VT2>
                                , IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > >
-      smpAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -861,23 +861,23 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector
-   // for-each expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected and the underlying numeric data
-   // type of the operand and the target vector differ.
+   // This function implements the performance optimized SMP assignment of a dense vector map
+   // expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the expression specific parallel
+   // evaluation strategy is selected and the underlying numeric data type of the operand and the
+   // target vector differ.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< And< UseSMPAssign<VT2>
                                , Not< IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > > >
-      smpAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -888,28 +888,28 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**SMP assignment to sparse vectors************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector for-each expression to a sparse vector.
+   /*!\brief SMP assignment of a dense vector map expression to a sparse vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector
-   // for-each expression to a sparse vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP assignment of a dense vector map
+   // expression to a sparse vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the expression specific parallel
+   // evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpAssign( SparseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpAssign( SparseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -920,28 +920,28 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**SMP addition assignment to dense vectors****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP addition assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -952,7 +952,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAddAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -963,21 +963,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP subtraction assignment to dense vectors*************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP subtraction assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -988,7 +988,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpSubAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -999,21 +999,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP multiplication assignment to dense vectors**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP multiplication assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be multiplied.
+   // \param rhs The right-hand side map expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // dense vector for-each expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this function can only be selected by the compiler in case the
+   // dense vector map expression to a dense vector. Due to the explicit application of the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1024,7 +1024,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpMultAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpMultAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1035,21 +1035,21 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP division assignment to dense vectors****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP division assignment of a dense vector for-each expression to a dense vector.
+   /*!\brief SMP division assignment of a dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression divisor.
+   // \param rhs The right-hand side map expression divisor.
    // \return void
    //
    // This function implements the performance optimized SMP division assignment of a dense
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecForEachExpr& rhs )
+      smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1060,7 +1060,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpDivAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpDivAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1095,6 +1095,36 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a dv.
 //
+// The \a map() function evaluates the given custom operation on each element of the input
+// vector \a dv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a map() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = map( a, []( double a ){ return std::sqrt( a ); } );
+   \endcode
+*/
+template< typename VT    // Type of the dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>& dv, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecMapExpr<VT,OP,TF>( ~dv, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluates the given custom operation on each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \param op The custom operation.
+// \return The custom operation applied to each single element of \a dv.
+//
 // The \a forEach() function evaluates the given custom operation on each element of the input
 // vector \a dv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a forEach() function:
@@ -1108,11 +1138,11 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP op )
+inline const DVecMapExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,OP,TF>( ~dv, op );
+   return DVecMapExpr<VT,OP,TF>( ~dv, op );
 }
 //*************************************************************************************************
 
@@ -1136,11 +1166,11 @@ inline const DVecForEachExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Abs,TF>( ~dv, Abs() );
+   return DVecMapExpr<VT,Abs,TF>( ~dv, Abs() );
 }
 //*************************************************************************************************
 
@@ -1164,11 +1194,11 @@ inline const DVecForEachExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Floor,TF>( ~dv, Floor() );
+   return DVecMapExpr<VT,Floor,TF>( ~dv, Floor() );
 }
 //*************************************************************************************************
 
@@ -1192,11 +1222,11 @@ inline const DVecForEachExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Ceil,TF>( ~dv, Ceil() );
+   return DVecMapExpr<VT,Ceil,TF>( ~dv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1220,11 +1250,11 @@ inline const DVecForEachExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Trunc,TF>( ~dv, Trunc() );
+   return DVecMapExpr<VT,Trunc,TF>( ~dv, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1248,11 +1278,11 @@ inline const DVecForEachExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Round,TF>( ~dv, Round() );
+   return DVecMapExpr<VT,Round,TF>( ~dv, Round() );
 }
 //*************************************************************************************************
 
@@ -1276,11 +1306,11 @@ inline const DVecForEachExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Conj,TF> conj( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Conj,TF> conj( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Conj,TF>( ~dv, Conj() );
+   return DVecMapExpr<VT,Conj,TF>( ~dv, Conj() );
 }
 //*************************************************************************************************
 
@@ -1341,11 +1371,11 @@ inline const CTransExprTrait_<VT> ctrans( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Real,TF>( ~dv, Real() );
+   return DVecMapExpr<VT,Real,TF>( ~dv, Real() );
 }
 //*************************************************************************************************
 
@@ -1369,11 +1399,11 @@ inline const DVecForEachExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Imag,TF>( ~dv, Imag() );
+   return DVecMapExpr<VT,Imag,TF>( ~dv, Imag() );
 }
 //*************************************************************************************************
 
@@ -1400,11 +1430,11 @@ inline const DVecForEachExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Sqrt,TF>( ~dv, Sqrt() );
+   return DVecMapExpr<VT,Sqrt,TF>( ~dv, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1431,11 +1461,11 @@ inline const DVecForEachExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,InvSqrt,TF>( ~dv, InvSqrt() );
+   return DVecMapExpr<VT,InvSqrt,TF>( ~dv, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1462,11 +1492,11 @@ inline const DVecForEachExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& d
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Cbrt,TF>( ~dv, Cbrt() );
+   return DVecMapExpr<VT,Cbrt,TF>( ~dv, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1493,11 +1523,11 @@ inline const DVecForEachExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,InvCbrt,TF>( ~dv, InvCbrt() );
+   return DVecMapExpr<VT,InvCbrt,TF>( ~dv, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1524,12 +1554,12 @@ inline const DVecForEachExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& d
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const DVecForEachExpr<VT,Clamp<DT>,TF>
+inline const DVecMapExpr<VT,Clamp<DT>,TF>
    clamp( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Clamp<DT>,TF>( ~dv, Clamp<DT>( min, max ) );
+   return DVecMapExpr<VT,Clamp<DT>,TF>( ~dv, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1555,13 +1585,13 @@ inline const DVecForEachExpr<VT,Clamp<DT>,TF>
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename ET >  // Type of the exponent
-inline const DVecForEachExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, ET exp )
+inline const DVecMapExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return DVecForEachExpr<VT,Pow<ET>,TF>( ~dv, Pow<ET>( exp ) );
+   return DVecMapExpr<VT,Pow<ET>,TF>( ~dv, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 
@@ -1585,11 +1615,11 @@ inline const DVecForEachExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, E
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Exp,TF>( ~dv, Exp() );
+   return DVecMapExpr<VT,Exp,TF>( ~dv, Exp() );
 }
 //*************************************************************************************************
 
@@ -1613,11 +1643,11 @@ inline const DVecForEachExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Exp2,TF>( ~dv, Exp2() );
+   return DVecMapExpr<VT,Exp2,TF>( ~dv, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1641,11 +1671,11 @@ inline const DVecForEachExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Exp10,TF>( ~dv, Exp10() );
+   return DVecMapExpr<VT,Exp10,TF>( ~dv, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1672,11 +1702,11 @@ inline const DVecForEachExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Log,TF>( ~dv, Log() );
+   return DVecMapExpr<VT,Log,TF>( ~dv, Log() );
 }
 //*************************************************************************************************
 
@@ -1703,11 +1733,11 @@ inline const DVecForEachExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Log2,TF>( ~dv, Log2() );
+   return DVecMapExpr<VT,Log2,TF>( ~dv, Log2() );
 }
 //*************************************************************************************************
 
@@ -1734,11 +1764,11 @@ inline const DVecForEachExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Log10,TF>( ~dv, Log10() );
+   return DVecMapExpr<VT,Log10,TF>( ~dv, Log10() );
 }
 //*************************************************************************************************
 
@@ -1762,11 +1792,11 @@ inline const DVecForEachExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Sin,TF>( ~dv, Sin() );
+   return DVecMapExpr<VT,Sin,TF>( ~dv, Sin() );
 }
 //*************************************************************************************************
 
@@ -1793,11 +1823,11 @@ inline const DVecForEachExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Asin,TF>( ~dv, Asin() );
+   return DVecMapExpr<VT,Asin,TF>( ~dv, Asin() );
 }
 //*************************************************************************************************
 
@@ -1821,11 +1851,11 @@ inline const DVecForEachExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Sinh,TF>( ~dv, Sinh() );
+   return DVecMapExpr<VT,Sinh,TF>( ~dv, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1849,11 +1879,11 @@ inline const DVecForEachExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Asinh,TF> asinh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Asinh,TF> asinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Asinh,TF>( ~dv, Asinh() );
+   return DVecMapExpr<VT,Asinh,TF>( ~dv, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1877,11 +1907,11 @@ inline const DVecForEachExpr<VT,Asinh,TF> asinh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Cos,TF>( ~dv, Cos() );
+   return DVecMapExpr<VT,Cos,TF>( ~dv, Cos() );
 }
 //*************************************************************************************************
 
@@ -1908,11 +1938,11 @@ inline const DVecForEachExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Acos,TF> acos( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Acos,TF> acos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Acos,TF>( ~dv, Acos() );
+   return DVecMapExpr<VT,Acos,TF>( ~dv, Acos() );
 }
 //*************************************************************************************************
 
@@ -1936,11 +1966,11 @@ inline const DVecForEachExpr<VT,Acos,TF> acos( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Cosh,TF>( ~dv, Cosh() );
+   return DVecMapExpr<VT,Cosh,TF>( ~dv, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1967,11 +1997,11 @@ inline const DVecForEachExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Acosh,TF> acosh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Acosh,TF> acosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Acosh,TF>( ~dv, Acosh() );
+   return DVecMapExpr<VT,Acosh,TF>( ~dv, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1995,11 +2025,11 @@ inline const DVecForEachExpr<VT,Acosh,TF> acosh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Tan,TF>( ~dv, Tan() );
+   return DVecMapExpr<VT,Tan,TF>( ~dv, Tan() );
 }
 //*************************************************************************************************
 
@@ -2023,11 +2053,11 @@ inline const DVecForEachExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Atan,TF>( ~dv, Atan() );
+   return DVecMapExpr<VT,Atan,TF>( ~dv, Atan() );
 }
 //*************************************************************************************************
 
@@ -2054,11 +2084,11 @@ inline const DVecForEachExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Tanh,TF>( ~dv, Tanh() );
+   return DVecMapExpr<VT,Tanh,TF>( ~dv, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2085,11 +2115,11 @@ inline const DVecForEachExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Atanh,TF>( ~dv, Atanh() );
+   return DVecMapExpr<VT,Atanh,TF>( ~dv, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2113,11 +2143,11 @@ inline const DVecForEachExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Erf,TF>( ~dv, Erf() );
+   return DVecMapExpr<VT,Erf,TF>( ~dv, Erf() );
 }
 //*************************************************************************************************
 
@@ -2141,11 +2171,11 @@ inline const DVecForEachExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
+inline const DVecMapExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecForEachExpr<VT,Erfc,TF>( ~dv, Erfc() );
+   return DVecMapExpr<VT,Erfc,TF>( ~dv, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2171,7 +2201,7 @@ inline const DVecForEachExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& dv )
+inline const DVecMapExpr<VT,Abs,TF>& abs( const DVecMapExpr<VT,Abs,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2194,7 +2224,7 @@ inline const DVecForEachExpr<VT,Abs,TF>& abs( const DVecForEachExpr<VT,Abs,TF>& 
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Floor,TF>& floor( const DVecForEachExpr<VT,Floor,TF>& dv )
+inline const DVecMapExpr<VT,Floor,TF>& floor( const DVecMapExpr<VT,Floor,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2217,7 +2247,7 @@ inline const DVecForEachExpr<VT,Floor,TF>& floor( const DVecForEachExpr<VT,Floor
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Ceil,TF>& ceil( const DVecForEachExpr<VT,Ceil,TF>& dv )
+inline const DVecMapExpr<VT,Ceil,TF>& ceil( const DVecMapExpr<VT,Ceil,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2240,7 +2270,7 @@ inline const DVecForEachExpr<VT,Ceil,TF>& ceil( const DVecForEachExpr<VT,Ceil,TF
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Trunc,TF>& trunc( const DVecForEachExpr<VT,Trunc,TF>& dv )
+inline const DVecMapExpr<VT,Trunc,TF>& trunc( const DVecMapExpr<VT,Trunc,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2263,7 +2293,7 @@ inline const DVecForEachExpr<VT,Trunc,TF>& trunc( const DVecForEachExpr<VT,Trunc
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Round,TF>& round( const DVecForEachExpr<VT,Round,TF>& dv )
+inline const DVecMapExpr<VT,Round,TF>& round( const DVecMapExpr<VT,Round,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2293,7 +2323,7 @@ inline const DVecForEachExpr<VT,Round,TF>& round( const DVecForEachExpr<VT,Round
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DVecForEachExpr<VT,Conj,TF>::Operand conj( const DVecForEachExpr<VT,Conj,TF>& dv )
+inline typename DVecMapExpr<VT,Conj,TF>::Operand conj( const DVecMapExpr<VT,Conj,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2323,7 +2353,7 @@ inline typename DVecForEachExpr<VT,Conj,TF>::Operand conj( const DVecForEachExpr
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecForEachExpr<VT,Conj,TF>,!TF>& dv )
+inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecMapExpr<VT,Conj,TF>,!TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2346,7 +2376,7 @@ inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecForEachExpr<VT,
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecForEachExpr<VT,Real,TF>& real( const DVecForEachExpr<VT,Real,TF>& dv )
+inline const DVecMapExpr<VT,Real,TF>& real( const DVecMapExpr<VT,Real,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2367,7 +2397,7 @@ inline const DVecForEachExpr<VT,Real,TF>& real( const DVecForEachExpr<VT,Real,TF
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct Size< DVecForEachExpr<VT,OP,TF> > : public Size<VT>
+struct Size< DVecMapExpr<VT,OP,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2384,7 +2414,7 @@ struct Size< DVecForEachExpr<VT,OP,TF> > : public Size<VT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct IsAligned< DVecForEachExpr<VT,OP,TF> >
+struct IsAligned< DVecMapExpr<VT,OP,TF> >
    : public BoolConstant< IsAligned<VT>::value >
 {};
 /*! \endcond */
@@ -2402,7 +2432,7 @@ struct IsAligned< DVecForEachExpr<VT,OP,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct IsPadded< DVecForEachExpr<VT,OP,TF> >
+struct IsPadded< DVecMapExpr<VT,OP,TF> >
    : public BoolConstant< IsPadded<VT>::value >
 {};
 /*! \endcond */
@@ -2420,12 +2450,12 @@ struct IsPadded< DVecForEachExpr<VT,OP,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Abs,false>, Abs >
+struct DVecMapExprTrait< DVecMapExpr<VT,Abs,false>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Abs,false>
+                   , DVecMapExpr<VT,Abs,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2436,12 +2466,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Abs,false>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Abs,true>, Abs >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Abs,true>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Abs,true>
+                   , DVecMapExpr<VT,Abs,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2452,12 +2482,12 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Abs,true>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Floor,false>, Floor >
+struct DVecMapExprTrait< DVecMapExpr<VT,Floor,false>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Floor,false>
+                   , DVecMapExpr<VT,Floor,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2468,12 +2498,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Floor,false>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Floor,true>, Floor >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Floor,true>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Floor,true>
+                   , DVecMapExpr<VT,Floor,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2484,12 +2514,12 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Floor,true>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Ceil,false>, Ceil >
+struct DVecMapExprTrait< DVecMapExpr<VT,Ceil,false>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Ceil,false>
+                   , DVecMapExpr<VT,Ceil,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2500,12 +2530,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Ceil,false>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Ceil,true>, Ceil >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Ceil,true>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Ceil,true>
+                   , DVecMapExpr<VT,Ceil,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2516,12 +2546,12 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Ceil,true>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Trunc,false>, Trunc >
+struct DVecMapExprTrait< DVecMapExpr<VT,Trunc,false>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Trunc,false>
+                   , DVecMapExpr<VT,Trunc,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2532,12 +2562,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Trunc,false>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Trunc,true>, Trunc >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Trunc,true>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Trunc,true>
+                   , DVecMapExpr<VT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2548,12 +2578,12 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Trunc,true>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Round,false>, Round >
+struct DVecMapExprTrait< DVecMapExpr<VT,Round,false>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Round,false>
+                   , DVecMapExpr<VT,Round,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2564,12 +2594,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Round,false>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Round,true>, Round >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Round,true>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Round,true>
+                   , DVecMapExpr<VT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2580,12 +2610,12 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Round,true>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Conj,false>, Conj >
+struct DVecMapExprTrait< DVecMapExpr<VT,Conj,false>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , Operand_< DVecForEachExpr<VT,Conj,false> >
+                   , Operand_< DVecMapExpr<VT,Conj,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2596,12 +2626,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Conj,false>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Conj,true>, Conj >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Conj,true>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , Operand_< DVecForEachExpr<VT,Conj,true> >
+                   , Operand_< DVecMapExpr<VT,Conj,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2612,7 +2642,7 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Conj,true>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,true>, false >, Conj >
+struct DVecMapExprTrait< DVecTransExpr< DVecMapExpr<VT,Conj,true>, false >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2628,7 +2658,7 @@ struct DVecMapExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,true>, false >, 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,false>, true >, Conj >
+struct TDVecMapExprTrait< DVecTransExpr< DVecMapExpr<VT,Conj,false>, true >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2644,12 +2674,12 @@ struct TDVecMapExprTrait< DVecTransExpr< DVecForEachExpr<VT,Conj,false>, true >,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct DVecMapExprTrait< DVecForEachExpr<VT,Real,false>, Real >
+struct DVecMapExprTrait< DVecMapExpr<VT,Real,false>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecForEachExpr<VT,Real,false>
+                   , DVecMapExpr<VT,Real,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2660,12 +2690,12 @@ struct DVecMapExprTrait< DVecForEachExpr<VT,Real,false>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TDVecMapExprTrait< DVecForEachExpr<VT,Real,true>, Real >
+struct TDVecMapExprTrait< DVecMapExpr<VT,Real,true>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecForEachExpr<VT,Real,true>
+                   , DVecMapExpr<VT,Real,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2676,7 +2706,7 @@ struct TDVecMapExprTrait< DVecForEachExpr<VT,Real,true>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF, bool AF >
-struct SubvectorExprTrait< DVecForEachExpr<VT,OP,TF>, AF >
+struct SubvectorExprTrait< DVecMapExpr<VT,OP,TF>, AF >
 {
  public:
    //**********************************************************************************************
