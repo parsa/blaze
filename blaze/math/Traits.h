@@ -204,7 +204,7 @@
 #include <blaze/math/traits/TDVecCTransExprTrait.h>
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecEvalExprTrait.h>
-#include <blaze/math/traits/TDVecForEachExprTrait.h>
+#include <blaze/math/traits/TDVecMapExprTrait.h>
 #include <blaze/math/traits/TDVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TDVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TDVecSerialExprTrait.h>

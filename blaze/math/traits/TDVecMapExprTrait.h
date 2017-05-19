@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/TDVecForEachExprTrait.h
-//  \brief Header file for the TDVecForEachExprTrait class template
+//  \file blaze/math/traits/TDVecMapExprTrait.h
+//  \brief Header file for the TDVecMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_TDVECFOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_TDVECFOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_TDVECMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_TDVECMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a dense vector custom operation.
+/*!\brief Evaluation of the expression type of a unary dense vector map operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a dense vector
-// custom operation. Given the transpose dense vector type \a VT and the custom operation type
+// Via this type trait it is possible to evaluate the resulting expression type of a unary dense
+// vector map operation. Given the transpose dense vector type \a VT and the custom operation type
 // \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT is
 // not a transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT        // Type of the dense vector
         , typename OP        // Type of the custom operation
         , typename = void >  // Restricting condition
-struct TDVecForEachExprTrait
+struct TDVecMapExprTrait
 {
  private:
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct TDVecForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , TDVecForEachExprTrait< Decay_<VT>, OP >
+                            , TDVecMapExprTrait< Decay_<VT>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -97,22 +97,22 @@ struct TDVecForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the TDVecForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the TDVecMapExprTrait class template.
 // \ingroup math_traits
 //
-// The TDVecForEachExprTrait_ alias declaration provides a convenient shortcut to access the
-// nested \a Type of the TDVecForEachExprTrait class template. For instance, given the transpose
-// dense vector type \a VT and the custom operation type \a OP the following two type definitions
-// are identical:
+// The TDVecMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the TDVecMapExprTrait class template. For instance, given the transpose dense
+// vector type \a VT and the custom operation type \a OP the following two type definitions are
+// identical:
 
    \code
-   using Type1 = typename TDVecForEachExprTrait<VT>::Type;
-   using Type2 = TDVecForEachExprTrait_<VT>;
+   using Type1 = typename TDVecMapExprTrait<VT>::Type;
+   using Type2 = TDVecMapExprTrait_<VT>;
    \endcode
 */
 template< typename VT    // Type of the dense vector
         , typename OP >  // Type of the custom operation
-using TDVecForEachExprTrait_ = typename TDVecForEachExprTrait<VT,OP>::Type;
+using TDVecMapExprTrait_ = typename TDVecMapExprTrait<VT,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
