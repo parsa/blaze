@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/TDMatForEachExprTrait.h
-//  \brief Header file for the TDMatForEachExprTrait class template
+//  \file blaze/math/traits/TDMatMapExprTrait.h
+//  \brief Header file for the TDMatMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_TDMATFOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_TDMATFOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_TDMATMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_TDMATMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a dense matrix custom operation.
+/*!\brief Evaluation of the expression type of a unary dense matrix map operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a dense matrix
-// custom operation. Given the column-major dense matrix type \a MT and the custom operation type
-// \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a MT is
-// not a column-major dense matrix type, the resulting \a Type is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the resulting expression type of a unary dense
+// matrix map operation. Given the column-major dense matrix type \a MT and the custom operation
+// type \a OP, the nested type \a Type corresponds to the resulting expression type. In case
+// \a MT is not a column-major dense matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename MT        // Type of the dense matrix
         , typename OP        // Type of the custom operation
         , typename = void >  // Restricting condition
-struct TDMatForEachExprTrait
+struct TDMatMapExprTrait
 {
  private:
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct TDMatForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , TDMatForEachExprTrait< Decay_<MT>, OP >
+                            , TDMatMapExprTrait< Decay_<MT>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -97,22 +97,22 @@ struct TDMatForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the TDMatForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the TDMatMapExprTrait class template.
 // \ingroup math_traits
 //
-// The TDMatForEachExprTrait_ alias declaration provides a convenient shortcut to access the nested
-// \a Type of the TDMatForEachExprTrait class template. For instance, given the column-major dense
+// The TDMatMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the TDMatMapExprTrait class template. For instance, given the column-major dense
 // matrix type \a MT and the custom operation type \a OP the following two type definitions are
 // identical:
 
    \code
-   using Type1 = typename TDMatForEachExprTrait<MT,OP>::Type;
-   using Type2 = TDMatForEachExprTrait_<MT,OP>;
+   using Type1 = typename TDMatMapExprTrait<MT,OP>::Type;
+   using Type2 = TDMatMapExprTrait_<MT,OP>;
    \endcode
 */
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the custom operation
-using TDMatForEachExprTrait_ = typename TDMatForEachExprTrait<MT,OP>::Type;
+using TDMatMapExprTrait_ = typename TDMatMapExprTrait<MT,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

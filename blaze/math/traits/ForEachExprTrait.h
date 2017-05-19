@@ -44,7 +44,7 @@
 #include <blaze/math/traits/DVecMapExprTrait.h>
 #include <blaze/math/traits/SMatForEachExprTrait.h>
 #include <blaze/math/traits/SVecMapExprTrait.h>
-#include <blaze/math/traits/TDMatForEachExprTrait.h>
+#include <blaze/math/traits/TDMatMapExprTrait.h>
 #include <blaze/math/traits/TDVecMapExprTrait.h>
 #include <blaze/math/traits/TSMatForEachExprTrait.h>
 #include <blaze/math/traits/TSVecMapExprTrait.h>
@@ -98,7 +98,7 @@ struct ForEachExprTrait
                   , If_< IsDenseMatrix<T>
                        , If_< IsRowMajorMatrix<T>
                             , DMatMapExprTrait<T,OP>
-                            , TDMatForEachExprTrait<T,OP> >
+                            , TDMatMapExprTrait<T,OP> >
                        , If_< IsRowMajorMatrix<T>
                             , SMatForEachExprTrait<T,OP>
                             , TSMatForEachExprTrait<T,OP> > >
