@@ -49,7 +49,7 @@
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/expressions/MatForEachExpr.h>
+#include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -113,7 +113,7 @@ template< typename MT  // Type of the dense matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
 class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
-                      , private MatForEachExpr
+                      , private MatMapExpr
                       , private Computation
 {
  private:

@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/MatForEachExpr.h
+//  \file blaze/math/constraints/MatMapExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
@@ -32,22 +32,22 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_MATFOREACHEXPR_H_
-#define _BLAZE_MATH_CONSTRAINTS_MATFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_MATMAPEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_MATMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsMatForEachExpr.h>
+#include <blaze/math/typetraits/IsMatMapExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_MATFOREACHEXPR_TYPE CONSTRAINT
+//  MUST_BE_MATMAPEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -55,11 +55,11 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a matrix for-each expression (i.e. a type derived
-// from the MatForEachExpr base class), a compilation error is created.
+// In case the given data type \a T is not a unary matrix map expression (i.e. a type derived
+// from the MatMapExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_MATFOREACHEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatForEachExpr<T>::value, "Non-matrix for-each expression type detected" )
+#define BLAZE_CONSTRAINT_MUST_BE_MATMAPEXPR_TYPE(T) \
+   static_assert( ::blaze::IsMatMapExpr<T>::value, "Non-unary matrix map expression type detected" )
 //*************************************************************************************************
 
 
@@ -67,7 +67,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_MATFOREACHEXPR_TYPE CONSTRAINT
+//  MUST_NOT_BE_MATMAPEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -75,11 +75,11 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a matrix for-each expression (i.e. a type derived from
-// the MatForEachExpr base class), a compilation error is created.
+// In case the given data type \a T is a unary matrix map expression (i.e. a type derived from
+// the MatMapExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_MATFOREACHEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatForEachExpr<T>::value, "Matrix for-each expression type detected" )
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMAPEXPR_TYPE(T) \
+   static_assert( !::blaze::IsMatMapExpr<T>::value, "Unary matrix map expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

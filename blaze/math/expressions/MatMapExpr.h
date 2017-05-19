@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/MatForEachExpr.h
-//  \brief Header file for the MatForEachExpr base class
+//  \file blaze/math/expressions/MatMapExpr.h
+//  \brief Header file for the MatMapExpr base class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_MATFOREACHEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_MATFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_MATMAPEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_MATMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -52,17 +52,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base class for all matrix for-each expression templates.
+/*!\brief Base class for all unary matrix map expression templates.
 // \ingroup math
 //
-// The MatForEachExpr class serves as a tag for all expression templates that represent a unary,
-// custom operation on a matrix. All classes, that represent a matrix custom operation and that
-// are used within the expression template environment of the Blaze library have to derive from
-// this class in order to qualify as matrix for-each expression template. Only in case a class
-// is derived from the MatForEachExpr base class, the IsMatForEachExpr type trait recognizes the
-// class as valid matrix for-each expression template.
+// The MatMapExpr class serves as a tag for all expression templates that represent a unary map
+// operation on a matrix. All classes, that represent a unary matrix map operation and that are
+// used within the expression template environment of the Blaze library have to derive from this
+// class in order to qualify as unary matrix map expression template. Only in case a class is
+// derived from the MatMapExpr base class, the IsMatMapExpr type trait recognizes the class as
+// valid unary matrix map expression template.
 */
-struct MatForEachExpr : private UnaryMapExpr
+struct MatMapExpr : private UnaryMapExpr
 {};
 //*************************************************************************************************
 

@@ -49,7 +49,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/expressions/MatForEachExpr.h>
+#include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
@@ -108,7 +108,7 @@ template< typename MT  // Type of the sparse matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
 class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
-                      , private MatForEachExpr
+                      , private MatMapExpr
                       , private Computation
 {
  private:

@@ -71,8 +71,8 @@
 #include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
-#include <blaze/math/constraints/MatForEachExpr.h>
 #include <blaze/math/constraints/MatInvExpr.h>
+#include <blaze/math/constraints/MatMapExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>

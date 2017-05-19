@@ -652,16 +652,16 @@ inline const EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector custom operation.
+/*!\brief Creating a view on a specific subvector of the given unary vector map operation.
 // \ingroup views
 //
-// \param vector The constant vector custom operation.
+// \param vector The constant unary vector map operation.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
-// \return View on the specified subvector of the custom operation.
+// \return View on the specified subvector of the unary map operation.
 //
-// This function returns an expression representing the specified subvector of the given vector
-// custom operation.
+// This function returns an expression representing the specified subvector of the given unary
+// vector map operation.
 */
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector

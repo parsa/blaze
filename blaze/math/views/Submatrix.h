@@ -64,7 +64,7 @@
 #include <blaze/math/typetraits/IsDeclExpr.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
-#include <blaze/math/typetraits/IsMatForEachExpr.h>
+#include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
@@ -808,23 +808,23 @@ inline const EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix custom operation.
+/*!\brief Creating a view on a specific submatrix of the given unary matrix map operation.
 // \ingroup views
 //
-// \param matrix The constant matrix custom operation.
+// \param matrix The constant unary matrix map operation.
 // \param row The index of the first row of the submatrix.
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the custom operation.
+// \return View on the specified submatrix of the unary map operation.
 //
-// This function returns an expression representing the specified submatrix of the given matrix
-// custom operation.
+// This function returns an expression representing the specified submatrix of the given unary
+// matrix map operation.
 */
 template< bool AF      // Alignment flag
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const EnableIf_< IsMatForEachExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+inline const EnableIf_< IsMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;

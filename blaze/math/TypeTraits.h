@@ -110,8 +110,8 @@
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
-#include <blaze/math/typetraits/IsMatForEachExpr.h>
 #include <blaze/math/typetraits/IsMatInvExpr.h>
+#include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>

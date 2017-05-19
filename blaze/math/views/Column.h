@@ -56,7 +56,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDeclExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
-#include <blaze/math/typetraits/IsMatForEachExpr.h>
+#include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
@@ -392,19 +392,19 @@ inline const EnableIf_< IsMatScalarDivExpr<MT>, ColumnExprTrait_<MT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix custom operation.
+/*!\brief Creating a view on a specific column of the given unary matrix map operation.
 // \ingroup views
 //
-// \param matrix The constant matrix custom operation.
+// \param matrix The constant unary matrix map operation.
 // \param index The index of the column.
-// \return View on the specified column of the custom operation.
+// \return View on the specified column of the unary map operation.
 //
-// This function returns an expression representing the specified column of the given matrix
-// custom operation.
+// This function returns an expression representing the specified column of the given unary
+// matrix map operation.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const EnableIf_< IsMatForEachExpr<MT>, ColumnExprTrait_<MT> >
+inline const EnableIf_< IsMatMapExpr<MT>, ColumnExprTrait_<MT> >
    column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
