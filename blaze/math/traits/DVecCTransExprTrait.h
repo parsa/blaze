@@ -42,7 +42,7 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/functors/Forward.h>
-#include <blaze/math/traits/DVecForEachExprTrait.h>
+#include <blaze/math/traits/DVecMapExprTrait.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -87,7 +87,7 @@ struct DVecCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                  , DVecTransExprTrait< DVecForEachExprTrait_<VT,Conj> >
+                  , DVecTransExprTrait< DVecMapExprTrait_<VT,Conj> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

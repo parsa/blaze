@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/traits/DMatForEachExprTrait.h>
-#include <blaze/math/traits/DVecForEachExprTrait.h>
+#include <blaze/math/traits/DVecMapExprTrait.h>
 #include <blaze/math/traits/SMatForEachExprTrait.h>
 #include <blaze/math/traits/SVecForEachExprTrait.h>
 #include <blaze/math/traits/TDMatForEachExprTrait.h>
@@ -106,7 +106,7 @@ struct ForEachExprTrait
                        , If_< IsDenseVector<T>
                             , If_< IsRowVector<T>
                                  , TDVecForEachExprTrait<T,OP>
-                                 , DVecForEachExprTrait<T,OP> >
+                                 , DVecMapExprTrait<T,OP> >
                             , If_< IsRowVector<T>
                                  , TSVecForEachExprTrait<T,OP>
                                  , SVecForEachExprTrait<T,OP> > >

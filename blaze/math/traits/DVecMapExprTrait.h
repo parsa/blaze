@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/DVecForEachExprTrait.h
-//  \brief Header file for the DVecForEachExprTrait class template
+//  \file blaze/math/traits/DVecMapExprTrait.h
+//  \brief Header file for the DVecMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_DVECFOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_DVECFOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_DVECMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_DVECMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a dense vector custom operation.
+/*!\brief Evaluation of the expression type of a unary dense vector map operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a dense vector
-// custom operation. Given the non-transpose dense vector type \a VT and the custom operation type
-// \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT is
-// not a non-transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the resulting expression type of a unary dense
+// vector map operation. Given the non-transpose dense vector type \a VT and the custom operation
+// type \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a VT
+// is not a non-transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT        // Type of the dense vector
         , typename OP        // Type of the custom operation
         , typename = void >  // Restricting condition
-struct DVecForEachExprTrait
+struct DVecMapExprTrait
 {
  private:
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct DVecForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , DVecForEachExprTrait< Decay_<VT>, OP >
+                            , DVecMapExprTrait< Decay_<VT>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -97,22 +97,22 @@ struct DVecForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the DVecForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the DVecMapExprTrait class template.
 // \ingroup math_traits
 //
-// The DVecForEachExprTrait_ alias declaration provides a convenient shortcut to access the nested
-// \a Type of the DVecForEachExprTrait class template. For instance, given the non-transpose dense
+// The DVecMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the DVecMapExprTrait class template. For instance, given the non-transpose dense
 // vector type \a VT and the custom operation type \a OP the following two type definitions are
 // identical:
 
    \code
-   using Type1 = typename DVecForEachExprTrait<VT,OP>::Type;
-   using Type2 = DVecForEachExprTrait_<VT,OP>;
+   using Type1 = typename DVecMapExprTrait<VT,OP>::Type;
+   using Type2 = DVecMapExprTrait_<VT,OP>;
    \endcode
 */
 template< typename VT    // Type of the dense vector
         , typename OP >  // Type of the custom operation
-using DVecForEachExprTrait_ = typename DVecForEachExprTrait<VT,OP>::Type;
+using DVecMapExprTrait_ = typename DVecMapExprTrait<VT,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
