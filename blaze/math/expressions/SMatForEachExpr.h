@@ -55,12 +55,12 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/CTransExprTrait.h>
-#include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatMapExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TSMatMapExprTrait.h>
+#include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -3120,7 +3120,7 @@ struct SubmatrixExprTrait< SMatForEachExpr<MT,OP,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< SubmatrixExprTrait_<const MT,AF>, OP >;
+   using Type = UnaryMapExprTrait_< SubmatrixExprTrait_<const MT,AF>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3134,7 +3134,7 @@ struct RowExprTrait< SMatForEachExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< RowExprTrait_<const MT>, OP >;
+   using Type = UnaryMapExprTrait_< RowExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3148,7 +3148,7 @@ struct ColumnExprTrait< SMatForEachExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< ColumnExprTrait_<const MT>, OP >;
+   using Type = UnaryMapExprTrait_< ColumnExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

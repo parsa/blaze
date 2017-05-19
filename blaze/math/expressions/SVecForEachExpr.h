@@ -55,10 +55,10 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/CTransExprTrait.h>
-#include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecMapExprTrait.h>
 #include <blaze/math/traits/TSVecMapExprTrait.h>
+#include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -2399,7 +2399,7 @@ struct SubvectorExprTrait< SVecForEachExpr<VT,OP,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< SubvectorExprTrait_<const VT,AF>, OP >;
+   using Type = UnaryMapExprTrait_< SubvectorExprTrait_<const VT,AF>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

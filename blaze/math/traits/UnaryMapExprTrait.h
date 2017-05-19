@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/ForEachExprTrait.h
-//  \brief Header file for the ForEachExprTrait class template
+//  \file blaze/math/traits/UnaryMapExprTrait.h
+//  \brief Header file for the UnaryMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_FOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_FOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_UNARYMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_UNARYMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -72,18 +72,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the return type of a \c forEach expression.
+/*!\brief Evaluation of the return type of a unary map expression.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the return type of a \c forEach expression.
-// Given the type \a T, which must either be a scalar, vector, or matrix type, the nested type
-// \a Type corresponds to the resulting return type. In case the type of \a T doesn't fit or
-// if no \c forEach operation exists for the type, the resulting data type \a Type is set to
-// \a INVALID_TYPE.
+// Via this type trait it is possible to evaluate the return type of a unary map expression.
+// Given the type \a T, which must either be a vector or matrix type, the nested type \a Type
+// corresponds to the resulting return type. In case the type of \a T doesn't fit or if no unary
+// map operation exists for the type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename T     // Type of the forEach operand
+template< typename T     // Type of the unary map operand
         , typename OP >  // Type of the custom operation
-struct ForEachExprTrait
+struct UnaryMapExprTrait
 {
  private:
    //**struct Failure******************************************************************************
@@ -118,7 +117,7 @@ struct ForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , ForEachExprTrait< Decay_<T>, OP >
+                            , UnaryMapExprTrait< Decay_<T>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -127,21 +126,21 @@ struct ForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the ForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the UnaryMapExprTrait class template.
 // \ingroup math_traits
 //
-// The ForEachExprTrait_ alias declaration provides a convenient shortcut to access the nested
-// \a Type of the ForEachExprTrait class template. For instance, given the data type \a T and
+// The UnaryMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the UnaryMapExprTrait class template. For instance, given the data type \a T and
 // custom operation type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename ForEachExprTrait<T,OP>::Type;
-   using Type2 = ForEachExprTrait_<T,OP>;
+   using Type1 = typename UnaryMapExprTrait<T,OP>::Type;
+   using Type2 = UnaryMapExprTrait_<T,OP>;
    \endcode
 */
-template< typename T     // Type of the forEach operand
+template< typename T     // Type of the unary map operand
         , typename OP >  // Type of the custom operation
-using ForEachExprTrait_ = typename ForEachExprTrait<T,OP>::Type;
+using UnaryMapExprTrait_ = typename UnaryMapExprTrait<T,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

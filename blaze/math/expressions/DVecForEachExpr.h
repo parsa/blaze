@@ -55,9 +55,9 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DVecMapExprTrait.h>
-#include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecMapExprTrait.h>
+#include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -2680,7 +2680,7 @@ struct SubvectorExprTrait< DVecForEachExpr<VT,OP,TF>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< SubvectorExprTrait_<const VT,AF>, OP >;
+   using Type = UnaryMapExprTrait_< SubvectorExprTrait_<const VT,AF>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

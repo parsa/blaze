@@ -56,10 +56,10 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DMatMapExprTrait.h>
-#include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatMapExprTrait.h>
+#include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -3614,7 +3614,7 @@ struct SubmatrixExprTrait< DMatForEachExpr<MT,OP,SO>, AF >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< SubmatrixExprTrait_<const MT,AF>, OP >;
+   using Type = UnaryMapExprTrait_< SubmatrixExprTrait_<const MT,AF>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3628,7 +3628,7 @@ struct RowExprTrait< DMatForEachExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< RowExprTrait_<const MT>, OP >;
+   using Type = UnaryMapExprTrait_< RowExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3642,7 +3642,7 @@ struct ColumnExprTrait< DMatForEachExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************
-   using Type = ForEachExprTrait_< ColumnExprTrait_<const MT>, OP >;
+   using Type = UnaryMapExprTrait_< ColumnExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */
