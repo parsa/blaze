@@ -58,7 +58,9 @@
 #include <blaze/math/traits/ForEachExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/SMatMapExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TSMatForEachExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -2858,7 +2860,7 @@ struct IsStrictlyUpper< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Abs,false>, Abs >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Abs,false>, Abs >
 {
  public:
    //**********************************************************************************************
@@ -2890,7 +2892,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Abs,true>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Floor,false>, Floor >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Floor,false>, Floor >
 {
  public:
    //**********************************************************************************************
@@ -2922,7 +2924,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Floor,true>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Ceil,false>, Ceil >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Ceil,false>, Ceil >
 {
  public:
    //**********************************************************************************************
@@ -2954,7 +2956,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Ceil,true>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Trunc,false>, Trunc >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Trunc,false>, Trunc >
 {
  public:
    //**********************************************************************************************
@@ -2986,7 +2988,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Trunc,true>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Round,false>, Round >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Round,false>, Round >
 {
  public:
    //**********************************************************************************************
@@ -3018,7 +3020,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Round,true>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Conj,false>, Conj >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Conj,false>, Conj >
 {
  public:
    //**********************************************************************************************
@@ -3050,7 +3052,7 @@ struct TSMatForEachExprTrait< SMatForEachExpr<MT,Conj,true>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,true>, false >, Conj >
+struct SMatMapExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,true>, false >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -3082,7 +3084,7 @@ struct TSMatForEachExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,false>, tru
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatForEachExprTrait< SMatForEachExpr<MT,Real,false>, Real >
+struct SMatMapExprTrait< SMatForEachExpr<MT,Real,false>, Real >
 {
  public:
    //**********************************************************************************************

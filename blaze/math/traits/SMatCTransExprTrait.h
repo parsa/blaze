@@ -42,7 +42,7 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/functors/Forward.h>
-#include <blaze/math/traits/SMatForEachExprTrait.h>
+#include <blaze/math/traits/SMatMapExprTrait.h>
 #include <blaze/math/traits/SMatTransExprTrait.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -87,7 +87,7 @@ struct SMatCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                  , SMatTransExprTrait< SMatForEachExprTrait_<MT,Conj> >
+                  , SMatTransExprTrait< SMatMapExprTrait_<MT,Conj> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************
