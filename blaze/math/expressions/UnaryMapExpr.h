@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsForEachExpr.h
-//  \brief Header file for the IsForEachExpr type trait class
+//  \file blaze/math/expressions/UnaryMapExpr.h
+//  \brief Header file for the UnaryMapExpr base class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_ISFOREACHEXPR_H_
-#define _BLAZE_MATH_TYPETRAITS_ISFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_UNARYMAPEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_UNARYMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/ForEachExpr.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/math/expressions/Expression.h>
 
 
 namespace blaze {
@@ -56,20 +52,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time check whether the given type is a for-each expression template.
-// \ingroup math_type_traits
+/*!\brief Base class for all for-each expression templates.
+// \ingroup math
 //
-// This type trait class tests whether or not the given type \a Type is a for-each expression
-// template. In order to qualify as a valid for-each expression template, the given type has
-// to derive (publicly or privately) from the ForEachExpr base class. In case the given type
-// is a valid for-each expression template, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// The UnaryMapExpr class serves as a tag for all expression templates that represent a unary
+// map operation. All classes, that represent a unary map operation and that are used within
+// the expression template environment of the Blaze library have to derive from this class in
+// order to qualify as unary map expression template. Only in case a class is derived from the
+// UnaryMapExpr base class, the IsUnaryMapExpr type trait recognizes the class as valid unary
+// map expression template.
 */
-template< typename T >
-struct IsForEachExpr
-   : public BoolConstant< And< IsBaseOf<ForEachExpr,T>, Not< IsBaseOf<T,ForEachExpr> > >::value >
+struct UnaryMapExpr : private Expression
 {};
 //*************************************************************************************************
 

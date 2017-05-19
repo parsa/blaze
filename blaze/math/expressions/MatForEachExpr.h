@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/ForEachExpr.h>
+#include <blaze/math/expressions/UnaryMapExpr.h>
 
 
 namespace blaze {
@@ -62,7 +62,7 @@ namespace blaze {
 // is derived from the MatForEachExpr base class, the IsMatForEachExpr type trait recognizes the
 // class as valid matrix for-each expression template.
 */
-struct MatForEachExpr : private ForEachExpr
+struct MatForEachExpr : private UnaryMapExpr
 {};
 //*************************************************************************************************
 

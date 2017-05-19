@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/ForEachExpr.h
-//  \brief Header file for the ForEachExpr base class
+//  \file blaze/math/constraints/UnaryMapExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,38 +32,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_FOREACHEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_FOREACHEXPR_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_UNARYMAPEXPR_H_
+#define _BLAZE_MATH_CONSTRAINTS_UNARYMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Expression.h>
+#include <blaze/math/typetraits/IsUnaryMapExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  MUST_BE_UNARYMAPEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base class for all for-each expression templates.
-// \ingroup math
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// The ForEachExpr class serves as a tag for all expression templates that represent a unary,
-// custom operation. All classes, that represent a custom operation and that are used within
-// the expression template environment of the Blaze library have to derive from this class in
-// order to qualify as for-each expression template. Only in case a class is derived from the
-// ForEachExpr base class, the IsForEachExpr type trait recognizes the class as valid for-each
-// expression template.
+// In case the given data type \a T is not a unary map expression (i.e. a type derived from the
+// UnaryMapExpr base class), a compilation error is created.
 */
-struct ForEachExpr : private Expression
-{};
+#define BLAZE_CONSTRAINT_MUST_BE_UNARYMAPEXPR_TYPE(T) \
+   static_assert( ::blaze::IsUnaryMapExpr<T>::value, "Non-unary map expression type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_UNARYMAPEXPR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a unary map expression (i.e. a type derived from the
+// UnaryMapExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_UNARYMAPEXPR_TYPE(T) \
+   static_assert( !::blaze::IsUnaryMapExpr<T>::value, "Unary map expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

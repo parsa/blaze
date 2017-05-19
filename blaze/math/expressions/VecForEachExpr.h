@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/ForEachExpr.h>
+#include <blaze/math/expressions/UnaryMapExpr.h>
 
 
 namespace blaze {
@@ -62,7 +62,7 @@ namespace blaze {
 // is derived from the VecForEachExpr base class, the IsVecForEachExpr type trait recognizes the
 // class as valid vector for-each expression template.
 */
-struct VecForEachExpr : private ForEachExpr
+struct VecForEachExpr : private UnaryMapExpr
 {};
 //*************************************************************************************************
 

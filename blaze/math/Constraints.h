@@ -65,7 +65,6 @@
 #include <blaze/math/constraints/DivExpr.h>
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
-#include <blaze/math/constraints/ForEachExpr.h>
 #include <blaze/math/constraints/General.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
@@ -123,6 +122,7 @@
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
+#include <blaze/math/constraints/UnaryMapExpr.h>
 #include <blaze/math/constraints/Uniform.h>
 #include <blaze/math/constraints/UniLower.h>
 #include <blaze/math/constraints/UniTriangular.h>

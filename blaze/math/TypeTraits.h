@@ -104,7 +104,6 @@
 #include <blaze/math/typetraits/IsDivExpr.h>
 #include <blaze/math/typetraits/IsEvalExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsForEachExpr.h>
 #include <blaze/math/typetraits/IsGeneral.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
@@ -157,6 +156,7 @@
 #include <blaze/math/typetraits/IsTransformation.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
+#include <blaze/math/typetraits/IsUnaryMapExpr.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
