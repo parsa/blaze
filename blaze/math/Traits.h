@@ -255,7 +255,7 @@
 #include <blaze/math/traits/TSVecCTransExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecEvalExprTrait.h>
-#include <blaze/math/traits/TSVecForEachExprTrait.h>
+#include <blaze/math/traits/TSVecMapExprTrait.h>
 #include <blaze/math/traits/TSVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TSVecSerialExprTrait.h>

@@ -106,8 +106,8 @@ struct TDVecMapExprTrait
 // identical:
 
    \code
-   using Type1 = typename TDVecMapExprTrait<VT>::Type;
-   using Type2 = TDVecMapExprTrait_<VT>;
+   using Type1 = typename TDVecMapExprTrait<VT,OP>::Type;
+   using Type2 = TDVecMapExprTrait_<VT,OP>;
    \endcode
 */
 template< typename VT    // Type of the dense vector
