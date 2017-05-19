@@ -179,6 +179,23 @@ struct SubTrait
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SubTrait class template for two identical data types.
+// \ingroup math_traits
+*/
+template< typename T >
+struct SubTrait< T, T, EnableIf_< IsBuiltin<T> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = Decay_<T>;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SubTrait class template for a complex and a built-in type.
 // \ingroup math_traits
 */
