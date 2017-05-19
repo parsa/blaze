@@ -53,12 +53,12 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -1756,130 +1756,130 @@ struct DivTrait< StrictlyLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename OP >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, OP >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, OP >
 {
-   using Type = ForEachTrait_<MT,OP>;
+   using Type = UnaryMapTrait_<MT,OP>;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Abs >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Abs >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Abs> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Floor >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Floor >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Floor> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Ceil >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Ceil >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Ceil> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Trunc >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Trunc >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Trunc> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Round >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Round >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Round> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Conj >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Conj >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Conj> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Real >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Real >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Real> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Imag >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Imag >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Imag> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Sqrt >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Sqrt >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Sqrt> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Cbrt >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Cbrt >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Cbrt> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Sin >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Sin >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Sin> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Sin> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Asin >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Asin >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Asin> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Asin> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Sinh >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Sinh >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Sinh> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Sinh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Asinh >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Asinh >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Asinh> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Asinh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Tan >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Tan >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Tan> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Tan> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Atan >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Atan >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Atan> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Atan> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Tanh >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Tanh >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Tanh> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Tanh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Atanh >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Atanh >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Atanh> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Atanh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< StrictlyLowerMatrix<MT,SO,DF>, Erf >
+struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Erf >
 {
-   using Type = StrictlyLowerMatrix< ForEachTrait_<MT,Erf> >;
+   using Type = StrictlyLowerMatrix< UnaryMapTrait_<MT,Erf> >;
 };
 /*! \endcond */
 //*************************************************************************************************

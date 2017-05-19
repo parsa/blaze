@@ -62,12 +62,12 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -1704,130 +1704,130 @@ struct DivTrait< LowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename OP >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, OP >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, OP >
 {
-   using Type = ForEachTrait_<MT,OP>;
+   using Type = UnaryMapTrait_<MT,OP>;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Abs >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Abs >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Abs> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Floor >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Floor >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Floor> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Ceil >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Ceil >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Ceil> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Trunc >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Trunc >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Trunc> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Round >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Round >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Round> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Conj >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Conj >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Conj> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Real >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Real >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Real> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Imag >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Imag >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Imag> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Sqrt >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Sqrt >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Sqrt> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Cbrt >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Cbrt >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Cbrt> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Sin >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Sin >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Sin> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Sin> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Asin >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Asin >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Asin> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Asin> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Sinh >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Sinh >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Sinh> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Sinh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Asinh >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Asinh >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Asinh> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Asinh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Tan >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Tan >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Tan> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Tan> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Atan >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Atan >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Atan> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Atan> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Tanh >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Tanh >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Tanh> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Tanh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Atanh >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Atanh >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Atanh> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Atanh> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< LowerMatrix<MT,SO,DF>, Erf >
+struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, Erf >
 {
-   using Type = LowerMatrix< ForEachTrait_<MT,Erf> >;
+   using Type = LowerMatrix< UnaryMapTrait_<MT,Erf> >;
 };
 /*! \endcond */
 //*************************************************************************************************

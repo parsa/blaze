@@ -57,12 +57,12 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1134,190 +1134,196 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename OP >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
 {
-   using Type = ForEachTrait_<MT,OP>;
+   using Type = UnaryMapTrait_<MT,OP>;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Abs> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Floor >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Floor >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Floor> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Ceil >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Ceil >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Ceil> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Trunc >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Trunc >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Trunc> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Round >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Round >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Round> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Conj >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Conj >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Conj> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Real >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Real >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Real> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Imag >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Imag >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Imag> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sqrt >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sqrt >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,InvSqrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cbrt >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, InvSqrt >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Cbrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,InvSqrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, InvCbrt >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cbrt >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,InvCbrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cbrt> >;
+};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, InvCbrt >
+{
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,InvCbrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename ET >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Pow<ET> >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Pow<ET> >
 {
-   using Type = SymmetricMatrix< ForEachTrait_< MT, Pow<ET> > >;
+   using Type = SymmetricMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Exp >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Exp >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Exp> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Exp> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Log >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Log >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Log> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Log> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Log10 >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Log10 >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Log10> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Log10> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sin >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sin >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Sin> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sin> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Asin >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Asin >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Asin> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Asin> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Sinh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sinh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Sinh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sinh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Asinh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Asinh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Asinh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Asinh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cos >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cos >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Cos> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cos> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Acos >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Acos >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Acos> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Acos> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Cosh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cosh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Cosh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cosh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Acosh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Acosh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Acosh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Acosh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Tan >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Tan >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Tan> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Tan> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Atan >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Atan >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Atan> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Atan> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Tanh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Tanh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Tanh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Tanh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Atanh >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Atanh >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Atanh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Atanh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Erf >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Erf >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Erf> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Erf> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
-struct ForEachTrait< SymmetricMatrix<MT,SO,DF,NF>, Erfc >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Erfc >
 {
-   using Type = SymmetricMatrix< ForEachTrait_<MT,Erfc> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************

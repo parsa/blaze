@@ -55,8 +55,8 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -160,7 +160,7 @@ class DVecForEachExpr : public DenseVector< DVecForEachExpr<VT,OP,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecForEachExpr<VT,OP,TF>   This;           //!< Type of this DVecForEachExpr instance.
-   typedef ForEachTrait_<VT,OP>        ResultType;     //!< Result type for expression template evaluations.
+   typedef UnaryMapTrait_<VT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 

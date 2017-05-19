@@ -58,7 +58,6 @@
 #include <blaze/math/traits/DMatSMatSchurExprTrait.h>
 #include <blaze/math/traits/DMatTSMatMultExprTrait.h>
 #include <blaze/math/traits/DMatTSMatSchurExprTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -92,6 +91,7 @@
 #include <blaze/math/traits/TSMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/TSVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -2447,74 +2447,74 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO, typename OP >
-struct ForEachTrait< IdentityMatrix<T,SO>, OP >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
 {
-   using Type = ForEachTrait_< CompressedMatrix<T,SO>, OP >;
+   using Type = UnaryMapTrait_< CompressedMatrix<T,SO>, OP >;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Abs >
-{
-   using Type = IdentityMatrix<T,SO>;
-};
-
-template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Floor >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Abs >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Ceil >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Floor >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Trunc >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Ceil >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Round >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Trunc >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Conj >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Round >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Real >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Conj >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+
+template< typename T, bool SO >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Real >
 {
    using Type = IdentityMatrix<UnderlyingElement_<T>,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Sqrt >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Sqrt >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO >
-struct ForEachTrait< IdentityMatrix<T,SO>, Cbrt >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Cbrt >
 {
    using Type = IdentityMatrix<T,SO>;
 };
 
 template< typename T, bool SO, typename ET >
-struct ForEachTrait< IdentityMatrix<T,SO>, Pow<ET> >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, Pow<ET> >
 {
    using Type = IdentityMatrix<HighType_<T,ET>,SO>;
 };

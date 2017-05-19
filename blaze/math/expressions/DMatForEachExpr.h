@@ -56,9 +56,9 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -174,7 +174,7 @@ class DMatForEachExpr : public DenseMatrix< DMatForEachExpr<MT,OP,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatForEachExpr<MT,OP,SO>   This;           //!< Type of this DMatForEachExpr instance.
-   typedef ForEachTrait_<MT,OP>        ResultType;     //!< Result type for expression template evaluations.
+   typedef UnaryMapTrait_<MT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.

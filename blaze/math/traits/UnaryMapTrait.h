@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/ForEachTrait.h
-//  \brief Header file for the for-each trait
+//  \file blaze/math/traits/UnaryMapTrait.h
+//  \brief Header file for the unary map trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_FOREACHTRAIT_H_
-#define _BLAZE_MATH_TRAITS_FOREACHTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_UNARYMAPTRAIT_H_
+#define _BLAZE_MATH_TRAITS_UNARYMAPTRAIT_H_
 
 
 //*************************************************************************************************
@@ -64,19 +64,19 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base template for the ForEachTrait class.
+/*!\brief Base template for the UnaryMapTrait class.
 // \ingroup math_traits
 //
-// The ForEachTrait class template offers the possibility to select the resulting data type of a
-// generic \a forEach operation on the given type \a T. Given the type \a T, which must either be
+// The UnaryMapTrait class template offers the possibility to select the resulting data type of a
+// generic, unary map operation on the given type \a T. Given the type \a T, which must either be
 // a vector or matrix type, the nested type \a Type corresponds to the resulting data type of the
-// operation. In case the type of \a T doesn't fit or if no \a forEach operation exists for the
+// operation. In case the type of \a T doesn't fit or if no unary map operation exists for the
 // type, the resulting data type \a Type is set to \a INVALID_TYPE. Note that \a const and
 // \a volatile qualifiers and reference modifiers are generally ignored.
 */
 template< typename T     // Type of the operand
         , typename OP >  // Type of the custom operation
-struct ForEachTrait
+struct UnaryMapTrait
 {
  private:
    //**********************************************************************************************
@@ -111,7 +111,7 @@ struct ForEachTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< IsExpression<T>
-                  , ForEachTrait< ResultType_<T>, OP >
+                  , UnaryMapTrait< ResultType_<T>, OP >
                   , If_< Or< IsMatrix<T>, IsVector<T> >
                        , MatrixOrVector
                        , Failure > >;
@@ -122,7 +122,7 @@ struct ForEachTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , ForEachTrait< Decay_<T>, OP >
+                            , UnaryMapTrait< Decay_<T>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -131,21 +131,21 @@ struct ForEachTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the ForEachTrait class template.
+/*!\brief Auxiliary alias declaration for the UnaryMapTrait class template.
 // \ingroup math_traits
 //
-// The ForEachTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
-// of the ForEachTrait class template. For instance, given the type \a T and the custom operation
+// The UnaryMapTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// of the UnaryMapTrait class template. For instance, given the type \a T and the custom operation
 // type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename ForEachTrait<T,OP>::Type;
-   using Type2 = ForEachTrait_<T,OP>;
+   using Type1 = typename UnaryMapTrait<T,OP>::Type;
+   using Type2 = UnaryMapTrait_<T,OP>;
    \endcode
 */
 template< typename T     // Type of the operand
         , typename OP >  // Type of the custom operation
-using ForEachTrait_ = typename ForEachTrait<T,OP>::Type;
+using UnaryMapTrait_ = typename UnaryMapTrait<T,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

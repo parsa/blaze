@@ -58,12 +58,12 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -1397,198 +1397,198 @@ struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename OP >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, OP >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, OP >
 {
-   using Type = ForEachTrait_<MT,OP>;
+   using Type = UnaryMapTrait_<MT,OP>;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Abs >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Abs >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Abs> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Floor >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Floor >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Floor> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Ceil >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Ceil >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Ceil> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Trunc >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Trunc >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Trunc> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Round >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Round >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Round> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Conj >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Conj >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Conj> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Real >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Real >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Real> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Imag >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Imag >
 {
    using Type = If_< IsBuiltin< ElementType_<MT> >
-                   , HermitianMatrix< ForEachTrait_<MT,Imag> >
-                   , ForEachTrait_<MT,Imag> >;
+                   , HermitianMatrix< UnaryMapTrait_<MT,Imag> >
+                   , UnaryMapTrait_<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sqrt >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sqrt >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Sqrt> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, InvSqrt >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, InvSqrt >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,InvSqrt> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,InvSqrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cbrt >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cbrt >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Cbrt> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, InvCbrt >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, InvCbrt >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,InvCbrt> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,InvCbrt> >;
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Pow<ET> >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Pow<ET> >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Pow<ET> > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Exp >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Exp >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Exp > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Exp > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Log >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Log >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Log > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Log > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Log10 >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Log10 >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Log10 > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Log10 > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sin >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sin >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Sin > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Sin > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Asin >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Asin >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Asin > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Asin > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Sinh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sinh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Sinh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Sinh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Asinh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Asinh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Asinh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Asinh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cos >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cos >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Cos > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Cos > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Acos >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Acos >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Acos > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Acos > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Cosh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cosh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Cosh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Cosh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Acosh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Acosh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Acosh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Acosh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Tan >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Tan >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Tan > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Tan > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Atan >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Atan >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Atan > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Atan > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Tanh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Tanh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Tanh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Tanh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Atanh >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Atanh >
 {
-   using Type = HermitianMatrix< ForEachTrait_< MT, Atanh > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, Atanh > >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Erf >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Erf >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Erf> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Erf> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< HermitianMatrix<MT,SO,DF>, Erfc >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Erfc >
 {
-   using Type = HermitianMatrix< ForEachTrait_<MT,Erfc> >;
+   using Type = HermitianMatrix< UnaryMapTrait_<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************

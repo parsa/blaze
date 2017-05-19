@@ -56,8 +56,8 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ForEachExprTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -140,7 +140,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef SVecForEachExpr<VT,OP,TF>   This;           //!< Type of this SVecForEachExpr instance.
-   typedef ForEachTrait_<VT,OP>        ResultType;     //!< Result type for expression template evaluations.
+   typedef UnaryMapTrait_<VT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 

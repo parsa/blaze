@@ -62,12 +62,12 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ForEachTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -2375,76 +2375,76 @@ struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //=================================================================================================
 //
-//  FOREACHTRAIT SPECIALIZATIONS
+//  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename OP >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, OP >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, OP >
 {
-   using Type = ForEachTrait_<MT,OP>;
+   using Type = UnaryMapTrait_<MT,OP>;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Abs >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Abs >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Abs> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Floor >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Floor >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Floor> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Ceil >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Ceil >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Ceil> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Trunc >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Trunc >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Trunc> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Round >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Round >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Round> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Conj >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Conj >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Conj> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Real >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Real >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Real> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Sqrt >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Sqrt >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Sqrt> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Cbrt >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Cbrt >
 {
-   using Type = UniLowerMatrix< ForEachTrait_<MT,Cbrt> >;
+   using Type = UniLowerMatrix< UnaryMapTrait_<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
-struct ForEachTrait< UniLowerMatrix<MT,SO,DF>, Pow<ET> >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Pow<ET> >
 {
-   using Type = UniLowerMatrix< ForEachTrait_< MT, Pow<ET> > >;
+   using Type = UniLowerMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
