@@ -42,7 +42,7 @@
 
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/functors/Forward.h>
-#include <blaze/math/traits/TSMatForEachExprTrait.h>
+#include <blaze/math/traits/TSMatMapExprTrait.h>
 #include <blaze/math/traits/TSMatTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -87,7 +87,7 @@ struct TSMatCTransExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                  , TSMatTransExprTrait< TSMatForEachExprTrait_<MT,Conj> >
+                  , TSMatTransExprTrait< TSMatMapExprTrait_<MT,Conj> >
                   , Failure >;
    /*! \endcond */
    //**********************************************************************************************

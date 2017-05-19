@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/TSMatForEachExprTrait.h
-//  \brief Header file for the TSMatForEachExprTrait class template
+//  \file blaze/math/traits/TSMatMapExprTrait.h
+//  \brief Header file for the TSMatMapExprTrait class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_TSMATFOREACHEXPRTRAIT_H_
-#define _BLAZE_MATH_TRAITS_TSMATFOREACHEXPRTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_TSMATMAPEXPRTRAIT_H_
+#define _BLAZE_MATH_TRAITS_TSMATMAPEXPRTRAIT_H_
 
 
 //*************************************************************************************************
@@ -62,18 +62,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluation of the expression type of a sparse matrix for-each operation.
+/*!\brief Evaluation of the expression type of a unary sparse matrix map operation.
 // \ingroup math_traits
 //
-// Via this type trait it is possible to evaluate the resulting expression type of a sparse matrix
-// for-each operation. Given the column-major sparse matrix type \a MT and the custom operation
+// Via this type trait it is possible to evaluate the resulting expression type of a unary sparse
+// matrix map operation. Given the column-major sparse matrix type \a MT and the custom operation
 // type \a OP, the nested type \a Type corresponds to the resulting expression type. In case \a MT
 // is not a column-major sparse matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename MT        // Type of the sparse matrix
         , typename OP        // Type of the custom operation
         , typename = void >  // Restricting condition
-struct TSMatForEachExprTrait
+struct TSMatMapExprTrait
 {
  private:
    //**********************************************************************************************
@@ -88,7 +88,7 @@ struct TSMatForEachExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , TSMatForEachExprTrait< Decay_<MT>, OP >
+                            , TSMatMapExprTrait< Decay_<MT>, OP >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -97,22 +97,22 @@ struct TSMatForEachExprTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the TSMatForEachExprTrait class template.
+/*!\brief Auxiliary alias declaration for the TSMatMapExprTrait class template.
 // \ingroup math_traits
 //
-// The SMatForEachExprTrait_ alias declaration provides a convenient shortcut to access the nested
-// \a Type of the SMatForEachExprTrait class template. For instance, given the column-major sparse
+// The SMatMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the SMatMapExprTrait class template. For instance, given the column-major sparse
 // matrix type \a MT and the custom operation type \a OP the following two type definitions are
 // identical:
 
    \code
-   using Type1 = typename TSMatForEachExprTrait<MT,OP>::Type;
-   using Type2 = TSMatForEachExprTrait_<MT,OP>;
+   using Type1 = typename TSMatMapExprTrait<MT,OP>::Type;
+   using Type2 = TSMatMapExprTrait_<MT,OP>;
    \endcode
 */
 template< typename MT    // Type of the sparse matrix
         , typename OP >  // Type of the custom operation
-using TSMatForEachExprTrait_ = typename TSMatForEachExprTrait<MT,OP>::Type;
+using TSMatMapExprTrait_ = typename TSMatMapExprTrait<MT,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
