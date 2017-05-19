@@ -50,7 +50,7 @@
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/VecForEachExpr.h>
+#include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
@@ -96,7 +96,7 @@ template< typename VT  // Type of the sparse vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
 class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
-                      , private VecForEachExpr
+                      , private VecMapExpr
                       , private Computation
 {
  private:

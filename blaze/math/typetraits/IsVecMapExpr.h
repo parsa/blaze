@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/VecForEachExpr.h
-//  \brief Constraint on the data type
+//  \file blaze/math/typetraits/IsVecMapExpr.h
+//  \brief Header file for the IsVecMapExpr type trait class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,54 +32,45 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_VECFOREACHEXPR_H_
-#define _BLAZE_MATH_CONSTRAINTS_VECFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_ISVECMAPEXPR_H_
+#define _BLAZE_MATH_TYPETRAITS_ISVECMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsVecForEachExpr.h>
+#include <blaze/math/expressions/VecMapExpr.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/typetraits/IsBaseOf.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_VECFOREACHEXPR_TYPE CONSTRAINT
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
+/*!\brief Compile time check whether the given type is a unary vector map expression template.
+// \ingroup math_type_traits
 //
-// In case the given data type \a T is not a vector for-each expression (i.e. a type derived
-// from the VecForEachExpr base class), a compilation error is created.
+// This type trait class tests whether or not the given type \a Type is a unary vector map
+// expression template. In order to qualify as a valid unary vector map expression template, the
+// given type has to derive (publicly or privately) from the VecMapExpr base class. In case the
+// given type is a valid unary vector map expression template, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_VECFOREACHEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecForEachExpr<T>::value, "Non-vector for-each expression type detected" )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_BE_VECFOREACHEXPR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is a vector for-each expression (i.e. a type derived from
-// the VecForEachExpr base class), a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_VECFOREACHEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecForEachExpr<T>::value, "Vector for-each expression type detected" )
+template< typename T >
+struct IsVecMapExpr
+   : public BoolConstant< And< IsBaseOf<VecMapExpr,T>, Not< IsBaseOf<T,VecMapExpr> > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

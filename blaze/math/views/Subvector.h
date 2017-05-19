@@ -60,7 +60,7 @@
 #include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
-#include <blaze/math/typetraits/IsVecForEachExpr.h>
+#include <blaze/math/typetraits/IsVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
 #include <blaze/math/typetraits/IsVecSerialExpr.h>
@@ -666,7 +666,7 @@ inline const EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecForEachExpr<VT>, SubvectorExprTrait_<VT,AF> >
+inline const EnableIf_< IsVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;

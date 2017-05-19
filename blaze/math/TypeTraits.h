@@ -163,7 +163,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
-#include <blaze/math/typetraits/IsVecForEachExpr.h>
+#include <blaze/math/typetraits/IsVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
 #include <blaze/math/typetraits/IsVecSerialExpr.h>
