@@ -43,6 +43,7 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Aligned.h>
+#include <blaze/math/constraints/BinaryMapExpr.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
