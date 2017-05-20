@@ -79,7 +79,7 @@ struct DMatMapExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                 , DMatForEachExpr<MT,OP,false>
+                 , DMatMapExpr<MT,OP,false>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************

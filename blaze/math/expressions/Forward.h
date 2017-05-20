@@ -57,7 +57,7 @@ template< typename, typename, bool > class DMatDMatSchurExpr;
 template< typename, typename, bool > class DMatDMatSubExpr;
 template< typename, typename > class DMatDVecMultExpr;
 template< typename, bool > class DMatEvalExpr;
-template< typename, typename, bool > class DMatForEachExpr;
+template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatScalarDivExpr;
 template< typename, typename, bool > class DMatScalarMultExpr;
@@ -204,7 +204,7 @@ template< typename VT, bool TF, typename OP >
 inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>&, OP );
 
 template< typename MT, bool SO, typename OP >
-inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>&, OP );
+inline const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>&, OP );
 
 template< typename MT, bool SO, typename OP >
 inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>&, OP );
