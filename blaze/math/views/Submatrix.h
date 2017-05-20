@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
+#include <blaze/math/typetraits/IsMatMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
@@ -829,7 +830,38 @@ inline const EnableIf_< IsMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   return forEach( submatrix<AF>( (~matrix).operand(), row, column, m, n ), (~matrix).operation() );
+   return map( submatrix<AF>( (~matrix).operand(), row, column, m, n ), (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given binary matrix map operation.
+// \ingroup views
+//
+// \param matrix The constant binary matrix map operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the binary map operation.
+//
+// This function returns an expression representing the specified submatrix of the given binary
+// matrix map operation.
+*/
+template< bool AF      // Alignment flag
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const EnableIf_< IsMatMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
+   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( submatrix<AF>( (~matrix).leftOperand() , row, column, m, n ),
+               submatrix<AF>( (~matrix).rightOperand(), row, column, m, n ),
+               (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
