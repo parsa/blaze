@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/IsVecTransExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecDivExpr.h>
+#include <blaze/math/typetraits/IsVecVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
@@ -671,7 +672,36 @@ inline const EnableIf_< IsVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   return forEach( subvector<AF>( (~vector).operand(), index, size ), (~vector).operation() );
+   return map( subvector<AF>( (~vector).operand(), index, size ), (~vector).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given binary vector map operation.
+// \ingroup views
+//
+// \param vector The constant binary vector map operation.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the binary map operation.
+//
+// This function returns an expression representing the specified subvector of the given binary
+// vector map operation.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline const EnableIf_< IsVecVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( subvector<AF>( (~vector).leftOperand() , index, size ),
+               subvector<AF>( (~vector).rightOperand(), index, size ),
+               (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
