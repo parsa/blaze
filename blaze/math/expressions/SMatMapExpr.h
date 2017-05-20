@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/SMatForEachExpr.h
-//  \brief Header file for the sparse matrix for-each expression
+//  \file blaze/math/expressions/SMatMapExpr.h
+//  \brief Header file for the sparse matrix map expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SMATFOREACHEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_SMATFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SMATMAPEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SMATMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -93,23 +93,23 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS SMATFOREACHEXPR
+//  CLASS SMATMAPEXPR
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the sparse matrix forEach() function.
+/*!\brief Expression object for the sparse matrix map() function.
 // \ingroup sparse_matrix_expression
 //
-// The SMatForEachExpr class represents the compile time expression for the evaluation of a
-// custom operation on each element of a sparse matrix via the forEach() function.
+// The SMatMapExpr class represents the compile time expression for the evaluation of a custom
+// operation on each element of a sparse matrix via the map() function.
 */
 template< typename MT  // Type of the sparse matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
-class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
-                      , private MatMapExpr
-                      , private Computation
+class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
+                  , private MatMapExpr
+                  , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -119,13 +119,13 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
-   //! Compilation switch for the serial evaluation strategy of the for-each expression.
+   //! Compilation switch for the serial evaluation strategy of the map expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the for-each expression. In case the given sparse
-       matrix expression of type \a MT requires an intermediate evaluation, \a useAssign will
-       be set to 1 and the for-each expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
-       via the subscript operator. */
+       the serial evaluation strategy of the map expression. In case the given sparse matrix
+       expression of type \a MT requires an intermediate evaluation, \a useAssign will be
+       set to 1 and the map expression will be evaluated via the \a assign function family.
+       Otherwise \a useAssign will be set to 0 and the expression will be evaluated via the
+       subscript operator. */
    enum : bool { useAssign = RequiresEvaluation<MT>::value };
 
    /*! \cond BLAZE_INTERNAL */
@@ -154,7 +154,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatForEachExpr<MT,OP,SO>   This;           //!< Type of this SMatForEachExpr instance.
+   typedef SMatMapExpr<MT,OP,SO>       This;           //!< Type of this SMatMapExpr instance.
    typedef UnaryMapTrait_<MT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
@@ -164,7 +164,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SMatForEachExpr& >  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SMatMapExpr& >  CompositeType;
 
    //! Composite data type of the sparse matrix expression.
    typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
@@ -174,7 +174,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
-   /*!\brief Iterator over the elements of the sparse matrix for-each expression.
+   /*!\brief Iterator over the elements of the sparse matrix map expression.
    */
    class ConstIterator
    {
@@ -310,13 +310,13 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the SMatForEachExpr class.
+   /*!\brief Constructor for the SMatMapExpr class.
    //
-   // \param sm The sparse matrix operand of the for-each expression.
+   // \param sm The sparse matrix operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline SMatForEachExpr( const MT& sm, OP op ) noexcept
-      : sm_( sm )  // Sparse matrix of the for-each expression
+   explicit inline SMatMapExpr( const MT& sm, OP op ) noexcept
+      : sm_( sm )  // Sparse matrix of the map expression
       , op_( op )  // The custom unary operation
    {}
    //**********************************************************************************************
@@ -518,22 +518,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief Assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix for-each
-   // expression to a dense matrix. Due to the explicit application of the SFINAE principle, this
-   // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation.
+   // This function implements the performance optimized assignment of a sparse matrix map
+   // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT2> >
-      assign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      assign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -545,21 +545,21 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to row-major sparse matrices*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix for-each expression to a row-major sparse matrix.
+   /*!\brief Assignment of a sparse matrix map expression to a row-major sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix for-each
+   // This function implements the performance optimized assignment of a sparse matrix map
    // expression to a row-major sparse matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation and the underlying numeric data type of the operand and the
@@ -568,7 +568,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    template< typename MT2 >  // Type of the target sparse matrix
    friend inline EnableIf_< And< UseAssign<MT2>
                                , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
-      assign( SparseMatrix<MT2,false>& lhs, const SMatForEachExpr& rhs )
+      assign( SparseMatrix<MT2,false>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -593,14 +593,14 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**Assignment to column-major sparse matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix for-each expression to a column-major sparse matrix.
+   /*!\brief Assignment of a sparse matrix map expression to a column-major sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix for-each
+   // This function implements the performance optimized assignment of a sparse matrix map
    // expression to a column-major sparse matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation and the underlying numeric data type of the operand and the
@@ -609,7 +609,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
    template< typename MT2 >  // Type of the target sparse matrix
    friend inline EnableIf_< And< UseAssign<MT2>
                                , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
-      assign( SparseMatrix<MT2,true>& lhs, const SMatForEachExpr& rhs )
+      assign( SparseMatrix<MT2,true>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -634,23 +634,24 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse matrix for-each expression to a sparse matrix.
+   /*!\brief Assignment of a sparse matrix map expression to a sparse matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix for-each
-   // expression to a sparse matrix. Due to the explicit application of the SFINAE principle, this
-   // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation and the underlying numeric data type of the operand and the target vector differ.
+   // This function implements the performance optimized assignment of a sparse matrix map
+   // expression to a sparse matrix. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation and the underlying numeric data type of the operand and the
+   // target vector differ.
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
    friend inline EnableIf_< And< UseAssign<MT2>
                                , Not< IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > > >
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      assign( SparseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -663,29 +664,29 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
       const RT tmp( serial( rhs.sm_ ) );
       (~lhs).reserve( tmp.nonZeros() );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense matrices*******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief Addition assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
-   // This function implements the performance optimized addition assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // This function implements the performance optimized addition assignment of a sparse matrix
+   // map expression to a dense matrix. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT2> >
-      addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -697,7 +698,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      addAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      addAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -708,22 +709,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**Subtraction assignment to dense matrices****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief Subtraction assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // matrix map expression to a dense matrix. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the operand
+   // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target sparse matrix
    friend inline EnableIf_< UseAssign<MT2> >
-      subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -735,7 +736,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      subAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      subAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -746,22 +747,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Schur product assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief Schur product assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression for the Schur product.
+   // \param rhs The right-hand side map expression for the Schur product.
    // \return void
    //
    // This function implements the performance optimized Schur product assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // matrix map expression to a dense matrix. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the operand
+   // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT2> >
-      schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -773,7 +774,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      schurAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      schurAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -792,22 +793,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**SMP assignment to dense matrices************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief SMP assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a sparse matrix
-   // for-each expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the the expression
-   // specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP assignment of a sparse matrix map
+   // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the the expression specific
+   // parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT2> >
-      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -819,7 +820,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -830,22 +831,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**SMP addition assignment to dense matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief SMP addition assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
+   // matrix map expression to a dense matrix. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT2> >
-      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -857,7 +858,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpAddAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -868,22 +869,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**SMP subtraction assignment to dense matrices************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief SMP subtraction assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the SFINAE
+   // matrix map expression to a dense matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target sparse matrix
    friend inline EnableIf_< UseSMPAssign<MT2> >
-      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -895,7 +896,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpSubAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -906,22 +907,22 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP Schur product assignment of a sparse matrix for-each expression to a dense matrix.
+   /*!\brief SMP Schur product assignment of a sparse matrix map expression to a dense matrix.
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
-   // \param rhs The right-hand side for-each expression for the Schur product.
+   // \param rhs The right-hand side map expression for the Schur product.
    // \return void
    //
    // This function implements the performance optimized SMP Schur product assignment of a sparse
-   // matrix for-each expression to a dense matrix. Due to the explicit application of the SFINAE
+   // matrix map expression to a dense matrix. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT2> >
-      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatForEachExpr& rhs )
+      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -933,7 +934,7 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpSchurAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpSchurAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -976,6 +977,36 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sm.
 //
+// The \a map() function evaluates the given custom operation on each non-zero element of the
+// input matrix \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a map() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = map( A, []( double a ){ return std::sqrt( a ); } );
+   \endcode
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , typename OP >  // Type of the custom operation
+inline const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>& sm, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatMapExpr<MT,OP,SO>( ~sm, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluates the given custom operation on each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \param op The custom operation.
+// \return The custom operation applied to each single element of \a sm.
+//
 // The \a forEach() function evaluates the given custom operation on each non-zero element of the
 // input matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a forEach() function:
@@ -989,11 +1020,11 @@ class SMatForEachExpr : public SparseMatrix< SMatForEachExpr<MT,OP,SO>, SO >
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, OP op )
+inline const SMatMapExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,OP,SO>( ~sm, op );
+   return SMatMapExpr<MT,OP,SO>( ~sm, op );
 }
 //*************************************************************************************************
 
@@ -1017,11 +1048,11 @@ inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, O
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Abs,SO>( ~sm, Abs() );
+   return SMatMapExpr<MT,Abs,SO>( ~sm, Abs() );
 }
 //*************************************************************************************************
 
@@ -1045,11 +1076,11 @@ inline const SMatForEachExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Floor,SO>( ~sm, Floor() );
+   return SMatMapExpr<MT,Floor,SO>( ~sm, Floor() );
 }
 //*************************************************************************************************
 
@@ -1073,11 +1104,11 @@ inline const SMatForEachExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Ceil,SO>( ~sm, Ceil() );
+   return SMatMapExpr<MT,Ceil,SO>( ~sm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1101,11 +1132,11 @@ inline const SMatForEachExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Trunc,SO>( ~sm, Trunc() );
+   return SMatMapExpr<MT,Trunc,SO>( ~sm, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1129,11 +1160,11 @@ inline const SMatForEachExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Round,SO> round( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Round,SO> round( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Round,SO>( ~sm, Round() );
+   return SMatMapExpr<MT,Round,SO>( ~sm, Round() );
 }
 //*************************************************************************************************
 
@@ -1157,11 +1188,11 @@ inline const SMatForEachExpr<MT,Round,SO> round( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Conj,SO> conj( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Conj,SO> conj( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Conj,SO>( ~sm, Conj() );
+   return SMatMapExpr<MT,Conj,SO>( ~sm, Conj() );
 }
 //*************************************************************************************************
 
@@ -1222,11 +1253,11 @@ inline const CTransExprTrait_<MT> ctrans( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Real,SO>( ~sm, Real() );
+   return SMatMapExpr<MT,Real,SO>( ~sm, Real() );
 }
 //*************************************************************************************************
 
@@ -1250,11 +1281,11 @@ inline const SMatForEachExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Imag,SO>( ~sm, Imag() );
+   return SMatMapExpr<MT,Imag,SO>( ~sm, Imag() );
 }
 //*************************************************************************************************
 
@@ -1281,11 +1312,11 @@ inline const SMatForEachExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Sqrt,SO>( ~sm, Sqrt() );
+   return SMatMapExpr<MT,Sqrt,SO>( ~sm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1312,11 +1343,11 @@ inline const SMatForEachExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,InvSqrt,SO>( ~sm, InvSqrt() );
+   return SMatMapExpr<MT,InvSqrt,SO>( ~sm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1343,11 +1374,11 @@ inline const SMatForEachExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Cbrt,SO>( ~sm, Cbrt() );
+   return SMatMapExpr<MT,Cbrt,SO>( ~sm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1374,11 +1405,11 @@ inline const SMatForEachExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,InvCbrt,SO>( ~sm, InvCbrt() );
+   return SMatMapExpr<MT,InvCbrt,SO>( ~sm, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1405,12 +1436,12 @@ inline const SMatForEachExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& 
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename DT >  // Type of the delimiters
-inline const SMatForEachExpr<MT,Clamp<DT>,SO>
+inline const SMatMapExpr<MT,Clamp<DT>,SO>
    clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Clamp<DT>,SO>( ~sm, Clamp<DT>( min, max ) );
+   return SMatMapExpr<MT,Clamp<DT>,SO>( ~sm, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1436,13 +1467,13 @@ inline const SMatForEachExpr<MT,Clamp<DT>,SO>
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename ET >  // Type of the exponent
-inline const SMatForEachExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, ET exp )
+inline const SMatMapExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return SMatForEachExpr<MT,Pow<ET>,SO>( ~sm, Pow<ET>( exp ) );
+   return SMatMapExpr<MT,Pow<ET>,SO>( ~sm, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 
@@ -1466,11 +1497,11 @@ inline const SMatForEachExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Exp,SO>( ~sm, Exp() );
+   return SMatMapExpr<MT,Exp,SO>( ~sm, Exp() );
 }
 //*************************************************************************************************
 
@@ -1494,11 +1525,11 @@ inline const SMatForEachExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Exp2,SO>( ~sm, Exp2() );
+   return SMatMapExpr<MT,Exp2,SO>( ~sm, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1522,11 +1553,11 @@ inline const SMatForEachExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Exp10,SO> exp10( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Exp10,SO> exp10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Exp10,SO>( ~sm, Exp10() );
+   return SMatMapExpr<MT,Exp10,SO>( ~sm, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1553,11 +1584,11 @@ inline const SMatForEachExpr<MT,Exp10,SO> exp10( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Log,SO>( ~sm, Log() );
+   return SMatMapExpr<MT,Log,SO>( ~sm, Log() );
 }
 //*************************************************************************************************
 
@@ -1584,11 +1615,11 @@ inline const SMatForEachExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Log10,SO> log10( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Log10,SO> log10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Log10,SO>( ~sm, Log10() );
+   return SMatMapExpr<MT,Log10,SO>( ~sm, Log10() );
 }
 //*************************************************************************************************
 
@@ -1615,11 +1646,11 @@ inline const SMatForEachExpr<MT,Log10,SO> log10( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Log2,SO> log2( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Log2,SO> log2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Log2,SO>( ~sm, Log2() );
+   return SMatMapExpr<MT,Log2,SO>( ~sm, Log2() );
 }
 //*************************************************************************************************
 
@@ -1643,11 +1674,11 @@ inline const SMatForEachExpr<MT,Log2,SO> log2( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Sin,SO>( ~sm, Sin() );
+   return SMatMapExpr<MT,Sin,SO>( ~sm, Sin() );
 }
 //*************************************************************************************************
 
@@ -1674,11 +1705,11 @@ inline const SMatForEachExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Asin,SO> asin( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Asin,SO> asin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Asin,SO>( ~sm, Asin() );
+   return SMatMapExpr<MT,Asin,SO>( ~sm, Asin() );
 }
 //*************************************************************************************************
 
@@ -1702,11 +1733,11 @@ inline const SMatForEachExpr<MT,Asin,SO> asin( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Sinh,SO>( ~sm, Sinh() );
+   return SMatMapExpr<MT,Sinh,SO>( ~sm, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1730,11 +1761,11 @@ inline const SMatForEachExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Asinh,SO>( ~sm, Asinh() );
+   return SMatMapExpr<MT,Asinh,SO>( ~sm, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1758,11 +1789,11 @@ inline const SMatForEachExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Cos,SO>( ~sm, Cos() );
+   return SMatMapExpr<MT,Cos,SO>( ~sm, Cos() );
 }
 //*************************************************************************************************
 
@@ -1789,11 +1820,11 @@ inline const SMatForEachExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Acos,SO> acos( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Acos,SO> acos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Acos,SO>( ~sm, Acos() );
+   return SMatMapExpr<MT,Acos,SO>( ~sm, Acos() );
 }
 //*************************************************************************************************
 
@@ -1817,11 +1848,11 @@ inline const SMatForEachExpr<MT,Acos,SO> acos( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Cosh,SO>( ~sm, Cosh() );
+   return SMatMapExpr<MT,Cosh,SO>( ~sm, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1848,11 +1879,11 @@ inline const SMatForEachExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Acosh,SO> acosh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Acosh,SO> acosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Acosh,SO>( ~sm, Acosh() );
+   return SMatMapExpr<MT,Acosh,SO>( ~sm, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1876,11 +1907,11 @@ inline const SMatForEachExpr<MT,Acosh,SO> acosh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Tan,SO>( ~sm, Tan() );
+   return SMatMapExpr<MT,Tan,SO>( ~sm, Tan() );
 }
 //*************************************************************************************************
 
@@ -1904,11 +1935,11 @@ inline const SMatForEachExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Atan,SO>( ~sm, Atan() );
+   return SMatMapExpr<MT,Atan,SO>( ~sm, Atan() );
 }
 //*************************************************************************************************
 
@@ -1935,11 +1966,11 @@ inline const SMatForEachExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Tanh,SO>( ~sm, Tanh() );
+   return SMatMapExpr<MT,Tanh,SO>( ~sm, Tanh() );
 }
 //*************************************************************************************************
 
@@ -1966,11 +1997,11 @@ inline const SMatForEachExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Atanh,SO> atanh( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Atanh,SO> atanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Atanh,SO>( ~sm, Atanh() );
+   return SMatMapExpr<MT,Atanh,SO>( ~sm, Atanh() );
 }
 //*************************************************************************************************
 
@@ -1994,11 +2025,11 @@ inline const SMatForEachExpr<MT,Atanh,SO> atanh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Erf,SO>( ~sm, Erf() );
+   return SMatMapExpr<MT,Erf,SO>( ~sm, Erf() );
 }
 //*************************************************************************************************
 
@@ -2023,11 +2054,11 @@ inline const SMatForEachExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
+inline const SMatMapExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatForEachExpr<MT,Erfc,SO>( ~sm, Erfc() );
+   return SMatMapExpr<MT,Erfc,SO>( ~sm, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2053,7 +2084,7 @@ inline const SMatForEachExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Abs,SO>& abs( const SMatForEachExpr<MT,Abs,SO>& sm )
+inline const SMatMapExpr<MT,Abs,SO>& abs( const SMatMapExpr<MT,Abs,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2076,7 +2107,7 @@ inline const SMatForEachExpr<MT,Abs,SO>& abs( const SMatForEachExpr<MT,Abs,SO>& 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Floor,SO>& floor( const SMatForEachExpr<MT,Floor,SO>& sm )
+inline const SMatMapExpr<MT,Floor,SO>& floor( const SMatMapExpr<MT,Floor,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2099,7 +2130,7 @@ inline const SMatForEachExpr<MT,Floor,SO>& floor( const SMatForEachExpr<MT,Floor
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Ceil,SO>& ceil( const SMatForEachExpr<MT,Ceil,SO>& sm )
+inline const SMatMapExpr<MT,Ceil,SO>& ceil( const SMatMapExpr<MT,Ceil,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2122,7 +2153,7 @@ inline const SMatForEachExpr<MT,Ceil,SO>& ceil( const SMatForEachExpr<MT,Ceil,SO
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Trunc,SO>& trunc( const SMatForEachExpr<MT,Trunc,SO>& sm )
+inline const SMatMapExpr<MT,Trunc,SO>& trunc( const SMatMapExpr<MT,Trunc,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2145,7 +2176,7 @@ inline const SMatForEachExpr<MT,Trunc,SO>& trunc( const SMatForEachExpr<MT,Trunc
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Round,SO>& round( const SMatForEachExpr<MT,Round,SO>& sm )
+inline const SMatMapExpr<MT,Round,SO>& round( const SMatMapExpr<MT,Round,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2175,7 +2206,7 @@ inline const SMatForEachExpr<MT,Round,SO>& round( const SMatForEachExpr<MT,Round
 */
 template< typename MT  // Type of the sparse matrix
         , bool TF >    // Transpose flag
-inline typename SMatForEachExpr<MT,Conj,TF>::Operand conj( const SMatForEachExpr<MT,Conj,TF>& sm )
+inline typename SMatMapExpr<MT,Conj,TF>::Operand conj( const SMatMapExpr<MT,Conj,TF>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2205,7 +2236,7 @@ inline typename SMatForEachExpr<MT,Conj,TF>::Operand conj( const SMatForEachExpr
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatForEachExpr<MT,Conj,SO>,!SO>& sm )
+inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatMapExpr<MT,Conj,SO>,!SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2228,7 +2259,7 @@ inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatForEachExpr<MT,
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Real,SO>& real( const SMatForEachExpr<MT,Real,SO>& sm )
+inline const SMatMapExpr<MT,Real,SO>& real( const SMatMapExpr<MT,Real,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2251,7 +2282,7 @@ inline const SMatForEachExpr<MT,Real,SO>& real( const SMatForEachExpr<MT,Real,SO
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatForEachExpr<MT,Imag,SO>& imag( const SMatForEachExpr<MT,Imag,SO>& sm )
+inline const SMatMapExpr<MT,Imag,SO>& imag( const SMatMapExpr<MT,Imag,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2272,7 +2303,7 @@ inline const SMatForEachExpr<MT,Imag,SO>& imag( const SMatForEachExpr<MT,Imag,SO
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Rows< SMatForEachExpr<MT,OP,SO> > : public Rows<MT>
+struct Rows< SMatMapExpr<MT,OP,SO> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2289,7 +2320,7 @@ struct Rows< SMatForEachExpr<MT,OP,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Columns< SMatForEachExpr<MT,OP,SO> > : public Columns<MT>
+struct Columns< SMatMapExpr<MT,OP,SO> > : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2306,167 +2337,167 @@ struct Columns< SMatForEachExpr<MT,OP,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Abs,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Abs,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Floor,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Floor,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Ceil,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Ceil,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Trunc,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Trunc,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Round,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Round,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Conj,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Conj,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Real,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Real,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Imag,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Imag,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Sqrt,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Sqrt,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,InvSqrt,SO> >
+struct IsSymmetric< SMatMapExpr<MT,InvSqrt,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Cbrt,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,InvCbrt,SO> >
+struct IsSymmetric< SMatMapExpr<MT,InvCbrt,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Pow<ET>,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Exp,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Exp,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Exp2,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Exp2,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Exp10,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Exp10,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Log,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Log,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Log2,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Log2,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Log10,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Log10,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Sin,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Sin,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Asin,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Asin,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Sinh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Sinh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Asinh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Asinh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Cos,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Cos,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Acos,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Acos,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Cosh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Cosh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Acosh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Acosh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Tan,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Tan,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Atan,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Atan,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Tanh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Tanh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Atanh,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Atanh,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Erf,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Erf,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsSymmetric< SMatForEachExpr<MT,Erfc,SO> >
+struct IsSymmetric< SMatMapExpr<MT,Erfc,SO> >
    : public BoolConstant< IsSymmetric<MT>::value >
 {};
 /*! \endcond */
@@ -2484,167 +2515,167 @@ struct IsSymmetric< SMatForEachExpr<MT,Erfc,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Abs,SO> >
+struct IsHermitian< SMatMapExpr<MT,Abs,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Floor,SO> >
+struct IsHermitian< SMatMapExpr<MT,Floor,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Ceil,SO> >
+struct IsHermitian< SMatMapExpr<MT,Ceil,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Trunc,SO> >
+struct IsHermitian< SMatMapExpr<MT,Trunc,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Round,SO> >
+struct IsHermitian< SMatMapExpr<MT,Round,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Conj,SO> >
+struct IsHermitian< SMatMapExpr<MT,Conj,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Real,SO> >
+struct IsHermitian< SMatMapExpr<MT,Real,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Imag,SO> >
+struct IsHermitian< SMatMapExpr<MT,Imag,SO> >
    : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Sqrt,SO> >
+struct IsHermitian< SMatMapExpr<MT,Sqrt,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,InvSqrt,SO> >
+struct IsHermitian< SMatMapExpr<MT,InvSqrt,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Cbrt,SO> >
+struct IsHermitian< SMatMapExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,InvCbrt,SO> >
+struct IsHermitian< SMatMapExpr<MT,InvCbrt,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Pow<ET>,SO> >
+struct IsHermitian< SMatMapExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Exp,SO> >
+struct IsHermitian< SMatMapExpr<MT,Exp,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Exp2,SO> >
+struct IsHermitian< SMatMapExpr<MT,Exp2,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Exp10,SO> >
+struct IsHermitian< SMatMapExpr<MT,Exp10,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Log,SO> >
+struct IsHermitian< SMatMapExpr<MT,Log,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Log2,SO> >
+struct IsHermitian< SMatMapExpr<MT,Log2,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Log10,SO> >
+struct IsHermitian< SMatMapExpr<MT,Log10,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Sin,SO> >
+struct IsHermitian< SMatMapExpr<MT,Sin,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Asin,SO> >
+struct IsHermitian< SMatMapExpr<MT,Asin,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Sinh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Sinh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Asinh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Asinh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Cos,SO> >
+struct IsHermitian< SMatMapExpr<MT,Cos,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Acos,SO> >
+struct IsHermitian< SMatMapExpr<MT,Acos,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Cosh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Cosh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Acosh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Acosh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Tan,SO> >
+struct IsHermitian< SMatMapExpr<MT,Tan,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Atan,SO> >
+struct IsHermitian< SMatMapExpr<MT,Atan,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Tanh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Tanh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Atanh,SO> >
+struct IsHermitian< SMatMapExpr<MT,Atanh,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Erf,SO> >
+struct IsHermitian< SMatMapExpr<MT,Erf,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsHermitian< SMatForEachExpr<MT,Erfc,SO> >
+struct IsHermitian< SMatMapExpr<MT,Erfc,SO> >
    : public BoolConstant< IsHermitian<MT>::value >
 {};
 /*! \endcond */
@@ -2662,7 +2693,7 @@ struct IsHermitian< SMatForEachExpr<MT,Erfc,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct IsLower< SMatForEachExpr<MT,OP,SO> >
+struct IsLower< SMatMapExpr<MT,OP,SO> >
    : public BoolConstant< IsLower<MT>::value >
 {};
 /*! \endcond */
@@ -2680,52 +2711,52 @@ struct IsLower< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Abs,SO> >
+struct IsUniLower< SMatMapExpr<MT,Abs,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Floor,SO> >
+struct IsUniLower< SMatMapExpr<MT,Floor,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Ceil,SO> >
+struct IsUniLower< SMatMapExpr<MT,Ceil,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Trunc,SO> >
+struct IsUniLower< SMatMapExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Round,SO> >
+struct IsUniLower< SMatMapExpr<MT,Round,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Conj,SO> >
+struct IsUniLower< SMatMapExpr<MT,Conj,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Real,SO> >
+struct IsUniLower< SMatMapExpr<MT,Real,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Sqrt,SO> >
+struct IsUniLower< SMatMapExpr<MT,Sqrt,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Cbrt,SO> >
+struct IsUniLower< SMatMapExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsUniLower< SMatForEachExpr<MT,Pow<ET>,SO> >
+struct IsUniLower< SMatMapExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsUniLower<MT>::value >
 {};
 /*! \endcond */
@@ -2743,7 +2774,7 @@ struct IsUniLower< SMatForEachExpr<MT,Pow<ET>,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct IsStrictlyLower< SMatForEachExpr<MT,OP,SO> >
+struct IsStrictlyLower< SMatMapExpr<MT,OP,SO> >
    : public BoolConstant< IsStrictlyLower<MT>::value >
 {};
 /*! \endcond */
@@ -2761,7 +2792,7 @@ struct IsStrictlyLower< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct IsUpper< SMatForEachExpr<MT,OP,SO> >
+struct IsUpper< SMatMapExpr<MT,OP,SO> >
    : public BoolConstant< IsUpper<MT>::value >
 {};
 /*! \endcond */
@@ -2779,52 +2810,52 @@ struct IsUpper< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Abs,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Abs,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Floor,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Floor,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Ceil,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Ceil,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Trunc,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Trunc,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Round,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Round,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Conj,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Conj,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Real,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Real,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Sqrt,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Sqrt,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Cbrt,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Cbrt,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsUniUpper< SMatForEachExpr<MT,Pow<ET>,SO> >
+struct IsUniUpper< SMatMapExpr<MT,Pow<ET>,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
 /*! \endcond */
@@ -2842,7 +2873,7 @@ struct IsUniUpper< SMatForEachExpr<MT,Pow<ET>,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct IsStrictlyUpper< SMatForEachExpr<MT,OP,SO> >
+struct IsStrictlyUpper< SMatMapExpr<MT,OP,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
 /*! \endcond */
@@ -2860,12 +2891,12 @@ struct IsStrictlyUpper< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Abs,false>, Abs >
+struct SMatMapExprTrait< SMatMapExpr<MT,Abs,false>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Abs,false>
+                   , SMatMapExpr<MT,Abs,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2876,12 +2907,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Abs,false>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Abs,true>, Abs >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Abs,true>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Abs,true>
+                   , SMatMapExpr<MT,Abs,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2892,12 +2923,12 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Abs,true>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Floor,false>, Floor >
+struct SMatMapExprTrait< SMatMapExpr<MT,Floor,false>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Floor,false>
+                   , SMatMapExpr<MT,Floor,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2908,12 +2939,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Floor,false>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Floor,true>, Floor >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Floor,true>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Floor,true>
+                   , SMatMapExpr<MT,Floor,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2924,12 +2955,12 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Floor,true>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Ceil,false>, Ceil >
+struct SMatMapExprTrait< SMatMapExpr<MT,Ceil,false>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Ceil,false>
+                   , SMatMapExpr<MT,Ceil,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2940,12 +2971,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Ceil,false>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Ceil,true>, Ceil >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Ceil,true>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Ceil,true>
+                   , SMatMapExpr<MT,Ceil,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2956,12 +2987,12 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Ceil,true>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Trunc,false>, Trunc >
+struct SMatMapExprTrait< SMatMapExpr<MT,Trunc,false>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Trunc,false>
+                   , SMatMapExpr<MT,Trunc,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2972,12 +3003,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Trunc,false>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Trunc,true>, Trunc >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Trunc,true>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Trunc,true>
+                   , SMatMapExpr<MT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2988,12 +3019,12 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Trunc,true>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Round,false>, Round >
+struct SMatMapExprTrait< SMatMapExpr<MT,Round,false>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Round,false>
+                   , SMatMapExpr<MT,Round,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3004,12 +3035,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Round,false>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Round,true>, Round >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Round,true>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Round,true>
+                   , SMatMapExpr<MT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3020,12 +3051,12 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Round,true>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Conj,false>, Conj >
+struct SMatMapExprTrait< SMatMapExpr<MT,Conj,false>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , Operand_< SMatForEachExpr<MT,Conj,false> >
+                   , Operand_< SMatMapExpr<MT,Conj,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3036,12 +3067,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Conj,false>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Conj,true>, Conj >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Conj,true>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , Operand_< SMatForEachExpr<MT,Conj,true> >
+                   , Operand_< SMatMapExpr<MT,Conj,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3052,7 +3083,7 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Conj,true>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,true>, false >, Conj >
+struct SMatMapExprTrait< SMatTransExpr< SMatMapExpr<MT,Conj,true>, false >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -3068,7 +3099,7 @@ struct SMatMapExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,true>, false >, 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,false>, true >, Conj >
+struct TSMatMapExprTrait< SMatTransExpr< SMatMapExpr<MT,Conj,false>, true >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -3084,12 +3115,12 @@ struct TSMatMapExprTrait< SMatTransExpr< SMatForEachExpr<MT,Conj,false>, true >,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SMatMapExprTrait< SMatForEachExpr<MT,Real,false>, Real >
+struct SMatMapExprTrait< SMatMapExpr<MT,Real,false>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Real,false>
+                   , SMatMapExpr<MT,Real,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3100,12 +3131,12 @@ struct SMatMapExprTrait< SMatForEachExpr<MT,Real,false>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct TSMatMapExprTrait< SMatForEachExpr<MT,Real,true>, Real >
+struct TSMatMapExprTrait< SMatMapExpr<MT,Real,true>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatForEachExpr<MT,Real,true>
+                   , SMatMapExpr<MT,Real,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -3116,7 +3147,7 @@ struct TSMatMapExprTrait< SMatForEachExpr<MT,Real,true>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO, bool AF >
-struct SubmatrixExprTrait< SMatForEachExpr<MT,OP,SO>, AF >
+struct SubmatrixExprTrait< SMatMapExpr<MT,OP,SO>, AF >
 {
  public:
    //**********************************************************************************************
@@ -3130,7 +3161,7 @@ struct SubmatrixExprTrait< SMatForEachExpr<MT,OP,SO>, AF >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct RowExprTrait< SMatForEachExpr<MT,OP,SO> >
+struct RowExprTrait< SMatMapExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************
@@ -3144,7 +3175,7 @@ struct RowExprTrait< SMatForEachExpr<MT,OP,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct ColumnExprTrait< SMatForEachExpr<MT,OP,SO> >
+struct ColumnExprTrait< SMatMapExpr<MT,OP,SO> >
 {
  public:
    //**********************************************************************************************

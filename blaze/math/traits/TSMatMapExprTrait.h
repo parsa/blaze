@@ -79,7 +79,7 @@ struct TSMatMapExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                 , SMatForEachExpr<MT,OP,true>
+                 , SMatMapExpr<MT,OP,true>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************

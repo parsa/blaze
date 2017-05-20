@@ -106,7 +106,7 @@ template< typename, typename > class SMatDMatSchurExpr;
 template< typename, typename, bool > class SMatDMatSubExpr;
 template< typename, typename > class SMatDVecMultExpr;
 template< typename, bool > class SMatEvalExpr;
-template< typename, typename, bool > class SMatForEachExpr;
+template< typename, typename, bool > class SMatMapExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
 template< typename, typename, bool > class SMatScalarMultExpr;
 template< typename, bool > class SMatSerialExpr;
@@ -207,7 +207,7 @@ template< typename MT, bool SO, typename OP >
 inline const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>&, OP );
 
 template< typename MT, bool SO, typename OP >
-inline const SMatForEachExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>&, OP );
+inline const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>&, OP );
 
 } // namespace blaze
 
