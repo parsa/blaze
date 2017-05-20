@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/SVecForEachExpr.h
-//  \brief Header file for the sparse vector for-each expression
+//  \file blaze/math/expressions/SVecMapExpr.h
+//  \brief Header file for the sparse vector map expression
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SVECFOREACHEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_SVECFOREACHEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SVECMAPEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SVECMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -81,23 +81,23 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS SVECFOREACHEXPR
+//  CLASS SVECMAPEXPR
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the sparse vector forEach() function.
+/*!\brief Expression object for the sparse vector map() function.
 // \ingroup sparse_vector_expression
 //
-// The SVecForEachExpr class represents the compile time expression for the evaluation of a
-// custom operation on each element of a sparse vector via the forEach() function.
+// The SVecMapExpr class represents the compile time expression for the evaluation of a custom
+// operation on each element of a sparse vector via the map() function.
 */
 template< typename VT  // Type of the sparse vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
-class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
-                      , private VecMapExpr
-                      , private Computation
+class SVecMapExpr : public SparseVector< SVecMapExpr<VT,OP,TF>, TF >
+                  , private VecMapExpr
+                  , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -106,11 +106,11 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
-   //! Compilation switch for the serial evaluation strategy of the for-each expression.
-   /*! The \a useAssign compile time constant expression represents a compilation switch for the
-       serial evaluation strategy of the for-each expression. In case the given sparse vector
-       expression of type \a VT requires an intermediate evaluation, \a useAssign will be set
-       to 1 and the for-each expression will be evaluated via the \a assign function family.
+   //! Compilation switch for the serial evaluation strategy of the map expression.
+   /*! The \a useAssign compile time constant expression represents a compilation switch for
+       the serial evaluation strategy of the map expression. In case the given sparse vector
+       expression of type \a VT requires an intermediate evaluation, \a useAssign will be
+       set to 1 and the map expression will be evaluated via the \a assign function family.
        Otherwise \a useAssign will be set to 0 and the expression will be evaluated via the
        subscript operator. */
    enum : bool { useAssign = RequiresEvaluation<VT>::value };
@@ -141,7 +141,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecForEachExpr<VT,OP,TF>   This;           //!< Type of this SVecForEachExpr instance.
+   typedef SVecMapExpr<VT,OP,TF>       This;           //!< Type of this SVecMapExpr instance.
    typedef UnaryMapTrait_<VT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
@@ -150,7 +150,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
    typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SVecForEachExpr& >  CompositeType;
+   typedef IfTrue_< useAssign, const ResultType, const SVecMapExpr& >  CompositeType;
 
    //! Composite data type of the sparse vector expression.
    typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
@@ -160,7 +160,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
-   /*!\brief Iterator over the elements of the sparse vector for-each expression.
+   /*!\brief Iterator over the elements of the sparse vector map expression.
    */
    class ConstIterator
    {
@@ -296,13 +296,13 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the SVecForEachExpr class.
+   /*!\brief Constructor for the SVecMapExpr class.
    //
-   // \param sv The sparse vector operand of the for-each expression.
+   // \param sv The sparse vector operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline SVecForEachExpr( const VT& sv, OP op ) noexcept
-      : sv_( sv )  // Sparse vector of the for-each expression
+   explicit inline SVecMapExpr( const VT& sv, OP op ) noexcept
+      : sv_( sv )  // Sparse vector of the map expression
       , op_( op )  // The custom unary operation
    {}
    //**********************************************************************************************
@@ -466,27 +466,27 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
  private:
    //**Member variables****************************************************************************
-   Operand   sv_;  //!< Sparse vector of the for-each expression.
+   Operand   sv_;  //!< Sparse vector of the map expression.
    Operation op_;  //!< The custom unary operation.
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief Assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse vector for-each
-   // expression to a dense vector. Due to the explicit application of the SFINAE principle, this
-   // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation.
+   // This function implements the performance optimized assignment of a sparse vector map
+   // expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      assign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      assign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -497,30 +497,30 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse vector for-each expression to a sparse vector.
+   /*!\brief Assignment of a sparse vector map expression to a sparse vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse vector for-each
-   // expression to a sparse vector. Due to the explicit application of the SFINAE principle, this
-   // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation and the underlying numeric data type of the operand and the target vector are
-   // identical.
+   // This function implements the performance optimized assignment of a sparse vector map
+   // expression to a sparse vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation and the underlying numeric data type of the operand and the
+   // target vector are identical.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline EnableIf_< And< UseAssign<VT2>
                                , IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > >
-      assign( SparseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -540,22 +540,23 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a sparse vector for-each expression to a sparse vector.
+   /*!\brief Assignment of a sparse vector map expression to a sparse vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse vector for-each
-   // expression to a sparse vector. Due to the explicit application of the SFINAE principle, this
-   // function can only be selected by the compiler in case the operand requires an intermediate
-   // evaluation and the underlying numeric data type of the operand and the target vector differ.
+   // This function implements the performance optimized assignment of a sparse vector map
+   // expression to a sparse vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation and the underlying numeric data type of the operand and the
+   // target vector differ.
    */
    template< typename VT2 >  // Type of the target sparse vector
    friend inline EnableIf_< And< UseAssign<VT2>
                                , Not< IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > > >
-      assign( SparseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -567,28 +568,28 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
       const RT tmp( serial( rhs.sv_ ) );
       (~lhs).reserve( tmp.nonZeros() );
-      assign( ~lhs, forEach( tmp, rhs.op_ ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief Addition assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a sparse vector
-   // for-each expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the operand requires
-   // an intermediate evaluation.
+   // map expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the operand requires an
+   // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      addAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -599,7 +600,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      addAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      addAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -610,21 +611,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief Subtraction assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a sparse
-   // vector for-each expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // operand requires an intermediate evaluation.
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the operand
+   // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      subAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -635,7 +636,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      subAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      subAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -646,21 +647,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief Multiplication assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be multiplied.
+   // \param rhs The right-hand side map expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a sparse
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseAssign<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      multAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -671,7 +672,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      multAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      multAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -682,21 +683,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief SMP assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be assigned.
+   // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a sparse vector
-   // for-each expression to a dense vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP assignment of a sparse vector map
+   // expression to a dense vector. Due to the explicit application of the SFINAE principle,
+   // this function can only be selected by the compiler in case the expression specific parallel
+   // evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      smpAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -707,7 +708,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -718,21 +719,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP addition assignment to dense vectors****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief SMP addition assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be added.
+   // \param rhs The right-hand side map expression to be added.
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
-   // vector for-each expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
+   // principle, this function can only be selected by the compiler in case the expression
+   // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -743,7 +744,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpAddAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -754,21 +755,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP subtraction assignment to dense vectors*************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief SMP subtraction assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be subtracted.
+   // \param rhs The right-hand side map expression to be subtracted.
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
-   // vector for-each expression to a dense vector. Due to the explicit application of the SFINAE
+   // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -779,7 +780,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpSubAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -790,21 +791,21 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 
    //**SMP multiplication assignment to dense vectors**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a sparse vector for-each expression to a dense vector.
+   /*!\brief SMP multiplication assignment of a sparse vector map expression to a dense vector.
    // \ingroup sparse_vector
    //
    // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side for-each expression to be multiplied.
+   // \param rhs The right-hand side map expression to be multiplied.
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // sparse vector for-each expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this function can only be selected by the compiler in case the
+   // sparse vector map expression to a dense vector. Due to the explicit application of the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
    friend inline EnableIf_< UseSMPAssign<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecForEachExpr& rhs )
+      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -815,7 +816,7 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpMultAssign( ~lhs, forEach( tmp, rhs.op_ ) );
+      smpMultAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -850,6 +851,36 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 // \param op The custom operation.
 // \return The custom operation applied to each single element of \a sv.
 //
+// The \a map() function evaluates the given custom operation on each non-zero element of the
+// input vector \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a map() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = map( a, []( double a ){ return std::sqrt( a ); } );
+   \endcode
+*/
+template< typename VT    // Type of the sparse vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>& sv, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecMapExpr<VT,OP,TF>( ~sv, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluates the given custom operation on each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \param op The custom operation.
+// \return The custom operation applied to each single element of \a sv.
+//
 // The \a forEach() function evaluates the given custom operation on each non-zero element of the
 // input vector \a sv. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a forEach() function:
@@ -863,11 +894,11 @@ class SVecForEachExpr : public SparseVector< SVecForEachExpr<VT,OP,TF>, TF >
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, OP op )
+inline const SVecMapExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,OP,TF>( ~sv, op );
+   return SVecMapExpr<VT,OP,TF>( ~sv, op );
 }
 //*************************************************************************************************
 
@@ -891,11 +922,11 @@ inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, O
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Abs,TF>( ~sv, Abs() );
+   return SVecMapExpr<VT,Abs,TF>( ~sv, Abs() );
 }
 //*************************************************************************************************
 
@@ -919,11 +950,11 @@ inline const SVecForEachExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Floor,TF>( ~sv, Floor() );
+   return SVecMapExpr<VT,Floor,TF>( ~sv, Floor() );
 }
 //*************************************************************************************************
 
@@ -947,11 +978,11 @@ inline const SVecForEachExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Ceil,TF>( ~sv, Ceil() );
+   return SVecMapExpr<VT,Ceil,TF>( ~sv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -975,11 +1006,11 @@ inline const SVecForEachExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Trunc,TF>( ~sv, Trunc() );
+   return SVecMapExpr<VT,Trunc,TF>( ~sv, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1003,11 +1034,11 @@ inline const SVecForEachExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Round,TF>( ~sv, Round() );
+   return SVecMapExpr<VT,Round,TF>( ~sv, Round() );
 }
 //*************************************************************************************************
 
@@ -1031,11 +1062,11 @@ inline const SVecForEachExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Conj,TF> conj( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Conj,TF> conj( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Conj,TF>( ~sv, Conj() );
+   return SVecMapExpr<VT,Conj,TF>( ~sv, Conj() );
 }
 //*************************************************************************************************
 
@@ -1096,11 +1127,11 @@ inline const CTransExprTrait_<VT> ctrans( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Real,TF>( ~sv, Real() );
+   return SVecMapExpr<VT,Real,TF>( ~sv, Real() );
 }
 //*************************************************************************************************
 
@@ -1124,11 +1155,11 @@ inline const SVecForEachExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Imag,TF>( ~sv, Imag() );
+   return SVecMapExpr<VT,Imag,TF>( ~sv, Imag() );
 }
 //*************************************************************************************************
 
@@ -1155,11 +1186,11 @@ inline const SVecForEachExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Sqrt,TF>( ~sv, Sqrt() );
+   return SVecMapExpr<VT,Sqrt,TF>( ~sv, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1186,11 +1217,11 @@ inline const SVecForEachExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,InvSqrt,TF>( ~sv, InvSqrt() );
+   return SVecMapExpr<VT,InvSqrt,TF>( ~sv, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1217,11 +1248,11 @@ inline const SVecForEachExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& 
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Cbrt,TF>( ~sv, Cbrt() );
+   return SVecMapExpr<VT,Cbrt,TF>( ~sv, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1248,11 +1279,11 @@ inline const SVecForEachExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,InvCbrt,TF>( ~sv, InvCbrt() );
+   return SVecMapExpr<VT,InvCbrt,TF>( ~sv, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1279,12 +1310,12 @@ inline const SVecForEachExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& 
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const SVecForEachExpr<VT,Clamp<DT>,TF>
+inline const SVecMapExpr<VT,Clamp<DT>,TF>
    clamp( const SparseVector<VT,TF>& sv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Clamp<DT>,TF>( ~sv, Clamp<DT>( min, max ) );
+   return SVecMapExpr<VT,Clamp<DT>,TF>( ~sv, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1310,13 +1341,13 @@ inline const SVecForEachExpr<VT,Clamp<DT>,TF>
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename ET >  // Type of the exponent
-inline const SVecForEachExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, ET exp )
+inline const SVecMapExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   return SVecForEachExpr<VT,Pow<ET>,TF>( ~sv, Pow<ET>( exp ) );
+   return SVecMapExpr<VT,Pow<ET>,TF>( ~sv, Pow<ET>( exp ) );
 }
 //*************************************************************************************************
 
@@ -1340,11 +1371,11 @@ inline const SVecForEachExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, 
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Exp,TF>( ~sv, Exp() );
+   return SVecMapExpr<VT,Exp,TF>( ~sv, Exp() );
 }
 //*************************************************************************************************
 
@@ -1368,11 +1399,11 @@ inline const SVecForEachExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Exp2,TF>( ~sv, Exp2() );
+   return SVecMapExpr<VT,Exp2,TF>( ~sv, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1396,11 +1427,11 @@ inline const SVecForEachExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Exp10,TF>( ~sv, Exp10() );
+   return SVecMapExpr<VT,Exp10,TF>( ~sv, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1427,11 +1458,11 @@ inline const SVecForEachExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Log,TF>( ~sv, Log() );
+   return SVecMapExpr<VT,Log,TF>( ~sv, Log() );
 }
 //*************************************************************************************************
 
@@ -1458,11 +1489,11 @@ inline const SVecForEachExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Log2,TF> log2( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Log2,TF> log2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Log2,TF>( ~sv, Log2() );
+   return SVecMapExpr<VT,Log2,TF>( ~sv, Log2() );
 }
 //*************************************************************************************************
 
@@ -1489,11 +1520,11 @@ inline const SVecForEachExpr<VT,Log2,TF> log2( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Log10,TF>( ~sv, Log10() );
+   return SVecMapExpr<VT,Log10,TF>( ~sv, Log10() );
 }
 //*************************************************************************************************
 
@@ -1517,11 +1548,11 @@ inline const SVecForEachExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Sin,TF>( ~sv, Sin() );
+   return SVecMapExpr<VT,Sin,TF>( ~sv, Sin() );
 }
 //*************************************************************************************************
 
@@ -1548,11 +1579,11 @@ inline const SVecForEachExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Asin,TF> asin( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Asin,TF> asin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Asin,TF>( ~sv, Asin() );
+   return SVecMapExpr<VT,Asin,TF>( ~sv, Asin() );
 }
 //*************************************************************************************************
 
@@ -1576,11 +1607,11 @@ inline const SVecForEachExpr<VT,Asin,TF> asin( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Sinh,TF> sinh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Sinh,TF> sinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Sinh,TF>( ~sv, Sinh() );
+   return SVecMapExpr<VT,Sinh,TF>( ~sv, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1604,11 +1635,11 @@ inline const SVecForEachExpr<VT,Sinh,TF> sinh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Asinh,TF>( ~sv, Asinh() );
+   return SVecMapExpr<VT,Asinh,TF>( ~sv, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1632,11 +1663,11 @@ inline const SVecForEachExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Cos,TF>( ~sv, Cos() );
+   return SVecMapExpr<VT,Cos,TF>( ~sv, Cos() );
 }
 //*************************************************************************************************
 
@@ -1663,11 +1694,11 @@ inline const SVecForEachExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Acos,TF> acos( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Acos,TF> acos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Acos,TF>( ~sv, Acos() );
+   return SVecMapExpr<VT,Acos,TF>( ~sv, Acos() );
 }
 //*************************************************************************************************
 
@@ -1691,11 +1722,11 @@ inline const SVecForEachExpr<VT,Acos,TF> acos( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Cosh,TF>( ~sv, Cosh() );
+   return SVecMapExpr<VT,Cosh,TF>( ~sv, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1722,11 +1753,11 @@ inline const SVecForEachExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Acosh,TF>( ~sv, Acosh() );
+   return SVecMapExpr<VT,Acosh,TF>( ~sv, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1750,11 +1781,11 @@ inline const SVecForEachExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Tan,TF>( ~sv, Tan() );
+   return SVecMapExpr<VT,Tan,TF>( ~sv, Tan() );
 }
 //*************************************************************************************************
 
@@ -1778,11 +1809,11 @@ inline const SVecForEachExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Atan,TF>( ~sv, Atan() );
+   return SVecMapExpr<VT,Atan,TF>( ~sv, Atan() );
 }
 //*************************************************************************************************
 
@@ -1809,11 +1840,11 @@ inline const SVecForEachExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Tanh,TF>( ~sv, Tanh() );
+   return SVecMapExpr<VT,Tanh,TF>( ~sv, Tanh() );
 }
 //*************************************************************************************************
 
@@ -1840,11 +1871,11 @@ inline const SVecForEachExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Atanh,TF> atanh( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Atanh,TF> atanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Atanh,TF>( ~sv, Atanh() );
+   return SVecMapExpr<VT,Atanh,TF>( ~sv, Atanh() );
 }
 //*************************************************************************************************
 
@@ -1868,11 +1899,11 @@ inline const SVecForEachExpr<VT,Atanh,TF> atanh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Erf,TF> erf( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Erf,TF> erf( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Erf,TF>( ~sv, Erf() );
+   return SVecMapExpr<VT,Erf,TF>( ~sv, Erf() );
 }
 //*************************************************************************************************
 
@@ -1896,11 +1927,11 @@ inline const SVecForEachExpr<VT,Erf,TF> erf( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
+inline const SVecMapExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecForEachExpr<VT,Erfc,TF>( ~sv, Erfc() );
+   return SVecMapExpr<VT,Erfc,TF>( ~sv, Erfc() );
 }
 //*************************************************************************************************
 
@@ -1926,7 +1957,7 @@ inline const SVecForEachExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& sv )
+inline const SVecMapExpr<VT,Abs,TF>& abs( const SVecMapExpr<VT,Abs,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1949,7 +1980,7 @@ inline const SVecForEachExpr<VT,Abs,TF>& abs( const SVecForEachExpr<VT,Abs,TF>& 
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Floor,TF>& floor( const SVecForEachExpr<VT,Floor,TF>& sv )
+inline const SVecMapExpr<VT,Floor,TF>& floor( const SVecMapExpr<VT,Floor,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1972,7 +2003,7 @@ inline const SVecForEachExpr<VT,Floor,TF>& floor( const SVecForEachExpr<VT,Floor
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Ceil,TF>& ceil( const SVecForEachExpr<VT,Ceil,TF>& sv )
+inline const SVecMapExpr<VT,Ceil,TF>& ceil( const SVecMapExpr<VT,Ceil,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1995,7 +2026,7 @@ inline const SVecForEachExpr<VT,Ceil,TF>& ceil( const SVecForEachExpr<VT,Ceil,TF
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Trunc,TF>& trunc( const SVecForEachExpr<VT,Trunc,TF>& sv )
+inline const SVecMapExpr<VT,Trunc,TF>& trunc( const SVecMapExpr<VT,Trunc,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2018,7 +2049,7 @@ inline const SVecForEachExpr<VT,Trunc,TF>& trunc( const SVecForEachExpr<VT,Trunc
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Round,TF>& round( const SVecForEachExpr<VT,Round,TF>& sv )
+inline const SVecMapExpr<VT,Round,TF>& round( const SVecMapExpr<VT,Round,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2048,7 +2079,7 @@ inline const SVecForEachExpr<VT,Round,TF>& round( const SVecForEachExpr<VT,Round
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename SVecForEachExpr<VT,Conj,TF>::Operand conj( const SVecForEachExpr<VT,Conj,TF>& sv )
+inline typename SVecMapExpr<VT,Conj,TF>::Operand conj( const SVecMapExpr<VT,Conj,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2078,7 +2109,7 @@ inline typename SVecForEachExpr<VT,Conj,TF>::Operand conj( const SVecForEachExpr
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecForEachExpr<VT,Conj,TF>,!TF>& sv )
+inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecMapExpr<VT,Conj,TF>,!TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2101,7 +2132,7 @@ inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecForEachExpr<VT,
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecForEachExpr<VT,Real,TF>& real( const SVecForEachExpr<VT,Real,TF>& sv )
+inline const SVecMapExpr<VT,Real,TF>& real( const SVecMapExpr<VT,Real,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2122,7 +2153,7 @@ inline const SVecForEachExpr<VT,Real,TF>& real( const SVecForEachExpr<VT,Real,TF
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct Size< SVecForEachExpr<VT,OP,TF> > : public Size<VT>
+struct Size< SVecMapExpr<VT,OP,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2139,12 +2170,12 @@ struct Size< SVecForEachExpr<VT,OP,TF> > : public Size<VT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Abs,false>, Abs >
+struct SVecMapExprTrait< SVecMapExpr<VT,Abs,false>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Abs,false>
+                   , SVecMapExpr<VT,Abs,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2155,12 +2186,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Abs,false>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Abs,true>, Abs >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Abs,true>, Abs >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Abs,true>
+                   , SVecMapExpr<VT,Abs,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2171,12 +2202,12 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Abs,true>, Abs >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Floor,false>, Floor >
+struct SVecMapExprTrait< SVecMapExpr<VT,Floor,false>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Floor,false>
+                   , SVecMapExpr<VT,Floor,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2187,12 +2218,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Floor,false>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Floor,true>, Floor >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Floor,true>, Floor >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Floor,true>
+                   , SVecMapExpr<VT,Floor,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2203,12 +2234,12 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Floor,true>, Floor >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Ceil,false>, Ceil >
+struct SVecMapExprTrait< SVecMapExpr<VT,Ceil,false>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Ceil,false>
+                   , SVecMapExpr<VT,Ceil,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2219,12 +2250,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Ceil,false>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Ceil,true>, Ceil >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Ceil,true>, Ceil >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Ceil,true>
+                   , SVecMapExpr<VT,Ceil,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2235,12 +2266,12 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Ceil,true>, Ceil >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Trunc,false>, Trunc >
+struct SVecMapExprTrait< SVecMapExpr<VT,Trunc,false>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Trunc,false>
+                   , SVecMapExpr<VT,Trunc,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2251,12 +2282,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Trunc,false>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Trunc,true>, Trunc >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Trunc,true>, Trunc >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Trunc,true>
+                   , SVecMapExpr<VT,Trunc,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2267,12 +2298,12 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Trunc,true>, Trunc >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Round,false>, Round >
+struct SVecMapExprTrait< SVecMapExpr<VT,Round,false>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Round,false>
+                   , SVecMapExpr<VT,Round,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2283,12 +2314,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Round,false>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Round,true>, Round >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Round,true>, Round >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Round,true>
+                   , SVecMapExpr<VT,Round,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2299,12 +2330,12 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Round,true>, Round >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Conj,false>, Conj >
+struct SVecMapExprTrait< SVecMapExpr<VT,Conj,false>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , Operand_< SVecForEachExpr<VT,Conj,false> >
+                   , Operand_< SVecMapExpr<VT,Conj,false> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2315,12 +2346,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Conj,false>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Conj,true>, Conj >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Conj,true>, Conj >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , Operand_< SVecForEachExpr<VT,Conj,true> >
+                   , Operand_< SVecMapExpr<VT,Conj,true> >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2331,7 +2362,7 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Conj,true>, Conj >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,true>, false >, Conj >
+struct SVecMapExprTrait< SVecTransExpr< SVecMapExpr<VT,Conj,true>, false >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2347,7 +2378,7 @@ struct SVecMapExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,true>, false >, 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,false>, true >, Conj >
+struct TSVecMapExprTrait< SVecTransExpr< SVecMapExpr<VT,Conj,false>, true >, Conj >
 {
  public:
    //**********************************************************************************************
@@ -2363,12 +2394,12 @@ struct TSVecMapExprTrait< SVecTransExpr< SVecForEachExpr<VT,Conj,false>, true >,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SVecMapExprTrait< SVecForEachExpr<VT,Real,false>, Real >
+struct SVecMapExprTrait< SVecMapExpr<VT,Real,false>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , SVecForEachExpr<VT,Real,false>
+                   , SVecMapExpr<VT,Real,false>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2379,12 +2410,12 @@ struct SVecMapExprTrait< SVecForEachExpr<VT,Real,false>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct TSVecMapExprTrait< SVecForEachExpr<VT,Real,true>, Real >
+struct TSVecMapExprTrait< SVecMapExpr<VT,Real,true>, Real >
 {
  public:
    //**********************************************************************************************
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , SVecForEachExpr<VT,Real,true>
+                   , SVecMapExpr<VT,Real,true>
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
@@ -2395,7 +2426,7 @@ struct TSVecMapExprTrait< SVecForEachExpr<VT,Real,true>, Real >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF, bool AF >
-struct SubvectorExprTrait< SVecForEachExpr<VT,OP,TF>, AF >
+struct SubvectorExprTrait< SVecMapExpr<VT,OP,TF>, AF >
 {
  public:
    //**********************************************************************************************

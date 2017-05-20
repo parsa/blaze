@@ -131,7 +131,7 @@ template< typename, typename, bool > class SVecDVecMultExpr;
 template< typename, typename > class SVecDVecOuterExpr;
 template< typename, typename, bool > class SVecDVecSubExpr;
 template< typename, bool > class SVecEvalExpr;
-template< typename, typename, bool > class SVecForEachExpr;
+template< typename, typename, bool > class SVecMapExpr;
 template< typename, typename, bool > class SVecScalarDivExpr;
 template< typename, typename, bool > class SVecScalarMultExpr;
 template< typename, bool > class SVecSerialExpr;
@@ -201,7 +201,7 @@ template< typename VT, bool TF, typename OP >
 inline const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );
 
 template< typename VT, bool TF, typename OP >
-inline const SVecForEachExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>&, OP );
+inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>&, OP );
 
 template< typename MT, bool SO, typename OP >
 inline const DMatForEachExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>&, OP );

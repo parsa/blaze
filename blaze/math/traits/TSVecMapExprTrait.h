@@ -79,7 +79,7 @@ struct TSVecMapExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Tmp = If< And< IsSparseVector<VT>, IsRowVector<VT> >
-                 , SVecForEachExpr<VT,OP,true>
+                 , SVecMapExpr<VT,OP,true>
                  , INVALID_TYPE >;
    /*! \endcond */
    //**********************************************************************************************
