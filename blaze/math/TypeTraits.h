@@ -114,6 +114,7 @@
 #include <blaze/math/typetraits/IsMatInvExpr.h>
 #include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
+#include <blaze/math/typetraits/IsMatMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
