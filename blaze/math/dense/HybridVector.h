@@ -50,6 +50,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -3019,6 +3020,37 @@ struct CrossTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
+struct BinaryMapTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF>, OP >
+{
+   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+};
+
+template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
+struct BinaryMapTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF>, OP >
+{
+   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, M, TF >;
+};
+
+template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
+struct BinaryMapTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF>, OP >
+{
+   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, ( M < N )?( M ):( N ), TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
