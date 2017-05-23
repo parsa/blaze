@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2868,6 +2869,25 @@ struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t N, bool TF, typename T2, typename OP >
+struct BinaryMapTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF>, OP >
+{
+   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
