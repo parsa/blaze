@@ -62,6 +62,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -5782,6 +5783,61 @@ struct CrossTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 
  public:
    using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N, typename OP >
+struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF>, OP >
+{
+   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF, typename OP >
+struct BinaryMapTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF>, OP >
+{
+   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N, typename OP >
+struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF>, OP >
+{
+   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+};
+
+template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF, typename OP >
+struct BinaryMapTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF>, OP >
+{
+   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2, typename OP >
+struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF>, OP >
+{
+   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+};
+
+template< typename T1, bool TF, typename T2, bool AF, bool PF, typename OP >
+struct BinaryMapTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF>, OP >
+{
+   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+};
+
+template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2, typename OP >
+struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>, OP >
+{
+   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
