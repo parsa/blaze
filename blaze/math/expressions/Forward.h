@@ -80,6 +80,7 @@ template< typename, typename > class DMatTSMatSubExpr;
 template< typename, typename, bool > class DVecDVecAddExpr;
 template< typename, typename, bool > class DVecDVecCrossExpr;
 template< typename, typename, bool > class DVecDVecDivExpr;
+template< typename, typename, typename, bool > class DVecDVecMapExpr;
 template< typename, typename, bool > class DVecDVecMultExpr;
 template< typename, typename > class DVecDVecOuterExpr;
 template< typename, typename, bool > class DVecDVecSubExpr;
