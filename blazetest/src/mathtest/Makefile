@@ -51,7 +51,7 @@ all: functions simd blas lapack typetraits \
      dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
      dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
      dvecdvecdiv svecdvecdiv \
-     dvecdvecmin \
+     dvecdvecmin dvecdvecmax \
      dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
@@ -379,6 +379,11 @@ dvecdvecmin:
 	@echo "Building the dense vector/dense vector minimum tests..."
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin $(MAKECMDGOALS)
 
+dvecdvecmax:
+	@echo
+	@echo "Building the dense vector/dense vector maximum tests..."
+	@$(MAKE) --no-print-directory -C ./dvecdvecmax $(MAKECMDGOALS)
+
 dmatdvecmult:
 	@echo
 	@echo "Building the dense matrix/dense vector multiplication tests..."
@@ -622,6 +627,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin reset
+	@$(MAKE) --no-print-directory -C ./dvecdvecmax reset
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult reset
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult reset
 	@$(MAKE) --no-print-directory -C ./smatdvecmult reset
@@ -720,6 +726,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin clean
+	@$(MAKE) --no-print-directory -C ./dvecdvecmax clean
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult clean
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult clean
 	@$(MAKE) --no-print-directory -C ./smatdvecmult clean
@@ -776,7 +783,7 @@ clean:
         dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
         dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
         dvecdvecdiv svecdvecdiv \
-        dvecdvecmin \
+        dvecdvecmin dvecdvecmax \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
