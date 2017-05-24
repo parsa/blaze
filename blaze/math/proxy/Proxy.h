@@ -89,6 +89,8 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -814,108 +816,100 @@ inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
 /*!\name Proxy global functions */
 //@{
 template< typename PT, typename RT >
-inline auto trans( const Proxy<PT,RT>& proxy )
-   -> decltype( trans( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) trans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto ctrans( const Proxy<PT,RT>& proxy )
-   -> decltype( ctrans( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto abs( const Proxy<PT,RT>& proxy )
-   -> decltype( abs( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto conj( const Proxy<PT,RT>& proxy )
-   -> decltype( conj( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) conj( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto real( const Proxy<PT,RT>& proxy )
-   -> decltype( real( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) real( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto imag( const Proxy<PT,RT>& proxy )
-   -> decltype( imag( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) imag( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto sqrt( const Proxy<PT,RT>& proxy )
-   -> decltype( sqrt( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) sqrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto invsqrt( const Proxy<PT,RT>& proxy )
-   -> decltype( invsqrt( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) invsqrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto cbrt( const Proxy<PT,RT>& proxy )
-   -> decltype( cbrt( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) cbrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto invcbrt( const Proxy<PT,RT>& proxy )
-   -> decltype( invcbrt( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto floor( const Proxy<PT,RT>& proxy )
-   -> decltype( floor( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) floor( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto ceil( const Proxy<PT,RT>& proxy )
-   -> decltype( ceil( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) ceil( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT, typename ET >
-inline auto pow( const Proxy<PT,RT>& proxy, const ET& exp )
-   -> decltype( pow( std::declval< RepresentedType_<PT> >(), exp ) );
+inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp );
 
 template< typename PT, typename RT >
-inline auto exp( const Proxy<PT,RT>& proxy )
-   -> decltype( exp( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) exp( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto sin( const Proxy<PT,RT>& proxy )
-   -> decltype( sin( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) sin( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto asin( const Proxy<PT,RT>& proxy )
-   -> decltype( asin( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) asin( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto sinh( const Proxy<PT,RT>& proxy )
-   -> decltype( sinh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) sinh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto asinh( const Proxy<PT,RT>& proxy )
-   -> decltype( asinh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) asinh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto cos( const Proxy<PT,RT>& proxy )
-   -> decltype( cos( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) cos( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto acos( const Proxy<PT,RT>& proxy )
-   -> decltype( acos( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) acos( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto cosh( const Proxy<PT,RT>& proxy )
-   -> decltype( cosh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) cosh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto acosh( const Proxy<PT,RT>& proxy )
-   -> decltype( acosh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) acosh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto tan( const Proxy<PT,RT>& proxy )
-   -> decltype( tan( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) tan( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto atan( const Proxy<PT,RT>& proxy )
-   -> decltype( atan( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) atan( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto tanh( const Proxy<PT,RT>& proxy )
-   -> decltype( tanh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) tanh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline auto atanh( const Proxy<PT,RT>& proxy )
-   -> decltype( atanh( std::declval< RepresentedType_<PT> >() ) );
+inline decltype(auto) atanh( const Proxy<PT,RT>& proxy );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
 inline void transpose( const Proxy<PT,RT>& proxy );
@@ -955,8 +949,7 @@ inline bool isnan( const Proxy<PT,RT>& proxy );
 // the proxy.
 */
 template< typename PT, typename RT >
-inline auto trans( const Proxy<PT,RT>& proxy )
-   -> decltype( trans( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) trans( const Proxy<PT,RT>& proxy )
 {
    using blaze::trans;
 
@@ -976,8 +969,7 @@ inline auto trans( const Proxy<PT,RT>& proxy )
 // represented by the proxy.
 */
 template< typename PT, typename RT >
-inline auto ctrans( const Proxy<PT,RT>& proxy )
-   -> decltype( ctrans( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy )
 {
    using blaze::ctrans;
 
@@ -998,8 +990,7 @@ inline auto ctrans( const Proxy<PT,RT>& proxy )
 // an expression representing the absolute values of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto abs( const Proxy<PT,RT>& proxy )
-   -> decltype( abs( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) abs( const Proxy<PT,RT>& proxy )
 {
    using blaze::abs;
 
@@ -1020,8 +1011,7 @@ inline auto abs( const Proxy<PT,RT>& proxy )
 // expression representing the complex conjugate of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto conj( const Proxy<PT,RT>& proxy )
-   -> decltype( conj( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) conj( const Proxy<PT,RT>& proxy )
 {
    using blaze::conj;
 
@@ -1042,8 +1032,7 @@ inline auto conj( const Proxy<PT,RT>& proxy )
 // representing the real part of each each element of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto real( const Proxy<PT,RT>& proxy )
-   -> decltype( real( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) real( const Proxy<PT,RT>& proxy )
 {
    using blaze::real;
 
@@ -1064,8 +1053,7 @@ inline auto real( const Proxy<PT,RT>& proxy )
 // representing the real part of each each element of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto imag( const Proxy<PT,RT>& proxy )
-   -> decltype( imag( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) imag( const Proxy<PT,RT>& proxy )
 {
    using blaze::imag;
 
@@ -1086,8 +1074,7 @@ inline auto imag( const Proxy<PT,RT>& proxy )
 // an expression representing the square roots of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto sqrt( const Proxy<PT,RT>& proxy )
-   -> decltype( sqrt( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) sqrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::sqrt;
 
@@ -1108,8 +1095,7 @@ inline auto sqrt( const Proxy<PT,RT>& proxy )
 // an expression representing the inverse square roots of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto invsqrt( const Proxy<PT,RT>& proxy )
-   -> decltype( invsqrt( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) invsqrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::invsqrt;
 
@@ -1130,8 +1116,7 @@ inline auto invsqrt( const Proxy<PT,RT>& proxy )
 // an expression representing the cubic roots of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto cbrt( const Proxy<PT,RT>& proxy )
-   -> decltype( cbrt( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) cbrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::cbrt;
 
@@ -1152,8 +1137,7 @@ inline auto cbrt( const Proxy<PT,RT>& proxy )
 // an expression representing the inverse cubic roots of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto invcbrt( const Proxy<PT,RT>& proxy )
-   -> decltype( invcbrt( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::invcbrt;
 
@@ -1174,8 +1158,7 @@ inline auto invcbrt( const Proxy<PT,RT>& proxy )
 // structure the function returns an expression representing the operation.
 */
 template< typename PT, typename RT >
-inline auto floor( const Proxy<PT,RT>& proxy )
-   -> decltype( floor( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) floor( const Proxy<PT,RT>& proxy )
 {
    using blaze::floor;
 
@@ -1196,8 +1179,7 @@ inline auto floor( const Proxy<PT,RT>& proxy )
 // structure the function returns an expression representing the operation.
 */
 template< typename PT, typename RT >
-inline auto ceil( const Proxy<PT,RT>& proxy )
-   -> decltype( ceil( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) ceil( const Proxy<PT,RT>& proxy )
 {
    using blaze::ceil;
 
@@ -1219,8 +1201,7 @@ inline auto ceil( const Proxy<PT,RT>& proxy )
 // an expression representing the exponential value of the elements of the vector/matrix.
 */
 template< typename PT, typename RT, typename ET >
-inline auto pow( const Proxy<PT,RT>& proxy, const ET& exp )
-   -> decltype( pow( std::declval< RepresentedType_<PT> >(), exp ) )
+inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp )
 {
    using blaze::pow;
 
@@ -1241,8 +1222,7 @@ inline auto pow( const Proxy<PT,RT>& proxy, const ET& exp )
 // an expression representing the base-e exponentials of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto exp( const Proxy<PT,RT>& proxy )
-   -> decltype( exp( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) exp( const Proxy<PT,RT>& proxy )
 {
    using blaze::exp;
 
@@ -1263,8 +1243,7 @@ inline auto exp( const Proxy<PT,RT>& proxy )
 // representing the sines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto sin( const Proxy<PT,RT>& proxy )
-   -> decltype( sin( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) sin( const Proxy<PT,RT>& proxy )
 {
    using blaze::sin;
 
@@ -1285,8 +1264,7 @@ inline auto sin( const Proxy<PT,RT>& proxy )
 // representing the inverse sines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto asin( const Proxy<PT,RT>& proxy )
-   -> decltype( asin( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) asin( const Proxy<PT,RT>& proxy )
 {
    using blaze::asin;
 
@@ -1307,8 +1285,7 @@ inline auto asin( const Proxy<PT,RT>& proxy )
 // an expression representing the hyperbolic sines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto sinh( const Proxy<PT,RT>& proxy )
-   -> decltype( sinh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) sinh( const Proxy<PT,RT>& proxy )
 {
    using blaze::sinh;
 
@@ -1329,8 +1306,7 @@ inline auto sinh( const Proxy<PT,RT>& proxy )
 // an expression representing the inverse hyperbolic sines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto asinh( const Proxy<PT,RT>& proxy )
-   -> decltype( asinh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) asinh( const Proxy<PT,RT>& proxy )
 {
    using blaze::asinh;
 
@@ -1351,8 +1327,7 @@ inline auto asinh( const Proxy<PT,RT>& proxy )
 // representing the cosines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto cos( const Proxy<PT,RT>& proxy )
-   -> decltype( cos( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) cos( const Proxy<PT,RT>& proxy )
 {
    using blaze::cos;
 
@@ -1373,8 +1348,7 @@ inline auto cos( const Proxy<PT,RT>& proxy )
 // representing the inverse cosines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto acos( const Proxy<PT,RT>& proxy )
-   -> decltype( acos( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) acos( const Proxy<PT,RT>& proxy )
 {
    using blaze::acos;
 
@@ -1395,8 +1369,7 @@ inline auto acos( const Proxy<PT,RT>& proxy )
 // an expression representing the hyperbolic cosines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto cosh( const Proxy<PT,RT>& proxy )
-   -> decltype( cosh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) cosh( const Proxy<PT,RT>& proxy )
 {
    using blaze::cosh;
 
@@ -1417,8 +1390,7 @@ inline auto cosh( const Proxy<PT,RT>& proxy )
 // expression representing the inverse hyperbolic cosines of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto acosh( const Proxy<PT,RT>& proxy )
-   -> decltype( acosh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) acosh( const Proxy<PT,RT>& proxy )
 {
    using blaze::acosh;
 
@@ -1439,8 +1411,7 @@ inline auto acosh( const Proxy<PT,RT>& proxy )
 // representing the tangents of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto tan( const Proxy<PT,RT>& proxy )
-   -> decltype( tan( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) tan( const Proxy<PT,RT>& proxy )
 {
    using blaze::tan;
 
@@ -1461,8 +1432,7 @@ inline auto tan( const Proxy<PT,RT>& proxy )
 // an expression representing the inverse tangents of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto atan( const Proxy<PT,RT>& proxy )
-   -> decltype( atan( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) atan( const Proxy<PT,RT>& proxy )
 {
    using blaze::atan;
 
@@ -1483,8 +1453,7 @@ inline auto atan( const Proxy<PT,RT>& proxy )
 // an expression representing the hyperbolic tangents of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto tanh( const Proxy<PT,RT>& proxy )
-   -> decltype( tanh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) tanh( const Proxy<PT,RT>& proxy )
 {
    using blaze::tanh;
 
@@ -1505,12 +1474,119 @@ inline auto tanh( const Proxy<PT,RT>& proxy )
 // expression representing the inverse hyperbolic tangents of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto atanh( const Proxy<PT,RT>& proxy )
-   -> decltype( atanh( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) atanh( const Proxy<PT,RT>& proxy )
 {
    using blaze::atanh;
 
    return atanh( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minimum of two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the minimum operation.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   using blaze::min;
+
+   return min( (~lhs).get(), (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minimum of a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the minimum operation.
+*/
+template< typename PT, typename RT, typename T >
+inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   using blaze::min;
+
+   return min( (~lhs).get(), rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minimum of an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the minimum operation.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   using blaze::min;
+
+   return min( lhs, (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Maximum of two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the maximum operation.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   using blaze::max;
+
+   return max( (~lhs).get(), (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Maximum of a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the maximum operation.
+*/
+template< typename PT, typename RT, typename T >
+inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   using blaze::max;
+
+   return max( (~lhs).get(), rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Maximum of an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the maximum operation.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   using blaze::max;
+
+   return max( lhs, (~rhs).get() );
 }
 //*************************************************************************************************
 
@@ -1527,8 +1603,7 @@ inline auto atanh( const Proxy<PT,RT>& proxy )
 // an expression representing the error functions of the elements of the vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto erf( const Proxy<PT,RT>& proxy )
-   -> decltype( erf( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) erf( const Proxy<PT,RT>& proxy )
 {
    using blaze::erf;
 
@@ -1550,8 +1625,7 @@ inline auto erf( const Proxy<PT,RT>& proxy )
 // vector/matrix.
 */
 template< typename PT, typename RT >
-inline auto erfc( const Proxy<PT,RT>& proxy )
-   -> decltype( erfc( std::declval< RepresentedType_<PT> >() ) )
+inline decltype(auto) erfc( const Proxy<PT,RT>& proxy )
 {
    using blaze::erfc;
 
