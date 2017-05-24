@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/Serial.h>
 #include <blaze/system/Inline.h>
 
 

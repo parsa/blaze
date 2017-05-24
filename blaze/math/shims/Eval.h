@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Eval.h
-//  \brief Header file for the Eval functor
+//  \file blaze/math/shims/Eval.h
+//  \brief Header file for the eval shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,52 +32,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_EVAL_H_
-#define _BLAZE_MATH_FUNCTORS_EVAL_H_
+#ifndef _BLAZE_MATH_SHIMS_EVAL_H_
+#define _BLAZE_MATH_SHIMS_EVAL_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Eval.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  EVAL SHIM
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the eval() function.
-// \ingroup functors
+/*!\brief Formal evaluation of the given argument.
+// \ingroup math_shims
+//
+// \param a The value/object to be evaluated.
+// \return The evaluated value/object.
+//
+// The \a eval shim represents an abstract interface for enforcing the evaluation of a
+// value/object of any given data type. For data types that don't require an evaluation,
+// as for instance built-in data types, the default behavior is not changed.
 */
-struct Eval
+template< typename T >
+BLAZE_ALWAYS_INLINE constexpr EnableIf_< Or< IsBuiltin<T>, IsComplex<T> >, const T& >
+   eval( const T& a ) noexcept
 {
-   //**********************************************************************************************
-   /*!\brief Default constructor of the Eval functor.
-   */
-   explicit inline Eval()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*!\brief Returns the result of the eval() function for the given object/value.
-   //
-   // \param a The given object/value.
-   // \return The result of the eval() function for the given object/value.
-   */
-   template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
-   {
-      return eval( a );
-   }
-   //**********************************************************************************************
-};
+   return a;
+}
 //*************************************************************************************************
 
 } // namespace blaze

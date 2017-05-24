@@ -57,6 +57,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/shims/Erfc.h>
+#include <blaze/math/shims/Eval.h>
 #include <blaze/math/shims/Exp.h>
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/shims/Floor.h>
