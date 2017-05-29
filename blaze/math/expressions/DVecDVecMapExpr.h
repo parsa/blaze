@@ -1144,7 +1144,7 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
 
 
 //*************************************************************************************************
-/*!\brief Computes the componentwise minimum of all given dense vectors.
+/*!\brief Computes the componentwise minimum of at least three dense vectors.
 // \ingroup dense_vector
 //
 // \param lhs The first dense vector operand.
@@ -1152,7 +1152,7 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
 // \param vecs The pack of additional dense vector operands.
 // \return The resulting dense vector.
 //
-// This function computes the componentwise minimum of all given dense vectors. The function
+// This function computes the componentwise minimum of at least three dense vectors. The function
 // returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a min() function:
 
@@ -1162,7 +1162,10 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
    d = min( a, b, c );
    \endcode
 */
-template< typename VT1, bool TF, typename VT2, typename... Vecs >
+template< typename VT1        // Type of the first dense vector
+        , typename VT2        // Type of the second dense vector
+        , bool TF             // Transpose flag
+        , typename... Vecs >  // Pack of additional dense vectors
 decltype(auto) min( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
 {
    return min( min( a, b ), vecs... );
@@ -1202,7 +1205,7 @@ inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
 
 
 //*************************************************************************************************
-/*!\brief Computes the componentwise maximum of all given dense vectors.
+/*!\brief Computes the componentwise maximum of at least three dense vectors.
 // \ingroup dense_vector
 //
 // \param lhs The first dense vector operand.
@@ -1210,7 +1213,7 @@ inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
 // \param vecs The pack of additional dense vector operands.
 // \return The resulting dense vector.
 //
-// This function computes the componentwise maximum of all given dense vectors. The function
+// This function computes the componentwise maximum of at least three dense vectors. The function
 // returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a max() function:
 
@@ -1220,7 +1223,10 @@ inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
    d = max( a, b, c );
    \endcode
 */
-template< typename VT1, bool TF, typename VT2, typename... Vecs >
+template< typename VT1        // Type of the first dense vector
+        , typename VT2        // Type of the second dense vector
+        , bool TF             // Transpose flag
+        , typename... Vecs >  // Pack of additional dense vectors
 decltype(auto) max( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
 {
    return max( max( a, b ), vecs... );
