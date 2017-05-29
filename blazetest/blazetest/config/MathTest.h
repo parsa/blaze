@@ -54,6 +54,110 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the addition tests.
+//
+// This compilation switch triggers the addition test scenarios. In case the addition tests are
+// activated, addition tests in combination with all activated operations are included in the
+// tests. In case the addition tests are disabled, all kinds of addition tests are excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The addition tests are not included in the compilation process and not executed
+//   - 1: The addition tests are included in the compilation process, but not executed
+//   - 2: The addition tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_ADDITION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the subtraction tests.
+//
+// This compilation switch triggers the subtraction test scenarios. In case the subtraction tests
+// are activated, subtraction tests in combination with all activated operations are included in
+// the tests. In case the subtraction tests are disabled, all kinds of subtraction tests are
+// excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The subtraction tests are not included in the compilation process and not executed
+//   - 1: The subtraction tests are included in the compilation process, but not executed
+//   - 2: The subtraction tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_SUBTRACTION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the multiplication tests.
+//
+// This compilation switch triggers the multiplication test scenarios. In case the multiplication
+// tests are activated, multiplication tests in combination with all activated operations are
+// included in the tests. In case the multiplication tests are disabled, all kinds of subtraction
+// tests are excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The multiplication tests are not included in the compilation process and not executed
+//   - 1: The multiplication tests are included in the compilation process, but not executed
+//   - 2: The multiplication tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_MULTIPLICATION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the division tests.
+//
+// This compilation switch triggers the division test scenarios. In case the division tests are
+// activated, division tests in combination with all activated operations are included in the
+// tests. In case the division tests are disabled, all kinds of division tests are excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The division tests are not included in the compilation process and not executed
+//   - 1: The division tests are included in the compilation process, but not executed
+//   - 2: The division tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_DIVISION 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the minimum tests.
+//
+// This compilation switch triggers the minimum test scenarios. In case the minimum tests are
+// activated, minimum tests in combination with all activated operations are included in the
+// tests. In case the minimum tests are disabled, all kinds of minimum tests are excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The minimum tests are not included in the compilation process and not executed
+//   - 1: The minimum tests are included in the compilation process, but not executed
+//   - 2: The minimum tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_MINIMUM 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the maximum tests.
+//
+// This compilation switch triggers the maximum test scenarios. In case the maximum tests are
+// activated, maximum tests in combination with all activated operations are included in the
+// tests. In case the maximum tests are disabled, all kinds of maximum tests are excluded.
+//
+// The following settings are possible:
+//
+//   - 0: The maximum tests are not included in the compilation process and not executed
+//   - 1: The maximum tests are included in the compilation process, but not executed
+//   - 2: The maximum tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_MAXIMUM 2
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the basic tests.
 //
 // This compilation switch triggers the basic tests for all test scenarios. In case the
