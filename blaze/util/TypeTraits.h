@@ -105,5 +105,6 @@
 #include <blaze/util/typetraits/RemovePointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/typetraits/RemoveVolatile.h>
+#include <blaze/util/typetraits/Void.h>
 
 #endif
