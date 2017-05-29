@@ -888,10 +888,10 @@ void OperationTest<VT1,VT2>::testElementAccess()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the plain vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// This function tests the plain vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -1238,10 +1238,10 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the negated vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// This function tests the negated vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -1588,10 +1588,10 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the scaled vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// This function tests the scaled vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -2761,10 +2761,10 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the transpose vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// This function tests the transpose vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3112,9 +3112,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the conjugate transpose vector multiplication with plain assignment,
-// addition assignment, subtraction assignment, and multiplication assignment. In case any
-// error resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3461,10 +3461,10 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the abs vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// multiplication or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// This function tests the abs vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3487,9 +3487,9 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the conjugate vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3512,9 +3512,9 @@ void OperationTest<VT1,VT2>::testConjOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the \a real vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error
-// resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3537,9 +3537,9 @@ void OperationTest<VT1,VT2>::testRealOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the \a imag vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error
-// resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3562,9 +3562,9 @@ void OperationTest<VT1,VT2>::testImagOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the evaluated vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3587,9 +3587,9 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the serialized vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3612,8 +3612,9 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the subvector-wise vector multiplication with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the multiplication
-// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -4028,9 +4029,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment in combination with a custom operation.
-// In case any error resulting from the multiplication or the subsequent assignment is detected,
-// a \a std::runtime_error exception is thrown.
+// subtraction assignment, multiplication assignment, and division assignment in combination
+// with a custom operation. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -4594,9 +4595,14 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<VT1,VT2>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_MULTIPLICATION
+   if( BLAZETEST_MATHTEST_TEST_MULTIPLICATION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<VT1,VT2>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

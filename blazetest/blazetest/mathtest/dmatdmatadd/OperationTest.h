@@ -10312,9 +10312,14 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<MT1,MT2>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_ADDITION
+   if( BLAZETEST_MATHTEST_TEST_ADDITION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<MT1,MT2>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

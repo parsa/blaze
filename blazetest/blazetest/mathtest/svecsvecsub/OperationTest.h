@@ -3967,9 +3967,14 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<VT1,VT2>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_SUBTRACTION
+   if( BLAZETEST_MATHTEST_TEST_SUBTRACTION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<VT1,VT2>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

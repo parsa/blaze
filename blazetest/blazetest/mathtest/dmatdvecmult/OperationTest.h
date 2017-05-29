@@ -868,9 +868,9 @@ void OperationTest<MT,VT>::testElementAccess()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the plain matrix/vector multiplication with plain assignment,
-// addition assignment, subtraction assignment, and multiplication assignment. In case
-// any error resulting from the multiplication or the subsequent assignment is detected,
+// This function tests the plain matrix/vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
 // a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
@@ -1219,9 +1219,9 @@ void OperationTest<MT,VT>::testBasicOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the negated matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -1570,9 +1570,9 @@ void OperationTest<MT,VT>::testNegatedOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the scaled matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -2743,9 +2743,9 @@ void OperationTest<MT,VT>::testScaledOperation( T scalar )
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the transpose matrix/vector multiplication with plain assignment,
-// addition assignment, subtraction assignment, and multiplication assignment. In case any
-// error resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3093,9 +3093,9 @@ void OperationTest<MT,VT>::testTransOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the conjugate transpose matrix/vector multiplication with plain
-// assignment, addition assignment, subtraction assignment, and multiplication assignment.
-// In case any error resulting from the multiplication or the subsequent assignment is
-// detected, a \a std::runtime_error exception is thrown.
+// assignment, addition assignment, subtraction assignment, multiplication assignment,
+// and division assignment. In case any error resulting from the multiplication or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3443,9 +3443,9 @@ void OperationTest<MT,VT>::testCTransOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the abs matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error
-// resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3468,9 +3468,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the conjugate matrix/vector multiplication with plain assignment,
-// addition assignment, subtraction assignment, and multiplication assignment. In case
-// any error resulting from the multiplication or the subsequent assignment is detected,
-// a \a std::runtime_error exception is thrown.
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3493,9 +3493,9 @@ void OperationTest<MT,VT>::testConjOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the \a real matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3518,9 +3518,9 @@ void OperationTest<MT,VT>::testRealOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the \a imag matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the multiplication or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3542,10 +3542,10 @@ void OperationTest<MT,VT>::testImagOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the evaluated matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// This function tests the evaluated matrix/vector multiplication with plain assignment,
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3567,10 +3567,10 @@ void OperationTest<MT,VT>::testEvalOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the serialized matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
-// exception is thrown.
+// This function tests the serialized matrix/vector multiplication with plain assignment,
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -3593,9 +3593,9 @@ void OperationTest<MT,VT>::testSerialOperation()
 // \exception std::runtime_error Multiplication error detected.
 //
 // This function tests the subvector-wise matrix/vector multiplication with plain assignment,
-// addition assignment, subtraction assignment, and multiplication assignment. In case any
-// error resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -4009,10 +4009,10 @@ void OperationTest<MT,VT>::testSubvectorOperation()
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the matrix/vector multiplication with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment in combination with a custom operation.
-// In case any error resulting from the multiplication or the subsequent assignment is detected,
-// a \a std::runtime_error exception is thrown.
+// This function tests the matrix/vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment
+// in combination with a custom operation. In case any error resulting from the multiplication
+// or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
@@ -4572,9 +4572,14 @@ template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side dense vector
 void runTest( const Creator<MT>& creator1, const Creator<VT>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<MT,VT>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_MULTIPLICATION
+   if( BLAZETEST_MATHTEST_TEST_MULTIPLICATION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<MT,VT>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

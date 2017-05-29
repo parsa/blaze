@@ -889,9 +889,9 @@ void OperationTest<VT1,VT2>::testElementAccess()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the plain vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -1239,9 +1239,9 @@ void OperationTest<VT1,VT2>::testBasicOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the negated vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -1589,9 +1589,9 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the scaled vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -2762,9 +2762,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the transpose vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
-// thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3112,9 +3112,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the conjugate transpose vector addition with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
-// from the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment. In
+// case any error resulting from the addition or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3462,9 +3462,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the abs vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3487,8 +3487,9 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the conjugate vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// addition or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3511,9 +3512,9 @@ void OperationTest<VT1,VT2>::testConjOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the \a real vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3536,9 +3537,9 @@ void OperationTest<VT1,VT2>::testRealOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the \a imag vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from
-// the addition or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3561,8 +3562,9 @@ void OperationTest<VT1,VT2>::testImagOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the evaluated vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// addition or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3585,8 +3587,9 @@ void OperationTest<VT1,VT2>::testEvalOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the serialized vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// addition or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// subtraction assignment, multiplication assignment, and division assignment. In case any error
+// resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -3609,8 +3612,9 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the subvector-wise vector addition with plain assignment, addition
-// assignment, and subtraction assignment. In case any error resulting from the addition or
-// the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the addition or the subsequent assignment is detected,
+// a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -4025,9 +4029,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 // \exception std::runtime_error Addition error detected.
 //
 // This function tests the vector addition with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment in combination with a custom operation.
-// In case any error resulting from the addition or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// subtraction assignment, multiplication assignment, and division assignment in combination
+// with a custom operation. In case any error resulting from the addition or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
@@ -4590,9 +4594,14 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<VT1,VT2>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_ADDITION
+   if( BLAZETEST_MATHTEST_TEST_ADDITION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<VT1,VT2>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

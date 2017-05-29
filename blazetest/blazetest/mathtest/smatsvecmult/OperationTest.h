@@ -3945,9 +3945,14 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 void runTest( const Creator<MT>& creator1, const Creator<VT>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<MT,VT>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_MULTIPLICATION
+   if( BLAZETEST_MATHTEST_TEST_MULTIPLICATION > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<MT,VT>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 

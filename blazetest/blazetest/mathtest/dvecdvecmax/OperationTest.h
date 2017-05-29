@@ -293,14 +293,14 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
-   //testCTransOperation();
-   //testAbsOperation();
-   //testConjOperation();
-   //testRealOperation();
-   //testImagOperation();
-   //testEvalOperation();
-   //testSerialOperation();
-   //testSubvectorOperation();
+   testCTransOperation();
+   testAbsOperation();
+   testConjOperation();
+   testRealOperation();
+   testImagOperation();
+   testEvalOperation();
+   testSerialOperation();
+   testSubvectorOperation();
 }
 //*************************************************************************************************
 
@@ -4347,9 +4347,14 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
-      OperationTest<VT1,VT2>( creator1, creator2 );
+#if BLAZETEST_MATHTEST_TEST_MAXIMUM
+   if( BLAZETEST_MATHTEST_TEST_MAXIMUM > 1 )
+   {
+      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+         OperationTest<VT1,VT2>( creator1, creator2 );
+      }
    }
+#endif
 }
 //*************************************************************************************************
 
