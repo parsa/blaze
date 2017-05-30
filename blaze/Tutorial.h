@@ -1494,39 +1494,51 @@
 //
 // \n \subsection vector_operations_min_max min() / max()
 //
-// The \c min() and the \c max() functions return the smallest and largest element of the given
+// The \c min() and \c max() functions can be used for a single vector or multiple vectors. If
+// passed a single vector, the functions return the smallest and largest element of the given
 // dense or sparse vector, respectively:
 
    \code
-   blaze::StaticVector<int,4UL,rowVector> a{ -5, 2,  7,  4 };
-   blaze::StaticVector<int,4UL,rowVector> b{ -5, 2, -7, -4 };
+   blaze::StaticVector<int,4UL,rowVector> a{ -5, 2,  7, -4 };
 
    min( a );  // Returns -5
-   min( b );  // Returns -7
-
    max( a );  // Returns 7
-   max( b );  // Returns 2
    \endcode
 
 // In case the vector currently has a size of 0, both functions return 0. Additionally, in case
 // a given sparse vector is not completely filled, the zero elements are taken into account. For
-// example: the following compressed vector has only 2 non-zero elements. However, the minimum
+// example, the following compressed vector has only two non-zero elements. However, the minimum
 // of this vector is 0:
 
    \code
-   blaze::CompressedVector<int> c( 4UL, 2UL );
-   c[0] = 1;
-   c[2] = 3;
+   blaze::CompressedVector<int> b( 4UL, 2UL );
+   b[0] = 1;
+   b[2] = 3;
 
-   min( c );  // Returns 0
+   min( b );  // Returns 0
    \endcode
 
-// Also note that the \c min() and \c max() functions can be used to compute the smallest and
-// largest element of a vector expression:
+// If passed two or more dense vectors, the \c min() and \a max() functions compute the
+// componentwise minimum or maximum of the given vectors, respectively:
+
+   \code
+   blaze::StaticVector<int,4UL,rowVector> c{ -5, 1, -7, 4 };
+   blaze::StaticVector<int,4UL,rowVector> d{ -5, 3,  0, 2 };
+
+   min( a, c );     // Results in the vector ( -5, 1, -7, -4 )
+   max( a, c, d );  // Results in the vector ( -5, 3,  7,  4 )
+   \endcode
+
+// Please note that sparse vectors can only be used in the unary \c min() and \a max() functions.
+// Also note that all forms of the \c min() and \c max() functions can be used to compute the
+// smallest and largest element of a vector expression:
 
    \code
    min( a + b + c );  // Returns -9, i.e. the smallest value of the resulting vector
    max( a - b - c );  // Returns 11, i.e. the largest value of the resulting vector
+
+   min( a + c, c - d );  // Results in ( -10 -2 -7 0 )
+   max( a - c, c + d );  // Results in ( 0 4 14 6 )
    \endcode
 
 // \n \subsection vector_operators_abs abs()
