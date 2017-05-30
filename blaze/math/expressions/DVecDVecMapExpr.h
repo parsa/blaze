@@ -479,7 +479,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < dv_.size(), "Invalid vector access index" );
+      BLAZE_INTERNAL_ASSERT( index < lhs_.size(), "Invalid vector access index" );
       return op_( lhs_[index], rhs_[index] );
    }
    //**********************************************************************************************
