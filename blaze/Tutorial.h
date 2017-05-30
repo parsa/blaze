@@ -1783,21 +1783,46 @@
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
-// \n \subsection vector_operations_foreach forEach()
+// \n \subsection vector_operations_map map() / forEach()
 //
-// Via the \c forEach() function it is possible to execute custom operations on dense and sparse
-// vectors. For instance, the following example demonstrates a custom square root computation via
-// a lambda:
+// Via the unary and binary \c map() functions it is possible to execute componentwise custom
+// operations on vectors. The unary \c map() function can be used to apply a custom operation
+// on each element of a dense or sparse vector. For instance, the following example demonstrates
+// a custom square root computation via a lambda:
 
    \code
    blaze::DynamicVector<double> a, b;
 
-   b = forEach( a, []( double d ) { return std::sqrt( d ); } );
+   b = map( a, []( double d ) { return std::sqrt( d ); } );
+   \endcode
+
+// The binary \c map() function can be used to apply an operation pairwise to the elements of
+// two dense vectors. The following example demonstrates the merging of two vectors of double
+// precision values into a vector of double precision complex numbers:
+
+   \code
+   blaze::DynamicVector<double> real{ 2.1, -4.2,  1.0,  0.6 };
+   blaze::DynamicVector<double> imag{ 0.3,  1.4,  2.9, -3.4 };
+
+   blaze::DynamicVector< complex<double> > cplx;
+
+   // Creating the vector
+   //    ( (-2.1,  0.3) )
+   //    ( (-4.2, -1.4) )
+   //    ( ( 1.0,  2.9) )
+   //    ( ( 0.6, -3.4) )
+   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
    \endcode
 
 // Although the computation can be parallelized it is not vectorized and thus cannot perform at
 // peak performance. However, it is also possible to create vectorized custom operations. See
 // \ref custom_operations for a detailed overview of the possibilities of custom operations.
+//
+// Please note that unary custom operations on vectors have been introduced in \b Blaze 3.0 in
+// form of the \c forEach() function. With the introduction of binary custom functions, the
+// \c forEach() function has been renamed to \c map(). The \c forEach() function can still be
+// used (even for binary custom operations), but the function might be deprecated in future
+// releases of \b Blaze.
 //
 //
 // \n \subsection vector_operations_length length() / sqrLength()
@@ -3602,21 +3627,27 @@
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
 //
 //
-// \n \subsection matrix_operations_foreach forEach()
+// \n \subsection matrix_operations_map map() / forEach()
 //
-// Via the \c forEach() function it is possible to execute custom operations on dense and sparse
-// matrices. For instance, the following example demonstrates a custom square root computation via
-// a lambda:
+// Via the \c map() function it is possible to execute custom operations on dense and sparse
+// matrices. For instance, the following example demonstrates a custom square root computation
+// via a lambda:
 
    \code
    blaze::DynamicMatrix<double> A, B;
 
-   B = forEach( A, []( double d ) { return std::sqrt( d ); } );
+   B = map( A, []( double d ) { return std::sqrt( d ); } );
    \endcode
 
 // Although the computation can be parallelized it is not vectorized and thus cannot perform at
 // peak performance. However, it is also possible to create vectorized custom operations. See
 // \ref custom_operations for a detailed overview of the possibilities of custom operations.
+//
+// Please note that unary custom operations on vectors have been introduced in \b Blaze 3.0 in
+// form of the \c forEach() function. With the introduction of binary custom functions, the
+// \c forEach() function has been renamed to \c map(). The \c forEach() function can still be
+// used (even for binary custom operations), but the function might be deprecated in future
+// releases of \b Blaze.
 //
 //
 // \n \subsection matrix_operations_matrix_transpose trans() / transpose()
@@ -8716,18 +8747,18 @@
 /*!\page custom_operations Custom Operations
 //
 // In addition to the provided operations on vectors and matrices it is possible to define custom
-// operations. For this purpose, \b Blaze provides the \c forEach() function, which allows to pass
+// operations. For this purpose, \b Blaze provides the \c map() function, which allows to pass
 // the required operation via functor or lambda:
 
    \code
    blaze::DynamicMatrix<double> A, B;
 
-   B = forEach( A, []( double d ){ return std::sqrt( d ); } );
+   B = map( A, []( double d ){ return std::sqrt( d ); } );
    \endcode
 
-// This example demonstrates the most convenient way of defining a custom operation by passing a
-// lambda to the \c forEach() function. The lambda is executed on each single element of a dense
-// vector or matrix or each non-zero element of a sparse vector or matrix.
+// This example demonstrates the most convenient way of defining a unary custom operation by
+// passing a lambda to the \c map() function. The lambda is executed on each single element of
+// a dense vector or matrix or each non-zero element of a sparse vector or matrix.
 //
 // Alternatively, it is possible to pass a custom functor:
 
@@ -8740,11 +8771,11 @@
       }
    };
 
-   B = forEach( A, Sqrt() );
+   B = map( A, Sqrt() );
    \endcode
 
-// In order for the functor to work in a call to \c forEach() it must define a function call
-// operator, which accepts arguments of the type of the according vector or matrix elements.
+// In order for the functor to work in a call to \c map() it must define a function call operator,
+// which accepts arguments of the type of the according vector or matrix elements.
 //
 // Although the operation is automatically parallelized depending on the size of the vector or
 // matrix, no automatic vectorization is possible. In order to enable vectorization, a \c load()
@@ -8864,12 +8895,41 @@
       template< typename T >
       BLAZE_ALWAYS_INLINE auto load( const T& a ) const
       {
-         BLAZE_CONSTRAINT_MUST_BE_SIMD_TYPE( T );
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
          return sqrt( a );
       }
    };
 
    } // namespace blaze
+   \endcode
+
+// The same approach can be taken for binary custom operations. The following code demonstrates
+// the \c Min functor of the \b Blaze library, which is working for all data types that provide
+// a \c min() operation:
+
+   \code
+   struct Min
+   {
+      explicit inline Min()
+      {}
+
+      template< typename T1, typename T2 >
+      BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+      {
+         return min( a, b );
+      }
+
+      template< typename T1, typename T2 >
+      static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
+
+      template< typename T1, typename T2 >
+      BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& a, const T2& b ) const
+      {
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T1 );
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T2 );
+         return min( a, b );
+      }
+   };
    \endcode
 
 // For more information on the available \b Blaze SIMD data types and functions, please see the
