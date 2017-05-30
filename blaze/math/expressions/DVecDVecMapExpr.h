@@ -461,7 +461,8 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the DVecMapExpr class.
    //
-   // \param dv The dense vector operand of the map expression.
+   // \param lhs The left-hand side dense vector operand of the map expression.
+   // \param rhs The right-hand side dense vector operand of the map expression.
    // \param op The custom unary operation.
    */
    explicit inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
@@ -1147,8 +1148,8 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
 /*!\brief Computes the componentwise minimum of at least three dense vectors.
 // \ingroup dense_vector
 //
-// \param lhs The first dense vector operand.
-// \param rhs The second dense vector operand.
+// \param a The first dense vector operand.
+// \param b The second dense vector operand.
 // \param vecs The pack of additional dense vector operands.
 // \return The resulting dense vector.
 //
@@ -1208,8 +1209,8 @@ inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
 /*!\brief Computes the componentwise maximum of at least three dense vectors.
 // \ingroup dense_vector
 //
-// \param lhs The first dense vector operand.
-// \param rhs The second dense vector operand.
+// \param a The first dense vector operand.
+// \param b The second dense vector operand.
 // \param vecs The pack of additional dense vector operands.
 // \return The resulting dense vector.
 //
