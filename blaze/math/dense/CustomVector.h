@@ -1779,6 +1779,21 @@ inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) noexcept
 //
 // \param scalar The scalar value for the vector scaling.
 // \return Reference to the vector.
+//
+// This function scales the vector by applying the given scalar value \a scalar to each element
+// of the vector. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::unpadded;
+
+   CustomVector<double,unaligned,unpadded> v( ... );
+
+   a *= 4;        // Scaling of the vector
+   a.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag
@@ -3586,7 +3601,7 @@ inline CustomVector<Type,AF,padded,TF>&
    using blaze::unaliged;
    using blaze::padded;
 
-   const int array[4] = { 1, 2, 3, 4 };
+   const int array[8] = { 1, 2, 3, 4, 0, 0, 0, 0 };
 
    CustomVector<double,unaligned,padded> v( array, 4UL, 8UL );
    v = { 5, 6, 7 };
@@ -4160,6 +4175,21 @@ inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) noexcept
 //
 // \param scalar The scalar value for the vector scaling.
 // \return Reference to the vector.
+//
+// This function scales the vector by applying the given scalar value \a scalar to each element
+// of the vector. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::padded;
+
+   CustomVector<double,unaligned,padded> v( ... );
+
+   a *= 4;        // Scaling of the vector
+   a.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the vector
         , bool AF           // Alignment flag

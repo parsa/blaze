@@ -458,6 +458,10 @@ inline void DenseVectorProxy<PT,VT>::reserve( size_t n ) const
 // \param scalar The scalar value for the vector scaling.
 // \return void
 // \exception std::invalid_argument Invalid access to restricted element.
+//
+// This function scales the vector by applying the given scalar value \a scalar to each element
+// of the vector. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator.
 */
 template< typename PT       // Type of the proxy
         , typename VT >     // Type of the dense vector

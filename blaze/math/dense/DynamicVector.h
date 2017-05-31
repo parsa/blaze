@@ -1636,6 +1636,17 @@ inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 //
 // \param scalar The scalar value for the vector scaling.
 // \return Reference to the vector.
+//
+// This function scales the vector by applying the given scalar value \a scalar to each element
+// of the vector. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::DynamicVector<int> a;
+   // ... Initialization
+   a *= 4;        // Scaling of the vector
+   a.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag

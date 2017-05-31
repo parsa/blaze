@@ -1296,9 +1296,11 @@ inline void Row<MT,true,true,SF>::reset()
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT       // Type of the dense matrix
         , bool SF >         // Symmetry flag
@@ -3565,9 +3567,11 @@ inline void Row<MT,false,true,false>::reset()
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
@@ -5156,9 +5160,11 @@ inline void Row<MT,false,true,true>::reset()
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value

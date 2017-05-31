@@ -1725,9 +1725,11 @@ inline typename Row<MT,true,false,SF>::ConstIterator Row<MT,true,false,SF>::uppe
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the sparse row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF >         // Symmetry flag
@@ -3738,9 +3740,11 @@ inline typename Row<MT,false,false,false>::ConstIterator
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the sparse row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
@@ -5532,9 +5536,11 @@ inline typename Row<MT,false,false,true>::ConstIterator
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the sparse row.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the row by applying the given scalar value \a scalar to each element
+// of the row. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a row
+// on a lower or upper unitriangular matrix. The attempt to scale such a row results in a
+// compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value

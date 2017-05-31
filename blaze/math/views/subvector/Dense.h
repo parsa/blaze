@@ -1720,6 +1720,10 @@ inline void Subvector<VT,unaligned,TF,true>::reset()
 //
 // \param scalar The scalar value for the subvector scaling.
 // \return Reference to the dense subvector.
+//
+// This function scales the subvector by applying the given scalar value \a scalar to each
+// element of the subvector. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator.
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
@@ -3835,6 +3839,10 @@ inline void Subvector<VT,aligned,TF,true>::reset()
 //
 // \param scalar The scalar value for the subvector scaling.
 // \return Reference to the dense subvector.
+//
+// This function scales the subvector by applying the given scalar value \a scalar to each
+// element of the subvector. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator.
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag

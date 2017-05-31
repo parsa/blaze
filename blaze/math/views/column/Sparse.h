@@ -1730,9 +1730,11 @@ inline typename Column<MT,true,false,SF>::ConstIterator
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF >         // Symmetry flag
@@ -3756,9 +3758,11 @@ inline typename Column<MT,false,false,false>::ConstIterator
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
@@ -5554,9 +5558,11 @@ inline typename Column<MT,false,false,true>::ConstIterator
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
 //
-// This function scales all elements of the row by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value

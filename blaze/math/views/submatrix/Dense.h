@@ -2254,9 +2254,11 @@ inline Submatrix<MT,unaligned,false,true>& Submatrix<MT,unaligned,false,true>::c
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
@@ -5570,9 +5572,11 @@ inline Submatrix<MT,unaligned,true,true>& Submatrix<MT,unaligned,true,true>::ctr
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
@@ -8514,9 +8518,11 @@ inline Submatrix<MT,aligned,false,true>& Submatrix<MT,aligned,false,true>::ctran
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
@@ -11414,9 +11420,11 @@ inline Submatrix<MT,aligned,true,true>& Submatrix<MT,aligned,true,true>::ctransp
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value

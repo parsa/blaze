@@ -2502,6 +2502,17 @@ inline constexpr size_t StrictlyLowerMatrix<MT,SO,true>::maxNonZeros( size_t n )
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename MT       // Type of the adapted dense matrix
         , bool SO >         // Storage order of the adapted dense matrix

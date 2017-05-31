@@ -2480,6 +2480,17 @@ inline HermitianMatrix<MT,SO,false>& HermitianMatrix<MT,SO,false>::ctranspose()
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::HermitianMatrix< blaze::CompressedMatrix<int> > A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix
@@ -2500,6 +2511,9 @@ inline HermitianMatrix<MT,SO,false>&
 //
 // \param scalar The scalar value for the diagonal scaling.
 // \return Reference to the Hermitian matrix.
+//
+// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
+// to each element of the diagonal.
 */
 template< typename MT       // Type of the adapted sparse matrix
         , bool SO >         // Storage order of the adapted sparse matrix

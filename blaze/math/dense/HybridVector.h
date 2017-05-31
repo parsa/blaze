@@ -1650,6 +1650,17 @@ inline void HybridVector<Type,N,TF>::swap( HybridVector& v ) noexcept
 //
 // \param scalar The scalar value for the vector scaling.
 // \return Reference to the vector.
+//
+// This function scales the vector by applying the given scalar value \a scalar to each element
+// of the vector. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::HybridVector<int,3> a;
+   // ... Resizing and initialization
+   a *= 4;        // Scaling of the vector
+   a.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the vector
         , size_t N          // Number of elements

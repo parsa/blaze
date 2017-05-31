@@ -2024,6 +2024,17 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::ctranspose()
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::DynamicMatrix<int> A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
@@ -5081,6 +5092,17 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::ctranspose()
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::DynamicMatrix<int> A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the scalar value

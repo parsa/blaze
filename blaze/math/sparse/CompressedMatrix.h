@@ -2547,6 +2547,17 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::ctranspose()
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the compressed matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::CompressedMatrix<int> A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
@@ -2567,6 +2578,9 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other&
 //
 // \param scalar The scalar value for the diagonal scaling.
 // \return Reference to the compressed matrix.
+//
+// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
+// to each element of the diagonal.
 */
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
@@ -5284,6 +5298,17 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::ctranspose()
 //
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the compressed matrix.
+//
+// This function scales the matrix by applying the given scalar value \a scalar to each element
+// of the matrix. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator:
+
+   \code
+   blaze::CompressedMatrix<int> A;
+   // ... Resizing and initialization
+   A *= 4;        // Scaling of the matrix
+   A.scale( 4 );  // Same effect as above
+   \endcode
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the scalar value
@@ -5305,6 +5330,9 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Ot
 //
 // \param scalar The scalar value for the diagonal scaling.
 // \return Reference to the compressed matrix.
+//
+// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
+// to each element of the diagonal.
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the scalar value

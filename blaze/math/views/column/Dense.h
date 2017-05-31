@@ -1298,9 +1298,11 @@ inline void Column<MT,true,true,SF>::reset()
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the dense column.
 //
-// This function scales all elements of the column by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a column on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT       // Type of the dense matrix
         , bool SF >         // Symmetry flag
@@ -3578,9 +3580,11 @@ inline void Column<MT,false,true,false>::reset()
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the dense column.
 //
-// This function scales all elements of the column by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a column on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
@@ -5177,9 +5181,11 @@ inline void Column<MT,false,true,true>::reset()
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the dense column.
 //
-// This function scales all elements of the column by the given scalar value \a scalar. Note that
-// the function cannot be used to scale a column on a lower or upper unitriangular matrix. The
-// attempt to scale such a row results in a compile time error!
+// This function scales the column by applying the given scalar value \a scalar to each element
+// of the column. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a column
+// on a lower or upper unitriangular matrix. The attempt to scale such a column results in a
+// compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value

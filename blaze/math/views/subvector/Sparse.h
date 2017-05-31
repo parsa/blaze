@@ -1852,6 +1852,10 @@ inline typename Subvector<VT,AF,TF,false>::ConstIterator
 //
 // \param scalar The scalar value for the subvector scaling.
 // \return Reference to the sparse subvector.
+//
+// This function scales the subvector by applying the given scalar value \a scalar to each
+// element of the subvector. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator.
 */
 template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag

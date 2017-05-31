@@ -2333,9 +2333,11 @@ inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::ctranspose()
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the sparse submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
@@ -4842,9 +4844,11 @@ inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::ctranspose()
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the sparse submatrix.
 //
-// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
-// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
-// The attempt to scale such a submatrix results in a compile time error!
+// This function scales the submatrix by applying the given scalar value \a scalar to each
+// element of the submatrix. For built-in and \c complex data types it has the same effect
+// as using the multiplication assignment operator. Note that the function cannot be used
+// to scale a submatrix on a lower or upper unitriangular matrix. The attempt to scale
+// such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
