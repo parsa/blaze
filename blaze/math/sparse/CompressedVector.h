@@ -61,6 +61,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -2883,6 +2884,25 @@ struct CrossTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF, typename OP >
+struct UnaryMapTrait< CompressedVector<T,TF>, OP >
+{
+   using Type = CompressedVector< UnaryMapTrait_<T,OP>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2927,10 +2947,10 @@ struct LowType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF >
-struct SubvectorTrait< CompressedVector<T1,TF> >
+template< typename T, bool TF >
+struct SubvectorTrait< CompressedVector<T,TF> >
 {
-   using Type = CompressedVector<T1,TF>;
+   using Type = CompressedVector<T,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

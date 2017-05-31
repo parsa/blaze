@@ -2003,12 +2003,6 @@ struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, typename OP >
-struct UnaryMapTrait< DiagonalMatrix<MT,SO,DF>, OP >
-{
-   using Type = UnaryMapTrait_<MT,OP>;
-};
-
 template< typename MT, bool SO, bool DF >
 struct UnaryMapTrait< DiagonalMatrix<MT,SO,DF>, Abs >
 {

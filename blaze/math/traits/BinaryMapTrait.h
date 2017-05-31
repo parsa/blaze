@@ -40,15 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
-#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -82,7 +79,6 @@ namespace blaze {
 // provides appropriate specializations for the following user-defined arithmetic types:
 //
 // <ul>
-//    <li>std::complex</li>
 //    <li>blaze::StaticVector</li>
 //    <li>blaze::HybridVector</li>
 //    <li>blaze::DynamicVector</li>

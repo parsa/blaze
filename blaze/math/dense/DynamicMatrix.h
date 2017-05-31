@@ -69,6 +69,7 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -6918,6 +6919,25 @@ struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, typename OP >
+struct UnaryMapTrait< DynamicMatrix<T,SO>, OP >
+{
+   using Type = DynamicMatrix< UnaryMapTrait_<T,OP>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -6962,10 +6982,10 @@ struct LowType< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct SubmatrixTrait< DynamicMatrix<T1,SO> >
+template< typename T, bool SO >
+struct SubmatrixTrait< DynamicMatrix<T,SO> >
 {
-   using Type = DynamicMatrix<T1,SO>;
+   using Type = DynamicMatrix<T,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6981,10 +7001,10 @@ struct SubmatrixTrait< DynamicMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct RowTrait< DynamicMatrix<T1,SO> >
+template< typename T, bool SO >
+struct RowTrait< DynamicMatrix<T,SO> >
 {
-   using Type = DynamicVector<T1,true>;
+   using Type = DynamicVector<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7000,10 +7020,10 @@ struct RowTrait< DynamicMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct ColumnTrait< DynamicMatrix<T1,SO> >
+template< typename T, bool SO >
+struct ColumnTrait< DynamicMatrix<T,SO> >
 {
-   using Type = DynamicVector<T1,false>;
+   using Type = DynamicVector<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

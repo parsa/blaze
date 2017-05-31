@@ -2526,12 +2526,6 @@ struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, typename OP >
-struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, OP >
-{
-   using Type = UnaryMapTrait_<MT,OP>;
-};
-
 template< typename MT, bool SO, bool DF >
 struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, Abs >
 {

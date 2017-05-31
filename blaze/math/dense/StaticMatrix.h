@@ -68,6 +68,7 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -6666,6 +6667,25 @@ struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO, typename OP >
+struct UnaryMapTrait< StaticMatrix<T,M,N,SO>, OP >
+{
+   using Type = StaticMatrix< UnaryMapTrait_<T,OP>, M, N, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -6710,10 +6730,10 @@ struct LowType< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO >
-struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO >
+struct SubmatrixTrait< StaticMatrix<T,M,N,SO> >
 {
-   using Type = HybridMatrix<T1,M,N,SO>;
+   using Type = HybridMatrix<T,M,N,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6729,10 +6749,10 @@ struct SubmatrixTrait< StaticMatrix<T1,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO >
-struct RowTrait< StaticMatrix<T1,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO >
+struct RowTrait< StaticMatrix<T,M,N,SO> >
 {
-   using Type = StaticVector<T1,N,true>;
+   using Type = StaticVector<T,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6748,10 +6768,10 @@ struct RowTrait< StaticMatrix<T1,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO >
-struct ColumnTrait< StaticMatrix<T1,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO >
+struct ColumnTrait< StaticMatrix<T,M,N,SO> >
 {
-   using Type = StaticVector<T1,M,false>;
+   using Type = StaticVector<T,M,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

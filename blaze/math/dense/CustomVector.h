@@ -68,6 +68,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -5792,6 +5793,25 @@ struct CrossTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool TF, typename OP >
+struct UnaryMapTrait< CustomVector<T,AF,PF,TF>, OP >
+{
+   using Type = DynamicVector< UnaryMapTrait_<T,OP>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  BINARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -5853,10 +5873,10 @@ struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool TF >
-struct SubvectorTrait< CustomVector<T1,AF,PF,TF> >
+template< typename T, bool AF, bool PF, bool TF >
+struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 {
-   using Type = DynamicVector<T1,TF>;
+   using Type = DynamicVector<T,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

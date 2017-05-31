@@ -62,6 +62,7 @@
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -6339,6 +6340,25 @@ struct DivTrait< CompressedMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, typename OP >
+struct UnaryMapTrait< CompressedMatrix<T,SO>, OP >
+{
+   using Type = CompressedMatrix< UnaryMapTrait_<T,OP>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -6383,10 +6403,10 @@ struct LowType< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct SubmatrixTrait< CompressedMatrix<T1,SO> >
+template< typename T, bool SO >
+struct SubmatrixTrait< CompressedMatrix<T,SO> >
 {
-   using Type = CompressedMatrix<T1,SO>;
+   using Type = CompressedMatrix<T,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6402,10 +6422,10 @@ struct SubmatrixTrait< CompressedMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct RowTrait< CompressedMatrix<T1,SO> >
+template< typename T, bool SO >
+struct RowTrait< CompressedMatrix<T,SO> >
 {
-   using Type = CompressedVector<T1,true>;
+   using Type = CompressedVector<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6421,10 +6441,10 @@ struct RowTrait< CompressedMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct ColumnTrait< CompressedMatrix<T1,SO> >
+template< typename T, bool SO >
+struct ColumnTrait< CompressedMatrix<T,SO> >
 {
-   using Type = CompressedVector<T1,false>;
+   using Type = CompressedVector<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

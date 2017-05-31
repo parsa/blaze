@@ -1140,12 +1140,6 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, typename OP >
-struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
-{
-   using Type = UnaryMapTrait_<MT,OP>;
-};
-
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
 {

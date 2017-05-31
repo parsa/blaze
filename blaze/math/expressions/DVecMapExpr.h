@@ -162,7 +162,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
  public:
    //**Type definitions****************************************************************************
    typedef DVecMapExpr<VT,OP,TF>       This;           //!< Type of this DVecMapExpr instance.
-   typedef UnaryMapTrait_<VT,OP>       ResultType;     //!< Result type for expression template evaluations.
+   typedef UnaryMapTrait_<RT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
 

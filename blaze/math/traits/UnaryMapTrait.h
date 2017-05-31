@@ -40,13 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -67,12 +66,53 @@ namespace blaze {
 /*!\brief Base template for the UnaryMapTrait class.
 // \ingroup math_traits
 //
-// The UnaryMapTrait class template offers the possibility to select the resulting data type of a
-// generic, unary map operation on the given type \a T. Given the type \a T, which must either be
-// a vector or matrix type, the nested type \a Type corresponds to the resulting data type of the
-// operation. In case the type of \a T doesn't fit or if no unary map operation exists for the
-// type, the resulting data type \a Type is set to \a INVALID_TYPE. Note that \a const and
-// \a volatile qualifiers and reference modifiers are generally ignored.
+// \section unarymaptrait_general General
+//
+// The UnaryMapTrait class template offers the possibility to select the resulting data type of
+// a generic, unary map operation on the given type \a T. UnaryMapTrait defines the nested type
+// \a Type, which represents the resulting data type of the map operation. In case no result type
+// can be determined for the type \a T, a compilation error is created. Note that \c const and
+// \c volatile qualifiers and reference modifiers are generally ignored.
+//
+// Per default, UnaryMapTrait supports all built-in data types. Additionally, the Blaze library
+// provides appropriate specializations for the following user-defined arithmetic types:
+//
+// <ul>
+//    <li>blaze::StaticVector</li>
+//    <li>blaze::HybridVector</li>
+//    <li>blaze::DynamicVector</li>
+//    <li>blaze::CustomVector</li>
+//    <li>blaze::StaticMatrix</li>
+//    <li>blaze::HybridMatrix</li>
+//    <li>blaze::DynamicMatrix</li>
+//    <li>blaze::CustomMatrix</li>
+//    <li>blaze::SymmetricMatrix</li>
+//    <li>blaze::HermitianMatrix</li>
+//    <li>blaze::LowerMatrix</li>
+//    <li>blaze::UniLowerMatrix</li>
+//    <li>blaze::StrictlyLowerMatrix</li>
+//    <li>blaze::UpperMatrix</li>
+//    <li>blaze::UniUpperMatrix</li>
+//    <li>blaze::StrictlyUpperMatrix</li>
+//    <li>blaze::DiagonalMatrix</li>
+// </ul>
+//
+//
+// \n \section unarymaptrait_specializations Creating custom specializations
+//
+// UnaryMapTrait is guaranteed to work for all data types that work in combination with the
+// provided custom operation \a OP. In order to add support for user-defined data types or in
+// order to adapt to special cases it is possible to specialize the UnaryMapTrait template.
+// The following example shows the according specialization for unary map operations with a
+// dynamic column vector:
+
+   \code
+   template< typename T, typename OP >
+   struct UnaryMapTrait< DynamicVector<T,columnVector>, OP >
+   {
+      using Type = DynamicVector< typename UnaryMapTrait<T,OP>::Type, columnVector >;
+   };
+   \endcode
 */
 template< typename T     // Type of the operand
         , typename OP >  // Type of the custom operation
@@ -81,49 +121,19 @@ struct UnaryMapTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct MatrixOrVector
+   struct MappedType
    {
-      template< typename U >
-      static DisableIf_< Or< IsVector<U>, IsMatrix<U> >, U > test( U&& );
-
-      template< typename U >
-      static EnableIf_< Or< IsVector<U>, IsMatrix<U> >, ResultType_<U> > test( U&& );
-
-      using RT = ResultType_<T>;
-      using RN = ReturnType_<T>;
-
-      using OT = decltype( std::declval<OP>()( std::declval<RN>() ) );
-      using ET = decltype( test( std::declval<OT>() ) );
-
-      using Type = typename RT::template Rebind<ET>::Other;
+      using Type = Decay_< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
    };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure {
-      using Type = INVALID_TYPE;
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsExpression<T>
-                  , UnaryMapTrait< ResultType_<T>, OP >
-                  , If_< Or< IsMatrix<T>, IsVector<T> >
-                       , MatrixOrVector
-                       , Failure > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , UnaryMapTrait< Decay_<T>, OP >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T>, IsAdaptor<T> >
+                            , UnaryMapTrait< RemoveAdaptor_< Decay_<T> >, OP >
+                            , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -176,7 +176,7 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
  public:
    //**Type definitions****************************************************************************
    typedef DMatMapExpr<MT,OP,SO>       This;           //!< Type of this DMatMapExpr instance.
-   typedef UnaryMapTrait_<MT,OP>       ResultType;     //!< Result type for expression template evaluations.
+   typedef UnaryMapTrait_<RT,OP>       ResultType;     //!< Result type for expression template evaluations.
    typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
    typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.

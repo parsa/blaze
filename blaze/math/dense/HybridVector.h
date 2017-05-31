@@ -56,6 +56,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -3029,6 +3030,25 @@ struct CrossTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
 
 //=================================================================================================
 //
+//  UNARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF, typename OP >
+struct UnaryMapTrait< HybridVector<T,N,TF>, OP >
+{
+   using Type = HybridVector< UnaryMapTrait_<T,OP>, N, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  BINARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3104,10 +3124,10 @@ struct LowType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF >
-struct SubvectorTrait< HybridVector<T1,N,TF> >
+template< typename T, size_t N, bool TF >
+struct SubvectorTrait< HybridVector<T,N,TF> >
 {
-   using Type = HybridVector<T1,N,TF>;
+   using Type = HybridVector<T,N,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

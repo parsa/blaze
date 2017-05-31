@@ -111,7 +111,6 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
-#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -2456,67 +2455,67 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
 {
-   using Type = UnaryMapTrait_< CompressedMatrix<T,SO>, OP >;
+   using Type = CompressedMatrix< UnaryMapTrait_<T,OP>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Abs >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Abs>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Floor >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Floor>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Ceil >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Ceil>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Trunc >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Trunc>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Round >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Round>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Conj >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Conj>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Real >
 {
-   using Type = IdentityMatrix<UnderlyingElement_<T>,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait_<T,Real>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Sqrt >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait<T,Sqrt>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Cbrt >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait<T,Cbrt>, SO >;
 };
 
 template< typename T, bool SO, typename ET >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Pow<ET> >
 {
-   using Type = IdentityMatrix<HighType_<T,ET>,SO>;
+   using Type = IdentityMatrix< UnaryMapTrait< T, Pow<ET> >, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
