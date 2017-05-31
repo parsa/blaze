@@ -76,7 +76,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -539,7 +538,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -657,7 +656,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -692,7 +691,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -730,7 +729,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -768,7 +767,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -814,7 +813,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -852,7 +851,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -890,7 +889,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -928,7 +927,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
-      BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<RT> );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
