@@ -694,16 +694,16 @@ class SMatTDMatSubExpr : public DenseMatrix< SMatTDMatSubExpr<MT1,MT2>, true >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the SubTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the SubTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline const SMatTDMatSubExpr<T1,T2>
-   operator-( const SparseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline const SMatTDMatSubExpr<MT1,MT2>
+   operator-( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -711,7 +711,7 @@ inline const SMatTDMatSubExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return SMatTDMatSubExpr<T1,T2>( ~lhs, ~rhs );
+   return SMatTDMatSubExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -737,12 +737,12 @@ inline const SMatTDMatSubExpr<T1,T2>
 // This operator implements a performance optimized treatment of the addition of a sparse
 // matrix-transpose dense matrix subtraction expression to a dense matrix.
 */
-template< typename T1  // Type of the sparse matrix of the left-hand side expression
-        , typename T2  // Type of the dense matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const AddExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
-   operator+( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+template< typename MT1  // Type of the sparse matrix of the left-hand side expression
+        , typename MT2  // Type of the dense matrix of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline const AddExprTrait_< SMatTDMatSubExpr<MT1,MT2>, MT3 >
+   operator+( const SMatTDMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -765,12 +765,12 @@ inline const AddExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
 // This operator implements a performance optimized treatment of the subtraction of a sparse
 // matrix-dense matrix subtraction expression and a dense matrix.
 */
-template< typename T1  // Type of the sparse matrix of the left-hand side expression
-        , typename T2  // Type of the dense matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< SMatTDMatSubExpr<T1,T2>, T3 >
-   operator-( const SMatTDMatSubExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+template< typename MT1  // Type of the sparse matrix of the left-hand side expression
+        , typename MT2  // Type of the dense matrix of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline const SubExprTrait_< SMatTDMatSubExpr<MT1,MT2>, MT3 >
+   operator-( const SMatTDMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -1057,19 +1057,19 @@ class DMatDMatSchurExpr : public DenseMatrix< DMatDMatSchurExpr<MT1,MT2,SO>, SO 
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MultTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the MultTrait class template.\n
 // In case the current number of rows and columns of the two given  matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T1  // Type of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order
-inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
-                     , And< IsUniUpper<T1>, IsUniLower<T2> > >
-                 , const DMatDMatSchurExpr<T1,T2,SO> >
-   operator%( const DenseMatrix<T1,SO>& lhs, const DenseMatrix<T2,SO>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order
+inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
+                 , const DMatDMatSchurExpr<MT1,MT2,SO> >
+   operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1077,7 +1077,7 @@ inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatDMatSchurExpr<T1,T2,SO>( ~lhs, ~rhs );
+   return DMatDMatSchurExpr<MT1,MT2,SO>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

@@ -1080,19 +1080,19 @@ inline const DVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
    \endcode
 
 // The operator returns an expression representing a dense vector of the higher-order element type
-// of the involved data types \a T1::ElementType and \a T2. Both data types \a T1::ElementType and
-// \a T2 have to be supported by the MultTrait class template. Note that this operator only works
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the MultTrait class template. Note that this operator only works
 // for scalar values of built-in data type.
 */
-template< typename T1  // Type of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side scalar
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
-   operator*( const DenseVector<T1,TF>& vec, T2 scalar )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<VT,ST> >
+   operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~vec, scalar );
+   return MultExprTrait_<VT,ST>( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1115,19 +1115,19 @@ inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
    \endcode
 
 // The operator returns an expression representing a dense vector of the higher-order element
-// type of the involved data types \a T1::ElementType and \a T2. Both data types \a T1 and
-// \a T2::ElementType have to be supported by the MultTrait class template. Note that this
+// type of the involved data types \a ST and \a VT::ElementType. Both data types \a ST and
+// \a VT::ElementType have to be supported by the MultTrait class template. Note that this
 // operator only works for scalar values of built-in data type.
 */
-template< typename T1  // Type of the left-hand side scalar
-        , typename T2  // Type of the right-hand side dense vector
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Type of the right-hand side dense vector
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
-   operator*( T1 scalar, const DenseVector<T2,TF>& vec )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,VT> >
+   operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~vec, scalar );
+   return MultExprTrait_<ST,VT>( ~vec, scalar );
 }
 //*************************************************************************************************
 

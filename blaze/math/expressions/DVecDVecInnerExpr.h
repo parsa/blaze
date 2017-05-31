@@ -70,16 +70,16 @@ namespace blaze {
 /*!\brief Auxiliary helper struct for the dense vector/dense vector scalar multiplication.
 // \ingroup dense_vector
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side dense vector
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
 struct DVecDVecInnerExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   typedef RemoveReference_< CompositeType_<T1> >  CT1;
+   typedef RemoveReference_< CompositeType_<VT1> >  CT1;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef RemoveReference_< CompositeType_<T2> >  CT2;
+   typedef RemoveReference_< CompositeType_<VT2> >  CT2;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -123,17 +123,17 @@ struct DVecDVecInnerExprHelper
    \endcode
 
 // The operator returns a scalar value of the higher-order element type of the two involved
-// vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
-// and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MultTrait class template.\n
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side dense vector
-inline DisableIf_< DVecDVecInnerExprHelper<T1,T2>
-                 , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
-   operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
+                 , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
+   operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -141,10 +141,10 @@ inline DisableIf_< DVecDVecInnerExprHelper<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef CompositeType_<T1>   Lhs;
-   typedef CompositeType_<T2>   Rhs;
-   typedef ElementType_<T1>     ET1;
-   typedef ElementType_<T2>     ET2;
+   typedef CompositeType_<VT1>  Lhs;
+   typedef CompositeType_<VT2>  Rhs;
+   typedef ElementType_<VT1>    ET1;
+   typedef ElementType_<VT2>    ET2;
    typedef MultTrait_<ET1,ET2>  MultType;
 
    if( (~lhs).size() == 0UL ) return MultType();
@@ -196,17 +196,17 @@ inline DisableIf_< DVecDVecInnerExprHelper<T1,T2>
    \endcode
 
 // The operator returns a scalar value of the higher-order element type of the two involved
-// vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
-// and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MultTrait class template.\n
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side dense vector
-inline EnableIf_< DVecDVecInnerExprHelper<T1,T2>
-               , const MultTrait_< ElementType_<T1>, ElementType_<T2> > >
-   operator*( const DenseVector<T1,true>& lhs, const DenseVector<T2,false>& rhs )
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
+               , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
+   operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -214,10 +214,10 @@ inline EnableIf_< DVecDVecInnerExprHelper<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef CompositeType_<T1>   Lhs;
-   typedef CompositeType_<T2>   Rhs;
-   typedef ElementType_<T1>     ET1;
-   typedef ElementType_<T2>     ET2;
+   typedef CompositeType_<VT1>  Lhs;
+   typedef CompositeType_<VT2>  Rhs;
+   typedef ElementType_<VT1>    ET1;
+   typedef ElementType_<VT2>    ET2;
    typedef MultTrait_<ET1,ET2>  MultType;
 
    enum : size_t { SIMDSIZE = SIMDTrait<MultType>::size };

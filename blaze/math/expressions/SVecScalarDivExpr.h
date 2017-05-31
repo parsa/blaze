@@ -797,22 +797,22 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    \endcode
 
 // The operator returns a sparse vector of the higher-order element type of the involved data
-// types \a T1::ElementType and \a T2. Note that this operator only works for scalar values
+// types \a VT::ElementType and \a ST. Note that this operator only works for scalar values
 // of built-in data type.
 //
 // \note A division by zero is only checked by an user assert.
 */
-template< typename T1  // Type of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side scalar
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
-   operator/( const SparseVector<T1,TF>& vec, T2 scalar )
+inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<VT,ST> >
+   operator/( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   typedef DivExprTrait_<T1,T2>       ReturnType;
+   typedef DivExprTrait_<VT,ST>       ReturnType;
    typedef RightOperand_<ReturnType>  ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {

@@ -877,16 +877,16 @@ class SMatTSMatAddExpr : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline const SMatTSMatAddExpr<T1,T2>
-   operator+( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2,true>& rhs )
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline const SMatTSMatAddExpr<MT1,MT2>
+   operator+( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -894,7 +894,7 @@ inline const SMatTSMatAddExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return SMatTSMatAddExpr<T1,T2>( ~lhs, ~rhs );
+   return SMatTSMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -922,16 +922,16 @@ inline const SMatTSMatAddExpr<T1,T2>
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline const SMatTSMatAddExpr<T2,T1>
-   operator+( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline const SMatTSMatAddExpr<MT2,MT1>
+   operator+( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -939,7 +939,7 @@ inline const SMatTSMatAddExpr<T2,T1>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return SMatTSMatAddExpr<T2,T1>( ~rhs, ~lhs );
+   return SMatTSMatAddExpr<MT2,MT1>( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 

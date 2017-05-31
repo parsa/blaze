@@ -921,18 +921,18 @@ class DMatSMatSchurExpr : public SparseMatrix< DMatSMatSchurExpr<MT1,MT2>, false
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MultTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
-                     , And< IsUniUpper<T1>, IsUniLower<T2> > >
-                 , const DMatSMatSchurExpr<T1,T2> >
-   operator%( const DenseMatrix<T1,false>& lhs, const SparseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
+                 , const DMatSMatSchurExpr<MT1,MT2> >
+   operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -940,7 +940,7 @@ inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatSchurExpr<T1,T2>( ~lhs, ~rhs );
+   return DMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -969,18 +969,18 @@ inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MultTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
-                     , And< IsUniUpper<T1>, IsUniLower<T2> > >
-                 , const DMatSMatSchurExpr<T1,T2> >
-   operator%( const DenseMatrix<T1,true>& lhs, const SparseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
+                 , const DMatSMatSchurExpr<MT1,MT2> >
+   operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -988,7 +988,7 @@ inline DisableIf_< Or< And< IsUniLower<T1>, IsUniUpper<T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatSchurExpr<T1,T2>( ~lhs, ~rhs );
+   return DMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

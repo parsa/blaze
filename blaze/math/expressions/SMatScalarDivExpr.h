@@ -865,22 +865,22 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
+// type of the involved data types \a MT::ElementType and \a ST. Note that this operator only
 // works for scalar values of built-in data type.
 //
 // \note A division by zero is only checked by a user assert.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
+template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
-   operator/( const SparseMatrix<T1,SO>& mat, T2 scalar )
+        , typename ST >  // Type of the right-hand side scalar
+inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<MT,ST> >
+   operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   typedef DivExprTrait_<T1,T2>       ReturnType;
+   typedef DivExprTrait_<MT,ST>       ReturnType;
    typedef RightOperand_<ReturnType>  ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {

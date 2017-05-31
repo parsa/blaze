@@ -706,16 +706,16 @@ class TDMatSMatAddExpr : public DenseMatrix< TDMatSMatAddExpr<MT1,MT2>, true >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-const TDMatSMatAddExpr<T1,T2>
-   operator+( const DenseMatrix<T1,true>& lhs, const SparseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+const TDMatSMatAddExpr<MT1,MT2>
+   operator+( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -723,7 +723,7 @@ const TDMatSMatAddExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return TDMatSMatAddExpr<T1,T2>( ~lhs, ~rhs );
+   return TDMatSMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -753,16 +753,16 @@ const TDMatSMatAddExpr<T1,T2>
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side sparse matrix
-const TDMatSMatAddExpr<T1,T2>
-   operator+( const SparseMatrix<T2,false>& lhs, const DenseMatrix<T1,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+const TDMatSMatAddExpr<MT1,MT2>
+   operator+( const SparseMatrix<MT2,false>& lhs, const DenseMatrix<MT1,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -770,7 +770,7 @@ const TDMatSMatAddExpr<T1,T2>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return TDMatSMatAddExpr<T1,T2>( ~rhs, ~lhs );
+   return TDMatSMatAddExpr<MT1,MT2>( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 
@@ -796,12 +796,12 @@ const TDMatSMatAddExpr<T1,T2>
 // This operator implements a performance optimized treatment of the addition of a transpose
 // dense matrix-sparse matrix addition expression to a dense matrix.
 */
-template< typename T1  // Type of the dense matrix of the left-hand side expression
-        , typename T2  // Type of the sparse matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const AddExprTrait_< TDMatSMatAddExpr<T1,T2>, T3 >
-   operator+( const TDMatSMatAddExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+template< typename MT1  // Type of the dense matrix of the left-hand side expression
+        , typename MT2  // Type of the sparse matrix of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline const AddExprTrait_< TDMatSMatAddExpr<MT1,MT2>, MT3 >
+   operator+( const TDMatSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -824,12 +824,12 @@ inline const AddExprTrait_< TDMatSMatAddExpr<T1,T2>, T3 >
 // This operator implements a performance optimized treatment of the subtraction of a transpose
 // dense matrix-sparse matrix addition expression and a dense matrix.
 */
-template< typename T1  // Type of the dense matrix of the left-hand side expression
-        , typename T2  // Type of the sparse matrix of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< TDMatSMatAddExpr<T1,T2>, T3 >
-   operator-( const TDMatSMatAddExpr<T1,T2>& lhs, const DenseMatrix<T3,SO>& rhs )
+template< typename MT1  // Type of the dense matrix of the left-hand side expression
+        , typename MT2  // Type of the sparse matrix of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline const SubExprTrait_< TDMatSMatAddExpr<MT1,MT2>, MT3 >
+   operator-( const TDMatSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

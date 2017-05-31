@@ -799,17 +799,17 @@ class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
    \endcode
 
 // The operator returns an expression representing a transpose dense vector of the higher-order
-// element type of the two involved element types \a T1::ElementType and \a T2::ElementType.
-// Both the dense matrix type \a T1 and the dense vector type \a T2 as well as the two element
-// types \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
+// element type of the two involved element types \a VT::ElementType and \a MT::ElementType.
+// Both the dense matrix type \a VT and the dense vector type \a MT as well as the two element
+// types \a VT::ElementType and \a MT::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side sparse matrix
-inline const DisableIf_< IsMatMatMultExpr<T2>, TDVecTSMatMultExpr<T1,T2> >
-   operator*( const DenseVector<T1,true>& vec, const SparseMatrix<T2,true>& mat )
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side sparse matrix
+inline const DisableIf_< IsMatMatMultExpr<MT>, TDVecTSMatMultExpr<VT,MT> >
+   operator*( const DenseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -817,7 +817,7 @@ inline const DisableIf_< IsMatMatMultExpr<T2>, TDVecTSMatMultExpr<T1,T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
-   return TDVecTSMatMultExpr<T1,T2>( ~vec, ~mat );
+   return TDVecTSMatMultExpr<VT,MT>( ~vec, ~mat );
 }
 //*************************************************************************************************
 

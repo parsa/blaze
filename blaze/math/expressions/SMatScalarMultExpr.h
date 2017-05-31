@@ -906,18 +906,18 @@ inline const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
+// type of the involved data types \a MT::ElementType and \a T2. Note that this operator only
 // works for scalar values of built-in data type.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
+template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
-   operator*( const SparseMatrix<T1,SO>& mat, T2 scalar )
+inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<MT,T2> >
+   operator*( const SparseMatrix<MT,SO>& mat, T2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~mat, scalar );
+   return MultExprTrait_<MT,T2>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -940,18 +940,18 @@ inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
+// type of the involved data types \a ST and \a MT::ElementType. Note that this operator only
 // works for scalar values of built-in data type.
 */
-template< typename T1  // Type of the left-hand side scalar
-        , typename T2  // Type of the right-hand side sparse matrix
+template< typename ST  // Type of the left-hand side scalar
+        , typename MT  // Type of the right-hand side sparse matrix
         , bool SO >    // Storage order of the right-hand side sparse matrix
-inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
-   operator*( T1 scalar, const SparseMatrix<T2,SO>& mat )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,MT> >
+   operator*( ST scalar, const SparseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~mat, scalar );
+   return MultExprTrait_<ST,MT>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -976,15 +976,15 @@ inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
 // This operator implements a performance optimized treatment of the negation of a sparse matrix-
 // scalar multiplication expression.
 */
-template< typename VT  // Type of the sparse matrix
+template< typename MT  // Type of the sparse matrix
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline const SMatScalarMultExpr<VT,ST,TF>
-   operator-( const SMatScalarMultExpr<VT,ST,TF>& sm )
+inline const SMatScalarMultExpr<MT,ST,TF>
+   operator-( const SMatScalarMultExpr<MT,ST,TF>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatScalarMultExpr<VT,ST,TF>( sm.leftOperand(), -sm.rightOperand() );
+   return SMatScalarMultExpr<MT,ST,TF>( sm.leftOperand(), -sm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************

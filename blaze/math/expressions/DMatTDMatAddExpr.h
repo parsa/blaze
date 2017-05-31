@@ -894,17 +894,17 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
-                , const DMatTDMatAddExpr<T1,T2> >
-   operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
+                , const DMatTDMatAddExpr<MT1,MT2> >
+   operator+( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -912,7 +912,7 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatTDMatAddExpr<T1,T2>( ~lhs, ~rhs );
+   return DMatTDMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -940,17 +940,17 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
+// and \a MT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
-                , const DMatTDMatAddExpr<T2,T1> >
-   operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
+                , const DMatTDMatAddExpr<MT2,MT1> >
+   operator+( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -958,7 +958,7 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatTDMatAddExpr<T2,T1>( ~rhs, ~lhs );
+   return DMatTDMatAddExpr<MT2,MT1>( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 
@@ -985,10 +985,10 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 // This operator implements a performance optimized treatment of the addition of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >, const AddExprTrait_<T1,T2> >
-   operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > >, const AddExprTrait_<MT1,MT2> >
+   operator+( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1016,10 +1016,10 @@ inline EnableIf_< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >, const AddExprT
 // This operator implements a performance optimized treatment of the addition of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< IsSymmetric<T2>, const AddExprTrait_<T1,T2> >
-   operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< IsSymmetric<MT2>, const AddExprTrait_<MT1,MT2> >
+   operator+( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1047,10 +1047,10 @@ inline EnableIf_< IsSymmetric<T2>, const AddExprTrait_<T1,T2> >
 // This operator implements a performance optimized treatment of the addition of a column-major
 // dense matrix and a symmetric row-major dense matrix.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >, const AddExprTrait_<T2,T1> >
-   operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> >, const AddExprTrait_<MT2,MT1> >
+   operator+( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1078,10 +1078,10 @@ inline EnableIf_< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >, const AddExprT
 // This operator implements a performance optimized treatment of the addition of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< IsSymmetric<T1>, const AddExprTrait_<T2,T1> >
-   operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_< IsSymmetric<MT1>, const AddExprTrait_<MT2,MT1> >
+   operator+( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

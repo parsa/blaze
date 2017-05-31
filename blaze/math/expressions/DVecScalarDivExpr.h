@@ -1036,23 +1036,23 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    \endcode
 
 // The operator returns an expression representing a dense vector of the higher-order
-// element type of the involved data types \a T1::ElementType and \a T2. Both data types
-// \a T1::ElementType and \a T2 have to be supported by the DivTrait class template.
+// element type of the involved data types \a VT::ElementType and \a ST. Both data types
+// \a VT::ElementType and \a ST have to be supported by the DivTrait class template.
 // Note that this operator only works for scalar values of built-in data type.
 //
 // \note A division by zero is only checked by an user assert.
 */
-template< typename T1  // Type of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side scalar
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T2>, DivExprTrait_<T1,T2> >
-   operator/( const DenseVector<T1,TF>& vec, T2 scalar )
+inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<VT,ST> >
+   operator/( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != T2(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   typedef DivExprTrait_<T1,T2>       ReturnType;
+   typedef DivExprTrait_<VT,ST>       ReturnType;
    typedef RightOperand_<ReturnType>  ScalarType;
 
    if( IsMultExpr<ReturnType>::value ) {

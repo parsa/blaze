@@ -593,17 +593,17 @@ class SVecSVecMultExpr : public SparseVector< SVecSVecMultExpr<VT1,VT2,TF>, TF >
    \endcode
 
 // The operator returns a sparse vector of the higher-order element type of the two involved
-// vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
-// and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MultTrait class template.\n
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1  // Type of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF >    // Transpose flag
-inline const SVecSVecMultExpr<T1,T2,TF>
-   operator*( const SparseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF >     // Transpose flag
+inline const SVecSVecMultExpr<VT1,VT2,TF>
+   operator*( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -611,7 +611,7 @@ inline const SVecSVecMultExpr<T1,T2,TF>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return SVecSVecMultExpr<T1,T2,TF>( ~lhs, ~rhs );
+   return SVecSVecMultExpr<VT1,VT2,TF>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

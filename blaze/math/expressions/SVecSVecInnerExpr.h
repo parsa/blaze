@@ -83,21 +83,21 @@ namespace blaze {
    \endcode
 
 // The operator returns a scalar value of the higher-order element type of the two involved
-// vector element types \a T1::ElementType and \a T2::ElementType. Both vector types \a T1
-// and \a T2 as well as the two element types \a T1::ElementType and \a T2::ElementType have
-// to be supported by the MultTrait class template.\n
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse vector
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator*( const SparseVector<T1,true>& lhs, const SparseVector<T2,false>& rhs )
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+inline const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
+   operator*( const SparseVector<VT1,true>& lhs, const SparseVector<VT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef CompositeType_<T1>     Lhs;            // Composite type of the left-hand side sparse vector expression
-   typedef CompositeType_<T2>     Rhs;            // Composite type of the right-hand side sparse vector expression
+   typedef CompositeType_<VT1>    Lhs;            // Composite type of the left-hand side sparse vector expression
+   typedef CompositeType_<VT2>    Rhs;            // Composite type of the right-hand side sparse vector expression
    typedef RemoveReference_<Lhs>  X1;             // Auxiliary type for the left-hand side composite type
    typedef RemoveReference_<Rhs>  X2;             // Auxiliary type for the right-hand side composite type
    typedef ElementType_<X1>       E1;             // Element type of the left-hand side sparse vector expression
@@ -106,10 +106,10 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    typedef ConstIterator_<X1>     LeftIterator;   // Iterator type of the left-hand sparse vector expression
    typedef ConstIterator_<X2>     RightIterator;  // Iterator type of the right-hand sparse vector expression
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T1 );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( T2 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( T1 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( T2 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2 );
 
    if( (~lhs).size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -123,7 +123,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 
    MultType sp{};
 
-   if( IsOpposedView<T1>::value && IsOpposedView<T2>::value )
+   if( IsOpposedView<VT1>::value && IsOpposedView<VT2>::value )
    {
       if( left.size() == 0UL ) return sp;
 
@@ -132,7 +132,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
          sp += left[i] * right[i];
       }
    }
-   else if( IsOpposedView<T1>::value )
+   else if( IsOpposedView<VT1>::value )
    {
       const RightIterator rend( right.end() );
       RightIterator r( right.begin() );
@@ -145,7 +145,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
          sp += left[r->index()] * r->value();
       }
    }
-   else if( IsOpposedView<T2>::value )
+   else if( IsOpposedView<VT2>::value )
    {
       const LeftIterator lend( left.end()  );
       LeftIterator l( left.begin()  );

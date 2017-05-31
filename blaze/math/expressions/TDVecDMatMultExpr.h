@@ -4744,17 +4744,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    \endcode
 
 // The operator returns an expression representing a transpose dense vector of the higher-order
-// element type of the two involved element types \a T1::ElementType and \a T2::ElementType.
-// Both the dense matrix type \a T1 and the dense vector type \a T2 as well as the two element
-// types \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
+// element type of the two involved element types \a VT::ElementType and \a MT::ElementType.
+// Both the dense matrix type \a VT and the dense vector type \a MT as well as the two element
+// types \a VT::ElementType and \a MT::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side dense vector
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline const DisableIf_< IsMatMatMultExpr<T2>, TDVecDMatMultExpr<T1,T2> >
-   operator*( const DenseVector<T1,true>& vec, const DenseMatrix<T2,false>& mat )
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+inline const DisableIf_< IsMatMatMultExpr<MT>, TDVecDMatMultExpr<VT,MT> >
+   operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -4762,7 +4762,7 @@ inline const DisableIf_< IsMatMatMultExpr<T2>, TDVecDMatMultExpr<T1,T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
-   return TDVecDMatMultExpr<T1,T2>( ~vec, ~mat );
+   return TDVecDMatMultExpr<VT,MT>( ~vec, ~mat );
 }
 //*************************************************************************************************
 
@@ -4788,15 +4788,15 @@ inline const DisableIf_< IsMatMatMultExpr<T2>, TDVecDMatMultExpr<T1,T2> >
 // vector and a dense matrix-matrix multiplication expression. It restructures the expression
 // \f$ \vec{y}^T=\vec{x}^T*(A*B) \f$ to the expression \f$ \vec{y}^T=(\vec{x}^T*A)*B \f$.
 */
-template< typename T1  // Type of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side dense matrix
+template< typename VT  // Type of the left-hand side dense vector
+        , typename MT  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order of the right-hand side dense matrix
-inline const EnableIf_< IsMatMatMultExpr<T2>, MultExprTrait_<T1,T2> >
-   operator*( const DenseVector<T1,true>& vec, const DenseMatrix<T2,SO>& mat )
+inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<VT,MT> >
+   operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( T1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
    return ( vec * (~mat).leftOperand() ) * (~mat).rightOperand();
 }

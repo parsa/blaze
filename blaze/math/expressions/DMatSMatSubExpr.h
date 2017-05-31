@@ -696,17 +696,17 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the two involved matrix element types \a T1::ElementType and \a T2::ElementType.
-// Both matrix types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the SubTrait class template.\n
+// type of the two involved matrix element types \a MT1::ElementType and \a MT2::ElementType.
+// Both matrix types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType and
+// \a MT2::ElementType have to be supported by the SubTrait class template.\n
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1  // Type of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side sparse matrix
-        , bool SO >    // Storage order
-inline const DMatSMatSubExpr<T1,T2,SO>
-   operator-( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,SO>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , bool SO >     // Storage order
+inline const DMatSMatSubExpr<MT1,MT2,SO>
+   operator-( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -714,7 +714,7 @@ inline const DMatSMatSubExpr<T1,T2,SO>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatSubExpr<T1,T2,SO>( ~lhs, ~rhs );
+   return DMatSMatSubExpr<MT1,MT2,SO>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -740,13 +740,13 @@ inline const DMatSMatSubExpr<T1,T2,SO>
 // This operator implements a performance optimized treatment of the addition of a dense
 // matrix-sparse matrix subtraction expression to a dense matrix.
 */
-template< typename T1  // Type of the dense matrix of the left-hand side expression
-        , typename T2  // Type of the sparse matrix of the left-hand side expression
-        , bool SO1     // Storage order of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline const AddExprTrait_< DMatSMatSubExpr<T1,T2,SO1>, T3 >
-   operator+( const DMatSMatSubExpr<T1,T2,SO1>& lhs, const DenseMatrix<T3,SO2>& rhs )
+template< typename MT1  // Type of the dense matrix of the left-hand side expression
+        , typename MT2  // Type of the sparse matrix of the left-hand side expression
+        , bool SO1      // Storage order of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline const AddExprTrait_< DMatSMatSubExpr<MT1,MT2,SO1>, MT3 >
+   operator+( const DMatSMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -769,13 +769,13 @@ inline const AddExprTrait_< DMatSMatSubExpr<T1,T2,SO1>, T3 >
 // This operator implements a performance optimized treatment of the subtraction of a dense
 // matrix-sparse matrix subtraction expression and a dense matrix.
 */
-template< typename T1  // Type of the dense matrix of the left-hand side expression
-        , typename T2  // Type of the sparse matrix of the left-hand side expression
-        , bool SO1     // Storage order of the left-hand side expression
-        , typename T3  // Type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< DMatSMatSubExpr<T1,T2,SO1>, T3 >
-   operator-( const DMatSMatSubExpr<T1,T2,SO1>& lhs, const DenseMatrix<T3,SO2>& rhs )
+template< typename MT1  // Type of the dense matrix of the left-hand side expression
+        , typename MT2  // Type of the sparse matrix of the left-hand side expression
+        , bool SO1      // Storage order of the left-hand side expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline const SubExprTrait_< DMatSMatSubExpr<MT1,MT2,SO1>, MT3 >
+   operator-( const DMatSMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

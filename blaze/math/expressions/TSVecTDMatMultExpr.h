@@ -855,16 +855,16 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    \endcode
 
 // The operator returns an expression representing a transpose sparse vector of the higher-order
-// element type of the two involved element types \a T1::ElementType and \a T2::ElementType.
-// Both the dense matrix type \a T1 and the dense vector type \a T2 as well as the two element
-// types \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
+// element type of the two involved element types \a VT::ElementType and \a MT::ElementType.
+// Both the dense matrix type \a VT and the dense vector type \a MT as well as the two element
+// types \a VT::ElementType and \a MT::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename T1, typename T2 >
-inline const DisableIf_< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >, TSVecTDMatMultExpr<T1,T2> >
-   operator*( const SparseVector<T1,true>& vec, const DenseMatrix<T2,true>& mat )
+template< typename VT, typename MT >
+inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >, TSVecTDMatMultExpr<VT,MT> >
+   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -872,7 +872,7 @@ inline const DisableIf_< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >, TSVecTDMat
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
-   return TSVecTDMatMultExpr<T1,T2>( ~vec, ~mat );
+   return TSVecTDMatMultExpr<VT,MT>( ~vec, ~mat );
 }
 //*************************************************************************************************
 
@@ -900,14 +900,14 @@ inline const DisableIf_< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >, TSVecTDMat
 // transpose sparse vector and a symmetric column-major dense matrix. It restructures the
 // expression \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
 */
-template< typename T1    // Type of the left-hand side sparse vector
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline const EnableIf_< IsSymmetric<T2>, MultExprTrait_<T1,T2> >
-   operator*( const SparseVector<T1,true>& vec, const DenseMatrix<T2,true>& mat )
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side dense matrix
+inline const EnableIf_< IsSymmetric<MT>, MultExprTrait_<VT,MT> >
+   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( T2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~vec).size() != (~mat).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );

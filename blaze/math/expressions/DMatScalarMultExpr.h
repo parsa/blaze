@@ -1073,18 +1073,18 @@ inline const DMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
+// type of the involved data types \a MT::ElementType and \a ST. Note that this operator only
 // works for scalar values of built-in data type.
 */
-template< typename T1    // Type of the left-hand side dense matrix
+template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
-   operator*( const DenseMatrix<T1,SO>& mat, T2 scalar )
+        , typename ST >  // Type of the right-hand side scalar
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<MT,ST> >
+   operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~mat, scalar );
+   return MultExprTrait_<MT,ST>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1107,18 +1107,18 @@ inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
    \endcode
 
 // The operator returns an expression representing a dense matrix of the higher-order element
-// type of the involved data types \a T1 and \a T2::ElementType. Note that this operator only
+// type of the involved data types \a ST and \a MT::ElementType. Note that this operator only
 // works for scalar values of built-in data type.
 */
-template< typename T1  // Type of the left-hand side scalar
-        , typename T2  // Type of the right-hand side dense matrix
+template< typename ST  // Type of the left-hand side scalar
+        , typename MT  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order of the right-hand side dense matrix
-inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
-   operator*( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,MT> >
+   operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~mat, scalar );
+   return MultExprTrait_<ST,MT>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1143,15 +1143,15 @@ inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
 // This operator implements a performance optimized treatment of the negation of a dense matrix-
 // scalar multiplication expression.
 */
-template< typename VT  // Type of the dense matrix
+template< typename MT  // Type of the dense matrix
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline const DMatScalarMultExpr<VT,ST,TF>
-   operator-( const DMatScalarMultExpr<VT,ST,TF>& dm )
+inline const DMatScalarMultExpr<MT,ST,TF>
+   operator-( const DMatScalarMultExpr<MT,ST,TF>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatScalarMultExpr<VT,ST,TF>( dm.leftOperand(), -dm.rightOperand() );
+   return DMatScalarMultExpr<MT,ST,TF>( dm.leftOperand(), -dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************

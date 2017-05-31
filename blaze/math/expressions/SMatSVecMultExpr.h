@@ -938,17 +938,17 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    \endcode
 
 // The operator returns an expression representing a sparse vector of the higher-order element
-// type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both the
-// sparse matrix type \a T1 and the sparse vector type \a T2 as well as the two element types
-// \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
+// type of the two involved element types \a MT::ElementType and \a VT::ElementType. Both the
+// sparse matrix type \a MT and the sparse vector type \a VT as well as the two element types
+// \a MT::ElementType and \a VT::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const DisableIf_< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >, SMatSVecMultExpr<T1,T2> >
-   operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side sparse vector
+inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >, SMatSVecMultExpr<MT,VT> >
+   operator*( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -956,7 +956,7 @@ inline const DisableIf_< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >, SMatSVecMu
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
-   return SMatSVecMultExpr<T1,T2>( ~mat, ~vec );
+   return SMatSVecMultExpr<MT,VT>( ~mat, ~vec );
 }
 //*************************************************************************************************
 
@@ -984,14 +984,14 @@ inline const DisableIf_< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >, SMatSVecMu
 // symmetric row-major sparse matrix and a sparse vector. It restructures the expression
 // \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const EnableIf_< IsSymmetric<T1>, MultExprTrait_<T1,T2> >
-   operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side sparse vector
+inline const EnableIf_< IsSymmetric<MT>, MultExprTrait_<MT,VT> >
+   operator*( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( T1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~mat).columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
@@ -1017,15 +1017,15 @@ inline const EnableIf_< IsSymmetric<T1>, MultExprTrait_<T1,T2> >
 // matrix-matrix multiplication expression and a sparse vector. It restructures the expression
 // \f$ \vec{y}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
+template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const EnableIf_< IsMatMatMultExpr<T1>, MultExprTrait_<T1,T2> >
-   operator*( const SparseMatrix<T1,SO>& mat, const SparseVector<T2,false>& vec )
+        , typename VT >  // Type of the right-hand side sparse vector
+inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<MT,VT> >
+   operator*( const SparseMatrix<MT,SO>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( T1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }

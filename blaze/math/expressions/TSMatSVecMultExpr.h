@@ -829,17 +829,17 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
    \endcode
 
 // The operator returns an expression representing a sparse vector of the higher-order element
-// type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both the
-// sparse matrix type \a T1 and the sparse vector type \a T2 as well as the two element types
-// \a T1::ElementType and \a T2::ElementType have to be supported by the MultTrait class
+// type of the two involved element types \a MT::ElementType and \a VT::ElementType. Both the
+// sparse matrix type \a MT and the sparse vector type \a VT as well as the two element types
+// \a MT::ElementType and \a VT::ElementType have to be supported by the MultTrait class
 // template.\n
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename T1    // Type of the left-hand side sparse matrix
-        , typename T2 >  // Type of the right-hand side sparse vector
-inline const DisableIf_< IsMatMatMultExpr<T1>, TSMatSVecMultExpr<T1,T2> >
-   operator*( const SparseMatrix<T1,true>& mat, const SparseVector<T2,false>& vec )
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side sparse vector
+inline const DisableIf_< IsMatMatMultExpr<MT>, TSMatSVecMultExpr<MT,VT> >
+   operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -847,7 +847,7 @@ inline const DisableIf_< IsMatMatMultExpr<T1>, TSMatSVecMultExpr<T1,T2> >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
-   return TSMatSVecMultExpr<T1,T2>( ~mat, ~vec );
+   return TSMatSVecMultExpr<MT,VT>( ~mat, ~vec );
 }
 //*************************************************************************************************
 

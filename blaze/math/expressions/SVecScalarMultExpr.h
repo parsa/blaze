@@ -838,18 +838,18 @@ inline const SVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
    \endcode
 
 // The operator returns a sparse vector of the higher-order element type of the involved data
-// types \a T1::ElementType and \a T2. Note that this operator only works for scalar values
+// types \a VT::ElementType and \a ST. Note that this operator only works for scalar values
 // of built-in data type.
 */
-template< typename T1  // Type of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side scalar
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
-   operator*( const SparseVector<T1,TF>& vec, T2 scalar )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<VT,ST> >
+   operator*( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~vec, scalar );
+   return MultExprTrait_<VT,ST>( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -872,18 +872,18 @@ inline const EnableIf_< IsNumeric<T2>, MultExprTrait_<T1,T2> >
    \endcode
 
 // The operator returns a sparse vector of the higher-order element type of the involved data
-// types \a T1 and \a T2::ElementType. Note that this operator only works for scalar values
+// types \a ST and \a VT::ElementType. Note that this operator only works for scalar values
 // of built-in data type.
 */
-template< typename T1  // Type of the left-hand side scalar
-        , typename T2  // Type of the right-hand side sparse vector
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Type of the right-hand side sparse vector
         , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<T1>, MultExprTrait_<T1,T2> >
-   operator*( T1 scalar, const SparseVector<T2,TF>& vec )
+inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,VT> >
+   operator*( ST scalar, const SparseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<T1,T2>( ~vec, scalar );
+   return MultExprTrait_<ST,VT>( ~vec, scalar );
 }
 //*************************************************************************************************
 

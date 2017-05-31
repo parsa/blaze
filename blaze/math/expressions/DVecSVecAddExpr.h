@@ -691,17 +691,17 @@ class DVecSVecAddExpr : public DenseVector< DVecSVecAddExpr<VT1,VT2,TF>, TF >
    \endcode
 
 // The operator returns an expression representing a dense vector of the higher-order element
-// type of the two involved vector element types \a T1::ElementType and \a T2::ElementType.
-// Both vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved vector element types \a VT1::ElementType and \a VT2::ElementType.
+// Both vector types \a VT1 and \a VT2 as well as the two element types \a VT1::ElementType
+// and \a VT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1  // Type of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF >    // Transpose flag
-inline const DVecSVecAddExpr<T1,T2,TF>
-   operator+( const DenseVector<T1,TF>& lhs, const SparseVector<T2,TF>& rhs )
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF >     // Transpose flag
+inline const DVecSVecAddExpr<VT1,VT2,TF>
+   operator+( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -709,7 +709,7 @@ inline const DVecSVecAddExpr<T1,T2,TF>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecSVecAddExpr<T1,T2,TF>( ~lhs, ~rhs );
+   return DVecSVecAddExpr<VT1,VT2,TF>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -734,17 +734,17 @@ inline const DVecSVecAddExpr<T1,T2,TF>
    \endcode
 
 // The operator returns an expression representing a dense vector of the higher-order element
-// type of the two involved vector element types \a T1::ElementType and \a T2::ElementType.
-// Both vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the AddTrait class template.\n
+// type of the two involved vector element types \a VT1::ElementType and \a VT2::ElementType.
+// Both vector types \a VT1 and \a VT2 as well as the two element types \a VT1::ElementType and
+// \a VT2::ElementType have to be supported by the AddTrait class template.\n
 // In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename T1  // Type of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side dense vector
-        , bool TF >    // Transpose flag
-inline const DVecSVecAddExpr<T2,T1,TF>
-   operator+( const SparseVector<T1,TF>& lhs, const DenseVector<T2,TF>& rhs )
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline const DVecSVecAddExpr<VT2,VT1,TF>
+   operator+( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -752,7 +752,7 @@ inline const DVecSVecAddExpr<T2,T1,TF>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecSVecAddExpr<T2,T1,TF>( ~rhs, ~lhs );
+   return DVecSVecAddExpr<VT2,VT1,TF>( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 
@@ -778,12 +778,12 @@ inline const DVecSVecAddExpr<T2,T1,TF>
 // This operator implements a performance optimized treatment of the addition of a dense
 // vector-sparse vector addition expression to a dense vector.
 */
-template< typename T1    // Type of the dense vector of the left-hand side expression
-        , typename T2    // Type of the sparse vector of the left-hand side expression
-        , bool TF        // Transpose flag of the left-hand side expression
-        , typename T3 >  // Type of the right-hand side dense vector
-inline const AddExprTrait_< DVecSVecAddExpr<T1,T2,TF>, T3 >
-   operator+( const DVecSVecAddExpr<T1,T2,TF>& lhs, const DenseVector<T3,TF>& rhs )
+template< typename VT1    // Type of the dense vector of the left-hand side expression
+        , typename VT2    // Type of the sparse vector of the left-hand side expression
+        , bool TF         // Transpose flag of the left-hand side expression
+        , typename VT3 >  // Type of the right-hand side dense vector
+inline const AddExprTrait_< DVecSVecAddExpr<VT1,VT2,TF>, VT3 >
+   operator+( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -806,12 +806,12 @@ inline const AddExprTrait_< DVecSVecAddExpr<T1,T2,TF>, T3 >
 // This operator implements a performance optimized treatment of the subtraction of a
 // dense vector-sparse vector addition expression and a dense vector.
 */
-template< typename T1    // Type of the dense vector of the left-hand side expression
-        , typename T2    // Type of the sparse vector of the left-hand side expression
-        , bool TF        // Transpose flag of the left-hand side expression
-        , typename T3 >  // Type of the right-hand side dense vector
-inline const SubExprTrait_< DVecSVecAddExpr<T1,T2,TF>, T3 >
-   operator-( const DVecSVecAddExpr<T1,T2,TF>& lhs, const DenseVector<T3,TF>& rhs )
+template< typename VT1    // Type of the dense vector of the left-hand side expression
+        , typename VT2    // Type of the sparse vector of the left-hand side expression
+        , bool TF         // Transpose flag of the left-hand side expression
+        , typename VT3 >  // Type of the right-hand side dense vector
+inline const SubExprTrait_< DVecSVecAddExpr<VT1,VT2,TF>, VT3 >
+   operator-( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

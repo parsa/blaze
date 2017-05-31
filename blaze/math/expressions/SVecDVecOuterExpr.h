@@ -1441,18 +1441,18 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    \endcode
 
 // The operator returns an expression representing a sparse matrix of the higher-order element
-// type of the two involved element types \a T1::ElementType and \a T2::ElementType. Both
-// vector types \a T1 and \a T2 as well as the two element types \a T1::ElementType and
-// \a T2::ElementType have to be supported by the MultTrait class template.
+// type of the two involved element types \a VT1::ElementType and \a VT2::ElementType. Both
+// vector types \a VT1 and \a VT2 as well as the two element types \a VT1::ElementType and
+// \a VT2::ElementType have to be supported by the MultTrait class template.
 */
-template< typename T1    // Type of the left-hand side sparse vector
-        , typename T2 >  // Type of the right-hand side dense vector
-inline const SVecDVecOuterExpr<T1,T2>
-   operator*( const SparseVector<T1,false>& lhs, const DenseVector<T2,true>& rhs )
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+inline const SVecDVecOuterExpr<VT1,VT2>
+   operator*( const SparseVector<VT1,false>& lhs, const DenseVector<VT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecDVecOuterExpr<T1,T2>( ~lhs, ~rhs );
+   return SVecDVecOuterExpr<VT1,VT2>( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
