@@ -256,7 +256,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( it_++ );
+         return ConstIterator( it_++, op_ );
       }
       //*******************************************************************************************
 
@@ -277,7 +277,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator--( int ) {
-         return ConstIterator( it_-- );
+         return ConstIterator( it_--, op_ );
       }
       //*******************************************************************************************
 
@@ -386,7 +386,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.it_ + inc );
+         return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
 
@@ -398,7 +398,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.it_ + inc );
+         return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
 
@@ -410,7 +410,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.it_ - dec );
+         return ConstIterator( it.it_ - dec, it.op_ );
       }
       //*******************************************************************************************
 
