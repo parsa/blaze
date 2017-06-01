@@ -408,6 +408,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
           void   reserve( size_t i, size_t nonzeros );
    inline void   trim   ();
    inline void   trim   ( size_t i );
+   inline void   shrinkToFit();
    inline void   swap( CompressedMatrix& sm ) noexcept;
    //@}
    //**********************************************************************************************
@@ -1805,6 +1806,26 @@ inline void CompressedMatrix<Type,SO>::trim( size_t i )
 
 
 //*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this matrix are invalidated.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void CompressedMatrix<Type,SO>::shrinkToFit()
+{
+   if( nonZeros() < capacity() ) {
+      CompressedMatrix( *this ).swap( *this );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Swapping the contents of two sparse matrices.
 //
 // \param sm The compressed matrix to be swapped.
@@ -3161,6 +3182,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
           void   reserve( size_t j, size_t nonzeros );
    inline void   trim   ();
    inline void   trim   ( size_t j );
+   inline void   shrinkToFit();
    inline void   swap( CompressedMatrix& sm ) noexcept;
    //@}
    //**********************************************************************************************
@@ -4548,6 +4570,27 @@ void CompressedMatrix<Type,true>::trim( size_t j )
    if( j < ( n_ - 1UL ) )
       end_[j+1] = castDown( std::move( begin_[j+1], end_[j+1], castUp( end_[j] ) ) );
    begin_[j+1] = end_[j];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this matrix are invalidated.
+*/
+template< typename Type >  // Data type of the matrix
+inline void CompressedMatrix<Type,true>::shrinkToFit()
+{
+   if( nonZeros() < capacity() ) {
+      CompressedMatrix( *this ).swap( *this );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
