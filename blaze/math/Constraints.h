@@ -101,6 +101,7 @@
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/SerialExpr.h>
+#include <blaze/math/constraints/Shrinkable.h>
 #include <blaze/math/constraints/SIMDCombinable.h>
 #include <blaze/math/constraints/SIMDEnabled.h>
 #include <blaze/math/constraints/SIMDPack.h>

@@ -143,6 +143,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSchurExpr.h>
 #include <blaze/math/typetraits/IsSerialExpr.h>
+#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/IsSIMDPack.h>
