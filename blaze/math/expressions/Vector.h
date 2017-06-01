@@ -42,6 +42,7 @@
 
 #include <blaze/math/Exception.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -143,6 +144,9 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
+
+template< typename VT, bool TF >
+BLAZE_ALWAYS_INLINE void shrinkToFit( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
 inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
@@ -385,6 +389,66 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    resize_backend( vector, n, preserve );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c shrinkToFit() function for non-shrinkable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be shrunk.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE DisableIf_< IsShrinkable<VT> >
+   shrinkToFit_backend( Vector<VT,TF>& vector )
+{
+   UNUSED_PARAMETER( vector );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c shrinkToFit() function for shrinkable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be shrunk.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE EnableIf_< IsShrinkable<VT> >
+   shrinkToFit_backend( Vector<VT,TF>& vector )
+{
+   (~vector).shrinkToFit();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+// \ingroup vector
+//
+// \param vector The given vector to be shrunk.
+// \return void
+//
+// This function tries to minimize the capacity of the vector by removing unused capacity.
+// Please note that in case of a shrinkable vector, due to padding the capacity might not be
+// reduced exactly to the size of the vector. Please also note that in case a reallocation
+// occurs, all iterators (including end() iterators), all pointers and references to elements
+// of this vector are invalidated. In case of an unshrinkable vector the function has no effect.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE void shrinkToFit( Vector<VT,TF>& vector )
+{
+   shrinkToFit_backend( vector );
 }
 //*************************************************************************************************
 
