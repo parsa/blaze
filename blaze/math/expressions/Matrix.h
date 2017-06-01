@@ -44,6 +44,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/system/Inline.h>
@@ -157,6 +158,9 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
+
+template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE void shrinkToFit( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix );
@@ -544,6 +548,71 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    resize_backend( matrix, m, n, preserve );
+}
+//*************************************************************************************************
+
+
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c shrinkToFit() function for non-shrinkable matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be shrunk.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE DisableIf_< IsShrinkable<MT> >
+   shrinkToFit_backend( Matrix<MT,SO>& matrix )
+{
+   UNUSED_PARAMETER( matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c shrinkToFit() function for shrinkable matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be shrunk.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE EnableIf_< IsShrinkable<MT> >
+   shrinkToFit_backend( Matrix<MT,SO>& matrix )
+{
+   (~matrix).shrinkToFit();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be shrunk.
+// \return void
+//
+// This function tries to minimize the capacity of the matrix by removing unused capacity.
+// Please note that in case of a shrinkable matrix, due to padding the capacity might not be
+// reduced exactly to the number of rows times the number of columns. Please also note that
+// in case a reallocation occurs, all iterators (including end() iterators), all pointers and
+// references to elements of this matrix are invalidated. In case of an unshrinkable matrix
+// the function has no effect.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE void shrinkToFit( Matrix<MT,SO>& matrix )
+{
+   shrinkToFit_backend( matrix );
 }
 //*************************************************************************************************
 
