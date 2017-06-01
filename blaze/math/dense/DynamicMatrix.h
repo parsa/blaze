@@ -354,6 +354,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
           void   resize ( size_t m, size_t n, bool preserve=true );
    inline void   extend ( size_t m, size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
+   inline void   shrinkToFit();
    inline void   swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
@@ -1897,6 +1898,27 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
 
 
 //*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that due to padding the capacity might not be reduced exactly to rows() times columns().
+// Please also note that in case a reallocation occurs, all iterators (including end() iterators),
+// all pointers and references to elements of this matrix are invalidated.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline void DynamicMatrix<Type,SO>::shrinkToFit()
+{
+   if( ( m_ * adjustColumns( n_ ) ) < capacity_ ) {
+      DynamicMatrix( *this ).swap( *this );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Swapping the contents of two matrices.
 //
 // \param m The matrix to be swapped.
@@ -3404,6 +3426,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
           void   resize ( size_t m, size_t n, bool preserve=true );
    inline void   extend ( size_t m, size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
+   inline void   shrinkToFit();
    inline void   swap( DynamicMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
@@ -4953,6 +4976,28 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
       std::swap( tmp, v_ );
       deallocate( tmp );
       capacity_ = elements;
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that due to padding the capacity might not be reduced exactly to rows() times columns().
+// Please also note that in case a reallocation occurs, all iterators (including end() iterators),
+// all pointers and references to elements of this matrix are invalidated.
+*/
+template< typename Type >  // Data type of the matrix
+inline void DynamicMatrix<Type,true>::shrinkToFit()
+{
+   if( ( adjustRows( m_ ) * n_ ) < capacity_ ) {
+      DynamicMatrix( *this ).swap( *this );
    }
 }
 /*! \endcond */
