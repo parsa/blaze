@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -6579,6 +6580,23 @@ struct IsPadded< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
 struct IsResizable< DynamicMatrix<T,SO> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSHRINKABLE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO >
+struct IsShrinkable< DynamicMatrix<T,SO> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
