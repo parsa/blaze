@@ -64,6 +64,7 @@
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/Thresholds.h>
@@ -2409,6 +2410,23 @@ inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) n
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
 struct IsResizable< CompressedVector<T,TF> > : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSHRINKABLE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF >
+struct IsShrinkable< CompressedVector<T,TF> > : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
