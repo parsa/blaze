@@ -318,6 +318,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    inline void   resize( size_t n, bool preserve=true );
    inline void   extend( size_t n, bool preserve=true );
    inline void   reserve( size_t n );
+   inline void   shrinkToFit();
    inline void   swap( DynamicVector& v ) noexcept;
    //@}
    //**********************************************************************************************
@@ -1585,6 +1586,27 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       std::swap( tmp, v_ );
       deallocate( tmp );
       capacity_ = newCapacity;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the vector by removing unused capacity. Please note
+// that due to padding the capacity might not be reduced exactly to size(). Please also note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this vector are invalidated.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void DynamicVector<Type,TF>::shrinkToFit()
+{
+   if( adjustCapacity( size_ ) < capacity_ ) {
+      DynamicVector( *this ).swap( *this );
    }
 }
 //*************************************************************************************************
