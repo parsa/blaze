@@ -380,6 +380,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    inline void   clear();
    inline void   resize( size_t n, bool preserve=true );
           void   reserve( size_t n );
+   inline void   shrinkToFit();
    inline void   swap( CompressedVector& sv ) noexcept;
    //@}
    //**********************************************************************************************
@@ -1383,6 +1384,26 @@ void CompressedVector<Type,TF>::reserve( size_t n )
       std::swap( newBegin, begin_ );
       capacity_ = newCapacity;
       deallocate( newBegin );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the vector by removing unused capacity. Please note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this vector are invalidated.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void CompressedVector<Type,TF>::shrinkToFit()
+{
+   if( nonZeros() < capacity_ ) {
+      CompressedVector( *this ).swap( *this );
    }
 }
 //*************************************************************************************************
