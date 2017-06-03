@@ -87,7 +87,7 @@ ThreadMapping createThreadMapping( size_t threads, const Matrix<MT,SO>& A )
    if( M > N || ( M == N && !SO ) )
    {
       const double ratio( double(M)/double(N) );
-      size_t m = min<size_t>( threads, max<size_t>( 1UL, round( sqrt( threads*ratio ) ) ) );
+      size_t m = min( threads, max( 1UL, static_cast<size_t>( round( sqrt( threads*ratio ) ) ) ) );
       size_t n = threads / m;
 
       while( m * n != threads ) {
@@ -100,7 +100,7 @@ ThreadMapping createThreadMapping( size_t threads, const Matrix<MT,SO>& A )
    else
    {
       const double ratio( double(N)/double(M) );
-      size_t n = min<size_t>( threads, max<size_t>( 1UL, round( sqrt( threads*ratio ) ) ) );
+      size_t n = min( threads, max( 1UL, static_cast<size_t>( round( sqrt( threads*ratio ) ) ) ) );
       size_t m = threads / n;
 
       while( m * n != threads ) {
