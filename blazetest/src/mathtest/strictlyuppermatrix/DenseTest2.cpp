@@ -78,6 +78,7 @@ DenseTest::DenseTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -3870,6 +3871,187 @@ void DenseTest::testReserve()
       checkColumns ( upper,  0UL );
       checkCapacity( upper, 20UL );
       checkNonZeros( upper,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the StrictlyUpperMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the StrictlyUpperMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StrictlyUpperMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         UT upper{ { 0, 1, 2 }, { 0, 0, 3 }, { 0, 0, 0 } };
+
+         upper.shrinkToFit();
+
+         checkRows    ( upper, 3UL );
+         checkColumns ( upper, 3UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 3UL );
+         checkNonZeros( upper, 0UL, 2UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 0UL );
+
+         if( upper.capacity() != upper.rows() * upper.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << upper.capacity() << "\n"
+                << "   Expected capacity: " << ( upper.rows() * upper.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( upper(0,0) != 0 || upper(0,1) != 1 || upper(0,2) != 2 ||
+             upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 3 ||
+             upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 0 1 2 )\n( 0 0 3 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         UT upper{ { 0, 1, 2 }, { 0, 0, 3 }, { 0, 0, 0 } };
+         upper.reserve( 100UL );
+
+         upper.shrinkToFit();
+
+         checkRows    ( upper, 3UL );
+         checkColumns ( upper, 3UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 3UL );
+         checkNonZeros( upper, 0UL, 2UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 0UL );
+
+         if( upper.capacity() != upper.rows() * upper.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << upper.capacity() << "\n"
+                << "   Expected capacity: " << ( upper.rows() * upper.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( upper(0,0) != 0 || upper(0,1) != 1 || upper(0,2) != 2 ||
+             upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 3 ||
+             upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 0 1 2 )\n( 0 0 3 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major StrictlyUpperMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         OUT upper{ { 0, 1, 2 }, { 0, 0, 3 }, { 0, 0, 0 } };
+
+         upper.shrinkToFit();
+
+         checkRows    ( upper, 3UL );
+         checkColumns ( upper, 3UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 3UL );
+         checkNonZeros( upper, 0UL, 0UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+
+         if( upper.capacity() != upper.spacing() * upper.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << upper.capacity() << "\n"
+                << "   Expected capacity: " << ( upper.spacing() * upper.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( upper(0,0) != 0 || upper(0,1) != 1 || upper(0,2) != 2 ||
+             upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 3 ||
+             upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 0 1 2 )\n( 0 0 3 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         OUT upper{ { 0, 1, 2 }, { 0, 0, 3 }, { 0, 0, 0 } };
+         upper.reserve( 100UL );
+
+         upper.shrinkToFit();
+
+         checkRows    ( upper, 3UL );
+         checkColumns ( upper, 3UL );
+         checkCapacity( upper, 9UL );
+         checkNonZeros( upper, 3UL );
+         checkNonZeros( upper, 0UL, 0UL );
+         checkNonZeros( upper, 1UL, 1UL );
+         checkNonZeros( upper, 2UL, 2UL );
+
+         if( upper.capacity() != upper.spacing() * upper.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << upper.capacity() << "\n"
+                << "   Expected capacity: " << ( upper.spacing() * upper.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( upper(0,0) != 0 || upper(0,1) != 1 || upper(0,2) != 2 ||
+             upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 3 ||
+             upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n"
+                << "   Expected result:\n( 0 1 2 )\n( 0 0 3 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
