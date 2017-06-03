@@ -309,6 +309,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    /*!\name Utility functions */
    //@{
    inline constexpr size_t size() const noexcept;
+   inline constexpr size_t spacing() const noexcept;
    inline constexpr size_t capacity() const noexcept;
    inline size_t           nonZeros() const;
    inline void             reset();
@@ -1438,9 +1439,27 @@ inline constexpr size_t StaticVector<Type,N,TF>::size() const noexcept
 
 
 //*************************************************************************************************
+/*!\brief Returns the minimum capacity of the vector.
+//
+// \return The minimum capacity of the vector.
+//
+// This function returns the minimum capacity of the vector, which corresponds to the current
+// size plus padding.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline constexpr size_t StaticVector<Type,N,TF>::spacing() const noexcept
+{
+   return NN;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the maximum capacity of the vector.
 //
-// \return The capacity of the vector.
+// \return The maximum capacity of the vector.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
