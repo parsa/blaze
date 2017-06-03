@@ -1369,7 +1369,7 @@
 
    // Adapting the size of the dynamic and compressed vectors. The (optional) second parameter
    // specifies whether the existing elements should be preserved. Per default, the existing
-   // elements are not preserved.
+   // elements are preserved.
    v1.resize( 5UL );         // Resizing vector v1 to 5 elements. Elements of built-in type remain
                              // uninitialized, elements of class type are default constructed.
    v1.resize( 3UL, false );  // Resizing vector v1 to 3 elements. The old elements are lost, the
@@ -1403,6 +1403,24 @@
 
 // Note that the size of the vector remains unchanged, but only the internal capacity is set
 // according to the specified value!
+//
+//
+// \n \subsection vector_operations_shrinkToFit .shrinkToFit()
+//
+// The internal capacity of vectors with dynamic memory is preserved in order to minimize the
+// number of reallocations. For that reason, the \c resize() and \c reserve() functions can lead
+// to memory overhead. The \c shrinkToFit() member function can be used to minimize the internal
+// capacity:
+
+   \code
+   blaze::DynamicVector<int> v1( 1000UL );  // Create a vector of 1000 integers
+   v1.resize( 10UL );                       // Resize to 10, but the capacity is preserved
+   v1.shrinkToFit();                        // Remove the unused capacity
+   \endcode
+
+// Please note that due to padding the capacity might not be reduced exactly to \c size(). Please
+// also note that in case a reallocation occurs, all iterators (including \c end() iterators), all
+// pointers and references to elements of the vector are invalidated.
 //
 //
 // \n \section vector_operations_free_functions Free Functions
@@ -1518,7 +1536,7 @@
    min( b );  // Returns 0
    \endcode
 
-// If passed two or more dense vectors, the \c min() and \a max() functions compute the
+// If passed two or more dense vectors, the \c min() and \c max() functions compute the
 // componentwise minimum or maximum of the given vectors, respectively:
 
    \code
@@ -1529,7 +1547,7 @@
    max( a, c, d );  // Results in the vector ( -5, 3,  7,  4 )
    \endcode
 
-// Please note that sparse vectors can only be used in the unary \c min() and \a max() functions.
+// Please note that sparse vectors can only be used in the unary \c min() and \c max() functions.
 // Also note that all forms of the \c min() and \c max() functions can be used to compute the
 // smallest and largest element of a vector expression:
 
@@ -3052,7 +3070,8 @@
    CompressedMatrix<int,columnMajor> M2( 3UL, 2UL );
 
    // Adapting the number of rows and columns via the resize() function. The (optional)
-   // third parameter specifies whether the existing elements should be preserved.
+   // third parameter specifies whether the existing elements should be preserved. Per
+   // default, the existing elements are preserved.
    M1.resize( 2UL, 2UL );         // Resizing matrix M1 to 2x2 elements. Elements of built-in type
                                   // remain uninitialized, elements of class type are default
                                   // constructed.
@@ -3093,6 +3112,24 @@
    M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 1
    \endcode
 
+// \n \subsection matrix_operations_shrinkToFit .shrinkToFit()
+//
+// The internal capacity of matrices with dynamic memory is preserved in order to minimize the
+// number of reallocations. For that reason, the \c resize() and \c reserve() functions can lead
+// to memory overhead. The \c shrinkToFit() member function can be used to minimize the internal
+// capacity:
+
+   \code
+   blaze::DynamicMatrix<int> M1( 100UL, 100UL );  // Create a 100x100 integer matrix
+   M1.resize( 10UL, 10UL );                       // Resize to 10x10, but the capacity is preserved
+   M1.shrinkToFit();                              // Remove the unused capacity
+   \endcode
+
+// Please note that due to padding the capacity might not be reduced exactly to \c rows() times
+// \c columns(). Please also note that in case a reallocation occurs, all iterators (including
+// \c end() iterators), all pointers and references to elements of this matrix are invalidated.
+//
+//
 // \n \section matrix_operations_free_functions Free Functions
 // <hr>
 //
