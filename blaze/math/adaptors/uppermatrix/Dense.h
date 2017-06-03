@@ -746,6 +746,7 @@ class UpperMatrix<MT,SO,true>
           void   resize ( size_t n, bool preserve=true );
    inline void   extend ( size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
+   inline void   shrinkToFit();
    inline void   swap( UpperMatrix& m ) noexcept;
 
    static inline constexpr size_t maxNonZeros() noexcept;
@@ -2409,6 +2410,26 @@ template< typename MT  // Type of the adapted dense matrix
 inline void UpperMatrix<MT,SO,true>::reserve( size_t elements )
 {
    matrix_.reserve( elements );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this matrix are invalidated.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void UpperMatrix<MT,SO,true>::shrinkToFit()
+{
+   matrix_.shrinkToFit();
 }
 /*! \endcond */
 //*************************************************************************************************

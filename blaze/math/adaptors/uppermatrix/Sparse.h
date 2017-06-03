@@ -238,6 +238,7 @@ class UpperMatrix<MT,SO,false>
    inline void   reserve( size_t i, size_t nonzeros );
    inline void   trim();
    inline void   trim( size_t i );
+   inline void   shrinkToFit();
    inline void   swap( UpperMatrix& m ) noexcept;
 
    static inline constexpr size_t maxNonZeros() noexcept;
@@ -1508,6 +1509,26 @@ template< typename MT  // Type of the adapted sparse matrix
 inline void UpperMatrix<MT,SO,false>::trim( size_t i )
 {
    matrix_.trim( i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Requesting the removal of unused capacity.
+//
+// \return void
+//
+// This function minimizes the capacity of the matrix by removing unused capacity. Please note
+// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
+// and references to elements of this matrix are invalidated.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline void UpperMatrix<MT,SO,false>::shrinkToFit()
+{
+   matrix_.shrinkToFit();
 }
 /*! \endcond */
 //*************************************************************************************************
