@@ -554,6 +554,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -1667,9 +1668,28 @@ inline size_t CustomVector<Type,AF,PF,TF>::size() const noexcept
 
 
 //*************************************************************************************************
+/*!\brief Returns the minimum capacity of the vector.
+//
+// \return The minimum capacity of the vector.
+//
+// This function returns the minimum capacity of the vector, which corresponds to the current
+// size plus padding.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+inline size_t CustomVector<Type,AF,PF,TF>::spacing() const noexcept
+{
+   return size_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the maximum capacity of the vector.
 //
-// \return The capacity of the vector.
+// \return The maximum capacity of the vector.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
@@ -2963,6 +2983,7 @@ class CustomVector<Type,AF,padded,TF>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -4056,9 +4077,29 @@ inline size_t CustomVector<Type,AF,padded,TF>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the vector.
+//
+// \return The minimum capacity of the vector.
+//
+// This function returns the minimum capacity of the vector, which corresponds to the current
+// size plus padding.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool TF >      // Transpose flag
+inline size_t CustomVector<Type,AF,padded,TF>::spacing() const noexcept
+{
+   return capacity_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the vector.
 //
-// \return The capacity of the vector.
+// \return The maximum capacity of the vector.
 */
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
