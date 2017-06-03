@@ -111,6 +111,7 @@ ClassTest::ClassTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testIsDefault();
 }
@@ -2690,6 +2691,85 @@ void ClassTest::testReserve()
    checkSize    ( vec,  0UL );
    checkCapacity( vec, 20UL );
    checkNonZeros( vec,  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the DynamicVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the DynamicVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testShrinkToFit()
+{
+   test_ = "DynamicVector::shrinkToFit()";
+
+   // Shrinking a vector without excessive capacity
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4, 5 };
+
+      vec.shrinkToFit();
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( vec.capacity() != vec.spacing() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Capacity         : " << vec.capacity() << "\n"
+             << "   Expected capacity: " << vec.spacing() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 || vec[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Shrinking a vector with excessive capacity
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4, 5 };
+      vec.reserve( 100UL );
+
+      vec.shrinkToFit();
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( vec.capacity() != vec.spacing() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Capacity         : " << vec.capacity() << "\n"
+             << "   Expected capacity: " << vec.spacing() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 || vec[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
