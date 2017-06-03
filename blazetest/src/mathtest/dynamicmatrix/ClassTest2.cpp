@@ -85,6 +85,7 @@ ClassTest::ClassTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testTranspose();
    testCTranspose();
@@ -4793,6 +4794,181 @@ void ClassTest::testReserve()
       checkColumns ( mat,  0UL );
       checkCapacity( mat, 20UL );
       checkNonZeros( mat,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the DynamicMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the DynamicMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 }, { 4, 5, 6 } };
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+
+         if( mat.capacity() != mat.rows() * mat.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << ( mat.rows() * mat.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+             mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 }, { 4, 5, 6 } };
+         mat.reserve( 100UL );
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+
+         if( mat.capacity() != mat.rows() * mat.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << ( mat.rows() * mat.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+             mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DynamicMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 2, 3 }, { 4, 5, 6 } };
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat.capacity() != mat.spacing() * mat.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << ( mat.spacing() * mat.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+             mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 2, 3 }, { 4, 5, 6 } };
+         mat.reserve( 100UL );
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 6UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat.capacity() != mat.spacing() * mat.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << ( mat.spacing() * mat.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+             mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
