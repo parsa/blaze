@@ -109,6 +109,7 @@ class SparseComplexTest
    void testResize      ();
    void testReserve     ();
    void testTrim        ();
+   void testShrinkToFit ();
    void testSwap        ();
    void testSet         ();
    void testInsert      ();

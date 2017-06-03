@@ -76,6 +76,7 @@ DenseComplexTest::DenseComplexTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testTranspose();
    testCTranspose();
@@ -3915,6 +3916,203 @@ void DenseComplexTest::testReserve()
       checkColumns ( herm,  0UL );
       checkCapacity( herm, 20UL );
       checkNonZeros( herm,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the HermitianMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseComplexTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major HermitianMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         HT herm{ { cplx(1, 0), cplx(2,2), cplx(3,-3) },
+                  { cplx(2,-2), cplx(4,0), cplx(5,-5) },
+                  { cplx(3, 3), cplx(5,5), cplx(6, 0) } };
+
+         herm.shrinkToFit();
+
+         checkRows    ( herm, 3UL );
+         checkColumns ( herm, 3UL );
+         checkCapacity( herm, 9UL );
+         checkNonZeros( herm, 9UL );
+         checkNonZeros( herm, 0UL, 3UL );
+         checkNonZeros( herm, 1UL, 3UL );
+         checkNonZeros( herm, 2UL, 3UL );
+
+         if( herm.capacity() != herm.rows() * herm.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << herm.capacity() << "\n"
+                << "   Expected capacity: " << ( herm.rows() * herm.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2,2) || herm(0,2) != cplx(3,-3) ||
+             herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4,0) || herm(1,2) != cplx(5,-5) ||
+             herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(5,5) || herm(2,2) != cplx(6, 0) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n"
+                << "   Expected result:\n( (1, 0) (2,2) (3,-3) )\n"
+                                        "( (2,-2) (4,0) (5,-5) )\n"
+                                        "( (3, 3) (5,5) (6, 0) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         HT herm{ { cplx(1, 0), cplx(2,2), cplx(3,-3) },
+                  { cplx(2,-2), cplx(4,0), cplx(5,-5) },
+                  { cplx(3, 3), cplx(5,5), cplx(6, 0) } };
+         herm.reserve( 100UL );
+
+         herm.shrinkToFit();
+
+         checkRows    ( herm, 3UL );
+         checkColumns ( herm, 3UL );
+         checkCapacity( herm, 9UL );
+         checkNonZeros( herm, 9UL );
+         checkNonZeros( herm, 0UL, 3UL );
+         checkNonZeros( herm, 1UL, 3UL );
+         checkNonZeros( herm, 2UL, 3UL );
+
+         if( herm.capacity() != herm.rows() * herm.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << herm.capacity() << "\n"
+                << "   Expected capacity: " << ( herm.rows() * herm.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2,2) || herm(0,2) != cplx(3,-3) ||
+             herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4,0) || herm(1,2) != cplx(5,-5) ||
+             herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(5,5) || herm(2,2) != cplx(6, 0) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n"
+                << "   Expected result:\n( (1, 0) (2,2) (3,-3) )\n"
+                                        "( (2,-2) (4,0) (5,-5) )\n"
+                                        "( (3, 3) (5,5) (6, 0) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major HermitianMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         OHT herm{ { cplx(1, 0), cplx(2,2), cplx(3,-3) },
+                   { cplx(2,-2), cplx(4,0), cplx(5,-5) },
+                   { cplx(3, 3), cplx(5,5), cplx(6, 0) } };
+
+         herm.shrinkToFit();
+
+         checkRows    ( herm, 3UL );
+         checkColumns ( herm, 3UL );
+         checkCapacity( herm, 9UL );
+         checkNonZeros( herm, 9UL );
+         checkNonZeros( herm, 0UL, 3UL );
+         checkNonZeros( herm, 1UL, 3UL );
+         checkNonZeros( herm, 2UL, 3UL );
+
+         if( herm.capacity() != herm.spacing() * herm.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << herm.capacity() << "\n"
+                << "   Expected capacity: " << ( herm.spacing() * herm.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2,2) || herm(0,2) != cplx(3,-3) ||
+             herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4,0) || herm(1,2) != cplx(5,-5) ||
+             herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(5,5) || herm(2,2) != cplx(6, 0) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n"
+                << "   Expected result:\n( (1, 0) (2,2) (3,-3) )\n"
+                                        "( (2,-2) (4,0) (5,-5) )\n"
+                                        "( (3, 3) (5,5) (6, 0) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         OHT herm{ { cplx(1, 0), cplx(2,2), cplx(3,-3) },
+                   { cplx(2,-2), cplx(4,0), cplx(5,-5) },
+                   { cplx(3, 3), cplx(5,5), cplx(6, 0) } };
+         herm.reserve( 100UL );
+
+         herm.shrinkToFit();
+
+         checkRows    ( herm, 3UL );
+         checkColumns ( herm, 3UL );
+         checkCapacity( herm, 9UL );
+         checkNonZeros( herm, 9UL );
+         checkNonZeros( herm, 0UL, 3UL );
+         checkNonZeros( herm, 1UL, 3UL );
+         checkNonZeros( herm, 2UL, 3UL );
+
+         if( herm.capacity() != herm.spacing() * herm.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << herm.capacity() << "\n"
+                << "   Expected capacity: " << ( herm.spacing() * herm.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2,2) || herm(0,2) != cplx(3,-3) ||
+             herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4,0) || herm(1,2) != cplx(5,-5) ||
+             herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(5,5) || herm(2,2) != cplx(6, 0) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n"
+                << "   Expected result:\n( (1, 0) (2,2) (3,-3) )\n"
+                                        "( (2,-2) (4,0) (5,-5) )\n"
+                                        "( (3, 3) (5,5) (6, 0) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
