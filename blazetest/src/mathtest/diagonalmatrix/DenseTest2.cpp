@@ -75,6 +75,7 @@ DenseTest::DenseTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -3325,6 +3326,187 @@ void DenseTest::testReserve()
       checkColumns ( diag,  0UL );
       checkCapacity( diag, 20UL );
       checkNonZeros( diag,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the DiagonalMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the DiagonalMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DiagonalMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         DT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+         diag.shrinkToFit();
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 9UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag.capacity() != diag.rows() * diag.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << diag.capacity() << "\n"
+                << "   Expected capacity: " << ( diag.rows() * diag.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         DT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+         diag.reserve( 100UL );
+
+         diag.shrinkToFit();
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 9UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag.capacity() != diag.rows() * diag.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << diag.capacity() << "\n"
+                << "   Expected capacity: " << ( diag.rows() * diag.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DiagonalMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         ODT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+
+         diag.shrinkToFit();
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 9UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag.capacity() != diag.rows() * diag.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << diag.capacity() << "\n"
+                << "   Expected capacity: " << ( diag.rows() * diag.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         ODT diag{ { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
+         diag.reserve( 100UL );
+
+         diag.shrinkToFit();
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 9UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag.capacity() != diag.rows() * diag.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << diag.capacity() << "\n"
+                << "   Expected capacity: " << ( diag.rows() * diag.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( diag(0,0) != 1 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 2 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
