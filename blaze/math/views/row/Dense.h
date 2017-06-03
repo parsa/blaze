@@ -223,6 +223,7 @@ class Row<MT,true,true,SF>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -1232,9 +1233,28 @@ inline size_t Row<MT,true,true,SF>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the row.
+//
+// \return The minimum capacity of the row.
+//
+// This function returns the minimum capacity of the row, which corresponds to the current size
+// plus padding.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SF >    // Symmetry flag
+inline size_t Row<MT,true,true,SF>::spacing() const noexcept
+{
+   return matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense row.
 //
-// \return The capacity of the dense row.
+// \return The maximum capacity of the dense row.
 */
 template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
@@ -2593,6 +2613,7 @@ class Row<MT,false,true,false>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -3485,9 +3506,27 @@ inline size_t Row<MT,false,true,false>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the row.
+//
+// \return The minimum capacity of the row.
+//
+// This function returns the minimum capacity of the row, which corresponds to the current size
+// plus padding.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t Row<MT,false,true,false>::spacing() const noexcept
+{
+   return matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense row.
 //
-// \return The capacity of the dense row.
+// \return The maximum capacity of the dense row.
 */
 template< typename MT >  // Type of the dense matrix
 inline size_t Row<MT,false,true,false>::capacity() const noexcept
@@ -4115,6 +4154,7 @@ class Row<MT,false,true,true>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -5099,9 +5139,27 @@ inline size_t Row<MT,false,true,true>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the row.
+//
+// \return The minimum capacity of the row.
+//
+// This function returns the minimum capacity of the row, which corresponds to the current size
+// plus padding.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t Row<MT,false,true,true>::spacing() const noexcept
+{
+   return matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense row.
 //
-// \return The capacity of the dense row.
+// \return The maximum capacity of the dense row.
 */
 template< typename MT >  // Type of the dense matrix
 inline size_t Row<MT,false,true,true>::capacity() const noexcept
