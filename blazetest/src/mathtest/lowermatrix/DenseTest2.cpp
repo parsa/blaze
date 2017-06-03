@@ -78,6 +78,7 @@ DenseTest::DenseTest()
    testResize();
    testExtend();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -3975,6 +3976,187 @@ void DenseTest::testReserve()
       checkColumns ( lower,  0UL );
       checkCapacity( lower, 20UL );
       checkNonZeros( lower,  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the LowerMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the LowerMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major LowerMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         LT lower{ { 1, 0, 0 }, { 2, 3, 0 }, { 4, 5, 6 } };
+
+         lower.shrinkToFit();
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 6UL );
+         checkNonZeros( lower, 0UL, 1UL );
+         checkNonZeros( lower, 1UL, 2UL );
+         checkNonZeros( lower, 2UL, 3UL );
+
+         if( lower.capacity() != lower.rows() * lower.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << lower.capacity() << "\n"
+                << "   Expected capacity: " << ( lower.rows() * lower.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 3 || lower(1,2) != 0 ||
+             lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 2 3 0 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         LT lower{ { 1, 0, 0 }, { 2, 3, 0 }, { 4, 5, 6 } };
+         lower.reserve( 100UL );
+
+         lower.shrinkToFit();
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 6UL );
+         checkNonZeros( lower, 0UL, 1UL );
+         checkNonZeros( lower, 1UL, 2UL );
+         checkNonZeros( lower, 2UL, 3UL );
+
+         if( lower.capacity() != lower.rows() * lower.spacing() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << lower.capacity() << "\n"
+                << "   Expected capacity: " << ( lower.rows() * lower.spacing() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 3 || lower(1,2) != 0 ||
+             lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 2 3 0 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major LowerMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         OLT lower{ { 1, 0, 0 }, { 2, 3, 0 }, { 4, 5, 6 } };
+
+         lower.shrinkToFit();
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 6UL );
+         checkNonZeros( lower, 0UL, 3UL );
+         checkNonZeros( lower, 1UL, 2UL );
+         checkNonZeros( lower, 2UL, 1UL );
+
+         if( lower.capacity() != lower.spacing() * lower.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << lower.capacity() << "\n"
+                << "   Expected capacity: " << ( lower.spacing() * lower.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 3 || lower(1,2) != 0 ||
+             lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 2 3 0 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         OLT lower{ { 1, 0, 0 }, { 2, 3, 0 }, { 4, 5, 6 } };
+         lower.reserve( 100UL );
+
+         lower.shrinkToFit();
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 6UL );
+         checkNonZeros( lower, 0UL, 3UL );
+         checkNonZeros( lower, 1UL, 2UL );
+         checkNonZeros( lower, 2UL, 1UL );
+
+         if( lower.capacity() != lower.spacing() * lower.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << lower.capacity() << "\n"
+                << "   Expected capacity: " << ( lower.spacing() * lower.columns() ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 3 || lower(1,2) != 0 ||
+             lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 1 0 0 )\n( 2 3 0 )\n( 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
