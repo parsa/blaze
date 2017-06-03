@@ -612,6 +612,7 @@ class Subvector<VT,unaligned,TF,true>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -1645,9 +1646,28 @@ inline size_t Subvector<VT,unaligned,TF,true>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the dense subvector.
+//
+// \return The minimum capacity of the dense subvector.
+//
+// This function returns the minimum capacity of the dense subvector, which corresponds to the
+// current size plus padding.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t Subvector<VT,unaligned,TF,true>::spacing() const noexcept
+{
+   return vector_.spacing() - offset_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense subvector.
 //
-// \return The capacity of the dense subvector.
+// \return The maximum capacity of the dense subvector.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -2744,6 +2764,7 @@ class Subvector<VT,aligned,TF,true>
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -3764,9 +3785,28 @@ inline size_t Subvector<VT,aligned,TF,true>::size() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the dense subvector.
+//
+// \return The minimum capacity of the dense subvector.
+//
+// This function returns the minimum capacity of the dense subvector, which corresponds to the
+// current size plus padding.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t Subvector<VT,aligned,TF,true>::spacing() const noexcept
+{
+   return vector_.spacing() - offset_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the maximum capacity of the dense subvector.
 //
-// \return The capacity of the dense subvector.
+// \return The maximum capacity of the dense subvector.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
