@@ -311,6 +311,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    /*!\name Utility functions */
    //@{
    inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
    inline size_t nonZeros() const;
    inline void   reset();
@@ -470,7 +471,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustCapacity( size_t minCapacity ) const noexcept;
+   inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -533,7 +534,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( size_t n )
    : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
+   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    if( IsVectorizable<Type>::value ) {
@@ -558,7 +559,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
+   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    for( size_t i=0UL; i<size_; ++i )
@@ -593,7 +594,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
    : size_    ( list.size() )                  // The current size/dimension of the vector
-   , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
+   , capacity_( addPadding( size_ ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    std::fill( std::copy( list.begin(), list.end(), v_ ), v_+capacity_, Type() );
@@ -628,7 +629,7 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the initialization array
 inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
    : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( adjustCapacity( n ) )          // The maximum capacity of the vector
+   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    for( size_t i=0UL; i<n; ++i )
@@ -667,7 +668,7 @@ template< typename Other  // Data type of the initialization array
         , size_t Dim >    // Dimension of the initialization array
 inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
    : size_    ( Dim )                          // The current size/dimension of the vector
-   , capacity_( adjustCapacity( Dim ) )        // The maximum capacity of the vector
+   , capacity_( addPadding( Dim ) )            // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -695,7 +696,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
    : size_    ( v.size_ )                      // The current size/dimension of the vector
-   , capacity_( adjustCapacity( v.size_ ) )    // The maximum capacity of the vector
+   , capacity_( addPadding( v.size_ ) )        // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= v.capacity_, "Invalid capacity estimation" );
@@ -737,7 +738,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the foreign vector
 inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
    : size_    ( (~v).size() )                  // The current size/dimension of the vector
-   , capacity_( adjustCapacity( size_ ) )      // The maximum capacity of the vector
+   , capacity_( addPadding( size_ ) )          // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
 {
    for( size_t i=( IsSparseVector<VT>::value   ? 0UL       : size_ );
@@ -1400,9 +1401,26 @@ inline size_t DynamicVector<Type,TF>::size() const noexcept
 
 
 //*************************************************************************************************
+/*!\brief Returns the minimum capacity of the vector.
+//
+// \return The minimum capacity of the vector.
+//
+// This function returns the minimum capacity of the vector, which corresponds to the current
+// size plus padding.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline size_t DynamicVector<Type,TF>::spacing() const noexcept
+{
+   return addPadding( size_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the maximum capacity of the vector.
 //
-// \return The capacity of the vector.
+// \return The maximum capacity of the vector.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1505,7 +1523,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
    if( n > capacity_ )
    {
       // Allocating a new array
-      const size_t newCapacity( adjustCapacity( n ) );
+      const size_t newCapacity( addPadding( n ) );
       Type* BLAZE_RESTRICT tmp = allocate<Type>( newCapacity );
 
       // Initializing the new array
@@ -1571,7 +1589,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
    if( n > capacity_ )
    {
       // Allocating a new array
-      const size_t newCapacity( adjustCapacity( n ) );
+      const size_t newCapacity( addPadding( n ) );
       Type* BLAZE_RESTRICT tmp = allocate<Type>( newCapacity );
 
       // Initializing the new array
@@ -1605,7 +1623,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void DynamicVector<Type,TF>::shrinkToFit()
 {
-   if( adjustCapacity( size_ ) < capacity_ ) {
+   if( spacing() < capacity_ ) {
       DynamicVector( *this ).swap( *this );
    }
 }
@@ -1630,18 +1648,21 @@ inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Adjusting the new capacity of the vector according to its data type \a Type.
+/*!\brief Add the necessary amount of padding to the given value.
 //
-// \param minCapacity The minimum necessary capacity.
-// \return The new capacity.
+// \param value The value to be padded.
+// \return The padded value.
+//
+// This function increments the given \a value by the necessary amount of padding based on the
+// vector's data type \a Type.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const noexcept
+inline size_t DynamicVector<Type,TF>::addPadding( size_t value ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
-      return nextMultiple<size_t>( minCapacity, SIMDSIZE );
-   else return minCapacity;
+      return nextMultiple<size_t>( value, SIMDSIZE );
+   else return value;
 }
 //*************************************************************************************************
 
