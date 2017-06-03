@@ -500,7 +500,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustColumns( size_t minColumns ) const noexcept;
+   inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -573,7 +573,7 @@ template< typename Type  // Data type of the matrix
 inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n )
    : m_       ( m )                            // The current number of rows of the matrix
    , n_       ( n )                            // The current number of columns of the matrix
-   , nn_      ( adjustColumns( n ) )           // The alignment adjusted number of columns
+   , nn_      ( addPadding( n ) )              // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -604,7 +604,7 @@ template< typename Type  // Data type of the matrix
 inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& init )
    : m_       ( m )                            // The current number of rows of the matrix
    , n_       ( n )                            // The current number of columns of the matrix
-   , nn_      ( adjustColumns( n ) )           // The alignment adjusted number of columns
+   , nn_      ( addPadding( n ) )              // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -648,7 +648,7 @@ template< typename Type  // Data type of the matrix
 inline DynamicMatrix<Type,SO>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
    : m_       ( list.size() )                  // The current number of rows of the matrix
    , n_       ( determineColumns( list ) )     // The current number of columns of the matrix
-   , nn_      ( adjustColumns( n_ ) )          // The alignment adjusted number of columns
+   , nn_      ( addPadding( n_ ) )             // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -693,7 +693,7 @@ template< typename Other >  // Data type of the initialization array
 inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* array )
    : m_       ( m )                            // The current number of rows of the matrix
    , n_       ( n )                            // The current number of columns of the matrix
-   , nn_      ( adjustColumns( n ) )           // The alignment adjusted number of columns
+   , nn_      ( addPadding( n ) )              // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -741,7 +741,7 @@ template< typename Other  // Data type of the initialization array
 inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : m_       ( Rows )                         // The current number of rows of the matrix
    , n_       ( Cols )                         // The current number of columns of the matrix
-   , nn_      ( adjustColumns( Cols ) )        // The alignment adjusted number of columns
+   , nn_      ( addPadding( Cols ) )           // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -822,7 +822,7 @@ template< typename MT    // Type of the foreign matrix
 inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    : m_       ( (~m).rows() )                  // The current number of rows of the matrix
    , n_       ( (~m).columns() )               // The current number of columns of the matrix
-   , nn_      ( adjustColumns( n_ ) )          // The alignment adjusted number of columns
+   , nn_      ( addPadding( n_ ) )             // The alignment adjusted number of columns
    , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
 {
@@ -1803,7 +1803,7 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 
    if( m == m_ && n == n_ ) return;
 
-   const size_t nn( adjustColumns( n ) );
+   const size_t nn( addPadding( n ) );
 
    if( preserve )
    {
@@ -1911,7 +1911,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::shrinkToFit()
 {
-   if( ( m_ * adjustColumns( n_ ) ) < capacity_ ) {
+   if( ( m_ * nn_ ) < capacity_ ) {
       DynamicMatrix( *this ).swap( *this );
    }
 }
@@ -1938,18 +1938,21 @@ inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Adjusting the number columns of the matrix according to its data type \a Type.
+/*!\brief Add the necessary amount of padding to the given value.
 //
-// \param minColumns The minimum necessary number of columns.
-// \return The adjusted number of columns.
+// \param value The value to be padded.
+// \return The padded value.
+//
+// This function increments the given \a value by the necessary amount of padding based on the
+// vector's data type \a Type.
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const noexcept
+inline size_t DynamicMatrix<Type,SO>::addPadding( size_t value ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
-      return nextMultiple<size_t>( minColumns, SIMDSIZE );
-   else return minColumns;
+      return nextMultiple<size_t>( value, SIMDSIZE );
+   else return value;
 }
 //*************************************************************************************************
 
@@ -3564,7 +3567,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t adjustRows( size_t minRows ) const noexcept;
+   inline size_t addPadding( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3629,7 +3632,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix() noexcept
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
    : m_       ( m )                            // The current number of rows of the matrix
-   , mm_      ( adjustRows( m ) )              // The alignment adjusted number of rows
+   , mm_      ( addPadding( m ) )              // The alignment adjusted number of rows
    , n_       ( n )                            // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -3661,7 +3664,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& init )
    : m_       ( m )                            // The current number of rows of the matrix
-   , mm_      ( adjustRows( m ) )              // The alignment adjusted number of rows
+   , mm_      ( addPadding( m ) )              // The alignment adjusted number of rows
    , n_       ( n )                            // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -3706,7 +3709,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
    : m_       ( list.size() )                  // The current number of rows of the matrix
-   , mm_      ( adjustRows( m_ ) )             // The alignment adjusted number of rows
+   , mm_      ( addPadding( m_ ) )             // The alignment adjusted number of rows
    , n_       ( determineColumns( list ) )     // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -3769,7 +3772,7 @@ template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the initialization array
 inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other* array )
    : m_       ( m )                            // The current number of rows of the matrix
-   , mm_      ( adjustRows( m ) )              // The alignment adjusted number of rows
+   , mm_      ( addPadding( m ) )              // The alignment adjusted number of rows
    , n_       ( n )                            // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -3818,7 +3821,7 @@ template< typename Other   // Data type of the initialization array
         , size_t Cols >    // Number of columns of the initialization array
 inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : m_       ( Rows )                         // The current number of rows of the matrix
-   , mm_      ( adjustRows( Rows ) )           // The alignment adjusted number of rows
+   , mm_      ( addPadding( Rows ) )           // The alignment adjusted number of rows
    , n_       ( Cols )                         // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -3902,7 +3905,7 @@ template< typename MT      // Type of the foreign matrix
         , bool SO >        // Storage order of the foreign matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    : m_       ( (~m).rows() )                  // The current number of rows of the matrix
-   , mm_      ( adjustRows( m_ ) )             // The alignment adjusted number of rows
+   , mm_      ( addPadding( m_ ) )             // The alignment adjusted number of rows
    , n_       ( (~m).columns() )               // The current number of columns of the matrix
    , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
    , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
@@ -4885,7 +4888,7 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 
    if( m == m_ && n == n_ ) return;
 
-   const size_t mm( adjustRows( m ) );
+   const size_t mm( addPadding( m ) );
 
    if( preserve )
    {
@@ -4996,7 +4999,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::shrinkToFit()
 {
-   if( ( adjustRows( m_ ) * n_ ) < capacity_ ) {
+   if( ( mm_ * n_ ) < capacity_ ) {
       DynamicMatrix( *this ).swap( *this );
    }
 }
@@ -5026,17 +5029,20 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Adjusting the number rows of the matrix according to its data type \a Type.
+/*!\brief Add the necessary amount of padding to the given value.
 //
-// \param minRows The minimum necessary number of rows.
-// \return The adjusted number of rows.
+// \param value The value to be padded.
+// \return The padded value.
+//
+// This function increments the given \a value by the necessary amount of padding based on the
+// vector's data type \a Type.
 */
 template< typename Type >  // Data type of the matrix
-inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const noexcept
+inline size_t DynamicMatrix<Type,true>::addPadding( size_t values ) const noexcept
 {
    if( usePadding && IsVectorizable<Type>::value )
-      return nextMultiple<size_t>( minRows, SIMDSIZE );
-   else return minRows;
+      return nextMultiple<size_t>( values, SIMDSIZE );
+   else return values;
 }
 /*! \endcond */
 //*************************************************************************************************
