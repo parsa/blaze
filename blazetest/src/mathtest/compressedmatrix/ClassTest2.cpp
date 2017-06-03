@@ -74,6 +74,7 @@ ClassTest::ClassTest()
    testResize();
    testReserve();
    testTrim();
+   testShrinkToFit();
    testSwap();
    testSet();
    testInsert();
@@ -2583,6 +2584,191 @@ void ClassTest::testTrim()
       checkCapacity( mat,  0UL, 0UL );
       checkCapacity( mat,  1UL, 0UL );
       checkCapacity( mat,  2UL, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member functions of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member functions of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 3;
+         mat(1,1) = 5;
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+
+         if( mat.capacity() != mat.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << mat.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 5 || mat(1,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 3 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 100UL );
+         mat(0,0) = 1;
+         mat(0,2) = 3;
+         mat(1,1) = 5;
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+
+         if( mat.capacity() != mat.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << mat.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 5 || mat(1,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 3 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DynamicMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 3;
+         mat(1,1) = 5;
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat.capacity() != mat.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << mat.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 5 || mat(1,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 3 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 100UL );
+         mat(0,0) = 1;
+         mat(0,2) = 3;
+         mat(1,1) = 5;
+
+         mat.shrinkToFit();
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( mat.capacity() != mat.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << mat.capacity() << "\n"
+                << "   Expected capacity: " << mat.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 3 ||
+             mat(1,0) != 0 || mat(1,1) != 5 || mat(1,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 1 0 3 )\n( 0 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
