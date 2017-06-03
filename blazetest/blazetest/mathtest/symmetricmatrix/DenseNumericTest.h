@@ -108,6 +108,7 @@ class DenseNumericTest
    void testResize      ();
    void testExtend      ();
    void testReserve     ();
+   void testShrinkToFit ();
    void testSwap        ();
    void testTranspose   ();
    void testCTranspose  ();

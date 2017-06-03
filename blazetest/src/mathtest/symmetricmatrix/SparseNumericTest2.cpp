@@ -74,6 +74,7 @@ SparseNumericTest::SparseNumericTest()
    testResize();
    testReserve();
    testTrim();
+   testShrinkToFit();
    testSwap();
    testSet();
    testInsert();
@@ -3369,6 +3370,201 @@ void SparseNumericTest::testTrim()
       checkCapacity( sym,  0UL, 0UL );
       checkCapacity( sym,  1UL, 0UL );
       checkCapacity( sym,  2UL, 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNumericTest::testShrinkToFit()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         ST sym( 3UL, 5UL );
+         sym(0,0) = 1;
+         sym(0,2) = 2;
+         sym(1,1) = 3;
+         sym(2,2) = 4;
+
+         sym.shrinkToFit();
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym.capacity() != sym.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << sym.capacity() << "\n"
+                << "   Expected capacity: " << sym.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 2 ||
+             sym(1,0) != 0 || sym(1,1) != 3 || sym(1,2) != 0 ||
+             sym(2,0) != 2 || sym(2,1) != 0 || sym(2,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n( 2 0 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         ST sym{ 3UL, 100UL };
+         sym(0,0) = 1;
+         sym(0,2) = 2;
+         sym(1,1) = 3;
+         sym(2,2) = 4;
+
+         sym.shrinkToFit();
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym.capacity() != sym.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << sym.capacity() << "\n"
+                << "   Expected capacity: " << sym.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 2 ||
+             sym(1,0) != 0 || sym(1,1) != 3 || sym(1,2) != 0 ||
+             sym(2,0) != 2 || sym(2,1) != 0 || sym(2,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n( 2 0 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::shrinkToFit()";
+
+      // Shrinking a matrix without excessive capacity
+      {
+         OST sym( 3UL, 5UL );
+         sym(0,0) = 1;
+         sym(0,2) = 2;
+         sym(1,1) = 3;
+         sym(2,2) = 4;
+
+         sym.shrinkToFit();
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym.capacity() != sym.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << sym.capacity() << "\n"
+                << "   Expected capacity: " << sym.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 2 ||
+             sym(1,0) != 0 || sym(1,1) != 3 || sym(1,2) != 0 ||
+             sym(2,0) != 2 || sym(2,1) != 0 || sym(2,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n( 2 0 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Shrinking a matrix with excessive capacity
+      {
+         OST sym{ 3UL, 100UL };
+         sym(0,0) = 1;
+         sym(0,2) = 2;
+         sym(1,1) = 3;
+         sym(2,2) = 4;
+
+         sym.shrinkToFit();
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym.capacity() != sym.nonZeros() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Capacity         : " << sym.capacity() << "\n"
+                << "   Expected capacity: " << sym.nonZeros() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 2 ||
+             sym(1,0) != 0 || sym(1,1) != 3 || sym(1,2) != 0 ||
+             sym(2,0) != 2 || sym(2,1) != 0 || sym(2,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Shrinking the matrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1 0 2 )\n( 0 3 0 )\n( 2 0 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
