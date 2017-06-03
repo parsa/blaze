@@ -102,6 +102,7 @@ class ClassTest
    void testClear       ();
    void testResize      ();
    void testReserve     ();
+   void testShrinkToFit ();
    void testSwap        ();
    void testSet         ();
    void testInsert      ();

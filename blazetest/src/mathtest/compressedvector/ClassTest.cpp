@@ -83,6 +83,7 @@ ClassTest::ClassTest()
    testClear();
    testResize();
    testReserve();
+   testShrinkToFit();
    testSwap();
    testSet();
    testInsert();
@@ -1967,6 +1968,90 @@ void ClassTest::testReserve()
    checkSize    ( vec,  0UL );
    checkCapacity( vec, 20UL );
    checkNonZeros( vec,  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c shrinkToFit() member function of the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c shrinkToFit() member function of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testShrinkToFit()
+{
+   test_ = "CompressedVector::shrinkToFit()";
+
+   // Shrinking a vector without excessive capacity
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 3UL );
+      vec[0] = 1;
+      vec[2] = 3;
+      vec[4] = 5;
+
+      vec.shrinkToFit();
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec.capacity() != vec.nonZeros() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Capacity         : " << vec.capacity() << "\n"
+             << "   Expected capacity: " << vec.nonZeros() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[0] != 1 || vec[2] != 3 || vec[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 3 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Shrinking a vector with excessive capacity
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 100UL );
+      vec[0] = 1;
+      vec[2] = 3;
+      vec[4] = 5;
+
+      vec.shrinkToFit();
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( vec.capacity() != vec.nonZeros() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Capacity         : " << vec.capacity() << "\n"
+             << "   Expected capacity: " << vec.nonZeros() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[0] != 1 || vec[2] != 3 || vec[4] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Shrinking the vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 0 3 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
