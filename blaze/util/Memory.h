@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR) || defined(__MINGW32__)
 #  include <malloc.h>
 #endif
 #include <cstdlib>
@@ -80,8 +80,11 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 {
    void* raw( nullptr );
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
    raw = _aligned_malloc( size, alignment );
+   if( raw == nullptr ) {
+#elif defined(__MINGW32__)
+   raw = __mingw_aligned_malloc( size, alignment );
    if( raw == nullptr ) {
 #else
    if( posix_memalign( &raw, alignment, size ) ) {
@@ -108,8 +111,10 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 */
 inline void deallocate_backend( const void* address ) noexcept
 {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
    _aligned_free( const_cast<void*>( address ) );
+#elif defined(__MINGW32__)
+   __mingw_aligned_free( const_cast<void*>( address ) );
 #else
    free( const_cast<void*>( address ) );
 #endif
