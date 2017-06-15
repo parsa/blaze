@@ -44,8 +44,8 @@
 #include <string>
 #include <vector>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blas/TDMatDMatMult.h>
@@ -144,7 +144,8 @@ void estimateSteps( Run& run )
    if( C.rows() != N )
       std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
-   run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );
+   const size_t estimatedSteps( ( blazemark::runtime * steps ) / timer.last() );
+   run.setSteps( blaze::max( 1UL, estimatedSteps ) );
 }
 //*************************************************************************************************
 

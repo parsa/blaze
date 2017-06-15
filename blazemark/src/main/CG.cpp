@@ -45,7 +45,7 @@
 #include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/Functions.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/CG.h>
@@ -177,15 +177,19 @@ void estimateSteps( Run& run )
       std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
    if( timer.last() > blazemark::runtime ) {
-      iteration = blaze::max( 1UL, iteration * ( blazemark::runtime / timer.last() ) );
+      const size_t maxIterations( iteration * ( blazemark::runtime / timer.last() ) );
+      iteration = blaze::max( 1UL, maxIterations );
    }
    run.setIterations( iteration );
 
    if( run.getSteps() == 0UL ) {
-      if( timer.last() != 0.0 )
-         run.setSteps( blaze::max( 1UL, blazemark::runtime / timer.last() ) );
-      else
+      if( timer.last() != 0.0 ) {
+         const size_t estimatedSteps( blazemark::runtime / timer.last() );
+         run.setSteps( blaze::max( 1UL, estimatedSteps ) );
+      }
+      else {
          run.setSteps( static_cast<size_t>( blazemark::runtime / 1E-8 ) );
+      }
    }
 }
 //*************************************************************************************************

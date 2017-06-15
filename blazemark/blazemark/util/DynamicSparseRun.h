@@ -44,9 +44,9 @@
 #include <istream>
 #include <ostream>
 #include <stdexcept>
-#include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/UnsignedValue.h>
 #include <blazemark/system/Types.h>
 

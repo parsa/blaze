@@ -44,8 +44,8 @@
 #include <string>
 #include <vector>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/DVecNorm.h>
@@ -147,7 +147,8 @@ void estimateSteps( Run& run )
    if( scalar < element_t(0) )
       std::cerr << " Line " << __LINE__ << ": ERROR detected!!!\n";
 
-   run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );
+   const size_t estimatedSteps( ( blazemark::runtime * steps ) / timer.last() );
+   run.setSteps( blaze::max( 1UL, estimatedSteps ) );
 }
 //*************************************************************************************************
 

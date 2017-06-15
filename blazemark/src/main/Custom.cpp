@@ -44,8 +44,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/armadillo/Custom.h>
 #include <blazemark/blaze/Custom.h>
@@ -129,7 +129,8 @@ void estimateSteps( Run& run )
       steps *= 2UL;
    }
 
-   run.setSteps( blaze::max( 1UL, ( blazemark::runtime * steps ) / timer.last() ) );
+   const size_t estimatedSteps( ( blazemark::runtime * steps ) / timer.last() );
+   run.setSteps( blaze::max( 1UL, estimatedSteps ) );
 }
 //*************************************************************************************************
 
