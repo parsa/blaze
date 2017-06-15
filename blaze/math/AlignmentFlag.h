@@ -61,7 +61,7 @@ namespace blaze {
    Subvector<VectorType,unaligned> sv = subvector<unaligned>( v, 10UL, 20UL );
    \endcode
 */
-const bool unaligned = false;
+constexpr bool unaligned = false;
 //*************************************************************************************************
 
 
@@ -82,7 +82,7 @@ const bool unaligned = false;
    Subvector<VectorType,aligned> sv = subvector<aligned>( v, 8UL, 32UL );
    \endcode
 */
-const bool aligned = true;
+constexpr bool aligned = true;
 //*************************************************************************************************
 
 } // namespace blaze
