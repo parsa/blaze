@@ -704,25 +704,16 @@
 // vector data structure. However, this flexibility comes with the price that the user of a custom
 // vector is responsible for the resource management.
 //
-// When constructing a custom vector there are two choices: Either a user manually manages the
-// array of elements outside the custom vector, or alternatively passes the responsibility for
-// the memory management to an instance of CustomVector. In the second case the CustomVector
-// class employs shared ownership between all copies of the custom vector, which reference the
-// same array.
-//
 // The following examples give an impression of several possible types of custom vectors:
 
    \code
    using blaze::CustomVector;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
    using blaze::unpadded;
-   using blaze::columnVector;
-   using blaze::rowVector;
 
    // Definition of a 3-dimensional custom vector with unaligned, unpadded and externally
    // managed integer array. Note that the std::vector must be guaranteed to outlive the
@@ -730,39 +721,11 @@
    std::vector<int> vec( 3UL );
    CustomVector<int,unaligned,unpadded> a( &vec[0], 3UL );
 
-   // Definition of a custom row vector with size 3 for unaligned, unpadded integer arrays.
-   // The responsibility for the memory management is passed to the custom vector by
-   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
-   // of the custom vector.
-   CustomVector<int,unaligned,unpadded,rowVector> b( new int[3], 3UL, ArrayDelete() );
-
-   // Definition of a custom vector with size 3 and capacity 16 with aligned and padded
-   // integer array. The memory management is passed to the custom vector by providing a
-   // deleter of type 'blaze::Deallocate'.
-   CustomVector<int,aligned,padded> c( allocate<int>( 16UL ), 3UL, 16UL, Deallocate() );
-   \endcode
-
-// It is possible to pass any type of deleter to the constructor. The deleter is only required
-// to provide a function call operator that can be passed the pointer to the managed array. As
-// an example the following code snipped shows the implementation of two native \b Blaze deleters
-// blaze::ArrayDelete and blaze::Deallocate:
-
-   \code
-   namespace blaze {
-
-   struct ArrayDelete
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
-   };
-
-   struct Deallocate
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { deallocate( ptr ); }
-   };
-
-   } // namespace blaze
+   // Definition of a custom vector with size 3 and capacity 16 with aligned, padded and
+   // externally managed integer array. Note that the std::unique_ptr must be guaranteed
+   // to outlive the custom vector!
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 16UL ) );
+   CustomVector<int,aligned,padded> b( memory.get(), 3UL, 16UL );
    \endcode
 
 // \n \subsection vector_types_custom_vector_copy_operations Copy Operations
@@ -781,14 +744,12 @@
    a[1] = 20;                        // Also modifies the std::vector
 
    CustomType b( a );  // Creating a copy of vector a
-   b[2] = 20;          // Also affect vector a and the std::vector
+   b[2] = 20;          // Also affects vector a and the std::vector
    \endcode
 
 // It is important to note that a custom vector acts as a reference to the specified array. Thus
 // the result of the copy constructor is a new custom vector that is referencing and representing
-// the same array as the original custom vector. In case a deleter has been provided to the first
-// custom vector, both vectors share the responsibility to destroy the array when the last vector
-// goes out of scope.
+// the same array as the original custom vector.
 //
 // In contrast to copy construction, just as with references, copy assignment does not change
 // which array is referenced by the custom vector, but modifies the values of the array:
@@ -812,8 +773,10 @@
    using blaze::aligned;
    using blaze::unpadded;
 
-   int* array = blaze::allocate<int>( 5UL );  // Needs to be 32-bit aligned
-   CustomVector<int,aligned,unpadded> a( array, 5UL, Deallocate() );
+   // Allocation of 32-bit aligned memory
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 5UL ) );
+
+   CustomVector<int,aligned,unpadded> a( memory.get(), 5UL );
    \endcode
 
 // In case the alignment requirements are violated, a \c std::invalid_argument exception is
@@ -834,10 +797,14 @@
 
    typedef CustomVector<double,aligned,padded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 4UL ) );
+
    // Creating padded custom vectors of size 3 and a capacity of 4
-   CustomType a( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
-   CustomType b( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
-   CustomType c( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
+   CustomType a( memory1.get(), 3UL, 4UL );
+   CustomType b( memory2.get(), 3UL, 4UL );
+   CustomType c( memory3.get(), 3UL, 4UL );
 
    // ... Initialization
 
@@ -856,10 +823,14 @@
 
    typedef CustomVector<double,aligned,unpadded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 3UL ) );
+
    // Creating unpadded custom vector of size 3
-   CustomType a( allocate<double>( 3UL ), 3UL, Deallocate() );
-   CustomType b( allocate<double>( 3UL ), 3UL, Deallocate() );
-   CustomType c( allocate<double>( 3UL ), 3UL, Deallocate() );
+   CustomType a( allocate<double>( 3UL ), 3UL );
+   CustomType b( allocate<double>( 3UL ), 3UL );
+   CustomType c( allocate<double>( 3UL ), 3UL );
 
    // ... Initialization
 
@@ -873,10 +844,11 @@
 //
 // The number of padding elements is required to be sufficient with respect to the available
 // instruction set: In case of an aligned padded custom vector the added padding elements must
-// guarantee that the capacity is a multiple of the SIMD vector width. In case of unaligned
-// padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is
-// the SIMD vector width. In case the padding is insufficient with respect to the available
-// instruction set, a \c std::invalid_argument exception is thrown.
+// guarantee that the capacity is greater or equal than the size and a multiple of the SIMD vector
+// width. In case of unaligned padded vectors the number of padding elements can be greater or
+// equal the number of padding elements of an aligned padded custom vector. In case the padding
+// is insufficient with respect to the available instruction set, a \a std::invalid_argument
+// exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve
 // maximum performance!
