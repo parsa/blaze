@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <memory>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -93,7 +92,6 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
@@ -186,25 +184,16 @@ namespace blaze {
 // vector data structure. However, this flexibility comes with the price that the user of a custom
 // vector is responsible for the resource management.
 //
-// When constructing a custom vector there are two choices: Either a user manually manages the
-// array of elements outside the custom vector, or alternatively passes the responsibility for
-// the memory management to an instance of CustomVector. In the second case the CustomVector
-// class employs shared ownership between all copies of the custom vector, which reference the
-// same array.
-//
 // The following examples give an impression of several possible types of custom vectors:
 
    \code
    using blaze::CustomVector;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
    using blaze::unpadded;
-   using blaze::columnVector;
-   using blaze::rowVector;
 
    // Definition of a 3-dimensional custom vector with unaligned, unpadded and externally
    // managed integer array. Note that the std::vector must be guaranteed to outlive the
@@ -212,39 +201,11 @@ namespace blaze {
    std::vector<int> vec( 3UL );
    CustomVector<int,unaligned,unpadded> a( &vec[0], 3UL );
 
-   // Definition of a custom row vector with size 3 for unaligned, unpadded integer arrays.
-   // The responsibility for the memory management is passed to the custom vector by
-   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
-   // of the custom vector.
-   CustomVector<int,unaligned,unpadded,rowVector> b( new int[3], 3UL, ArrayDelete() );
-
-   // Definition of a custom vector with size 3 and capacity 16 with aligned and padded
-   // integer array. The memory management is passed to the custom vector by providing a
-   // deleter of type 'blaze::Deallocate'.
-   CustomVector<int,aligned,padded> c( allocate<int>( 16UL ), 3UL, 16UL, Deallocate() );
-   \endcode
-
-// It is possible to pass any type of deleter to the constructor. The deleter is only required
-// to provide a function call operator that can be passed the pointer to the managed array. As
-// an example the following code snipped shows the implementation of two native \b Blaze deleters
-// blaze::ArrayDelete and blaze::Deallocate:
-
-   \code
-   namespace blaze {
-
-   struct ArrayDelete
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
-   };
-
-   struct Deallocate
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { deallocate( ptr ); }
-   };
-
-   } // namespace blaze
+   // Definition of a custom vector with size 3 and capacity 16 with aligned, padded and
+   // externally managed integer array. Note that the std::unique_ptr must be guaranteed
+   // to outlive the custom vector!
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 16UL ) );
+   CustomVector<int,aligned,padded> b( memory.get(), 3UL, 16UL );
    \endcode
 
 // \n \subsection customvector_copy_operations Copy Operations
@@ -263,14 +224,12 @@ namespace blaze {
    a[1] = 20;                        // Also modifies the std::vector
 
    CustomType b( a );  // Creating a copy of vector a
-   b[2] = 20;          // Also affect vector a and the std::vector
+   b[2] = 20;          // Also affects vector a and the std::vector
    \endcode
 
 // It is important to note that a custom vector acts as a reference to the specified array. Thus
 // the result of the copy constructor is a new custom vector that is referencing and representing
-// the same array as the original custom vector. In case a deleter has been provided to the first
-// custom vector, both vectors share the responsibility to destroy the array when the last vector
-// goes out of scope.
+// the same array as the original custom vector.
 //
 // In contrast to copy construction, just as with references, copy assignment does not change
 // which array is referenced by the custom vector, but modifies the values of the array:
@@ -294,8 +253,10 @@ namespace blaze {
    using blaze::aligned;
    using blaze::unpadded;
 
-   int* array = blaze::allocate<int>( 5UL );  // Needs to be 32-bit aligned
-   CustomVector<int,aligned,unpadded> a( array, 5UL, Deallocate() );
+   // Allocation of 32-bit aligned memory
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 5UL ) );
+
+   CustomVector<int,aligned,unpadded> a( memory.get(), 5UL );
    \endcode
 
 // In case the alignment requirements are violated, a \a std::invalid_argument exception is
@@ -316,10 +277,14 @@ namespace blaze {
 
    typedef CustomVector<double,aligned,padded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 4UL ) );
+
    // Creating padded custom vectors of size 3 and a capacity of 4
-   CustomType a( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
-   CustomType b( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
-   CustomType c( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
+   CustomType a( memory1.get(), 3UL, 4UL );
+   CustomType b( memory2.get(), 3UL, 4UL );
+   CustomType c( memory3.get(), 3UL, 4UL );
 
    // ... Initialization
 
@@ -338,10 +303,14 @@ namespace blaze {
 
    typedef CustomVector<double,aligned,unpadded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 3UL ) );
+
    // Creating unpadded custom vector of size 3
-   CustomType a( allocate<double>( 3UL ), 3UL, Deallocate() );
-   CustomType b( allocate<double>( 3UL ), 3UL, Deallocate() );
-   CustomType c( allocate<double>( 3UL ), 3UL, Deallocate() );
+   CustomType a( allocate<double>( 3UL ), 3UL );
+   CustomType b( allocate<double>( 3UL ), 3UL );
+   CustomType c( allocate<double>( 3UL ), 3UL );
 
    // ... Initialization
 
@@ -393,8 +362,9 @@ namespace blaze {
    a[1] = 2.0;  // Initialization of the second element
 
    // Non-initialized custom column vector of size 2 and capacity 4. All given arrays are required
-   // to be properly aligned and padded. The memory is managed via 'Deallocate'.
-   CustomVector<double,aligned,padded> b( allocate<double>( 4UL ), 2UL, 4UL, Deallocate() );
+   // to be properly aligned and padded. The memory is managed via a 'std::unique_ptr'.
+   std::unique_ptr<int[],Deallocate> memory( allocate<double>( 4UL ) );
+   CustomVector<double,aligned,padded> b( memory.get(), 2UL, 4UL );
 
    b = 2.0;  // Homogeneous initialization of all elements
 
@@ -490,12 +460,6 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    explicit inline CustomVector( Type* ptr, size_t n );
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
 
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   explicit inline CustomVector( Type* ptr, size_t n, Deleter d );
-
-   template< typename Deleter >
-   explicit inline CustomVector( Type* ptr, size_t n, size_t nn, Deleter d );
-
    inline CustomVector( const CustomVector& v );
    inline CustomVector( CustomVector&& v ) noexcept;
    //@}
@@ -575,12 +539,6 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //@{
    inline void reset( Type* ptr, size_t n );
    inline void reset( Type* ptr, size_t n, size_t nn );
-
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   inline void reset( Type* ptr, size_t n, Deleter d );
-
-   template< typename Deleter >
-   inline void reset( Type* ptr, size_t n, size_t nn, Deleter d );
    //@}
    //**********************************************************************************************
 
@@ -717,14 +675,13 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;               //!< The size/dimension of the custom vector.
-   Type* v_;                   //!< The custom array of elements.
-                               /*!< Access to the array of elements is gained via the
-                                    subscript operator. The order of the elements is
-                                    \f[\left(\begin{array}{*{5}{c}}
-                                    0 & 1 & 2 & \cdots & N-1 \\
-                                    \end{array}\right)\f] */
-   std::shared_ptr<Type> mv_;  //!< The managed custom array of elements.
+   size_t size_;  //!< The size/dimension of the custom vector.
+   Type* v_;      //!< The custom array of elements.
+                  /*!< Access to the array of elements is gained via the
+                       subscript operator. The order of the elements is
+                       \f[\left(\begin{array}{*{5}{c}}
+                       0 & 1 & 2 & \cdots & N-1 \\
+                       \end{array}\right)\f] */
    //@}
    //**********************************************************************************************
 
@@ -755,9 +712,8 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,PF,TF>::CustomVector()
-   : size_( 0UL )  // The size/dimension of the vector
-   , v_   (     )  // The custom array of elements
-   , mv_  (     )  // The managed custom array of elements
+   : size_( 0UL )      // The size/dimension of the vector
+   , v_   ( nullptr )  // The custom array of elements
 {}
 //*************************************************************************************************
 
@@ -785,9 +741,8 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n )
-   : size_( n   )  // The size/dimension of the vector
+   : size_( n )    // The size/dimension of the vector
    , v_   ( ptr )  // The custom array of elements
-   , mv_  (     )  // The managed custom array of elements
 {
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -827,94 +782,12 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn )
-   : size_( 0UL )  // The size/dimension of the vector
-   , v_   (     )  // The custom array of elements
-   , mv_  (     )  // The managed custom array of elements
+   : size_( 0UL )      // The size/dimension of the vector
+   , v_   ( nullptr )  // The custom array of elements
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
    UNUSED_PARAMETER( ptr, n, nn );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for an unpadded custom vector of size \a n.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This constructor creates an unpadded custom vector of size \a n. The construction fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This constructor is \b NOT available for padded custom vectors!
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool TF >         // Transpose flag
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, Deleter d )
-   : size_( n   )  // The size/dimension of the vector
-   , v_   ( ptr )  // The custom array of elements
-   , mv_  (     )  // The managed custom array of elements
-{
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && !checkAlignment( ptr ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   mv_.reset( ptr, d );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for a padded custom vector of size \a n and capacity \a nn.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param nn The maximum size of the given array.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This constructor creates a padded custom vector of size \a n and capacity \a nn. The
-// construction fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified capacity \a nn is insufficient for the given data type \a Type and the
-//    available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This constructor is \b NOT available for unpadded custom vectors!
-*/
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
-inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, size_t nn, Deleter d )
-   : size_( 0UL )  // The size/dimension of the vector
-   , v_   (     )  // The custom array of elements
-   , mv_  (     )  // The managed custom array of elements
-{
-   BLAZE_STATIC_ASSERT( PF == padded );
-
-   UNUSED_PARAMETER( ptr, n, nn, d );
 }
 //*************************************************************************************************
 
@@ -932,8 +805,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,PF,TF>::CustomVector( const CustomVector& v )
    : size_( v.size_ )  // The size/dimension of the vector
-   , v_   ( v.v_    )  // The custom array of elements
-   , mv_  ( v.mv_   )  // The managed custom array of elements
+   , v_   ( v.v_ )     // The custom array of elements
 {}
 //*************************************************************************************************
 
@@ -949,8 +821,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,PF,TF>::CustomVector( CustomVector&& v ) noexcept
    : size_( v.size_ )             // The size/dimension of the vector
-   , v_   ( v.v_    )             // The custom array of elements
-   , mv_  ( std::move( v.mv_ ) )  // The managed custom array of elements
+   , v_   ( v.v_ )                // The custom array of elements
 {
    v.size_ = 0UL;
    v.v_    = nullptr;
@@ -1163,7 +1034,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,PF,TF>::Iterator
    CustomVector<Type,AF,PF,TF>::end() noexcept
 {
-   return Iterator( v_ + size_ );
+   return Iterator( v_+size_ );
 }
 //*************************************************************************************************
 
@@ -1180,7 +1051,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
    CustomVector<Type,AF,PF,TF>::end() const noexcept
 {
-   return ConstIterator( v_ + size_ );
+   return ConstIterator( v_+size_ );
 }
 //*************************************************************************************************
 
@@ -1197,7 +1068,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,PF,TF>::ConstIterator
    CustomVector<Type,AF,PF,TF>::cend() const noexcept
 {
-   return ConstIterator( v_ + size_ );
+   return ConstIterator( v_+size_ );
 }
 //*************************************************************************************************
 
@@ -1359,7 +1230,6 @@ inline CustomVector<Type,AF,PF,TF>&
 {
    size_ = rhs.size_;
    v_    = rhs.v_;
-   mv_   = std::move( rhs.mv_ );
 
    rhs.size_ = 0UL;
    rhs.v_    = nullptr;
@@ -1771,7 +1641,6 @@ inline void CustomVector<Type,AF,PF,TF>::clear()
 {
    size_ = 0UL;
    v_ = nullptr;
-   mv_.reset();
 }
 //*************************************************************************************************
 
@@ -1792,7 +1661,6 @@ inline void CustomVector<Type,AF,PF,TF>::swap( CustomVector& v ) noexcept
 
    swap( size_, v.size_ );
    swap( v_, v.v_ );
-   swap( mv_, v.mv_ );
 }
 //*************************************************************************************************
 
@@ -1916,81 +1784,6 @@ inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn )
    BLAZE_STATIC_ASSERT( PF == padded );
 
    UNUSED_PARAMETER( ptr, n, nn );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resets the custom vector and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This function resets the custom vector to the given array of elements of size \a n. The
-// function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This function is \b NOT available for padded custom vectors!
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom vector referencing the array goes out of scope.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool TF >         // Transpose flag
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, Deleter d )
-{
-   CustomVector tmp( ptr, n, d );
-   swap( tmp );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resets the custom vector and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param nn The maximum size of the given array.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This function resets the custom vector to the given array of elements of size \a n and
-// capacity \a nn. The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
-//    the available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This function is \a NOT available for unpadded custom vectors!
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom vector referencing the array goes out of scope.
-*/
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
-inline void CustomVector<Type,AF,PF,TF>::reset( Type* ptr, size_t n, size_t nn, Deleter d )
-{
-   BLAZE_STATIC_ASSERT( PF == padded );
-
-   UNUSED_PARAMETER( ptr, n, nn, d );
 }
 //*************************************************************************************************
 
@@ -2933,9 +2726,6 @@ class CustomVector<Type,AF,padded,TF>
    explicit inline CustomVector();
    explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
 
-   template< typename Deleter >
-   explicit inline CustomVector( Type* ptr, size_t n, size_t nn, Deleter d );
-
    inline CustomVector( const CustomVector& v );
    inline CustomVector( CustomVector&& v ) noexcept;
    //@}
@@ -3013,8 +2803,7 @@ class CustomVector<Type,AF,padded,TF>
    //**Resource management functions***************************************************************
    /*!\name Resource management functions */
    //@{
-                                inline void reset( Type* ptr, size_t n, size_t nn );
-   template< typename Deleter > inline void reset( Type* ptr, size_t n, size_t nn, Deleter d );
+   inline void reset( Type* ptr, size_t n, size_t nn );
    //@}
    //**********************************************************************************************
 
@@ -3141,15 +2930,14 @@ class CustomVector<Type,AF,padded,TF>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;               //!< The size/dimension of the custom vector.
-   size_t capacity_;           //!< The maximum capacity of the custom vector.
-   Type* v_;                   //!< The custom array of elements.
-                               /*!< Access to the array of elements is gained via the
-                                    subscript operator. The order of the elements is
-                                    \f[\left(\begin{array}{*{5}{c}}
-                                    0 & 1 & 2 & \cdots & N-1 \\
-                                    \end{array}\right)\f] */
-   std::shared_ptr<Type> mv_;  //!< The managed custom array of elements.
+   size_t size_;      //!< The size/dimension of the custom vector.
+   size_t capacity_;  //!< The maximum capacity of the custom vector.
+   Type* v_;          //!< The custom array of elements.
+                      /*!< Access to the array of elements is gained via the
+                           subscript operator. The order of the elements is
+                           \f[\left(\begin{array}{*{5}{c}}
+                           0 & 1 & 2 & \cdots & N-1 \\
+                           \end{array}\right)\f] */
    //@}
    //**********************************************************************************************
 
@@ -3179,10 +2967,9 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,padded,TF>::CustomVector()
-   : size_    ( 0UL )  // The size/dimension of the vector
-   , capacity_( 0UL )  // The maximum capacity of the vector
-   , v_       (     )  // The custom array of elements
-   , mv_      (     )  // The managed custom array of elements
+   : size_    ( 0UL )      // The size/dimension of the vector
+   , capacity_( 0UL )      // The maximum capacity of the vector
+   , v_       ( nullptr )  // The custom array of elements
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -3214,10 +3001,9 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_t nn )
-   : size_    ( n   )  // The size/dimension of the vector
-   , capacity_( nn  )  // The maximum capacity of the vector
+   : size_    ( n )    // The size/dimension of the vector
+   , capacity_( nn )   // The maximum capacity of the vector
    , v_       ( ptr )  // The custom array of elements
-   , mv_      (     )  // The managed custom array of elements
 {
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -3230,60 +3016,6 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
    if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
-
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a padded custom vector of size \a n and capacity \a nn.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param nn The maximum size of the given array.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This constructor creates a padded custom vector of size \a n and capacity \a nn. The
-// construction of the vector fails if ...
-//
-//  - ... the passes pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
-//    the available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-*/
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
-inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_t nn, Deleter d )
-   : size_    ( n   )  // The custom array of elements
-   , capacity_( nn  )  // The maximum capacity of the vector
-   , v_       ( ptr )  // The custom array of elements
-   , mv_      (     )  // The managed custom array of elements
-{
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && !checkAlignment( ptr ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
-   }
-
-   mv_.reset( ptr, d );
 
    if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<capacity_; ++i )
@@ -3306,10 +3038,9 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,padded,TF>::CustomVector( const CustomVector& v )
-   : size_    ( v.size_     )  // The size/dimension of the vector
+   : size_    ( v.size_ )      // The size/dimension of the vector
    , capacity_( v.capacity_ )  // The maximum capacity of the vector
-   , v_       ( v.v_        )  // The custom array of elements
-   , mv_      ( v.mv_       )  // The managed custom array of elements
+   , v_       ( v.v_ )         // The custom array of elements
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -3325,10 +3056,9 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool TF >      // Transpose flag
 inline CustomVector<Type,AF,padded,TF>::CustomVector( CustomVector&& v ) noexcept
-   : size_    ( v.size_     )         // The size/dimension of the vector
+   : size_    ( v.size_ )             // The size/dimension of the vector
    , capacity_( v.capacity_ )         // The maximum capacity of the vector
    , v_       ( v.v_ )                // The custom array of elements
-   , mv_      ( std::move( v.mv_ ) )  // The managed custom array of elements
 {
    v.size_     = 0UL;
    v.capacity_ = 0UL;
@@ -3552,7 +3282,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,padded,TF>::Iterator
    CustomVector<Type,AF,padded,TF>::end() noexcept
 {
-   return Iterator( v_ + size_ );
+   return Iterator( v_+size_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3570,7 +3300,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
    CustomVector<Type,AF,padded,TF>::end() const noexcept
 {
-   return ConstIterator( v_ + size_ );
+   return ConstIterator( v_+size_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3588,7 +3318,7 @@ template< typename Type  // Data type of the vector
 inline typename CustomVector<Type,AF,padded,TF>::ConstIterator
    CustomVector<Type,AF,padded,TF>::cend() const noexcept
 {
-   return ConstIterator( v_ + size_ );
+   return ConstIterator( v_+size_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3760,7 +3490,6 @@ inline CustomVector<Type,AF,padded,TF>&
    size_     = rhs.size_;
    capacity_ = rhs.capacity_;
    v_        = rhs.v_;
-   mv_       = std::move( rhs.mv_ );
 
    rhs.size_     = 0UL;
    rhs.capacity_ = 0UL;
@@ -4193,7 +3922,6 @@ inline void CustomVector<Type,AF,padded,TF>::clear()
    size_     = 0UL;
    capacity_ = 0UL;
    v_        = nullptr;
-   mv_.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4216,7 +3944,6 @@ inline void CustomVector<Type,AF,padded,TF>::swap( CustomVector& v ) noexcept
    swap( size_, v.size_ );
    swap( capacity_, v.capacity_ );
    swap( v_, v.v_ );
-   swap( mv_, v.mv_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4304,42 +4031,6 @@ template< typename Type  // Data type of the vector
 inline void CustomVector<Type,AF,padded,TF>::reset( Type* ptr, size_t n, size_t nn )
 {
    CustomVector tmp( ptr, n, nn );
-   swap( tmp );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resets the custom vector and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the vector.
-// \param n The number of array elements to be used by the custom vector.
-// \param nn The maximum size of the given array.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom vector.
-//
-// This function resets the custom vector to the given array of elements of size \a n and capacity
-// \a nn. The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the specified capacity \a nn is insufficient for the given data type \a Type and
-//    the available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom vector referencing the array goes out of scope.
-*/
-template< typename Type       // Data type of the vector
-        , bool AF             // Alignment flag
-        , bool TF >           // Transpose flag
-template< typename Deleter >  // Type of the custom deleter
-inline void CustomVector<Type,AF,padded,TF>::reset( Type* ptr, size_t n, size_t nn, Deleter d )
-{
-   CustomVector tmp( ptr, n, nn, d );
    swap( tmp );
 }
 /*! \endcond */
