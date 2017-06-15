@@ -33,10 +33,15 @@ Installation via CMake
 ----------------------
 
 The first step is the installation of the Blaze header files. The most convenient way to do this
-is via CMake (https://cmake.org). The headers in the './blaze' subdirectory will be copied to the
-directory '${CMAKE_INSTALL_PREFIX}/include' and the package configuration files to
-'${CMAKE_INSTALL_PREFIX}/share/blaze/cmake'. Alternatively, it is possible to include Blaze by
-adding the following lines in any ‘CMakeLists.txt' file:
+is via CMake (https://cmake.org). Linux and macOS users can use the following two lines to copy
+the Blaze headers in the './blaze' subdirectory to the directory '${CMAKE_INSTALL_PREFIX}/include'
+and the package configuration files to '${CMAKE_INSTALL_PREFIX}/share/blaze/cmake'.
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/
+sudo make install
+
+Windows users can do the same via the cmake-gui. Alternatively, it is possible to include Blaze
+by adding the following lines in any 'CMakeLists.txt' file:
 
 find_package( blaze )
 if( blaze_FOUND )
@@ -45,8 +50,8 @@ if( blaze_FOUND )
 endif()
 
 
-Installation on Linux/MacOSX
-----------------------------
+Installation on Linux/macOS
+---------------------------
 
 Since Blaze only consists of header files, the './blaze' subdirectory can be simply copied to a
 standard include directory (note that this requires root privileges):
