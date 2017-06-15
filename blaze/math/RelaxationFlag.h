@@ -61,7 +61,7 @@ namespace blaze {
    isDefault<relaxed>( v );  // Returns true
    \endcode
 */
-const bool strict = false;
+constexpr bool strict = false;
 //*************************************************************************************************
 
 
@@ -82,7 +82,7 @@ const bool strict = false;
    isDefault<relaxed>( v );  // Returns true
    \endcode
 */
-const bool relaxed = true;
+constexpr bool relaxed = true;
 //*************************************************************************************************
 
 } // namespace blaze
