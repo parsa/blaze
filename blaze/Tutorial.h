@@ -174,11 +174,19 @@
 //
 // \subsection step_1_cmake Installation via CMake
 //
-// The first step is the installation of the \b Blaze header files. The most convenient way to
-// do this is via <a href="https://cmake.org">CMake</a>. The headers in the <tt>./blaze</tt>
-// subdirectory will be copied to the directory \c ${CMAKE_INSTALL_PREFIX}/include and the package
-// configuration files to \c ${CMAKE_INSTALL_PREFIX}/share/blaze/cmake. Alternatively, it is
-// possible to include \b Blaze by adding the following lines in any \c CMakeLists.txt file:
+// The first step is the installation of the \b Blaze header files. The most convenient way
+// to do this is via <a href="https://cmake.org">CMake</a>. Linux and macOS users can use the
+// following two lines to copy the \b Blaze headers in the <tt>./blaze</tt> subdirectory to
+// the directory \c ${CMAKE_INSTALL_PREFIX}/include and the package configuration files to
+// \c ${CMAKE_INSTALL_PREFIX}/share/blaze/cmake.
+
+   \code
+   cmake -DCMAKE_INSTALL_PREFIX=/usr/local/
+   sudo make install
+   \endcode
+
+// Windows users can do the same via the cmake-gui. Alternatively, it is possible to include
+// \b Blaze by adding the following lines in any \c CMakeLists.txt file:
 
    \code
    find_package( blaze )
@@ -188,7 +196,7 @@
    endif()
    \endcode
 
-// \n \subsection step_1_installation_unix Manual Installation on Linux/MacOSX
+// \n \subsection step_1_installation_unix Manual Installation on Linux/macOS
 //
 // Since \b Blaze only consists of header files, the <tt>./blaze</tt> subdirectory can be simply
 // copied to a standard include directory (note that this requires root privileges):
