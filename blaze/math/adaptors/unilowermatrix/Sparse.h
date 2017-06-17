@@ -1272,7 +1272,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side general matrix for the Schur product.
 // \return Reference to the matrix.

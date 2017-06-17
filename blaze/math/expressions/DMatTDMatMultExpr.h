@@ -4039,7 +4039,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Schur product assignment of a dense matrix-transpose dense matrix multiplication to
-   //        a dense matrix  (\f$ C%=A*B \f$).
+   //        a dense matrix  (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -4271,7 +4271,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP Schur product assignment of a dense matrix-transpose dense matrix multiplication
-   //        to a dense matrix (\f$ C%=A*B \f$).
+   //        to a dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -7865,7 +7865,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
    //**Schur product assignment to dense matrices**************************************************
    /*!\brief Schur product assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication to a dense matrix (\f$ C%=s*A*B \f$).
+   //        multiplication to a dense matrix (\f$ C\circ=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -8098,7 +8098,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
    //**SMP Schur product assignment to dense matrices**********************************************
    /*!\brief SMP Schur product assignment of a scaled dense matrix-transpose dense matrix
-   //        multiplication to a dense matrix (\f$ C%=s*A*B \f$).
+   //        multiplication to a dense matrix (\f$ C\circ=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.

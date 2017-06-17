@@ -1712,7 +1712,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Schur product assignment operator for the multiplication of a general matrix
-//        (\f$ A%=B \f$).
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side general matrix for the Schur product.
 // \return Reference to the matrix.
@@ -1792,7 +1792,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Schur product assignment operator for the multiplication of a matrix with opposite
-//        storage order (\f$ A%=B \f$).
+//        storage order (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.

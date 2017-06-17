@@ -2142,7 +2142,7 @@ inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,true>& >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Schur product assignment operator for the multiplication of a general matrix
-//        (\f$ A%=B \f$).
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side general matrix for the Schur product.
 // \return Reference to the matrix.

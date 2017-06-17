@@ -1473,7 +1473,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.
@@ -1520,7 +1520,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Schur product assignment operator for the multiplication of a matrix with opposite
-//        storage order (\f$ A%=B \f$).
+//        storage order (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.

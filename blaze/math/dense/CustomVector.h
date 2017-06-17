@@ -1437,7 +1437,7 @@ inline CustomVector<Type,AF,PF,TF>&
 
 //*************************************************************************************************
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the vector.
@@ -3709,7 +3709,7 @@ inline CustomVector<Type,AF,padded,TF>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the vector.

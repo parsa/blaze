@@ -1349,7 +1349,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator/=( const Dense
 
 //*************************************************************************************************
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the vector.

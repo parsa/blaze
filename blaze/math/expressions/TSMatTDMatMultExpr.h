@@ -1632,7 +1632,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Schur product assignment of a transpose sparse matrix-transpose dense matrix
-   //        multiplication to a dense matrix (\f$ C%=A*B \f$).
+   //        multiplication to a dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -1967,7 +1967,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP Schur product assignment of a transpose sparse matrix-transpose dense matrix
-   //        multiplication to a dense matrix (\f$ C%=A*B \f$).
+   //        multiplication to a dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.

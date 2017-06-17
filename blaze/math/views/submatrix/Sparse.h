@@ -1205,7 +1205,7 @@ inline Submatrix<MT,AF,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix to be for the Schur product.
 // \return Reference to the sparse submatrix.
@@ -3745,7 +3745,7 @@ inline Submatrix<MT,AF,true,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the sparse submatrix.

@@ -912,7 +912,7 @@ class SMatSMatSchurExpr : public SparseMatrix< SMatSMatSchurExpr<MT1,MT2>, false
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Operator for the Schur product of two row-major sparse matrices (\f$ A=B%C \f$).
+/*!\brief Operator for the Schur product of two row-major sparse matrices (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
 // \param lhs The left-hand side sparse matrix for the Schur product.

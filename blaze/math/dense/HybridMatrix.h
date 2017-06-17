@@ -1591,7 +1591,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
 
 
 //*************************************************************************************************
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.
@@ -4745,7 +4745,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.

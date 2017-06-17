@@ -1454,7 +1454,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<
 
 
 //*************************************************************************************************
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.
@@ -4538,7 +4538,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Mat
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the matrix.

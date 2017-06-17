@@ -1218,7 +1218,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,U
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Schur product assignment of a dense matrix-sparse matrix multiplication to a dense
-   //        dense matrix (\f$ C%=A*B \f$).
+   //        dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -1550,7 +1550,7 @@ class DMatSMatMultExpr : public DenseMatrix< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,U
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP Schur product assignment of a dense matrix-sparse matrix multiplication to a
-   //        dense matrix (\f$ C%=A*B \f$).
+   //        dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.

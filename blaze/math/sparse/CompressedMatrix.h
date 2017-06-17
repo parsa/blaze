@@ -1241,7 +1241,8 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const M
 
 
 //*************************************************************************************************
-/*!\brief Schur product assignment operator for the multiplication of a dense matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a dense matrix
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return Reference to the matrix.
@@ -1278,7 +1279,8 @@ inline CompressedMatrix<Type,SO>&
 
 
 //*************************************************************************************************
-/*!\brief Schur product assignment operator for the multiplication of a sparse matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a sparse matrix
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return Reference to the matrix.
@@ -4010,7 +4012,8 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( con
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a dense matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a dense matrix
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return Reference to the matrix.
@@ -4048,7 +4051,8 @@ inline CompressedMatrix<Type,true>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a sparse matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a sparse matrix
+//        (\f$ A\circ=B \f$).
 //
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return Reference to the matrix.

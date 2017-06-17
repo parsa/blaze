@@ -1107,7 +1107,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator/=( const Dense
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned column.
@@ -3394,7 +3394,7 @@ inline Column<MT,false,true,false>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned column.
@@ -5035,7 +5035,7 @@ inline Column<MT,false,true,true>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned column.

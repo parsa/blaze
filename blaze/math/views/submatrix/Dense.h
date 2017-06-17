@@ -1671,7 +1671,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -1728,7 +1728,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -5004,7 +5004,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -5061,7 +5061,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -7933,7 +7933,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -7990,7 +7990,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -10852,7 +10852,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.
@@ -10909,7 +10909,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A%=B \f$).
+/*!\brief Schur product assignment operator for the multiplication of a matrix (\f$ A=B \f$).
 //
 // \param rhs The right-hand side matrix for the Schur product.
 // \return Reference to the dense submatrix.

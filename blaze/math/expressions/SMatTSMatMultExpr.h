@@ -696,7 +696,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**Schur product assignment to row-major dense matrices****************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Schur product assignment of a sparse matrix-transpose sparse matrix multiplication
-   //        to a row-major dense matrix (\f$ C%=A*B \f$).
+   //        to a row-major dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -1126,7 +1126,7 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
    //**SMP Schur product assignment to row-major dense matrices************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP Schur product assignment of a sparse matrix-transpose sparse matrix multiplication
-   //        to a row-major dense matrix (\f$ C%=A*B \f$).
+   //        to a row-major dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup sparse_matrix
    //
    // \param lhs The target left-hand side dense matrix.

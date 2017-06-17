@@ -1105,7 +1105,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator/=( const DenseVector
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned row.
@@ -3382,7 +3382,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator/=( const Den
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned row.
@@ -5015,7 +5015,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator/=( const Dense
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Cross product assignment operator for the multiplication of a vector
-//        (\f$ \vec{a}%=\vec{b} \f$).
+//        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side vector for the cross product.
 // \return Reference to the assigned row.

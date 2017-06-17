@@ -1040,7 +1040,7 @@ class DMatDMatSchurExpr : public DenseMatrix< DMatDMatSchurExpr<MT1,MT2,SO>, SO 
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of two dense matrices with identical storage order
-//        (\f$ A=B%C \f$).
+//        (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.

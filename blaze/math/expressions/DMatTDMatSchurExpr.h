@@ -925,7 +925,7 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of a row-major and a column-major dense matrix
-//        (\f$ A=B%C \f$).
+//        (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
@@ -974,7 +974,7 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of a column-major and a row-major dense matrix
-//        (\f$ A=B%C \f$).
+//        (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
@@ -1032,7 +1032,7 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Operator for the Schur product of a symmetric row-major and a colum-major dense matrix
-//        (\f$ A=B%C \f$).
+//        (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
@@ -1067,7 +1067,7 @@ inline EnableIf_< And< IsSymmetric<MT1>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Operator for the Schur product of a row-major and a symmetric column-major
-//        dense matrix (\f$ A=B%C \f$).
+//        dense matrix (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
@@ -1101,7 +1101,7 @@ inline EnableIf_< And< IsSymmetric<MT2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Operator for the Schur product of a column-major and a symmetric row-major dense
-//        matrix (\f$ A=B%C \f$).
+//        matrix (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
@@ -1136,7 +1136,7 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Operator for the Schur product of a symmetric column-major and a row-major dense
-//        matrix (\f$ A=B%C \f$).
+//        matrix (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the Schur product.

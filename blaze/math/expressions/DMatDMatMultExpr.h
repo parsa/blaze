@@ -3561,7 +3561,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,U
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Schur product assignment of a dense matrix-dense matrix multiplication to a dense
-   //        matrix (\f$ C%=A*B \f$).
+   //        matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -3907,7 +3907,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,U
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP Schur product assignment of a dense matrix-dense matrix multiplication to a
-   //        dense matrix (\f$ C%=A*B \f$).
+   //        dense matrix (\f$ C\circ=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -7200,7 +7200,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
    //**Schur product assignment to dense matrices**************************************************
    /*!\brief Schur product assignment of a scaled dense matrix-dense matrix multiplication to a
-   //        dense matrix (\f$ C%=s*A*B \f$).
+   //        dense matrix (\f$ C\circ=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -7550,7 +7550,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
    //**SMP Schur product assignment to dense matrices**********************************************
    /*!\brief SMP Schur product assignment of a scaled dense matrix-dense matrix multiplication to
-   //        a dense matrix (\f$ C%=s*A*B \f$).
+   //        a dense matrix (\f$ C\circ=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.

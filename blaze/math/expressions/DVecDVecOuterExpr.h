@@ -1474,7 +1474,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    //**Default Schur product assignment to row-major dense matrices********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default Schur product assignment of a dense vector-dense vector outer product to a
-   //        row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        row-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
@@ -1513,7 +1513,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    //**Vectorized Schur product assignment to row-major dense matrices*****************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized Schur product assignment of a dense vector-dense vector outer product to
-   //        a row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        a row-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
@@ -1594,7 +1594,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    //**Default Schur product assignment to column dense matrices***********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default Schur product assignment of a dense vector-dense vector outer product to a
-   //        column-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        column-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.
@@ -1633,7 +1633,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    //**Vectorized Schur product assignment to column-major dense matrices**************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized Schur product assignment of a dense vector-dense vector outer product to
-   //        a column-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        a column-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_matrix
    //
    // \param A The target left-hand side dense matrix.

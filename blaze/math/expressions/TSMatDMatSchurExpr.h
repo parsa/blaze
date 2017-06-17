@@ -902,7 +902,7 @@ class TSMatDMatSchurExpr : public SparseMatrix< TSMatDMatSchurExpr<MT1,MT2>, tru
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of a column-major sparse matrix and a row-major dense
-//        matrix (\f$ A=B%C \f$).
+//        matrix (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
 // \param lhs The left-hand side sparse matrix for the Schur product.
@@ -950,7 +950,7 @@ inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of a column-major sparse matrix and a column-major
-//        dense matrix (\f$ A=B%C \f$).
+//        dense matrix (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
 // \param lhs The left-hand side sparse matrix for the Schur product.

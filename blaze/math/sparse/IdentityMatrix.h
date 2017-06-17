@@ -1300,7 +1300,7 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Operator for the Schur product of two unitriangular matrices (\f$ A=B%C \f$).
+/*!\brief Operator for the Schur product of two unitriangular matrices (\f$ A=BC \f$).
 // \ingroup identity_matrix
 //
 // \param lhs The left-hand side unilower/uniupper matrix for the Schur product.

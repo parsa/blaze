@@ -1047,7 +1047,7 @@ class TSMatSMatSchurExpr : public SparseMatrix< TSMatSMatSchurExpr<MT1,MT2>, fal
 
 //*************************************************************************************************
 /*!\brief Operator for the Schur product of a column-major and a row-major sparse matrix
-//        (\f$ A=B-C \f$).
+//        (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
 // \param lhs The left-hand side sparse matrix for the Schur product.

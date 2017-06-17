@@ -1215,7 +1215,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    //**Default Schur product assignment to row-major dense matrices********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default Schur product assignment of a sparse vector-dense vector outer product to a
-   //        row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        row-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_vector
    //
    // \param A The target left-hand side dense matrix.
@@ -1265,7 +1265,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    //**Vectorized Schur product assignment to row-major dense matrices*****************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized Schur product assignment of a sparse vector-dense vector outer product
-   //        to a row-major dense matrix (\f$ A%=\vec{x}*\vec{y}^T \f$).
+   //        to a row-major dense matrix (\f$ A\circ=\vec{x}*\vec{y}^T \f$).
    // \ingroup dense_vector
    //
    // \param A The target left-hand side dense matrix.
