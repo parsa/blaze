@@ -102,7 +102,26 @@ if (${BLAZE_CACHE_SIZE_AUTO})
     endif (UNIX)
 
     if (APPLE)
-        message("Automatic detection for MacOS not yet implemented.")
+        execute_process(COMMAND sysctl -n hw.l3cachesize
+                        OUTPUT_VARIABLE tmp
+                        RESULT_VARIABLE flag
+                        ERROR_QUIET)
+        if (flag)
+            execute_process(COMMAND sysctl -n hw.l2cachesize
+                            OUTPUT_VARIABLE tmp
+                            RESULT_VARIABLE flag
+                            ERROR_QUIET)
+        endif (flag)
+        if (flag)
+            execute_process(COMMAND sysctl -n hw.l1icachesize
+                            OUTPUT_VARIABLE tmp
+                            RESULT_VARIABLE flag
+                            ERROR_QUIET)
+        endif (flag)
+
+        if (flag EQUAL 0)
+            math(EXPR tmp ${tmp}/1024)  # If successful convert to kibibytes to comply with rest
+        endif (flag EQUAL 0)
     endif (APPLE)
 
     if (flag)
