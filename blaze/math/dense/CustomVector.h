@@ -250,11 +250,12 @@ namespace blaze {
    \code
    using blaze::CustomVector;
    using blaze::Deallocate;
+   using blaze::allocate;
    using blaze::aligned;
    using blaze::unpadded;
 
    // Allocation of 32-bit aligned memory
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 5UL ) );
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 5UL ) );
 
    CustomVector<int,aligned,unpadded> a( memory.get(), 5UL );
    \endcode
@@ -346,7 +347,6 @@ namespace blaze {
    using blaze::CustomVector;
    using blaze::CompressedVector;
    using blaze::DynamicMatrix;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
@@ -355,16 +355,17 @@ namespace blaze {
    using blaze::unpadded;
 
    // Non-initialized custom column vector of size 2. All given arrays are considered to be
-   // unaligned and unpadded. The memory is managed via 'ArrayDelete'.
-   CustomVector<double,unaligned,unpadded> a( new double[2], 2UL, ArrayDelete() );
+   // unaligned and unpadded. The memory is managed via a 'std::vector'.
+   std::vector<double> memory1( 2UL );
+   CustomVector<double,unaligned,unpadded> a( memory1.data(), 2UL );
 
    a[0] = 1.0;  // Initialization of the first element
    a[1] = 2.0;  // Initialization of the second element
 
    // Non-initialized custom column vector of size 2 and capacity 4. All given arrays are required
    // to be properly aligned and padded. The memory is managed via a 'std::unique_ptr'.
-   std::unique_ptr<int[],Deallocate> memory( allocate<double>( 4UL ) );
-   CustomVector<double,aligned,padded> b( memory.get(), 2UL, 4UL );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
+   CustomVector<double,aligned,padded> b( memory2.get(), 2UL, 4UL );
 
    b = 2.0;  // Homogeneous initialization of all elements
 
