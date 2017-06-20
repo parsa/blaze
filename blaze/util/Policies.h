@@ -43,7 +43,6 @@
 #include <blaze/util/policies/ArrayDelete.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/policies/DefaultDelete.h>
-#include <blaze/util/policies/LinearGrowth.h>
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/policies/OptimalGrowth.h>
 #include <blaze/util/policies/PtrDelete.h>
