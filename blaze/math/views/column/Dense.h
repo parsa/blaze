@@ -92,7 +92,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -1678,7 +1677,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+inline DisableIf_< typename Column<MT,true,true,SF>::template VectorizedAssign<VT> >
    Column<MT,true,true,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1710,7 +1709,7 @@ inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAs
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedAssign<VT> >
    Column<MT,true,true,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1798,7 +1797,7 @@ inline void Column<MT,true,true,SF>::assign( const SparseVector<VT,false>& rhs )
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+inline DisableIf_< typename Column<MT,true,true,SF>::template VectorizedAddAssign<VT> >
    Column<MT,true,true,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1830,7 +1829,7 @@ inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAd
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedAddAssign<VT> >
    Column<MT,true,true,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1906,7 +1905,7 @@ inline void Column<MT,true,true,SF>::addAssign( const SparseVector<VT,false>& rh
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+inline DisableIf_< typename Column<MT,true,true,SF>::template VectorizedSubAssign<VT> >
    Column<MT,true,true,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -1938,7 +1937,7 @@ inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSu
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedSubAssign<VT> >
    Column<MT,true,true,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2014,7 +2013,7 @@ inline void Column<MT,true,true,SF>::subAssign( const SparseVector<VT,false>& rh
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+inline DisableIf_< typename Column<MT,true,true,SF>::template VectorizedMultAssign<VT> >
    Column<MT,true,true,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2046,7 +2045,7 @@ inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMu
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedMultAssign<VT> >
    Column<MT,true,true,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2126,7 +2125,7 @@ inline void Column<MT,true,true,SF>::multAssign( const SparseVector<VT,false>& r
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+inline DisableIf_< typename Column<MT,true,true,SF>::template VectorizedDivAssign<VT> >
    Column<MT,true,true,SF>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2158,7 +2157,7 @@ inline DisableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDi
 template< typename MT    // Type of the dense matrix
         , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedDivAssign<VT> >
    Column<MT,true,true,SF>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5584,7 +5583,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+inline DisableIf_< typename Column<MT,false,true,true>::template VectorizedAssign<VT> >
    Column<MT,false,true,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5615,7 +5614,7 @@ inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+inline EnableIf_< typename Column<MT,false,true,true>::template VectorizedAssign<VT> >
    Column<MT,false,true,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5701,7 +5700,7 @@ inline void Column<MT,false,true,true>::assign( const SparseVector<VT,false>& rh
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+inline DisableIf_< typename Column<MT,false,true,true>::template VectorizedAddAssign<VT> >
    Column<MT,false,true,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5732,7 +5731,7 @@ inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+inline EnableIf_< typename Column<MT,false,true,true>::template VectorizedAddAssign<VT> >
    Column<MT,false,true,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5806,7 +5805,7 @@ inline void Column<MT,false,true,true>::addAssign( const SparseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+inline DisableIf_< typename Column<MT,false,true,true>::template VectorizedSubAssign<VT> >
    Column<MT,false,true,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5837,7 +5836,7 @@ inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+inline EnableIf_< typename Column<MT,false,true,true>::template VectorizedSubAssign<VT> >
    Column<MT,false,true,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5911,7 +5910,7 @@ inline void Column<MT,false,true,true>::subAssign( const SparseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+inline DisableIf_< typename Column<MT,false,true,true>::template VectorizedMultAssign<VT> >
    Column<MT,false,true,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -5942,7 +5941,7 @@ inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+inline EnableIf_< typename Column<MT,false,true,true>::template VectorizedMultAssign<VT> >
    Column<MT,false,true,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6020,7 +6019,7 @@ inline void Column<MT,false,true,true>::multAssign( const SparseVector<VT,false>
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+inline DisableIf_< typename Column<MT,false,true,true>::template VectorizedDivAssign<VT> >
    Column<MT,false,true,true>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -6051,7 +6050,7 @@ inline DisableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE Vectorize
 */
 template< typename MT >  // Type of the dense matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< typename Column<MT,false,true,true>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+inline EnableIf_< typename Column<MT,false,true,true>::template VectorizedDivAssign<VT> >
    Column<MT,false,true,true>::divAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

@@ -50,7 +50,6 @@
 #include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/policies/OptimalGrowth.h>
 #include <blaze/util/PtrIterator.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 
 
@@ -1070,7 +1069,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C> PtrVector<T,D,G>::begin()
+inline typename PtrVector<T,D,G>::template CastIterator<C> PtrVector<T,D,G>::begin()
 {
    return CastIterator<C>( begin_, end_ );
 }
@@ -1126,7 +1125,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C> PtrVector<T,D,G>::begin() const
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C> PtrVector<T,D,G>::begin() const
 {
    return ConstCastIterator<C>( begin_, end_ );
 }
@@ -1209,7 +1208,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C> PtrVector<T,D,G>::end()
+inline typename PtrVector<T,D,G>::template CastIterator<C> PtrVector<T,D,G>::end()
 {
    return CastIterator<C>( end_, end_ );
 }
@@ -1262,7 +1261,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C> PtrVector<T,D,G>::end() const
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C> PtrVector<T,D,G>::end() const
 {
    return ConstCastIterator<C>( end_, end_ );
 }
@@ -1495,7 +1494,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>
+inline typename PtrVector<T,D,G>::template CastIterator<C>
    PtrVector<T,D,G>::erase( CastIterator<C> pos )
 {
    T** const base = const_cast<T**>( pos.base() );
@@ -1550,7 +1549,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>
+inline typename PtrVector<T,D,G>::template CastIterator<C>
    PtrVector<T,D,G>::release( CastIterator<C> pos )
 {
    T** const base = const_cast<T**>( pos.base() );
@@ -2127,7 +2126,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>&
+inline typename PtrVector<T,D,G>::template CastIterator<C>&
    PtrVector<T,D,G>::CastIterator<C>::operator++()
 {
    // The polymorphicFind() function finds the next pointer to an object with dynamic type 'C'
@@ -2153,7 +2152,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>
+inline typename PtrVector<T,D,G>::template CastIterator<C>
    PtrVector<T,D,G>::CastIterator<C>::operator++( int )
 {
    CastIterator tmp( *this );
@@ -2189,7 +2188,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>::PointerType
+inline typename PtrVector<T,D,G>::template CastIterator<C>::PointerType
    PtrVector<T,D,G>::CastIterator<C>::operator*() const
 {
    return static_cast<C*>( *cur_ );
@@ -2206,7 +2205,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>::PointerType
+inline typename PtrVector<T,D,G>::template CastIterator<C>::PointerType
    PtrVector<T,D,G>::CastIterator<C>::operator->() const
 {
    return static_cast<C*>( *cur_ );
@@ -2231,7 +2230,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline const typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>::IteratorType&
+inline const typename PtrVector<T,D,G>::template CastIterator<C>::IteratorType&
    PtrVector<T,D,G>::CastIterator<C>::base() const
 {
    return cur_;
@@ -2248,7 +2247,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline const typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<C>::IteratorType&
+inline const typename PtrVector<T,D,G>::template CastIterator<C>::IteratorType&
    PtrVector<T,D,G>::CastIterator<C>::stop() const
 {
    return end_;
@@ -2326,7 +2325,7 @@ class PtrVector<T,D,G>::ConstCastIterator
    inline ConstCastIterator( const ConstCastIterator<Other>& it );
 
    template< typename Other >
-   inline ConstCastIterator( const typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<Other>& it );
+   inline ConstCastIterator( const typename PtrVector<T,D,G>::template CastIterator<Other>& it );
 
    // No explicitly declared copy constructor.
    //@}
@@ -2456,7 +2455,7 @@ template< typename T        // Type
         , typename G >      // Growth policy
 template< typename C >      // Cast type
 template< typename Other >  // The foreign cast iterator type
-inline PtrVector<T,D,G>::ConstCastIterator<C>::ConstCastIterator( const typename PtrVector<T,D,G>::BLAZE_TEMPLATE CastIterator<Other>& it )
+inline PtrVector<T,D,G>::ConstCastIterator<C>::ConstCastIterator( const typename PtrVector<T,D,G>::template CastIterator<Other>& it )
    : cur_( it.base() )  // Pointer to the current memory location
    , end_( it.stop() )  // Pointer to the element one past the last element in the element range
 {
@@ -2483,7 +2482,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>&
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C>&
    PtrVector<T,D,G>::ConstCastIterator<C>::operator++()
 {
    // The polymorphicFind() function finds the next pointer to an object with dynamic type 'C'
@@ -2509,7 +2508,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C>
    PtrVector<T,D,G>::ConstCastIterator<C>::operator++( int )
 {
    ConstCastIterator tmp( *this );
@@ -2545,7 +2544,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>::PointerType
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C>::PointerType
    PtrVector<T,D,G>::ConstCastIterator<C>::operator*() const
 {
    return static_cast<const C*>( *cur_ );
@@ -2562,7 +2561,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>::PointerType
+inline typename PtrVector<T,D,G>::template ConstCastIterator<C>::PointerType
    PtrVector<T,D,G>::ConstCastIterator<C>::operator->() const
 {
    return static_cast<const C*>( *cur_ );
@@ -2587,7 +2586,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline const typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>::IteratorType&
+inline const typename PtrVector<T,D,G>::template ConstCastIterator<C>::IteratorType&
    PtrVector<T,D,G>::ConstCastIterator<C>::base() const
 {
    return cur_;
@@ -2604,7 +2603,7 @@ template< typename T    // Type
         , typename D    // Deletion policy
         , typename G >  // Growth policy
 template< typename C >  // Cast type
-inline const typename PtrVector<T,D,G>::BLAZE_TEMPLATE ConstCastIterator<C>::IteratorType&
+inline const typename PtrVector<T,D,G>::template ConstCastIterator<C>::IteratorType&
    PtrVector<T,D,G>::ConstCastIterator<C>::stop() const
 {
    return end_;
