@@ -158,14 +158,14 @@
 //
 // Additionally, for computing the determinant of a dense matrix, for the decomposition of dense
 // matrices, for the dense matrix inversion, and for the computation of eigenvalues and singular
-// values Blaze requires <a href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a>. When either
+// values \b Blaze requires <a href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a>. When either
 // of these features is used it is necessary to link the LAPACK library to the final executable.
 // If no LAPACK library is available the use of these features will result in a linker error.
 //
 // Furthermore, it is possible to use Boost threads to run numeric operations in parallel. In this
 // case the Boost library is required to be installed on your system. It is recommended to use the
-// newest Boost library available, but Blaze requires at minimum the Boost version 1.54.0. If you
-// don't have Boost installed on your system, you can download it for free from
+// newest Boost library available, but \b Blaze requires at minimum the Boost version 1.54.0. If
+// you don't have Boost installed on your system, you can download it for free from
 // <a href="http://www.boost.org">www.boost.org</a>.
 //
 //
@@ -778,11 +778,12 @@
    \code
    using blaze::CustomVector;
    using blaze::Deallocate;
+   using blaze::allocate;
    using blaze::aligned;
    using blaze::unpadded;
 
    // Allocation of 32-bit aligned memory
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 5UL ) );
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 5UL ) );
 
    CustomVector<int,aligned,unpadded> a( memory.get(), 5UL );
    \endcode
@@ -2240,25 +2241,16 @@
 // matrix data structure. However, this flexibility comes with the price that the user of a custom
 // matrix is responsible for the resource management.
 //
-// When constructing a custom matrix there are two choices: Either a user manually manages the
-// array of elements outside the custom matrix, or alternatively passes the responsibility for
-// the memory management to an instance of CustomMatrix. In the second case the CustomMatrix
-// class employs shared ownership between all copies of the custom matrix, which reference the
-// same array.
-//
 // The following examples give an impression of several possible types of custom matrices:
 
    \code
    using blaze::CustomMatrix;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
    using blaze::unpadded;
-   using blaze::rowMajor;
-   using blaze::columnMajor;
 
    // Definition of a 3x4 custom row-major matrix with unaligned, unpadded and externally
    // managed integer array. Note that the std::vector must be guaranteed to outlive the
@@ -2266,39 +2258,11 @@
    std::vector<int> vec( 12UL );
    CustomMatrix<int,unaligned,unpadded> A( &vec[0], 3UL, 4UL );
 
-   // Definition of a 3x4 custom row-major matrix for unaligned, unpadded integer arrays.
-   // The responsibility for the memory management is passed to the custom matrix by
-   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
-   // of the custom matrix.
-   CustomMatrix<int,unaligned,unpadded,rowMajor> B( new int[12], 3UL, 4UL, ArrayDelete() );
-
    // Definition of a custom 8x12 matrix for an aligned and padded integer array of
-   // capacity 128 (including 8 padding elements per row). The memory management is passed
-   // to the custom matrix by providing a deleter of type 'blaze::Deallocate'.
-   CustomMatrix<int,aligned,padded> C( allocate<int>( 128UL ), 8UL, 12UL, 16UL, Deallocate() );
-   \endcode
-
-// It is possible to pass any type of deleter to the constructor. The deleter is only required
-// to provide a function call operator that can be passed the pointer to the managed array. As
-// an example the following code snipped shows the implementation of two native \b Blaze deleters
-// blaze::ArrayDelete and blaze::Deallocate:
-
-   \code
-   namespace blaze {
-
-   struct ArrayDelete
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
-   };
-
-   struct Deallocate
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { deallocate( ptr ); }
-   };
-
-   } // namespace blaze
+   // capacity 128 (including 8 padding elements per row). Note that the std::unique_ptr
+   // must be guaranteed to outlive the custom matrix!
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 128UL ) );
+   CustomMatrix<int,aligned,padded> B( memory.get(), 8UL, 12UL, 16UL );
    \endcode
 
 // \n \subsection matrix_types_custom_matrix_copy_operations Copy Operations
@@ -2317,14 +2281,12 @@
    a[1] = 20;                          // Also modifies the std::vector
 
    CustomType B( a );  // Creating a copy of vector a
-   b[2] = 20;          // Also affect matrix A and the std::vector
+   b[2] = 20;          // Also affects matrix A and the std::vector
    \endcode
 
 // It is important to note that a custom matrix acts as a reference to the specified array. Thus
 // the result of the copy constructor is a new custom matrix that is referencing and representing
-// the same array as the original custom matrix. In case a deleter has been provided to the first
-// custom matrix, both matrices share the responsibility to destroy the array when the last matrix
-// goes out of scope.
+// the same array as the original custom matrix.
 //
 // In contrast to copy construction, just as with references, copy assignment does not change
 // which array is referenced by the custom matrices, but modifies the values of the array:
@@ -2349,12 +2311,15 @@
    \code
    using blaze::CustomMatrix;
    using blaze::Deallocate;
+   using blaze::allocate;
    using blaze::aligned;
    using blaze::padded;
    using blaze::rowMajor;
 
-   int* array = blaze::allocate<int>( 40UL );  // Is guaranteed to be 32-bit aligned
-   CustomMatrix<int,aligned,padded,rowMajor> A( array, 5UL, 6UL, 8UL, Deallocate() );
+   // Allocation of 32-bit aligned memory
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 40UL ) );
+
+   CustomMatrix<int,aligned,padded,rowMajor> A( memory.get(), 5UL, 6UL, 8UL );
    \endcode
 
 // In the example, the row-major matrix has six columns. However, since with AVX eight integer
@@ -2377,10 +2342,14 @@
 
    typedef CustomMatrix<double,aligned,padded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 12UL ) );
+
    // Creating padded custom 3x3 matrix with an additional padding element in each row
-   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType A( memory1.get(), 3UL, 3UL, 4UL );
+   CustomType B( memory2.get(), 3UL, 3UL, 4UL );
+   CustomType C( memory3.get(), 3UL, 3UL, 4UL );
 
    // ... Initialization
 
@@ -2399,10 +2368,14 @@
 
    typedef CustomMatrix<double,aligned,unpadded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 9UL ) );
+
    // Creating unpadded custom 3x3 matrix
-   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType A( memory1.get(), 3UL, 3UL );
+   CustomType B( memory2.get(), 3UL, 3UL );
+   CustomType C( memory3.get(), 3UL, 3UL );
 
    // ... Initialization
 
