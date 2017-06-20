@@ -653,12 +653,6 @@ class StrictlyUpperMatrix<MT,SO,true>
    explicit inline StrictlyUpperMatrix( ElementType* ptr, size_t n );
    explicit inline StrictlyUpperMatrix( ElementType* ptr, size_t n, size_t nn );
 
-   template< typename Deleter >
-   explicit inline StrictlyUpperMatrix( ElementType* ptr, size_t n, Deleter d );
-
-   template< typename Deleter >
-   explicit inline StrictlyUpperMatrix( ElementType* ptr, size_t n, size_t nn, Deleter d );
-
    inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );
    inline StrictlyUpperMatrix( StrictlyUpperMatrix&& m ) noexcept;
    //@}
@@ -1107,81 +1101,6 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( ElementType* ptr, size_t n, size_t nn )
    : matrix_( ptr, n, n, nn )  // The adapted dense matrix
-{
-   if( !isStrictlyUpper( matrix_ ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly upper matrix" );
-   }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a strictly upper custom matrix of size \f$ n \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param n The number of rows and columns of the array of elements.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of strictly upper custom matrix.
-//
-// This constructor creates an unpadded strictly upper custom matrix of size \f$ n \times n \f$.
-// The construction fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the values in the given array do not represent a strictly lower triangular matrix.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This constructor is \b NOT available for padded strictly upper custom matrices!
-*/
-template< typename MT         // Type of the adapted dense matrix
-        , bool SO >           // Storage order of the adapted dense matrix
-template< typename Deleter >  // Type of the custom deleter
-inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( ElementType* ptr, size_t n, Deleter d )
-   : matrix_( ptr, n, n, d )  // The adapted dense matrix
-{
-   if( !isStrictlyUpper( matrix_ ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly upper matrix" );
-   }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a strictly upper custom matrix of size \f$ n \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param n The number of rows and columns of the array of elements.
-// \param nn The total number of elements between two rows/columns.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of strictly upper custom matrix.
-//
-// This constructor creates a strictly upper custom matrix of size \f$ n \times n \f$. The
-// construction fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
-//    available instruction set;
-//  - ... the values in the given array do not represent a strictly lower triangular matrix.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT         // Type of the adapted dense matrix
-        , bool SO >           // Storage order of the adapted dense matrix
-template< typename Deleter >  // Type of the custom deleter
-inline StrictlyUpperMatrix<MT,SO,true>::StrictlyUpperMatrix( ElementType* ptr, size_t n, size_t nn, Deleter d )
-   : matrix_( ptr, n, n, nn, d )  // The adapted dense matrix
 {
    if( !isStrictlyUpper( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly upper matrix" );
