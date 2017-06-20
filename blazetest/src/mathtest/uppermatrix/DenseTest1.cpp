@@ -495,12 +495,12 @@ void DenseTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[5UL] );
-      array[1] = 1;
-      array[2] = 2;
-      array[3] = 0;
-      array[4] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.get()+1UL, 2UL );
+      std::unique_ptr<int[]> memory( new int[5UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[3] = 0;
+      memory[4] = 3;
+      const blaze::UpperMatrix<UnalignedUnpadded> upper( memory.get()+1UL, 2UL );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -528,78 +528,12 @@ void DenseTest::testConstructors()
       using blaze::rowMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[11UL] );
-      array[1] = 1;
-      array[2] = 2;
-      array[6] = 0;
-      array[7] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.get()+1UL, 2UL, 5UL );
-
-      checkRows    ( upper, 2UL );
-      checkColumns ( upper, 2UL );
-      checkCapacity( upper, 4UL );
-      checkNonZeros( upper, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,1) != 2 ||
-          upper(1,0) != 0 || upper(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Custom matrix constructor (ElementType*, size_t, Deleter)
-   {
-      test_ = "Row-major UpperMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowMajor;
-
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[4UL] );
-      array[0] = 1;
-      array[1] = 2;
-      array[2] = 0;
-      array[3] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.release(), 2UL, blaze::ArrayDelete() );
-
-      checkRows    ( upper, 2UL );
-      checkColumns ( upper, 2UL );
-      checkCapacity( upper, 4UL );
-      checkNonZeros( upper, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,1) != 2 ||
-          upper(1,0) != 0 || upper(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
-   {
-      test_ = "Row-major UpperMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowMajor;
-
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[10UL] );
-      array[0] = 1;
-      array[1] = 2;
-      array[5] = 0;
-      array[6] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+      std::unique_ptr<int[]> memory( new int[11UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[6] = 0;
+      memory[7] = 3;
+      const blaze::UpperMatrix<UnalignedUnpadded> upper( memory.get()+1UL, 2UL, 5UL );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -1119,12 +1053,12 @@ void DenseTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[5UL] );
-      array[1] = 1;
-      array[2] = 0;
-      array[3] = 2;
-      array[4] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.get()+1UL, 2UL );
+      std::unique_ptr<int[]> memory( new int[5UL] );
+      memory[1] = 1;
+      memory[2] = 0;
+      memory[3] = 2;
+      memory[4] = 3;
+      const blaze::UpperMatrix<UnalignedUnpadded> upper( memory.get()+1UL, 2UL );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -1152,78 +1086,12 @@ void DenseTest::testConstructors()
       using blaze::columnMajor;
 
       typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[11UL] );
-      array[1] = 1;
-      array[2] = 0;
-      array[6] = 2;
-      array[7] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.get()+1UL, 2UL, 5UL );
-
-      checkRows    ( upper, 2UL );
-      checkColumns ( upper, 2UL );
-      checkCapacity( upper, 4UL );
-      checkNonZeros( upper, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,1) != 2 ||
-          upper(1,0) != 0 || upper(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Custom matrix constructor (ElementType*, size_t, Deleter)
-   {
-      test_ = "Column-major UpperMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::columnMajor;
-
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[4UL] );
-      array[0] = 1;
-      array[1] = 0;
-      array[2] = 2;
-      array[3] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.release(), 2UL, blaze::ArrayDelete() );
-
-      checkRows    ( upper, 2UL );
-      checkColumns ( upper, 2UL );
-      checkCapacity( upper, 4UL );
-      checkNonZeros( upper, 3UL );
-
-      if( upper(0,0) != 1 || upper(0,1) != 2 ||
-          upper(1,0) != 0 || upper(1,1) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
-   {
-      test_ = "Column-major UpperMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::columnMajor;
-
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
-      std::unique_ptr<int[]> array( new int[10UL] );
-      array[0] = 1;
-      array[1] = 0;
-      array[5] = 2;
-      array[6] = 3;
-      const blaze::UpperMatrix<UnalignedUnpadded> upper( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+      std::unique_ptr<int[]> memory( new int[11UL] );
+      memory[1] = 1;
+      memory[2] = 0;
+      memory[6] = 2;
+      memory[7] = 3;
+      const blaze::UpperMatrix<UnalignedUnpadded> upper( memory.get()+1UL, 2UL, 5UL );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
