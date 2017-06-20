@@ -149,3 +149,5 @@ Emerson Ferreira -- Bug fixes
 Fabien Péan -- CMake support
 
 Denis Demidov -- Export CMake package configuration
+
+Jannik Schürg -- Cache size detection for macOS in CMake
