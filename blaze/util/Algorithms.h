@@ -40,7 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/PolymorphicCount.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/algorithms/PolymorphicFind.h>
 #include <blaze/util/algorithms/Transfer.h>
 
