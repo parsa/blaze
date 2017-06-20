@@ -69,8 +69,6 @@
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/PointerCast.h>
 #include <blaze/util/Policies.h>
-#include <blaze/util/PtrIterator.h>
-#include <blaze/util/PtrVector.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Serialization.h>
 #include <blaze/util/Singleton.h>
