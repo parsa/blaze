@@ -477,7 +477,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( !BLAZE_BLAS_IS_PARALLEL ||
+      return ( !BLAZE_BLAS_MODE ||
+               !BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION ||
+               !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATDMATMULT_THRESHOLD ) ) &&
              ( rows() * columns() >= SMP_TDMATDMATMULT_THRESHOLD ) &&
              !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value;
@@ -5867,7 +5869,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( !BLAZE_BLAS_IS_PARALLEL ||
+      return ( !BLAZE_BLAS_MODE ||
+               !BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION ||
+               !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATDMATMULT_THRESHOLD ) ) &&
              ( rows() * columns() >= SMP_TDMATDMATMULT_THRESHOLD );
    }
