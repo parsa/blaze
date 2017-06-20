@@ -372,7 +372,9 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( !BLAZE_BLAS_IS_PARALLEL ||
+      return ( !BLAZE_BLAS_MODE ||
+               !BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION ||
+               !BLAZE_BLAS_IS_PARALLEL ||
                ( IsComputation<MT>::value && !evaluateMatrix ) ||
                ( mat_.rows() * mat_.columns() < DMATDVECMULT_THRESHOLD ) ) &&
              ( size() > SMP_DMATDVECMULT_THRESHOLD );
@@ -2953,7 +2955,9 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    */
    inline bool canSMPAssign() const noexcept {
       LeftOperand_<MVM> A( vector_.leftOperand() );
-      return ( !BLAZE_BLAS_IS_PARALLEL ||
+      return ( !BLAZE_BLAS_MODE ||
+               !BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION ||
+               !BLAZE_BLAS_IS_PARALLEL ||
                ( IsComputation<MT>::value && !evaluateMatrix ) ||
                ( A.rows() * A.columns() < DMATDVECMULT_THRESHOLD ) ) &&
              ( size() > SMP_DMATDVECMULT_THRESHOLD );
