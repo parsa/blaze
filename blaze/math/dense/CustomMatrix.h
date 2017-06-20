@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <memory>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -194,25 +193,16 @@ namespace blaze {
 // matrix data structure. However, this flexibility comes with the price that the user of a custom
 // matrix is responsible for the resource management.
 //
-// When constructing a custom matrix there are two choices: Either a user manually manages the
-// array of elements outside the custom matrix, or alternatively passes the responsibility for
-// the memory management to an instance of CustomMatrix. In the second case the CustomMatrix
-// class employs shared ownership between all copies of the custom matrix, which reference the
-// same array.
-//
 // The following examples give an impression of several possible custom matrices:
 
    \code
    using blaze::CustomMatrix;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
    using blaze::unpadded;
-   using blaze::rowMajor;
-   using blaze::columnMajor;
 
    // Definition of a 3x4 custom row-major matrix with unaligned, unpadded and externally
    // managed integer array. Note that the std::vector must be guaranteed to outlive the
@@ -220,39 +210,11 @@ namespace blaze {
    std::vector<int> vec( 12UL );
    CustomMatrix<int,unaligned,unpadded> A( &vec[0], 3UL, 4UL );
 
-   // Definition of a 3x4 custom row-major matrix for unaligned, unpadded integer arrays.
-   // The responsibility for the memory management is passed to the custom matrix by
-   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
-   // of the custom matrix.
-   CustomMatrix<int,unaligned,unpadded,rowMajor> B( new int[12], 3UL, 4UL, ArrayDelete() );
-
    // Definition of a custom 8x12 matrix for an aligned and padded integer array of
-   // capacity 128 (including 8 padding elements per row). The memory management is passed
-   // to the custom matrix by providing a deleter of type 'blaze::Deallocate'.
-   CustomMatrix<int,aligned,padded> C( allocate<int>( 128UL ), 8UL, 12UL, 16UL, Deallocate() );
-   \endcode
-
-// It is possible to pass any type of deleter to the constructor. The deleter is only required
-// to provide a function call operator that can be passed the pointer to the managed array. As
-// an example the following code snipped shows the implementation of two native \b Blaze deleters
-// blaze::ArrayDelete and blaze::Deallocate:
-
-   \code
-   namespace blaze {
-
-   struct ArrayDelete
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { checkedArrayDelete( ptr ); }
-   };
-
-   struct Deallocate
-   {
-      template< typename Type >
-      inline void operator()( Type ptr ) const { deallocate( ptr ); }
-   };
-
-   } // namespace blaze
+   // capacity 128 (including 8 padding elements per row). Note that the std::unique_ptr
+   // must be guaranteed to outlive the custom matrix!
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 128UL ) );
+   CustomMatrix<int,aligned,padded> B( memory.get(), 8UL, 12UL, 16UL );
    \endcode
 
 // \n \subsection custommatrix_copy_operations Copy Operations
@@ -271,14 +233,12 @@ namespace blaze {
    a[1] = 20;                          // Also modifies the std::vector
 
    CustomType B( a );  // Creating a copy of vector a
-   b[2] = 20;          // Also affect matrix A and the std::vector
+   b[2] = 20;          // Also affects matrix A and the std::vector
    \endcode
 
 // It is important to note that a custom matrix acts as a reference to the specified array. Thus
 // the result of the copy constructor is a new custom matrix that is referencing and representing
-// the same array as the original custom matrix. In case a deleter has been provided to the first
-// custom matrix, both matrices share the responsibility to destroy the array when the last matrix
-// goes out of scope.
+// the same array as the original custom matrix.
 //
 // In contrast to copy construction, just as with references, copy assignment does not change
 // which array is referenced by the custom matrices, but modifies the values of the array:
@@ -303,12 +263,15 @@ namespace blaze {
    \code
    using blaze::CustomMatrix;
    using blaze::Deallocate;
+   using blaze::allocate;
    using blaze::aligned;
    using blaze::padded;
    using blaze::rowMajor;
 
-   int* array = blaze::allocate<int>( 40UL );  // Is guaranteed to be 32-bit aligned
-   CustomMatrix<int,aligned,padded,rowMajor> A( array, 5UL, 6UL, 8UL, Deallocate() );
+   // Allocation of 32-bit aligned memory
+   std::unique_ptr<int[],Deallocate> memory( allocate<int>( 40UL ) );
+
+   CustomMatrix<int,aligned,padded,rowMajor> A( memory.get(), 5UL, 6UL, 8UL );
    \endcode
 
 // In the example, the row-major matrix has six columns. However, since with AVX eight integer
@@ -331,10 +294,14 @@ namespace blaze {
 
    typedef CustomMatrix<double,aligned,padded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 12UL ) );
+
    // Creating padded custom 3x3 matrix with an additional padding element in each row
-   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType A( memory1.get(), 3UL, 3UL, 4UL );
+   CustomType B( memory2.get(), 3UL, 3UL, 4UL );
+   CustomType C( memory3.get(), 3UL, 3UL, 4UL );
 
    // ... Initialization
 
@@ -353,10 +320,14 @@ namespace blaze {
 
    typedef CustomMatrix<double,aligned,unpadded>  CustomType;
 
+   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
+   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
+   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 9UL ) );
+
    // Creating unpadded custom 3x3 matrix
-   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
-   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType A( memory1.get(), 3UL, 3UL );
+   CustomType B( memory2.get(), 3UL, 3UL );
+   CustomType C( memory3.get(), 3UL, 3UL );
 
    // ... Initialization
 
@@ -389,7 +360,6 @@ namespace blaze {
    \code
    using blaze::CustomMatrix;
    using blaze::CompressedMatrix;
-   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
@@ -400,15 +370,17 @@ namespace blaze {
    using blaze::columnMajor;
 
    // Non-initialized custom 2x3 row-major matrix. All given arrays are considered to be
-   // unaligned and unpadded. The memory is managed via 'ArrayDelete'.
-   CustomMatrix<double,unaligned,unpadded> A( new double[6], 2UL, 3UL, blaze::ArrayDelete() );
+   // unaligned and unpadded. The memory is managed via a 'std::vector'.
+   std::vector<double> memory1( 6UL );
+   CustomMatrix<double,unaligned,unpadded> A( memory1.data(), 2UL, 3UL );
 
    A(0,0) = 1.0; A(0,1) = 2.0; A(0,2) = 3.0;  // Initialization of the first row
    A(1,0) = 4.0; A(1,1) = 5.0; A(1,2) = 6.0;  // Initialization of the second row
 
    // Non-initialized custom 2x3 row-major matrix with padding elements. All given arrays are
-   // required to be properly aligned and padded. The memory is managed via 'Deallocate'.
-   CustomMatrix<double,aligned,padded> B( allocate<double>( 16UL ), 2UL, 3UL, 8UL, Deallocate() );
+   // required to be properly aligned and padded. The memory is managed via a 'std::unique_ptr'.
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 16UL ) );
+   CustomMatrix<double,aligned,padded> B( memory2.get(), 2UL, 3UL, 8UL );
 
    B(0,0) = 1.0; B(0,1) = 3.0; B(0,2) = 5.0;    // Initialization of the first row
    B(1,0) = 2.0; B(1,1) = 4.0; B(1,2) = 6.0;    // Initialization of the second row
@@ -507,12 +479,6 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
 
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter D );
-
-   template< typename Deleter >
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn, Deleter D );
-
    inline CustomMatrix( const CustomMatrix& m );
    inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}
@@ -600,12 +566,6 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //@{
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t nn );
-
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
-
-   template< typename Deleter >
-   inline void reset( Type* ptr, size_t m, size_t n, size_t nn, Deleter d );
    //@}
    //**********************************************************************************************
 
@@ -733,20 +693,19 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                  //!< The current number of rows of the matrix.
-   size_t n_;                  //!< The current number of columns of the matrix.
-   size_t nn_;                 //!< The number of elements between two rows.
-   Type* v_;                   //!< The custom array of elements.
-                               /*!< Access to the matrix elements is gained via the function call
-                                    operator. In case of row-major order the memory layout of the
-                                    elements is
-                                    \f[\left(\begin{array}{*{5}{c}}
-                                    0            & 1             & 2             & \cdots & N-1         \\
-                                    N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
-                                    \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
-                                    M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
-                                    \end{array}\right)\f]. */
-   std::shared_ptr<Type> mv_;  //!< The managed custom array of elements.
+   size_t m_;   //!< The current number of rows of the matrix.
+   size_t n_;   //!< The current number of columns of the matrix.
+   size_t nn_;  //!< The number of elements between two rows.
+   Type* v_;    //!< The custom array of elements.
+                /*!< Access to the matrix elements is gained via the function call
+                     operator. In case of row-major order the memory layout of the
+                     elements is
+                     \f[\left(\begin{array}{*{5}{c}}
+                     0            & 1             & 2             & \cdots & N-1         \\
+                     N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
+                     \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
+                     M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
+                     \end{array}\right)\f]. */
    //@}
    //**********************************************************************************************
 
@@ -781,7 +740,6 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix()
    , n_ ( 0UL )      // The current number of columns of the matrix
    , nn_( 0UL )      // The number of elements between two rows
    , v_ ( nullptr )  // The custom array of elements
-   , mv_()           // The managed custom array of elements
 {}
 //*************************************************************************************************
 
@@ -815,7 +773,6 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n 
    , n_ ( n )    // The current number of columns of the matrix
    , nn_( n )    // The number of elements between two rows
    , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
@@ -861,7 +818,6 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    , n_ ( n )    // The current number of columns of the matrix
    , nn_( nn )   // The number of elements between two rows
    , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
 {
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -874,111 +830,6 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    if( PF && IsVectorizable<Type>::value && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
-
-   if( PF && IsVectorizable<Type>::value ) {
-      for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=n_; j<nn_; ++j )
-            v_[i*nn_+j] = Type();
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
-// fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This constructor is \b NOT available for padded custom matrices!
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool SO >         // Storage order
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d )
-   : m_ ( m )    // The current number of rows of the matrix
-   , n_ ( n )    // The current number of columns of the matrix
-   , nn_( n )    // The number of elements between two rows
-   , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
-{
-   BLAZE_STATIC_ASSERT( PF == unpadded );
-
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || nn_ % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   mv_.reset( ptr, d );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param nn The total number of elements between two rows/columns.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
-// if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified spacing \a nn is insufficient for the given data type \a Type and the
-//    available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-*/
-template< typename Type       // Data type of the matrix
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool SO >           // Storage order
-template< typename Deleter >  // Type of the custom deleter
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn, Deleter d )
-   : m_ ( m )    // The current number of rows of the matrix
-   , n_ ( n )    // The current number of columns of the matrix
-   , nn_( nn )   // The number of elements between two rows
-   , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
-{
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || nn_ % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   if( PF && IsVectorizable<Type>::value && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
-   }
-
-   mv_.reset( ptr, d );
 
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t i=0UL; i<m_; ++i ) {
@@ -1006,7 +857,6 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( const CustomMatrix& m )
    , n_ ( m.n_ )   // The current number of columns of the matrix
    , nn_( m.nn_ )  // The number of elements between two rows
    , v_ ( m.v_ )   // The custom array of elements
-   , mv_( m.mv_ )  // The managed custom array of elements
 {}
 //*************************************************************************************************
 
@@ -1021,11 +871,10 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( CustomMatrix&& m ) noexcept
-   : m_ ( m.m_ )                // The current number of rows of the matrix
-   , n_ ( m.n_ )                // The current number of columns of the matrix
-   , nn_( m.nn_ )               // The number of elements between two rows
-   , v_ ( m.v_ )                // The custom array of elements
-   , mv_( std::move( m.mv_ ) )  // The managed custom array of elements
+   : m_ ( m.m_ )   // The current number of rows of the matrix
+   , n_ ( m.n_ )   // The current number of columns of the matrix
+   , nn_( m.nn_ )  // The number of elements between two rows
+   , v_ ( m.v_ )   // The custom array of elements
 {
    m.m_  = 0UL;
    m.n_  = 0UL;
@@ -1561,7 +1410,6 @@ inline CustomMatrix<Type,AF,PF,SO>&
    n_  = rhs.n_;
    nn_ = rhs.nn_;
    v_  = rhs.v_;
-   mv_ = std::move( rhs.mv_ );
 
    rhs.m_  = 0UL;
    rhs.n_  = 0UL;
@@ -2019,7 +1867,6 @@ inline void CustomMatrix<Type,AF,PF,SO>::clear()
    n_  = 0UL;
    nn_ = 0UL;
    v_  = nullptr;
-   mv_.reset();
 }
 //*************************************************************************************************
 
@@ -2042,7 +1889,6 @@ inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
    swap( n_ , m.n_  );
    swap( nn_, m.nn_ );
    swap( v_ , m.v_  );
-   swap( mv_, m.mv_ );
 }
 //*************************************************************************************************
 
@@ -2226,81 +2072,6 @@ template< typename Type  // Data type of the matrix
 inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, size_t nn )
 {
    CustomMatrix tmp( ptr, m, n, nn );
-   swap( tmp );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resets the custom matrix and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
-// The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This function is \b NOT available for padded custom matrices!
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom matrix referencing the array goes out of scope.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool SO >         // Storage order
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, Deleter d )
-{
-   BLAZE_STATIC_ASSERT( IsIntegral<Deleter>::value || PF == unpadded );
-
-   CustomMatrix tmp( ptr, m, n, d );
-   swap( tmp );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resets the custom matrix and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param nn The total number of elements between two rows/columns.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
-// The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom matrix referencing the array goes out of scope.
-*/
-template< typename Type       // Data type of the matrix
-        , bool AF             // Alignment flag
-        , bool PF             // Padding flag
-        , bool SO >           // Storage order
-template< typename Deleter >  // Type of the custom deleter
-inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, size_t nn, Deleter d )
-{
-   CustomMatrix tmp( ptr, m, n, nn, d );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -3591,12 +3362,6 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
    explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
 
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d );
-
-   template< typename Deleter >
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm, Deleter d );
-
    inline CustomMatrix( const CustomMatrix& m );
    inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}
@@ -3684,12 +3449,6 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //@{
    inline void reset( Type* ptr, size_t m, size_t n );
    inline void reset( Type* ptr, size_t m, size_t n, size_t mm );
-
-   template< typename Deleter, typename = DisableIf_< IsIntegral<Deleter> > >
-   inline void reset( Type* ptr, size_t m, size_t n, Deleter d );
-
-   template< typename Deleter >
-   inline void reset( Type* ptr, size_t m, size_t n, size_t mm, Deleter d );
    //@}
    //**********************************************************************************************
 
@@ -3809,13 +3568,12 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                  //!< The current number of rows of the matrix.
-   size_t mm_;                 //!< The number of elements between two columns.
-   size_t n_;                  //!< The current number of columns of the matrix.
-   Type* v_;                   //!< The custom array of elements.
-                               /*!< Access to the matrix elements is gained via the function
-                                    call operator. */
-   std::shared_ptr<Type> mv_;  //!< The managed custom array of elements.
+   size_t m_;   //!< The current number of rows of the matrix.
+   size_t mm_;  //!< The number of elements between two columns.
+   size_t n_;   //!< The current number of columns of the matrix.
+   Type* v_;    //!< The custom array of elements.
+                /*!< Access to the matrix elements is gained via the function
+                     call operator. */
    //@}
    //**********************************************************************************************
 
@@ -3849,7 +3607,6 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix()
    , mm_( 0UL )      // The number of elements between two columns
    , n_ ( 0UL )      // The current number of columns of the matrix
    , v_ ( nullptr )  // The custom array of elements
-   , mv_()           // The managed custom array of elements
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -3884,7 +3641,6 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    , mm_( m )    // The number of elements between two columns
    , n_ ( n )    // The current number of columns of the matrix
    , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
@@ -3931,7 +3687,6 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    , mm_( mm )   // The number of elements between two columns
    , n_ ( n )    // The current number of columns of the matrix
    , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
 {
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
@@ -3944,113 +3699,6 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    if( PF && IsVectorizable<Type>::value && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
-
-   if( PF && IsVectorizable<Type>::value ) {
-      for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=m_; i<mm_; ++i ) {
-            v_[i+j*mm_] = Type();
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the matrix.
-// \param n The number of columns of the matrix.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This constructor creates an unpadded custom matrix of size \f$ m \times n \f$. The construction
-// fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This constructor is \b NOT available for padded custom matrices!
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t n, Deleter d )
-   : m_ ( m )    // The current number of rows of the matrix
-   , mm_( m )    // The number of elements between two columns
-   , n_ ( n )    // The current number of columns of the matrix
-   , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
-{
-   BLAZE_STATIC_ASSERT( PF == unpadded );
-
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || mm_ % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   mv_.reset( ptr, d );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the matrix.
-// \param n The number of columns of the matrix.
-// \param mm The total number of elements between two columns.
-// \param d The deleter to destroy the array of elements.
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This constructor creates a custom matrix of size \f$ m \times n \f$. The construction fails
-// if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...);
-//  - ... the specified spacing \a mm is insufficient for the given data type \a Type and the
-//    available instruction set.
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-*/
-template< typename Type       // Data type of the matrix
-        , bool AF             // Alignment flag
-        , bool PF >           // Padding flag
-template< typename Deleter >  // Type of the custom deleter
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm, Deleter d )
-   : m_ ( m )    // The current number of rows of the matrix
-   , mm_( mm )   // The number of elements between two columns
-   , n_ ( n )    // The current number of columns of the matrix
-   , v_ ( ptr )  // The custom array of elements
-   , mv_()       // The managed custom array of elements
-{
-   if( ptr == nullptr ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
-   }
-
-   if( AF && ( !checkAlignment( ptr ) || mm_ % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
-   }
-
-   if( PF && IsVectorizable<Type>::value && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
-   }
-
-   mv_.reset( ptr, d );
 
    if( PF && IsVectorizable<Type>::value ) {
       for( size_t j=0UL; j<n_; ++j )
@@ -4080,7 +3728,6 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( const CustomMatrix& m )
    , mm_( m.mm_ )  // The number of elements between two columns
    , n_ ( m.n_ )   // The current number of columns of the matrix
    , v_ ( m.v_ )   // The custom array of elements
-   , mv_( m.mv_ )  // The managed custom array of elements
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -4096,11 +3743,10 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( CustomMatrix&& m ) noexcept
-   : m_ ( m.m_ )                // The current number of rows of the matrix
-   , mm_( m.mm_ )               // The number of elements between two columns
-   , n_ ( m.n_ )                // The current number of columns of the matrix
-   , v_ ( m.v_ )                // The custom array of elements
-   , mv_( std::move( m.mv_ ) )  // The managed custom array of elements
+   : m_ ( m.m_ )   // The current number of rows of the matrix
+   , mm_( m.mm_ )  // The number of elements between two columns
+   , n_ ( m.n_ )   // The current number of columns of the matrix
+   , v_ ( m.v_ )   // The custom array of elements
 {
    m.m_  = 0UL;
    m.mm_ = 0UL;
@@ -4631,7 +4277,6 @@ inline CustomMatrix<Type,AF,PF,true>&
    mm_ = rhs.mm_;
    n_  = rhs.n_;
    v_  = rhs.v_;
-   mv_ = std::move( rhs.mv_ );
 
    rhs.m_  = 0UL;
    rhs.mm_ = 0UL;
@@ -5097,7 +4742,6 @@ inline void CustomMatrix<Type,AF,PF,true>::clear()
    mm_ = 0UL;
    n_  = 0UL;
    v_  = nullptr;
-   mv_.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5121,7 +4765,6 @@ inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
    swap( mm_, m.mm_ );
    swap( n_ , m.n_  );
    swap( v_ , m.v_  );
-   swap( mv_, m.mv_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5310,83 +4953,6 @@ template< typename Type  // Data type of the matrix
 inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, size_t mm )
 {
    CustomMatrix tmp( ptr, m, n, mm );
-   swap( tmp );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resets the custom matrix and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
-// The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note This function is \b NOT available for padded custom matrices!
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom matrix referencing the array goes out of scope.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
-template< typename Deleter  // Type of the custom deleter
-        , typename >        // Type restriction on the custom deleter
-inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, Deleter d )
-{
-   BLAZE_STATIC_ASSERT( IsIntegral<Deleter>::value || PF == unpadded );
-
-   CustomMatrix tmp( ptr, m, n, d );
-   swap( tmp );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resets the custom matrix and replaces the array of elements with the given array.
-//
-// \param ptr The array of elements to be used by the matrix.
-// \param m The number of rows of the array of elements.
-// \param n The number of columns of the array of elements.
-// \param mm The total number of elements between two columns.
-// \param d The deleter to destroy the array of elements.
-// \return void
-// \exception std::invalid_argument Invalid setup of custom matrix.
-//
-// This function resets the custom matrix to the given array of elements of size \f$ m \times n \f$.
-// The function fails if ...
-//
-//  - ... the passed pointer is \c nullptr;
-//  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
-//    aligned according to the available instruction set (SSE, AVX, ...).
-//
-// In all failure cases a \a std::invalid_argument exception is thrown.
-//
-// \note In case a deleter was specified, the previously referenced array will only be destroyed
-//       when the last custom matrix referencing the array goes out of scope.
-*/
-template< typename Type       // Data type of the matrix
-        , bool AF             // Alignment flag
-        , bool PF >           // Padding flag
-template< typename Deleter >  // Type of the custom deleter
-inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, size_t mm, Deleter d )
-{
-   CustomMatrix tmp( ptr, m, n, mm, d );
    swap( tmp );
 }
 /*! \endcond */
