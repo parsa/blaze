@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
@@ -60,6 +61,7 @@ void cgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
 void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -128,6 +130,10 @@ inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* in
 */
 inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgetrf_( &m, &n, A, &lda, ipiv, info );
 }
 //*************************************************************************************************
@@ -173,6 +179,10 @@ inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info )
 */
 inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgetrf_( &m, &n, A, &lda, ipiv, info );
 }
 //*************************************************************************************************
@@ -220,7 +230,14 @@ inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* inf
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgetrf_( &m, &n, reinterpret_cast<float*>( A ), &lda, ipiv, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cgetrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, ipiv, info );
 }
 //*************************************************************************************************
 
@@ -267,7 +284,14 @@ inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* in
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgetrf_( &m, &n, reinterpret_cast<double*>( A ), &lda, ipiv, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zgetrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, ipiv, info );
 }
 //*************************************************************************************************
 

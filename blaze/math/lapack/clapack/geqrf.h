@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgeqrf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
@@ -60,6 +61,7 @@ void cgeqrf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, in
 void zgeqrf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -144,6 +146,10 @@ inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* t
 inline void geqrf( int m, int n, float* A, int lda, float* tau,
                    float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgeqrf_( &m, &n, A, &lda, tau, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -201,6 +207,10 @@ inline void geqrf( int m, int n, float* A, int lda, float* tau,
 inline void geqrf( int m, int n, double* A, int lda, double* tau,
                    double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgeqrf_( &m, &n, A, &lda, tau, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -260,8 +270,15 @@ inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgeqrf_( &m, &n, reinterpret_cast<float*>( A ), &lda, reinterpret_cast<float*>( tau ),
-            reinterpret_cast<float*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cgeqrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( tau ),
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -320,8 +337,15 @@ inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* t
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgeqrf_( &m, &n, reinterpret_cast<double*>( A ), &lda, reinterpret_cast<double*>( tau ),
-            reinterpret_cast<double*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zgeqrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( tau ),
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 

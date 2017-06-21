@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sposv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int* ldb, int* info );
@@ -60,6 +61,7 @@ void cposv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  b, int*
 void zposv_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* b, int* ldb, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -135,6 +137,10 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 */
 inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -187,6 +193,10 @@ inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int l
 */
 inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -241,8 +251,15 @@ inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, comple
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cposv_( &uplo, &n, &nrhs, reinterpret_cast<float*>( A ), &lda,
-           reinterpret_cast<float*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cposv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda,
+           reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -296,8 +313,15 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zposv_( &uplo, &n, &nrhs, reinterpret_cast<double*>( A ), &lda,
-           reinterpret_cast<double*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zposv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda,
+           reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 

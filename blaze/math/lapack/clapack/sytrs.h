@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void ssytrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
@@ -60,6 +61,7 @@ void csytrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, flo
 void zsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -129,6 +131,10 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
                    float* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ssytrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda,
             const_cast<int*>( ipiv ), B, &ldb, info );
 }
@@ -172,6 +178,10 @@ inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const in
 inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
                    double* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dsytrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda,
             const_cast<int*>( ipiv ), B, &ldb, info );
 }
@@ -217,8 +227,15 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   csytrs_( &uplo, &n, &nrhs, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<float*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   csytrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -262,8 +279,15 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zsytrs_( &uplo, &n, &nrhs, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<double*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zsytrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 

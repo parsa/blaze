@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_LAPACK_CLAPACK_GEQP3_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/StaticAssert.h>
+
+
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -44,12 +51,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgeqp3_( int* m, int* n, float*  A, int* lda, int* jpvt, float*  tau, float*  work, int* lwork, int* info );
 void dgeqp3_( int* m, int* n, double* A, int* lda, int* jpvt, double* tau, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -129,6 +138,10 @@ inline void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
 inline void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
                    float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgeqp3_( &m, &n, A, &lda, jpvt, tau, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -187,6 +200,10 @@ inline void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
 inline void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
                    double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgeqp3_( &m, &n, A, &lda, jpvt, tau, work, &lwork, info );
 }
 //*************************************************************************************************

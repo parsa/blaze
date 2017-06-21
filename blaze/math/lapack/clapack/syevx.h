@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void ssyevx_( char* jobz, char* range, char* uplo, int* n, float*  A, int* lda, float*  vl, float*  vu, int* il, int* iu, float*  abstol, int* m, float*  w, float*  Z, int* ldz, float*  work, int* lwork, int* iwork, int* ifail, int* info );
 void dsyevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl, double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz, double* work, int* lwork, int* iwork, int* ifail, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -147,6 +149,10 @@ inline void syevx( char jobz, char range, char uplo, int n, float* A, int lda,
                    float vl, float vu, int il, int iu, float abstol, int* m, float* w,
                    float* Z, int ldz, float* work, int lwork, int* iwork, int* ifail, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ++il;
    ++iu;
 
@@ -217,6 +223,10 @@ inline void syevx( char jobz, char range, char uplo, int n, double* A, int lda,
                    double vl, double vu, int il, int iu, double abstol, int* m, double* w,
                    double* Z, int ldz, double* work, int lwork, int* iwork, int* ifail, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ++il;
    ++iu;
 

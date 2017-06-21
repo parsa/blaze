@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void cungqr_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
 void zungqr_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -120,9 +122,16 @@ inline void ungqr( int m, int n, int k, complex<float>* A, int lda, const comple
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cungqr_( &m, &n, &k, reinterpret_cast<float*>( A ), &lda,
-            const_cast<float*>( reinterpret_cast<const float*>( tau ) ),
-            reinterpret_cast<float*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cungqr_( &m, &n, &k, reinterpret_cast<ET*>( A ), &lda,
+            const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -163,9 +172,16 @@ inline void ungqr( int m, int n, int k, complex<double>* A, int lda, const compl
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zungqr_( &m, &n, &k, reinterpret_cast<double*>( A ), &lda,
-            const_cast<double*>( reinterpret_cast<const double*>( tau ) ),
-            reinterpret_cast<double*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zungqr_( &m, &n, &k, reinterpret_cast<ET*>( A ), &lda,
+            const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 

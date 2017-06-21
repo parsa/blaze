@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void spotri_( char* uplo, int* n, float*  A, int* lda, int* info );
@@ -60,6 +61,7 @@ void cpotri_( char* uplo, int* n, float*  A, int* lda, int* info );
 void zpotri_( char* uplo, int* n, double* A, int* lda, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -121,6 +123,10 @@ inline void potri( char uplo, int n, complex<double>* A, int lda, int* info );
 */
 inline void potri( char uplo, int n, float* A, int lda, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    spotri_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
@@ -159,6 +165,10 @@ inline void potri( char uplo, int n, float* A, int lda, int* info )
 */
 inline void potri( char uplo, int n, double* A, int lda, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dpotri_( &uplo, &n, A, &lda, info );
 }
 //*************************************************************************************************
@@ -199,7 +209,14 @@ inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotri_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cpotri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info );
 }
 //*************************************************************************************************
 
@@ -239,7 +256,14 @@ inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotri_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zpotri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info );
 }
 //*************************************************************************************************
 

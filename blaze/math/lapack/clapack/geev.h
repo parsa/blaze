@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgeev_( char* jobvl, char* jobvr, int* n, float*  A, int* lda, float*  wr, float*  wi, float*  VL, int* ldvl, float*  VR, int* ldvr, float*  work, int* lwork, int* info );
@@ -60,6 +61,7 @@ void cgeev_( char* jobvl, char* jobvr, int* n, float*  A, int* lda, float*  w, f
 void zgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* w, double* VL, int* ldvl, double* VR, int* ldvr, double* work, int* lwork, double* rwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -162,6 +164,10 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
                   float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
                   float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -233,6 +239,10 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
                   double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
                   double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -306,9 +316,16 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgeev_( &jobvl, &jobvr, &n, reinterpret_cast<float*>( A ), &lda, reinterpret_cast<float*>( w ),
-           reinterpret_cast<float*>( VL ), &ldvl, reinterpret_cast<float*>( VR ), &ldvr,
-           reinterpret_cast<float*>( work ), &lwork, rwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
+           reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
 }
 //*************************************************************************************************
 
@@ -381,9 +398,16 @@ inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgeev_( &jobvl, &jobvr, &n, reinterpret_cast<double*>( A ), &lda, reinterpret_cast<double*>( w ),
-           reinterpret_cast<double*>( VL ), &ldvl, reinterpret_cast<double*>( VR ), &ldvr,
-           reinterpret_cast<double*>( work ), &lwork, rwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
+           reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
 }
 //*************************************************************************************************
 

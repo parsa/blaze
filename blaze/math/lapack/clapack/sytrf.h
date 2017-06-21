@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void ssytrf_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
@@ -60,6 +61,7 @@ void csytrf_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, 
 void zsytrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -143,6 +145,10 @@ inline void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
                    float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ssytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -199,6 +205,10 @@ inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
 inline void sytrf( char uplo, int n, double* A, int lda, int* ipiv,
                    double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dsytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info );
 }
 //*************************************************************************************************
@@ -257,8 +267,15 @@ inline void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   csytrf_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, ipiv,
-            reinterpret_cast<float*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   csytrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -316,8 +333,15 @@ inline void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zsytrf_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, ipiv,
-            reinterpret_cast<double*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zsytrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 

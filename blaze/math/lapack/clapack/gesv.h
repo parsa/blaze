@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgesv_( int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, int* info );
@@ -60,6 +61,7 @@ void cgesv_( int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* 
 void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -133,6 +135,10 @@ inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, compl
 */
 inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -183,6 +189,10 @@ inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int l
 */
 inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -235,8 +245,15 @@ inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, comple
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgesv_( &n, &nrhs, reinterpret_cast<float*>( A ), &lda, ipiv,
-           reinterpret_cast<float*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cgesv_( &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
+           reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -288,8 +305,15 @@ inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, compl
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zgesv_( &n, &nrhs, reinterpret_cast<double*>( A ), &lda, ipiv,
-           reinterpret_cast<double*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zgesv_( &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
+           reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 

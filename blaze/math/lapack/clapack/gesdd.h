@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sgesdd_( char* jobz, int* m, int* n, float*  A, int* lda, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, int* iwork, int* info );
@@ -60,6 +61,7 @@ void cgesdd_( char* jobz, int* m, int* n, float*  A, int* lda, float*  s, float*
 void zgesdd_( char* jobz, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, double* rwork, int* iwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -164,6 +166,10 @@ inline void gesdd( char jobz, int m, int n, float* A, int lda,
                    float* s, float* U, int ldu, float* V, int ldv,
                    float* work, int lwork, int* iwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info );
 }
 //*************************************************************************************************
@@ -237,6 +243,10 @@ inline void gesdd( char jobz, int m, int n, double* A, int lda,
                    double* s, double* U, int ldu, double* V, int ldv,
                    double* work, int lwork, int* iwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info );
 }
 //*************************************************************************************************
@@ -313,9 +323,16 @@ inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cgesdd_( &jobz, &m, &n, reinterpret_cast<float*>( A ), &lda, s,
-            reinterpret_cast<float*>( U ), &ldu, reinterpret_cast<float*>( V ), &ldv,
-            reinterpret_cast<float*>( work ), &lwork, rwork, iwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
+            reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
 }
 //*************************************************************************************************
 
@@ -389,9 +406,18 @@ inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double*
                    complex<double>* U, int ldu, complex<double>* V, int ldv,
                    complex<double>* work, int lwork, double* rwork, int* iwork, int* info )
 {
-   zgesdd_( &jobz, &m, &n, reinterpret_cast<double*>( A ), &lda, s,
-            reinterpret_cast<double*>( U ), &ldu, reinterpret_cast<double*>( V ), &ldv,
-            reinterpret_cast<double*>( work ), &lwork, rwork, iwork, info );
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
+            reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
 }
 //*************************************************************************************************
 

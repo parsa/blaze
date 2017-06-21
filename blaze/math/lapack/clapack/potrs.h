@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void spotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
@@ -60,6 +61,7 @@ void cpotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int
 void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -123,6 +125,10 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 */
 inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -163,6 +169,10 @@ inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B
 */
 inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info );
 }
 //*************************************************************************************************
@@ -206,8 +216,15 @@ inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   cpotrs_( &uplo, &n, &nrhs, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
-            &lda, reinterpret_cast<float*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   cpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 
@@ -250,8 +267,15 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zpotrs_( &uplo, &n, &nrhs, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
-            &lda, reinterpret_cast<double*>( B ), &ldb, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
 }
 //*************************************************************************************************
 

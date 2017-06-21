@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_LAPACK_CLAPACK_ORMRQ_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/StaticAssert.h>
+
+
 //=================================================================================================
 //
 //  LAPACK FORWARD DECLARATIONS
@@ -44,12 +51,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sormrq_( char* side, char* trans, int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  C, int* ldc, float*  work, int* lwork, int* info );
 void dormrq_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda, double* tau, double* C, int* ldc, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -126,6 +135,10 @@ inline void ormrq( char side, char trans, int m, int n, int k, const double* A, 
 inline void ormrq( char side, char trans, int m, int n, int k, const float* A, int lda,
                    const float* tau, float* C, int ldc, float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sormrq_( &side, &trans, &m, &n, &k, const_cast<float*>( A ), &lda,
             const_cast<float*>( tau ), C, &ldc, work, &lwork, info );
 }
@@ -182,6 +195,10 @@ inline void ormrq( char side, char trans, int m, int n, int k, const float* A, i
 inline void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda,
                    const double* tau, double* C, int ldc, double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dormrq_( &side, &trans, &m, &n, &k, const_cast<double*>( A ), &lda,
             const_cast<double*>( tau ), C, &ldc, work, &lwork, info );
 }

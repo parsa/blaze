@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void chesv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, float*  work, int* lwork, int* info );
 void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -138,8 +140,15 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   chesv_( &uplo, &n, &nrhs, reinterpret_cast<float*>( A ), &lda, ipiv,
-           reinterpret_cast<float*>( B ), &ldb, reinterpret_cast<float*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   chesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -198,8 +207,15 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zhesv_( &uplo, &n, &nrhs, reinterpret_cast<double*>( A ), &lda, ipiv,
-           reinterpret_cast<double*>( B ), &ldb, reinterpret_cast<double*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zhesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 

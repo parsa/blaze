@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void cheevx_( char* jobz, char* range, char* uplo, int* n, float*  A, int* lda, float*  vl, float*  vu, int* il, int* iu, float*  abstol, int* m, float*  w, float*  Z, int* ldz, float*  work, int* lwork, float*  rwork, int* iwork, int* ifail, int* info );
 void zheevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl, double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz, double* work, int* lwork, double* rwork, int* iwork, int* ifail, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -151,11 +153,20 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, i
                    complex<float>* Z, int ldz, complex<float>* work, int lwork,
                    float* rwork, int* iwork, int* ifail, int* info )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
    ++il;
    ++iu;
 
-   cheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<float*>( A ), &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, reinterpret_cast<float*>( Z ), &ldz, reinterpret_cast<float*>( work ),
+   cheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
+            &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
             &lwork, rwork, iwork, ifail, info );
 }
 //*************************************************************************************************
@@ -224,11 +235,20 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<double>* A, 
                    complex<double>* Z, int ldz, complex<double>* work, int lwork,
                    double* rwork, int* iwork, int* ifail, int* info )
 {
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
    ++il;
    ++iu;
 
-   zheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<double*>( A ), &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, reinterpret_cast<double*>( Z ), &ldz, reinterpret_cast<double*>( work ),
+   zheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
+            &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
             &lwork, rwork, iwork, ifail, info );
 }
 //*************************************************************************************************

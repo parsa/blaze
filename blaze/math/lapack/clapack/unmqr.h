@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void cunmqr_( char* side, char* trans, int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  C, int* ldc, float*  work, int* lwork, int* info );
 void zunmqr_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda, double* tau, double* C, int* ldc, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -139,10 +141,17 @@ inline void unmqr( char side, char trans, int m, int n, int k, const complex<flo
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
    cunmqr_( &side, &trans, &m, &n, &k,
-            const_cast<float*>( reinterpret_cast<const float*>( A ) ), &lda,
-            const_cast<float*>( reinterpret_cast<const float*>( tau ) ),
-            reinterpret_cast<float*>( C ), &ldc, reinterpret_cast<float*>( work ),
+            const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
+            const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
+            reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
             &lwork, info );
 }
 //*************************************************************************************************
@@ -201,10 +210,17 @@ inline void unmqr( char side, char trans, int m, int n, int k, const complex<dou
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
    zunmqr_( &side, &trans, &m, &n, &k,
-            const_cast<double*>( reinterpret_cast<const double*>( A ) ), &lda,
-            const_cast<double*>( reinterpret_cast<const double*>( tau ) ),
-            reinterpret_cast<double*>( C ), &ldc, reinterpret_cast<double*>( work ),
+            const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
+            const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
+            reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
             &lwork, info );
 }
 //*************************************************************************************************

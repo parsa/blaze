@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
 extern "C" {
 
 void sgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, float*  A, int* lda, float*  vl, float*  vu, int* il, int* iu, int* ns, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, int* iwork, int* info );
@@ -60,6 +61,7 @@ void cgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, float*  A, i
 void zgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, double* A, int* lda, double* vl, double* vu, int* il, int* iu, int* ns, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, double* rwork, int* iwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -179,6 +181,10 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, in
                     float* s, float* U, int ldu, float* V, int ldv,
                     float* work, int lwork, int* iwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ++il;
    ++iu;
 
@@ -267,6 +273,10 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, i
                     double* s, double* U, int ldu, double* V, int ldv,
                     double* work, int lwork, int* iwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ++il;
    ++iu;
 
@@ -358,13 +368,20 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<floa
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
    ++il;
    ++iu;
 
-   cgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<float*>( A ), &lda,
+   cgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<ET*>( A ), &lda,
              &vl, &vu, &il, &iu, ns, s,
-             reinterpret_cast<float*>( U ), &ldu, reinterpret_cast<float*>( V ), &ldv,
-             reinterpret_cast<float*>( work ), &lwork, rwork, iwork, info );
+             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
+             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
 }
 //*************************************************************************************************
 
@@ -451,13 +468,20 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<doub
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
    ++il;
    ++iu;
 
-   zgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<double*>( A ), &lda,
+   zgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<ET*>( A ), &lda,
              &vl, &vu, &il, &iu, ns, s,
-             reinterpret_cast<double*>( U ), &ldu, reinterpret_cast<double*>( V ), &ldv,
-             reinterpret_cast<double*>( work ), &lwork, rwork, iwork, info );
+             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
+             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
 }
 //*************************************************************************************************
 

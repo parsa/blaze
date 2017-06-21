@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void ssyevd_( char* jobz, char* uplo, int* n, float*  A, int* lda, float*  w, float*  work, int* lwork, int* iwork, int* liwork, int* info );
 void dsyevd_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w, double* work, int* lwork, int* iwork, int* liwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -129,6 +131,10 @@ inline void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
 inline void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
                    float* work, int lwork, int* iwork, int liwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    ssyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info );
 }
 //*************************************************************************************************
@@ -179,6 +185,10 @@ inline void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
 inline void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
                    double* work, int lwork, int* iwork, int liwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dsyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info );
 }
 //*************************************************************************************************

@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void sorgrq_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
 void dorgrq_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -117,6 +119,10 @@ inline void orgrq( int m, int n, int k, double* A, int lda, const double* tau,
 */
 inline void orgrq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    sorgrq_( &m, &n, &k, A, &lda, const_cast<float*>( tau ), work, &lwork, info );
 }
 //*************************************************************************************************
@@ -155,6 +161,10 @@ inline void orgrq( int m, int n, int k, float* A, int lda, const float* tau, flo
 */
 inline void orgrq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info )
 {
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+#endif
+
    dorgrq_( &m, &n, &k, A, &lda, const_cast<double*>( tau ), work, &lwork, info );
 }
 //*************************************************************************************************

@@ -52,12 +52,14 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
 void chetrf_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
 void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
@@ -137,8 +139,15 @@ inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-   chetrf_( &uplo, &n, reinterpret_cast<float*>( A ), &lda, ipiv,
-            reinterpret_cast<float*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   chetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
@@ -196,8 +205,15 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-   zhetrf_( &uplo, &n, reinterpret_cast<double*>( A ), &lda, ipiv,
-            reinterpret_cast<double*>( work ), &lwork, info );
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   zhetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
+            reinterpret_cast<ET*>( work ), &lwork, info );
 }
 //*************************************************************************************************
 
