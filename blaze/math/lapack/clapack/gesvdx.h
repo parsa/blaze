@@ -181,7 +181,7 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, in
                     float* s, float* U, int ldu, float* V, int ldv,
                     float* work, int lwork, int* iwork, int* info )
 {
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
@@ -273,7 +273,7 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, i
                     double* s, double* U, int ldu, double* V, int ldv,
                     double* work, int lwork, int* iwork, int* info )
 {
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
@@ -368,7 +368,7 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<floa
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
    using ET = MKL_Complex8;
 #else
@@ -468,7 +468,7 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<doub
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION > 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
    using ET = MKL_Complex16;
 #else
