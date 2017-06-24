@@ -85,7 +85,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for the dense vector/dense vector map() function.
+/*!\brief Expression object for the dense vector-dense vector map() function.
 // \ingroup dense_vector_expression
 //
 // The DVecDVecMapExpr class represents the compile time expression for the pairwise evaluation
@@ -442,7 +442,6 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    };
    //**********************************************************************************************
 
- public:
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
@@ -625,14 +624,14 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief Assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector/dense
+   // This function implements the performance optimized assignment of a dense vector-dense
    // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case either of the two
    // operands requires an intermediate evaluation.
@@ -658,14 +657,14 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Assignment to sparse vectors****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector/dense vector map expression to a sparse vector.
+   /*!\brief Assignment of a dense vector-dense vector map expression to a sparse vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
    // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector/dense
+   // This function implements the performance optimized assignment of a dense vector-dense
    // vector map expression to a sparse vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case either of the two
    // operands requires an intermediate evaluation.
@@ -690,7 +689,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Addition assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Addition assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief Addition assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -698,7 +697,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application
+   // vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case
    // either of the two operands requires an intermediate evaluation.
    */
@@ -727,7 +726,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Subtraction assignment to dense vectors*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Subtraction assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief Subtraction assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -735,7 +734,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized subtraction assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application
+   // vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case
    // either of the two operands requires an intermediate evaluation.
    */
@@ -764,7 +763,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief Multiplication assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -772,7 +771,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized multiplication assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application of
+   // vector-dense vector map expression to a dense vector. Due to the explicit application of
    // the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands requires an intermediate evaluation.
    */
@@ -801,7 +800,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**Division assignment to dense vectors********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Division assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief Division assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -809,7 +808,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized division assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application
+   // vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case
    // either of the two operands requires an intermediate evaluation.
    */
@@ -838,14 +837,14 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector/dense vector map expression to a dense vector.
+   /*!\brief SMP assignment of a dense vector-dense vector map expression to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector/dense
+   // This function implements the performance optimized SMP assignment of a dense vector-dense
    // vector map expression to a dense vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
@@ -871,14 +870,14 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP assignment to sparse vectors************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector/dense vector map expression to a sparse vector.
+   /*!\brief SMP assignment of a dense vector-dense vector map expression to a sparse vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
    // \param rhs The right-hand side map expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector/dense
+   // This function implements the performance optimized SMP assignment of a dense vector-dense
    // vector map expression to a sparse vector. Due to the explicit application of the SFINAE
    // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
@@ -903,7 +902,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP addition assignment to dense vectors****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a dense vector/dense vector map expression to a dense
+   /*!\brief SMP addition assignment of a dense vector-dense vector map expression to a dense
    //        vector.
    // \ingroup dense_vector
    //
@@ -912,7 +911,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP addition assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application
+   // vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
@@ -941,7 +940,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP subtraction assignment to dense vectors*************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a dense vector/dense vector map expression to a dense
+   /*!\brief SMP subtraction assignment of a dense vector-dense vector map expression to a dense
    //        vector.
    // \ingroup dense_vector
    //
@@ -950,7 +949,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application of
+   // vector-dense vector map expression to a dense vector. Due to the explicit application of
    // the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
@@ -979,7 +978,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP multiplication assignment to dense vectors**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a dense vector/dense vector map expression to a
+   /*!\brief SMP multiplication assignment of a dense vector-dense vector map expression to a
    //        dense vector.
    // \ingroup dense_vector
    //
@@ -988,7 +987,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // dense vector/dense vector map expression to a dense vector. Due to the explicit application
+   // dense vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
@@ -1017,7 +1016,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
 
    //**SMP division assignment to dense vectors****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP division assignment of a dense vector/dense vector map expression to a dense
+   /*!\brief SMP division assignment of a dense vector-dense vector map expression to a dense
    //        vector.
    // \ingroup dense_vector
    //
@@ -1026,7 +1025,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    // \return void
    //
    // This function implements the performance optimized SMP division assignment of a dense
-   // vector/dense vector map expression to a dense vector. Due to the explicit application
+   // vector-dense vector map expression to a dense vector. Due to the explicit application
    // of the SFINAE principle, this function can only be selected by the compiler in case
    // the expression specific parallel evaluation strategy is selected.
    */
@@ -1091,7 +1090,7 @@ class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
    \code
    blaze::DynamicVector<double> a, b, c;
    // ... Resizing and initialization
-   b = map( a, []( double a ){ return std::sqrt( a ); } );
+   c = map( a, b, []( double x, double y ){ return std::min( x, y ); } );
    \endcode
 */
 template< typename VT1   // Type of the left-hand side dense vector
@@ -1120,7 +1119,7 @@ inline const DVecDVecMapExpr<VT1,VT2,OP,TF>
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
 //
-// This function computes the componentwise minimum of the two dense vector \a lhs and \a rhs.
+// This function computes the componentwise minimum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a min() function:
 
@@ -1166,7 +1165,8 @@ template< typename VT1        // Type of the first dense vector
         , typename VT2        // Type of the second dense vector
         , bool TF             // Transpose flag
         , typename... Vecs >  // Pack of additional dense vectors
-decltype(auto) min( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
+inline decltype(auto)
+   min( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
 {
    return min( min( a, b ), vecs... );
 }
@@ -1181,7 +1181,7 @@ decltype(auto) min( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, 
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
 //
-// This function computes the componentwise maximum of the two dense vector \a lhs and \a rhs.
+// This function computes the componentwise maximum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a max() function:
 
@@ -1227,7 +1227,8 @@ template< typename VT1        // Type of the first dense vector
         , typename VT2        // Type of the second dense vector
         , bool TF             // Transpose flag
         , typename... Vecs >  // Pack of additional dense vectors
-decltype(auto) max( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
+inline decltype(auto)
+   max( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
 {
    return max( max( a, b ), vecs... );
 }

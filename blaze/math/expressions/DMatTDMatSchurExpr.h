@@ -350,9 +350,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline DisableIf_< UseAssign<MT> >
-      assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -394,9 +394,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      assign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -427,12 +427,12 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // dense matrix Schur product expression to a sparse matrix.
    */
    template< typename MT  // Type of the target sparse matrix
-           , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+           , bool SO >    // Storage order of the target sparse matrix
+   friend inline void assign( SparseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO2, OppositeType, ResultType >  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -466,9 +466,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // in case neither of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline DisableIf_< UseAssign<MT> >
-      addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -511,9 +511,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      addAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -550,9 +550,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // the compiler in case neither of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline DisableIf_< UseAssign<MT> >
-      subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -595,9 +595,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // the compiler in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      subAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -634,9 +634,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // the compiler in case neither of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline DisableIf_< UseAssign<MT> >
-      schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -679,9 +679,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // the compiler in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseAssign<MT> >
-      schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -722,9 +722,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT> >
-      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -758,13 +758,13 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
-           , bool SO2 >   // Storage order of the target sparse matrix
+           , bool SO >    // Storage order of the target sparse matrix
    friend inline EnableIf_< UseSMPAssign<MT> >
-      smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO2, OppositeType, ResultType >  TmpType;
+      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -798,9 +798,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT> >
-      smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -837,9 +837,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT> >
-      smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -876,9 +876,9 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
-           , bool SO2 >   // Storage order of the target dense matrix
+           , bool SO >    // Storage order of the target dense matrix
    friend inline EnableIf_< UseSMPAssign<MT> >
-      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatTDMatSchurExpr& rhs )
+      smpSchurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
