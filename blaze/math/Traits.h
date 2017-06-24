@@ -63,6 +63,7 @@
 #include <blaze/math/traits/DMatDeclSymExprTrait.h>
 #include <blaze/math/traits/DMatDeclUppExprTrait.h>
 #include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatDMatMapExprTrait.h>
 #include <blaze/math/traits/DMatDMatMultExprTrait.h>
 #include <blaze/math/traits/DMatDMatSchurExprTrait.h>
 #include <blaze/math/traits/DMatDMatSubExprTrait.h>
