@@ -64,7 +64,6 @@
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -581,7 +580,7 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<MT>::value && dm_.canAlias( alias );
+      return IsExpression<MT>::value && dm_.canAlias( alias );
    }
    //**********************************************************************************************
 

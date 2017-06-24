@@ -554,7 +554,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<VT>::value && vector_.canAlias( alias );
+      return IsExpression<VT>::value && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 

@@ -61,7 +61,6 @@
 #include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -546,7 +545,7 @@ class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<VT>::value && dv_.canAlias( alias );
+      return IsExpression<VT>::value && dv_.canAlias( alias );
    }
    //**********************************************************************************************
 

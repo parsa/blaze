@@ -590,7 +590,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsComputation<MT>::value && matrix_.canAlias( alias );
+      return IsExpression<MT>::value && matrix_.canAlias( alias );
    }
    //**********************************************************************************************
 
