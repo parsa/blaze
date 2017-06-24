@@ -1610,6 +1610,55 @@ struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Erfc >
 
 //=================================================================================================
 //
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
