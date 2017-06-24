@@ -74,6 +74,7 @@
 #include <blaze/math/expressions/DMatSMatSubExpr.h>
 #include <blaze/math/expressions/DMatSVecMultExpr.h>
 #include <blaze/math/expressions/DMatTDMatAddExpr.h>
+#include <blaze/math/expressions/DMatTDMatMapExpr.h>
 #include <blaze/math/expressions/DMatTDMatMultExpr.h>
 #include <blaze/math/expressions/DMatTDMatSchurExpr.h>
 #include <blaze/math/expressions/DMatTDMatSubExpr.h>
