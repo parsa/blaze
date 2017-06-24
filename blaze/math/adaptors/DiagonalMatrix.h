@@ -47,6 +47,7 @@
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -61,6 +62,7 @@
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -1269,25 +1271,29 @@ struct AddTrait< IdentityMatrix<T,SO1>, DiagonalMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
-   using Type = AddTrait_<MT1,MT2>;
+   using Type = SymmetricMatrix< AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = AddTrait_<MT1,MT2>;
+   using Type = SymmetricMatrix< AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = AddTrait_<MT1,MT2>;
+   using Type = If_< IsBuiltin< ElementType_<MT2> >
+                   , SymmetricMatrix< AddTrait_<MT1,MT2> >
+                   , AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = AddTrait_<MT1,MT2>;
+   using Type = If_< IsBuiltin< ElementType_<MT1> >
+                   , SymmetricMatrix< AddTrait_<MT1,MT2> >
+                   , AddTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1456,25 +1462,29 @@ struct SubTrait< IdentityMatrix<T,SO1>, DiagonalMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
-   using Type = SubTrait_<MT1,MT2>;
+   using Type = SymmetricMatrix< SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = SubTrait_<MT1,MT2>;
+   using Type = SymmetricMatrix< SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = SubTrait_<MT1,MT2>;
+   using Type = If_< IsBuiltin< ElementType_<MT2> >
+                   , SymmetricMatrix< SubTrait_<MT1,MT2> >
+                   , SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = SubTrait_<MT1,MT2>;
+   using Type = If_< IsBuiltin< ElementType_<MT1> >
+                   , SymmetricMatrix< SubTrait_<MT1,MT2> >
+                   , SubTrait_<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -2133,6 +2143,223 @@ template< typename MT, bool SO, bool DF >
 struct UnaryMapTrait< DiagonalMatrix<MT,SO,DF>, Erf >
 {
    using Type = DiagonalMatrix< UnaryMapTrait_<MT,Erf> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< LowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< LowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = DiagonalMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = DiagonalMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
 };
 /*! \endcond */
 //*************************************************************************************************
