@@ -58,6 +58,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -6698,6 +6699,31 @@ template< typename T, size_t M, size_t N, bool SO, typename OP >
 struct UnaryMapTrait< StaticMatrix<T,M,N,SO>, OP >
 {
    using Type = StaticMatrix< UnaryMapTrait_<T,OP>, M, N, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
+struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
+struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
