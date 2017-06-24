@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -7019,6 +7020,79 @@ template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< DynamicMatrix<T,SO>, OP >
 {
    using Type = DynamicMatrix< UnaryMapTrait_<T,OP>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, bool SO, typename T2, size_t M, size_t N, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
+struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
+struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2>, OP >
+{
+   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+};
+
+template< typename T1, bool SO, typename T2, size_t M, size_t N, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO>, OP >
+{
+   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2>, OP >
+{
+   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
+struct BinaryMapTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO>, OP >
+{
+   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+};
+
+template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
+struct BinaryMapTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2>, OP >
+{
+   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+};
+
+template< typename T1, bool SO, typename T2, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO>, OP >
+{
+   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, SO >;
+};
+
+template< typename T1, bool SO1, typename T2, bool SO2, typename OP >
+struct BinaryMapTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2>, OP >
+{
+   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
