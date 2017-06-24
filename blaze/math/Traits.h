@@ -80,6 +80,7 @@
 #include <blaze/math/traits/DMatSMatSubExprTrait.h>
 #include <blaze/math/traits/DMatSVecMultExprTrait.h>
 #include <blaze/math/traits/DMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatMapExprTrait.h>
 #include <blaze/math/traits/DMatTDMatMultExprTrait.h>
 #include <blaze/math/traits/DMatTDMatSchurExprTrait.h>
 #include <blaze/math/traits/DMatTDMatSubExprTrait.h>
