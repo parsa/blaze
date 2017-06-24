@@ -40,9 +40,15 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/traits/DMatDMatMapExprTrait.h>
+#include <blaze/math/traits/DMatTDMatMapExprTrait.h>
 #include <blaze/math/traits/DVecDVecMapExprTrait.h>
+#include <blaze/math/traits/TDMatDMatMapExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatMapExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecMapExprTrait.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -85,17 +91,28 @@ struct BinaryMapExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsDenseVector<T1>
-                  , If_< IsDenseVector<T2>
-                       , If_< IsRowVector<T1>
-                            , If_< IsRowVector<T2>
-                                 , TDVecTDVecMapExprTrait<T1,T2,OP>
-                                 , Failure >
-                            , If_< IsRowVector<T2>
-                                 , Failure
-                                 , DVecDVecMapExprTrait<T1,T2,OP> > >
+   using Tmp = If_< IsDenseMatrix<T1>
+                  , If_< IsDenseMatrix<T2>
+                       , If_< IsRowMajorMatrix<T1>
+                            , If_< IsRowMajorMatrix<T2>
+                                 , DMatDMatMapExprTrait<T1,T2,OP>
+                                 , DMatTDMatMapExprTrait<T1,T2,OP> >
+                            , If_< IsRowMajorMatrix<T2>
+                                 , TDMatDMatMapExprTrait<T1,T2,OP>
+                                 , TDMatTDMatMapExprTrait<T1,T2,OP> > >
                        , Failure >
-                  , Failure >;
+                  , If_< IsDenseVector<T1>
+                       , If_< IsDenseVector<T2>
+                            , If_< IsRowVector<T1>
+                                 , If_< IsRowVector<T2>
+                                      , TDVecTDVecMapExprTrait<T1,T2,OP>
+                                      , Failure >
+                                 , If_< IsRowVector<T2>
+                                      , Failure
+                                      , DVecDVecMapExprTrait<T1,T2,OP> > >
+                            , Failure >
+                       , Failure >
+                  >;
    /*! \endcond */
    //**********************************************************************************************
 
