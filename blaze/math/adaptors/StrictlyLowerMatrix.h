@@ -1901,6 +1901,79 @@ struct UnaryMapTrait< StrictlyLowerMatrix<MT,SO,DF>, Erf >
 
 //=================================================================================================
 //
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< LowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< LowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = StrictlyLowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UniLowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = StrictlyLowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = UniLowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Min >
+{
+   using Type = StrictlyLowerMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct BinaryMapTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2>, Max >
+{
+   using Type = StrictlyLowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
