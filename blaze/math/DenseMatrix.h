@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/DMatDeclUppExpr.h>
 #include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
+#include <blaze/math/expressions/DMatDMatMapExpr.h>
 #include <blaze/math/expressions/DMatDMatMultExpr.h>
 #include <blaze/math/expressions/DMatDMatSchurExpr.h>
 #include <blaze/math/expressions/DMatDMatSubExpr.h>
