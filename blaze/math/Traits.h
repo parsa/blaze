@@ -181,6 +181,7 @@
 #include <blaze/math/traits/TDMatDeclSymExprTrait.h>
 #include <blaze/math/traits/TDMatDeclUppExprTrait.h>
 #include <blaze/math/traits/TDMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatDMatMapExprTrait.h>
 #include <blaze/math/traits/TDMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TDMatDMatSchurExprTrait.h>
 #include <blaze/math/traits/TDMatDMatSubExprTrait.h>
