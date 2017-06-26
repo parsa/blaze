@@ -1143,37 +1143,6 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
 
 
 //*************************************************************************************************
-/*!\brief Computes the componentwise minimum of at least three dense vectors.
-// \ingroup dense_vector
-//
-// \param a The first dense vector operand.
-// \param b The second dense vector operand.
-// \param vecs The pack of additional dense vector operands.
-// \return The resulting dense vector.
-//
-// This function computes the componentwise minimum of at least three dense vectors. The function
-// returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a min() function:
-
-   \code
-   blaze::DynamicVector<double> a, b, c, d;
-   // ... Resizing and initialization
-   d = min( a, b, c );
-   \endcode
-*/
-template< typename VT1        // Type of the first dense vector
-        , typename VT2        // Type of the second dense vector
-        , bool TF             // Transpose flag
-        , typename... Vecs >  // Pack of additional dense vectors
-inline decltype(auto)
-   min( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
-{
-   return min( min( a, b ), vecs... );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Computes the componentwise maximum of the dense vectors \a lhs and \a rhs.
 // \ingroup dense_vector
 //
@@ -1200,37 +1169,6 @@ inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
    BLAZE_FUNCTION_TRACE;
 
    return DVecDVecMapExpr<VT1,VT2,Max,TF>( ~lhs, ~rhs, Max() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the componentwise maximum of at least three dense vectors.
-// \ingroup dense_vector
-//
-// \param a The first dense vector operand.
-// \param b The second dense vector operand.
-// \param vecs The pack of additional dense vector operands.
-// \return The resulting dense vector.
-//
-// This function computes the componentwise maximum of at least three dense vectors. The function
-// returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a max() function:
-
-   \code
-   blaze::DynamicVector<double> a, b, c, d;
-   // ... Resizing and initialization
-   d = max( a, b, c );
-   \endcode
-*/
-template< typename VT1        // Type of the first dense vector
-        , typename VT2        // Type of the second dense vector
-        , bool TF             // Transpose flag
-        , typename... Vecs >  // Pack of additional dense vectors
-inline decltype(auto)
-   max( const DenseVector<VT1,TF>& a, const DenseVector<VT2,TF>& b, Vecs... vecs )
-{
-   return max( max( a, b ), vecs... );
 }
 //*************************************************************************************************
 

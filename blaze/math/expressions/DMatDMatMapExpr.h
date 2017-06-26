@@ -1179,38 +1179,6 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Computes the componentwise minimum of at least three dense matrices.
-// \ingroup dense_matrix
-//
-// \param a The first dense matrix operand.
-// \param b The second dense matrix operand.
-// \param mats The pack of additional dense matrix operands.
-// \return The resulting dense matrix.
-//
-// This function computes the componentwise minimum of at least three dense matrices. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a min() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B, C, D;
-   // ... Resizing and initialization
-   D = min( A, B, C );
-   \endcode
-*/
-template< typename MT1        // Type of the first dense matrix
-        , bool SO1            // Storage order of the first dense matrix
-        , typename MT2        // Type of the second dense matrix
-        , bool SO2            // Storage order of the second dense matrix
-        , typename... Mats >  // Pack of additional dense matrices
-inline decltype(auto)
-   min( const DenseMatrix<MT1,SO1>& a, const DenseMatrix<MT2,SO2>& b, Mats... mats )
-{
-   return min( min( a, b ), mats... );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Computes the componentwise maximum of the dense matrices \a lhs and \a rhs.
 // \ingroup dense_matrix
 //
@@ -1238,38 +1206,6 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Max() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the componentwise maximum of at least three dense matrices.
-// \ingroup dense_matrix
-//
-// \param a The first dense matrix operand.
-// \param b The second dense matrix operand.
-// \param mats The pack of additional dense matrix operands.
-// \return The resulting dense matrix.
-//
-// This function computes the componentwise maximum of at least three dense matrices. The
-// function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a max() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B, C, D;
-   // ... Resizing and initialization
-   D = max( A, B, C );
-   \endcode
-*/
-template< typename MT1        // Type of the first dense matrix
-        , bool SO1            // Storage order of the first dense matrix
-        , typename MT2        // Type of the second dense matrix
-        , bool SO2            // Storage order of the second dense matrix
-        , typename... Mats >  // Pack of additional dense matrices
-inline decltype(auto)
-   max( const DenseMatrix<MT1,SO1>& a, const DenseMatrix<MT2,SO2>& b, Mats... mats )
-{
-   return max( max( a, b ), mats... );
 }
 //*************************************************************************************************
 
