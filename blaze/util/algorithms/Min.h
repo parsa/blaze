@@ -78,23 +78,48 @@ BLAZE_ALWAYS_INLINE constexpr auto
 
 
 //*************************************************************************************************
-/*!\brief Minimum function for at least three values of builtin data type.
+/*!\brief Minimum function for three values/objects.
 // \ingroup algorithms
 //
-// \param a The first value.
-// \param b The second value.
-// \param args The pack of additional values.
-// \return The minimum of the given values.
+// \param a The first value/object.
+// \param b The second value/object.
+// \param c The third value/object.
+// \return The minimum of the given values/objects.
 //
-// This function returns the minimum of the given data values. The return type of the function
-// is determined by the data types of the given arguments.
+// This function returns the minimum of the given data values/objects. The return type of the
+// function is determined by the data types of the given arguments.
 */
-template< typename T1, typename T2, typename... Ts
-        , typename = EnableIf_< Or< All<IsSigned,T1,T2>, All<IsUnsigned,T1,T2> > > >
-BLAZE_ALWAYS_INLINE constexpr auto
-   min( const T1& a, const T2& b, const Ts&... args ) noexcept
+template< typename T1, typename T2, typename T3 >
+BLAZE_ALWAYS_INLINE constexpr decltype(auto)
+   min( const T1& a, const T2& b, const T3& c ) noexcept
 {
-   return min( a, min( b, args... ) );
+   using blaze::min;
+
+   return min( min( a, b ), c );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minimum function for at least four values/objects.
+// \ingroup algorithms
+//
+// \param a The first value/object.
+// \param b The second value/object.
+// \param c The third value/object.
+// \param args The pack of additional values/objects.
+// \return The minimum of the given values/objects.
+//
+// This function returns the minimum of the given data values/objects. The return type of the
+// function is determined by the data types of the given arguments.
+*/
+template< typename T1, typename T2, typename T3, typename... Ts >
+BLAZE_ALWAYS_INLINE constexpr decltype(auto)
+   min( const T1& a, const T2& b, const T3& c, const Ts&... args ) noexcept
+{
+   using blaze::min;
+
+   return min( min( min( a, b ), c ), args... );
 }
 //*************************************************************************************************
 
