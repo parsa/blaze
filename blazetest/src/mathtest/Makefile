@@ -58,7 +58,7 @@ all: functions simd blas lapack typetraits \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     dmatdmatmin \
+     dmatdmatmin dmatdmatmax \
      determinant lu llh qr rq ql lq inversion eigen svd \
      vectorserializer matrixserializer
 
@@ -510,6 +510,11 @@ dmatdmatmin:
 	@echo "Building the dense matrix/dense matrix minimum tests..."
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin $(MAKECMDGOALS)
 
+dmatdmatmax:
+	@echo
+	@echo "Building the dense matrix/dense matrix maximum tests..."
+	@$(MAKE) --no-print-directory -C ./dmatdmatmax $(MAKECMDGOALS)
+
 determinant:
 	@echo
 	@echo "Building the matrix determinant tests..."
@@ -659,6 +664,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./smatdmatmult reset
 	@$(MAKE) --no-print-directory -C ./smatsmatmult reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin reset
+	@$(MAKE) --no-print-directory -C ./dmatdmatmax reset
 	@$(MAKE) --no-print-directory -C ./determinant reset
 	@$(MAKE) --no-print-directory -C ./lu reset
 	@$(MAKE) --no-print-directory -C ./llh reset
@@ -759,6 +765,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin clean
+	@$(MAKE) --no-print-directory -C ./dmatdmatmax clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./lu clean
 	@$(MAKE) --no-print-directory -C ./llh clean
@@ -798,6 +805,6 @@ clean:
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        dmatdmatmin \
+        dmatdmatmin dmatdmatmax \
         determinant lu llh qr rq ql lq inversion eigen svd \
         vectorserializer matrixserializer
