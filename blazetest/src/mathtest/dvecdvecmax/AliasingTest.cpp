@@ -212,7 +212,7 @@ void AliasingTest::testDVecDVecMax()
 
    // Complex operation: a = max( ( A * b + a ), c );
    {
-      test_ = "DVecDVecMax - Complex operation: a = ( ( A * b + a ), c );";
+      test_ = "DVecDVecMax - Complex operation: a = max( ( A * b + a ), c );";
 
       initialize();
 
@@ -307,7 +307,7 @@ void AliasingTest::testDVecDVecMax()
 
    // Complex operation: a += max( b, ( a + A * c ) );
    {
-      test_ = "DVecDVecMax - Complex operation: a += ( b, ( a + A * c ) );";
+      test_ = "DVecDVecMax - Complex operation: a += max( b, ( a + A * c ) );";
 
       initialize();
 

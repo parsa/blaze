@@ -212,7 +212,7 @@ void AliasingTest::testDVecDVecMin()
 
    // Complex operation: a = min( ( A * b + a ), c );
    {
-      test_ = "DVecDVecMin - Complex operation: a = ( ( A * b + a ), c );";
+      test_ = "DVecDVecMin - Complex operation: a = min( ( A * b + a ), c );";
 
       initialize();
 
@@ -307,7 +307,7 @@ void AliasingTest::testDVecDVecMin()
 
    // Complex operation: a += min( b, ( a + A * c ) );
    {
-      test_ = "DVecDVecMin - Complex operation: a += ( b, ( a + A * c ) );";
+      test_ = "DVecDVecMin - Complex operation: a += min( b, ( a + A * c ) );";
 
       initialize();
 

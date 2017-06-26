@@ -261,13 +261,13 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , rhs_( creator2() )     // The right-hand side dense vector
    , dres_()                // The dense vector for the result of the vector minimum
    , sres_()                // The sparse vector for the result of the vector minimum
-   , ref_( lhs_.size() )    // The reference vector
+   , ref_()                 // The reference vector
    , refres_()              // The reference result
    , tlhs_( trans(lhs_) )   // The transpose left-hand side vector
    , trhs_( trans(rhs_) )   // The transpose right-hand side vector
    , tdres_()               // The dense vector for the result of the transpose vector minimum
    , tsres_()               // The sparse vector for the result of the transpose vector minimum
-   , tref_( tlhs_.size() )  // The transpose reference vector
+   , tref_()                // The transpose reference vector
    , trefres_()             // The transpose reference result
    , test_()                // Label of the currently performed test
    , error_()               // Description of the current error type
@@ -278,6 +278,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
       throw std::runtime_error( "Non-matching operands detected" );
    }
 
+   ref_.resize( lhs_.size() );
+   tref_.resize( tlhs_.size() );
    for( size_t i=0UL; i<lhs_.size(); ++i ) {
       ref_ [i] = blaze::min( lhs_ [i], rhs_ [i] );
       tref_[i] = blaze::min( tlhs_[i], trhs_[i] );
@@ -1075,7 +1077,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
       // Negated minimum with addition assignment with the given vectors
       {
          test_  = "Negated minimum with addition assignment with the given vectors";
-         error_ = "Failed minimum assignment operation";
+         error_ = "Failed addition assignment operation";
 
          try {
             initResults();
@@ -1105,7 +1107,7 @@ void OperationTest<VT1,VT2>::testNegatedOperation()
       // Negated minimum with addition assignment with evaluated vectors
       {
          test_  = "Negated minimum with addition assignment with evaluated vectors";
-         error_ = "Failed minimum assignment operation";
+         error_ = "Failed addition assignment operation";
 
          try {
             initResults();
@@ -1521,13 +1523,13 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition (s*OP)
+      // Scaled minimum (s*OP)
       //=====================================================================================
 
-      // Scaled addition with the given vectors
+      // Scaled minimum with the given vectors
       {
-         test_  = "Scaled addition with the given vectors (s*OP)";
-         error_ = "Failed addition operation";
+         test_  = "Scaled minimum with the given vectors (s*OP)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1554,10 +1556,10 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with evaluated vectors
+      // Scaled minimum with evaluated vectors
       {
-         test_ = "Scaled addition with evaluated vectors (s*OP)";
-         error_ = "Failed addition operation";
+         test_ = "Scaled minimum with evaluated vectors (s*OP)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1586,13 +1588,13 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition (OP*s)
+      // Scaled minimum (OP*s)
       //=====================================================================================
 
-      // Scaled addition with the given vectors
+      // Scaled minimum with the given vectors
       {
-         test_  = "Scaled addition with the given vectors (OP*s)";
-         error_ = "Failed addition operation";
+         test_  = "Scaled minimum with the given vectors (OP*s)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1619,10 +1621,10 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with evaluated vectors
+      // Scaled minimum with evaluated vectors
       {
-         test_  = "Scaled addition with evaluated vectors (OP*s)";
-         error_ = "Failed addition operation";
+         test_  = "Scaled minimum with evaluated vectors (OP*s)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1651,13 +1653,13 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition (OP/s)
+      // Scaled minimum (OP/s)
       //=====================================================================================
 
-      // Scaled addition with the given vectors
+      // Scaled minimum with the given vectors
       {
-         test_  = "Scaled addition with the given vectors (OP/s)";
-         error_ = "Failed addition operation";
+         test_  = "Scaled minimum with the given vectors (OP/s)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1684,10 +1686,10 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with evaluated vectors
+      // Scaled minimum with evaluated vectors
       {
-         test_  = "Scaled addition with evaluated vectors (OP/s)";
-         error_ = "Failed addition operation";
+         test_  = "Scaled minimum with evaluated vectors (OP/s)";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -1716,12 +1718,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with addition assignment (s*OP)
+      // Scaled minimum with addition assignment (s*OP)
       //=====================================================================================
 
-      // Scaled addition with addition assignment with the given vectors
+      // Scaled minimum with addition assignment with the given vectors
       {
-         test_  = "Scaled addition with addition assignment with the given vectors (s*OP)";
+         test_  = "Scaled minimum with addition assignment with the given vectors (s*OP)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1749,9 +1751,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with addition assignment with evaluated vectors
+      // Scaled minimum with addition assignment with evaluated vectors
       {
-         test_  = "Scaled addition with addition assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled minimum with addition assignment with evaluated vectors (s*OP)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1781,12 +1783,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with addition assignment (OP*s)
+      // Scaled minimum with addition assignment (OP*s)
       //=====================================================================================
 
-      // Scaled addition with addition assignment with the given vectors
+      // Scaled minimum with addition assignment with the given vectors
       {
-         test_  = "Scaled addition with addition assignment with the given vectors (OP*s)";
+         test_  = "Scaled minimum with addition assignment with the given vectors (OP*s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1814,9 +1816,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with addition assignment with evaluated vectors
+      // Scaled minimum with addition assignment with evaluated vectors
       {
-         test_  = "Scaled addition with addition assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled minimum with addition assignment with evaluated vectors (OP*s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1846,12 +1848,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with addition assignment (OP/s)
+      // Scaled minimum with addition assignment (OP/s)
       //=====================================================================================
 
-      // Scaled addition with addition assignment with the given vectors
+      // Scaled minimum with addition assignment with the given vectors
       {
-         test_  = "Scaled addition with addition assignment with the given vectors (OP/s)";
+         test_  = "Scaled minimum with addition assignment with the given vectors (OP/s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1879,9 +1881,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with addition assignment with evaluated vectors
+      // Scaled minimum with addition assignment with evaluated vectors
       {
-         test_  = "Scaled addition with addition assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled minimum with addition assignment with evaluated vectors (OP/s)";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -1911,12 +1913,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with subtraction assignment (s*OP)
+      // Scaled minimum with subtraction assignment (s*OP)
       //=====================================================================================
 
-      // Scaled addition with subtraction assignment with the given vectors
+      // Scaled minimum with subtraction assignment with the given vectors
       {
-         test_  = "Scaled addition with subtraction assignment with the given vectors (s*OP)";
+         test_  = "Scaled minimum with subtraction assignment with the given vectors (s*OP)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1944,9 +1946,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with subtraction assignment with evaluated vectors
+      // Scaled minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled addition with subtraction assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled minimum with subtraction assignment with evaluated vectors (s*OP)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -1976,12 +1978,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with subtraction assignment (OP*s)
+      // Scaled minimum with subtraction assignment (OP*s)
       //=====================================================================================
 
-      // Scaled addition with subtraction assignment with the given vectors
+      // Scaled minimum with subtraction assignment with the given vectors
       {
-         test_  = "Scaled addition with subtraction assignment with the given vectors (OP*s)";
+         test_  = "Scaled minimum with subtraction assignment with the given vectors (OP*s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2009,9 +2011,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with subtraction assignment with evaluated vectors
+      // Scaled minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled addition with subtraction assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled minimum with subtraction assignment with evaluated vectors (OP*s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2041,12 +2043,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with subtraction assignment (OP/s)
+      // Scaled minimum with subtraction assignment (OP/s)
       //=====================================================================================
 
-      // Scaled addition with subtraction assignment with the given vectors
+      // Scaled minimum with subtraction assignment with the given vectors
       {
-         test_  = "Scaled addition with subtraction assignment with the given vectors (OP/s)";
+         test_  = "Scaled minimum with subtraction assignment with the given vectors (OP/s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2074,9 +2076,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with subtraction assignment with evaluated vectors
+      // Scaled minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Scaled addition with subtraction assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled minimum with subtraction assignment with evaluated vectors (OP/s)";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2106,12 +2108,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with multiplication assignment (s*OP)
+      // Scaled minimum with multiplication assignment (s*OP)
       //=====================================================================================
 
-      // Scaled addition with multiplication assignment with the given vectors
+      // Scaled minimum with multiplication assignment with the given vectors
       {
-         test_  = "Scaled addition with multiplication assignment with the given vectors (s*OP)";
+         test_  = "Scaled minimum with multiplication assignment with the given vectors (s*OP)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2139,9 +2141,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with multiplication assignment with evaluated vectors
+      // Scaled minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Scaled addition with multiplication assignment with evaluated vectors (s*OP)";
+         test_  = "Scaled minimum with multiplication assignment with evaluated vectors (s*OP)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2171,12 +2173,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with multiplication assignment (OP*s)
+      // Scaled minimum with multiplication assignment (OP*s)
       //=====================================================================================
 
-      // Scaled addition with multiplication assignment with the given vectors
+      // Scaled minimum with multiplication assignment with the given vectors
       {
-         test_  = "Scaled addition with multiplication assignment with the given vectors (OP*s)";
+         test_  = "Scaled minimum with multiplication assignment with the given vectors (OP*s)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2204,9 +2206,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with multiplication assignment with evaluated vectors
+      // Scaled minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Scaled addition with multiplication assignment with evaluated vectors (OP*s)";
+         test_  = "Scaled minimum with multiplication assignment with evaluated vectors (OP*s)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2236,12 +2238,12 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with multiplication assignment (OP/s)
+      // Scaled minimum with multiplication assignment (OP/s)
       //=====================================================================================
 
-      // Scaled addition with multiplication assignment with the given vectors
+      // Scaled minimum with multiplication assignment with the given vectors
       {
-         test_  = "Scaled addition with multiplication assignment with the given vectors (OP/s)";
+         test_  = "Scaled minimum with multiplication assignment with the given vectors (OP/s)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2269,9 +2271,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Scaled addition with multiplication assignment with evaluated vectors
+      // Scaled minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Scaled addition with multiplication assignment with evaluated vectors (OP/s)";
+         test_  = "Scaled minimum with multiplication assignment with evaluated vectors (OP/s)";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2301,14 +2303,14 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with division assignment (s*OP)
+      // Scaled minimum with division assignment (s*OP)
       //=====================================================================================
 
       if( blaze::isDivisor( min( lhs_, rhs_ ) ) )
       {
-         // Scaled addition with division assignment with the given vectors
+         // Scaled minimum with division assignment with the given vectors
          {
-            test_  = "Scaled addition with division assignment with the given vectors (s*OP)";
+            test_  = "Scaled minimum with division assignment with the given vectors (s*OP)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2336,9 +2338,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             checkTransposeResults<TVT1,TVT2>();
          }
 
-         // Scaled addition with division assignment with evaluated vectors
+         // Scaled minimum with division assignment with evaluated vectors
          {
-            test_  = "Scaled addition with division assignment with evaluated vectors (s*OP)";
+            test_  = "Scaled minimum with division assignment with evaluated vectors (s*OP)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2369,14 +2371,14 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with division assignment (OP*s)
+      // Scaled minimum with division assignment (OP*s)
       //=====================================================================================
 
       if( blaze::isDivisor( min( lhs_, rhs_ ) ) )
       {
-         // Scaled addition with division assignment with the given vectors
+         // Scaled minimum with division assignment with the given vectors
          {
-            test_  = "Scaled addition with division assignment with the given vectors (OP*s)";
+            test_  = "Scaled minimum with division assignment with the given vectors (OP*s)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2404,9 +2406,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             checkTransposeResults<TVT1,TVT2>();
          }
 
-         // Scaled addition with division assignment with evaluated vectors
+         // Scaled minimum with division assignment with evaluated vectors
          {
-            test_  = "Scaled addition with division assignment with evaluated vectors (OP*s)";
+            test_  = "Scaled minimum with division assignment with evaluated vectors (OP*s)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2437,14 +2439,14 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 
 
       //=====================================================================================
-      // Scaled addition with division assignment (OP/s)
+      // Scaled minimum with division assignment (OP/s)
       //=====================================================================================
 
       if( blaze::isDivisor( ( min( lhs_, rhs_ ) ) / scalar ) )
       {
-         // Scaled addition with division assignment with the given vectors
+         // Scaled minimum with division assignment with the given vectors
          {
-            test_  = "Scaled addition with division assignment with the given vectors (OP/s)";
+            test_  = "Scaled minimum with division assignment with the given vectors (OP/s)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2472,9 +2474,9 @@ void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
             checkTransposeResults<TVT1,TVT2>();
          }
 
-         // Scaled addition with division assignment with evaluated vectors
+         // Scaled minimum with division assignment with evaluated vectors
          {
-            test_  = "Scaled addition with division assignment with evaluated vectors (OP/s)";
+            test_  = "Scaled minimum with division assignment with evaluated vectors (OP/s)";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2527,13 +2529,13 @@ void OperationTest<VT1,VT2>::testTransOperation()
    if( BLAZETEST_MATHTEST_TEST_TRANS_OPERATION > 1 )
    {
       //=====================================================================================
-      // Transpose addition
+      // Transpose minimum
       //=====================================================================================
 
-      // Transpose addition with the given vectors
+      // Transpose minimum with the given vectors
       {
-         test_  = "Transpose addition with the given vectors";
-         error_ = "Failed addition operation";
+         test_  = "Transpose minimum with the given vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initTransposeResults();
@@ -2560,10 +2562,10 @@ void OperationTest<VT1,VT2>::testTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Transpose addition with evaluated vectors
+      // Transpose minimum with evaluated vectors
       {
-         test_  = "Transpose addition with evaluated vectors";
-         error_ = "Failed addition operation";
+         test_  = "Transpose minimum with evaluated vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initTransposeResults();
@@ -2592,12 +2594,12 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
       //=====================================================================================
-      // Transpose addition with addition assignment
+      // Transpose minimum with addition assignment
       //=====================================================================================
 
-      // Transpose addition with addition assignment with the given vectors
+      // Transpose minimum with addition assignment with the given vectors
       {
-         test_  = "Transpose addition with addition assignment with the given vectors";
+         test_  = "Transpose minimum with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -2625,9 +2627,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Transpose addition with addition assignment with evaluated vectors
+      // Transpose minimum with addition assignment with evaluated vectors
       {
-         test_  = "Transpose addition with addition assignment with evaluated vectors";
+         test_  = "Transpose minimum with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -2657,12 +2659,12 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
       //=====================================================================================
-      // Transpose addition with subtraction assignment
+      // Transpose minimum with subtraction assignment
       //=====================================================================================
 
-      // Transpose addition with subtraction assignment with the given vectors
+      // Transpose minimum with subtraction assignment with the given vectors
       {
-         test_  = "Transpose addition with subtraction assignment with the given vectors";
+         test_  = "Transpose minimum with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2690,9 +2692,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Transpose addition with subtraction assignment with evaluated vectors
+      // Transpose minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Transpose addition with subtraction assignment with evaluated vectors";
+         test_  = "Transpose minimum with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -2722,12 +2724,12 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
       //=====================================================================================
-      // Transpose addition with multiplication assignment
+      // Transpose minimum with multiplication assignment
       //=====================================================================================
 
-      // Transpose addition with multiplication assignment with the given vectors
+      // Transpose minimum with multiplication assignment with the given vectors
       {
-         test_  = "Transpose addition with multiplication assignment with the given vectors";
+         test_  = "Transpose minimum with multiplication assignment with the given vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2755,9 +2757,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Transpose addition with multiplication assignment with evaluated vectors
+      // Transpose minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Transpose addition with multiplication assignment with evaluated vectors";
+         test_  = "Transpose minimum with multiplication assignment with evaluated vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -2787,14 +2789,14 @@ void OperationTest<VT1,VT2>::testTransOperation()
 
 
       //=====================================================================================
-      // Transpose addition with division assignment
+      // Transpose minimum with division assignment
       //=====================================================================================
 
       if( blaze::isDivisor( min( lhs_, rhs_ ) ) )
       {
-         // Transpose addition with division assignment with the given vectors
+         // Transpose minimum with division assignment with the given vectors
          {
-            test_  = "Transpose addition with division assignment with the given vectors";
+            test_  = "Transpose minimum with division assignment with the given vectors";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2822,9 +2824,9 @@ void OperationTest<VT1,VT2>::testTransOperation()
             checkResults<TVT1,TVT2>();
          }
 
-         // Transpose addition with division assignment with evaluated vectors
+         // Transpose minimum with division assignment with evaluated vectors
          {
-            test_  = "Transpose addition with division assignment with evaluated vectors";
+            test_  = "Transpose minimum with division assignment with evaluated vectors";
             error_ = "Failed division assignment operation";
 
             try {
@@ -2877,13 +2879,13 @@ void OperationTest<VT1,VT2>::testCTransOperation()
    if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
    {
       //=====================================================================================
-      // Conjugate transpose addition
+      // Conjugate transpose minimum
       //=====================================================================================
 
-      // Conjugate transpose addition with the given vectors
+      // Conjugate transpose minimum with the given vectors
       {
-         test_  = "Conjugate transpose addition with the given vectors";
-         error_ = "Failed addition operation";
+         test_  = "Conjugate transpose minimum with the given vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initTransposeResults();
@@ -2910,10 +2912,10 @@ void OperationTest<VT1,VT2>::testCTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Conjugate transpose addition with evaluated vectors
+      // Conjugate transpose minimum with evaluated vectors
       {
-         test_  = "Conjugate transpose addition with evaluated vectors";
-         error_ = "Failed addition operation";
+         test_  = "Conjugate transpose minimum with evaluated vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initTransposeResults();
@@ -2942,12 +2944,12 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
       //=====================================================================================
-      // Conjugate transpose addition with addition assignment
+      // Conjugate transpose minimum with addition assignment
       //=====================================================================================
 
-      // Conjugate transpose addition with addition assignment with the given vectors
+      // Conjugate transpose minimum with addition assignment with the given vectors
       {
-         test_  = "Conjugate transpose addition with addition assignment with the given vectors";
+         test_  = "Conjugate transpose minimum with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -2975,9 +2977,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Conjugate transpose addition with addition assignment with evaluated vectors
+      // Conjugate transpose minimum with addition assignment with evaluated vectors
       {
-         test_  = "Conjugate transpose addition with addition assignment with evaluated vectors";
+         test_  = "Conjugate transpose minimum with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -3007,12 +3009,12 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
       //=====================================================================================
-      // Conjugate transpose addition with subtraction assignment
+      // Conjugate transpose minimum with subtraction assignment
       //=====================================================================================
 
-      // Conjugate transpose addition with subtraction assignment with the given vectors
+      // Conjugate transpose minimum with subtraction assignment with the given vectors
       {
-         test_  = "Conjugate transpose addition with subtraction assignment with the given vectors";
+         test_  = "Conjugate transpose minimum with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -3040,9 +3042,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Conjugate transpose addition with subtraction assignment with evaluated vectors
+      // Conjugate transpose minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Conjugate transpose addition with subtraction assignment with evaluated vectors";
+         test_  = "Conjugate transpose minimum with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -3072,12 +3074,12 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
       //=====================================================================================
-      // Conjugate transpose addition with multiplication assignment
+      // Conjugate transpose minimum with multiplication assignment
       //=====================================================================================
 
-      // Conjugate transpose addition with multiplication assignment with the given vectors
+      // Conjugate transpose minimum with multiplication assignment with the given vectors
       {
-         test_  = "Conjugate transpose addition with multiplication assignment with the given vectors";
+         test_  = "Conjugate transpose minimum with multiplication assignment with the given vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -3105,9 +3107,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
          checkResults<TVT1,TVT2>();
       }
 
-      // Conjugate transpose addition with multiplication assignment with evaluated vectors
+      // Conjugate transpose minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Conjugate transpose addition with multiplication assignment with evaluated vectors";
+         test_  = "Conjugate transpose minimum with multiplication assignment with evaluated vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -3137,14 +3139,14 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
       //=====================================================================================
-      // Conjugate transpose addition with division assignment
+      // Conjugate transpose minimum with division assignment
       //=====================================================================================
 
       if( blaze::isDivisor( min( lhs_, rhs_ ) ) )
       {
-         // Conjugate transpose addition with division assignment with the given vectors
+         // Conjugate transpose minimum with division assignment with the given vectors
          {
-            test_  = "Conjugate transpose addition with division assignment with the given vectors";
+            test_  = "Conjugate transpose minimum with division assignment with the given vectors";
             error_ = "Failed division assignment operation";
 
             try {
@@ -3172,9 +3174,9 @@ void OperationTest<VT1,VT2>::testCTransOperation()
             checkResults<TVT1,TVT2>();
          }
 
-         // Conjugate transpose addition with division assignment with evaluated vectors
+         // Conjugate transpose minimum with division assignment with evaluated vectors
          {
-            test_  = "Conjugate transpose addition with division assignment with evaluated vectors";
+            test_  = "Conjugate transpose minimum with division assignment with evaluated vectors";
             error_ = "Failed division assignment operation";
 
             try {
@@ -3381,13 +3383,13 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
       //=====================================================================================
-      // Subvector-wise addition
+      // Subvector-wise minimum
       //=====================================================================================
 
-      // Subvector-wise addition with the given vectors
+      // Subvector-wise minimum with the given vectors
       {
-         test_  = "Subvector-wise addition with the given vectors";
-         error_ = "Failed addition operation";
+         test_  = "Subvector-wise minimum with the given vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -3420,10 +3422,10 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Subvector-wise addition with evaluated vectors
+      // Subvector-wise minimum with evaluated vectors
       {
-         test_  = "Subvector-wise addition with evaluated vectors";
-         error_ = "Failed addition operation";
+         test_  = "Subvector-wise minimum with evaluated vectors";
+         error_ = "Failed minimum operation";
 
          try {
             initResults();
@@ -3458,12 +3460,12 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
       //=====================================================================================
-      // Subvector-wise addition with addition assignment
+      // Subvector-wise minimum with addition assignment
       //=====================================================================================
 
-      // Subvector-wise addition with addition assignment with the given vectors
+      // Subvector-wise minimum with addition assignment with the given vectors
       {
-         test_  = "Subvector-wise addition with addition assignment with the given vectors";
+         test_  = "Subvector-wise minimum with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -3497,9 +3499,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Subvector-wise addition with addition assignment with evaluated vectors
+      // Subvector-wise minimum with addition assignment with evaluated vectors
       {
-         test_  = "Subvector-wise addition with addition assignment with evaluated vectors";
+         test_  = "Subvector-wise minimum with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
@@ -3535,12 +3537,12 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
       //=====================================================================================
-      // Subvector-wise addition with subtraction assignment
+      // Subvector-wise minimum with subtraction assignment
       //=====================================================================================
 
-      // Subvector-wise addition with subtraction assignment with the given vectors
+      // Subvector-wise minimum with subtraction assignment with the given vectors
       {
-         test_  = "Subvector-wise addition with subtraction assignment with the given vectors";
+         test_  = "Subvector-wise minimum with subtraction assignment with the given vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -3574,9 +3576,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Subvector-wise addition with subtraction assignment with evaluated vectors
+      // Subvector-wise minimum with subtraction assignment with evaluated vectors
       {
-         test_  = "Subvector-wise addition with subtraction assignment with evaluated vectors";
+         test_  = "Subvector-wise minimum with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
@@ -3612,12 +3614,12 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
       //=====================================================================================
-      // Subvector-wise addition with multiplication assignment
+      // Subvector-wise minimum with multiplication assignment
       //=====================================================================================
 
-      // Subvector-wise addition with multiplication assignment with the given vectors
+      // Subvector-wise minimum with multiplication assignment with the given vectors
       {
-         test_  = "Subvector-wise addition with multiplication assignment with the given vectors";
+         test_  = "Subvector-wise minimum with multiplication assignment with the given vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -3651,9 +3653,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Subvector-wise addition with multiplication assignment with evaluated vectors
+      // Subvector-wise minimum with multiplication assignment with evaluated vectors
       {
-         test_  = "Subvector-wise addition with multiplication assignment with evaluated vectors";
+         test_  = "Subvector-wise minimum with multiplication assignment with evaluated vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
@@ -3689,12 +3691,12 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
       //=====================================================================================
-      // Subvector-wise addition with division assignment
+      // Subvector-wise minimum with division assignment
       //=====================================================================================
 
-      // Subvector-wise addition with division assignment with the given vectors
+      // Subvector-wise minimum with division assignment with the given vectors
       {
-         test_  = "Subvector-wise addition with division assignment with the given vectors";
+         test_  = "Subvector-wise minimum with division assignment with the given vectors";
          error_ = "Failed division assignment operation";
 
          try {
@@ -3730,9 +3732,9 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Subvector-wise addition with division assignment with evaluated vectors
+      // Subvector-wise minimum with division assignment with evaluated vectors
       {
-         test_  = "Subvector-wise addition with division assignment with evaluated vectors";
+         test_  = "Subvector-wise minimum with division assignment with evaluated vectors";
          error_ = "Failed division assignment operation";
 
          try {
@@ -3792,13 +3794,13 @@ template< typename OP >   // Type of the custom operation
 void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name )
 {
    //=====================================================================================
-   // Customized addition
+   // Customized minimum
    //=====================================================================================
 
-   // Customized addition with the given vectors
+   // Customized minimum with the given vectors
    {
-      test_  = "Customized addition with the given vectors (" + name + ")";
-      error_ = "Failed addition operation";
+      test_  = "Customized minimum with the given vectors (" + name + ")";
+      error_ = "Failed minimum operation";
 
       try {
          initResults();
@@ -3825,10 +3827,10 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
       checkTransposeResults<TVT1,TVT2>();
    }
 
-   // Customized addition with evaluated vectors
+   // Customized minimum with evaluated vectors
    {
-      test_  = "Customized addition with evaluated vectors (" + name + ")";
-      error_ = "Failed addition operation";
+      test_  = "Customized minimum with evaluated vectors (" + name + ")";
+      error_ = "Failed minimum operation";
 
       try {
          initResults();
@@ -3857,12 +3859,12 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
 
 
    //=====================================================================================
-   // Customized addition with addition assignment
+   // Customized minimum with addition assignment
    //=====================================================================================
 
-   // Customized addition with addition assignment with the given vectors
+   // Customized minimum with addition assignment with the given vectors
    {
-      test_  = "Customized addition with addition assignment with the given vectors (" + name + ")";
+      test_  = "Customized minimum with addition assignment with the given vectors (" + name + ")";
       error_ = "Failed addition assignment operation";
 
       try {
@@ -3890,9 +3892,9 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
       checkTransposeResults<TVT1,TVT2>();
    }
 
-   // Customized addition with addition assignment with evaluated vectors
+   // Customized minimum with addition assignment with evaluated vectors
    {
-      test_  = "Customized addition with addition assignment with evaluated vectors (" + name + ")";
+      test_  = "Customized minimum with addition assignment with evaluated vectors (" + name + ")";
       error_ = "Failed addition assignment operation";
 
       try {
@@ -3922,12 +3924,12 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
 
 
    //=====================================================================================
-   // Customized addition with subtraction assignment
+   // Customized minimum with subtraction assignment
    //=====================================================================================
 
-   // Customized addition with subtraction assignment with the given vectors
+   // Customized minimum with subtraction assignment with the given vectors
    {
-      test_  = "Customized addition with subtraction assignment with the given vectors (" + name + ")";
+      test_  = "Customized minimum with subtraction assignment with the given vectors (" + name + ")";
       error_ = "Failed subtraction assignment operation";
 
       try {
@@ -3955,9 +3957,9 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
       checkTransposeResults<TVT1,TVT2>();
    }
 
-   // Customized addition with subtraction assignment with evaluated vectors
+   // Customized minimum with subtraction assignment with evaluated vectors
    {
-      test_  = "Customized addition with subtraction assignment with evaluated vectors (" + name + ")";
+      test_  = "Customized minimum with subtraction assignment with evaluated vectors (" + name + ")";
       error_ = "Failed subtraction assignment operation";
 
       try {
@@ -3987,12 +3989,12 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
 
 
    //=====================================================================================
-   // Customized addition with multiplication assignment
+   // Customized minimum with multiplication assignment
    //=====================================================================================
 
-   // Customized addition with multiplication assignment with the given vectors
+   // Customized minimum with multiplication assignment with the given vectors
    {
-      test_  = "Customized addition with multiplication assignment with the given vectors (" + name + ")";
+      test_  = "Customized minimum with multiplication assignment with the given vectors (" + name + ")";
       error_ = "Failed multiplication assignment operation";
 
       try {
@@ -4020,9 +4022,9 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
       checkTransposeResults<TVT1,TVT2>();
    }
 
-   // Customized addition with multiplication assignment with evaluated vectors
+   // Customized minimum with multiplication assignment with evaluated vectors
    {
-      test_  = "Customized addition with multiplication assignment with evaluated vectors (" + name + ")";
+      test_  = "Customized minimum with multiplication assignment with evaluated vectors (" + name + ")";
       error_ = "Failed multiplication assignment operation";
 
       try {
@@ -4052,14 +4054,14 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
 
 
    //=====================================================================================
-   // Customized addition with division assignment
+   // Customized minimum with division assignment
    //=====================================================================================
 
    if( blaze::isDivisor( op( min( lhs_, rhs_ ) ) ) )
    {
-      // Customized addition with division assignment with the given vectors
+      // Customized minimum with division assignment with the given vectors
       {
-         test_  = "Customized addition with division assignment with the given vectors (" + name + ")";
+         test_  = "Customized minimum with division assignment with the given vectors (" + name + ")";
          error_ = "Failed division assignment operation";
 
          try {
@@ -4087,9 +4089,9 @@ void OperationTest<VT1,VT2>::testCustomOperation( OP op, const std::string& name
          checkTransposeResults<TVT1,TVT2>();
       }
 
-      // Customized addition with division assignment with evaluated vectors
+      // Customized minimum with division assignment with evaluated vectors
       {
-         test_  = "Customized addition with division assignment with evaluated vectors (" + name + ")";
+         test_  = "Customized minimum with division assignment with evaluated vectors (" + name + ")";
          error_ = "Failed division assignment operation";
 
          try {
