@@ -3619,14 +3619,31 @@
 //
 // \n \subsection matrix_operations_map map() / forEach()
 //
-// Via the \c map() function it is possible to execute custom operations on dense and sparse
-// matrices. For instance, the following example demonstrates a custom square root computation
-// via a lambda:
+// Via the unary and binary \c map() functions it is possible to execute componentwise custom
+// operations on matrices. The unary \c map() function can be used to apply a custom operation
+// on each element of a dense or sparse matrix. For instance, the following example demonstrates
+// a custom square root computation via a lambda:
 
    \code
    blaze::DynamicMatrix<double> A, B;
 
    B = map( A, []( double d ) { return std::sqrt( d ); } );
+   \endcode
+
+// The binary \c map() function can be used to apply an operation pairwise to the elements of
+// two dense matrices. The following example demonstrates the merging of two matrices of double
+// precision values into a matrix of double precision complex numbers:
+
+   \code
+   blaze::DynamicMatrix<double> real{ { 2.1, -4.2 }, { 1.0,  0.6 } };
+   blaze::DynamicMatrix<double> imag{ { 0.3,  1.4 }, { 2.9, -3.4 } };
+
+   blaze::DynamicMatrix< complex<double> > cplx;
+
+   // Creating the vector
+   //    ( (-2.1,  0.3) (-4.2, -1.4) )
+   //    ( ( 1.0,  2.9) ( 0.6, -3.4) )
+   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
    \endcode
 
 // Although the computation can be parallelized it is not vectorized and thus cannot perform at
