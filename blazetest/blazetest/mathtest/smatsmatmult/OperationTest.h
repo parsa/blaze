@@ -8079,8 +8079,7 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
       MT1 lhs( lhs_ );
 
       for( size_t i=0UL; i<lhs.rows(); ++i ) {
-         const size_t jend( blaze::min( i, lhs.columns() ) );
-         for( size_t j=0UL; j<jend; ++j ) {
+         for( size_t j=0UL; j<i; ++j ) {
             blaze::reset( lhs(i,j) );
          }
          for( size_t j=i+1UL; j<lhs.columns(); ++j ) {
@@ -8099,8 +8098,7 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
       MT2 rhs( rhs_ );
 
       for( size_t i=0UL; i<rhs.rows(); ++i ) {
-         const size_t jend( blaze::min( i, rhs.columns() ) );
-         for( size_t j=0UL; j<jend; ++j ) {
+         for( size_t j=0UL; j<i; ++j ) {
             blaze::reset( rhs(i,j) );
          }
          for( size_t j=i+1UL; j<rhs.columns(); ++j ) {
