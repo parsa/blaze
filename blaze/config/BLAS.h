@@ -49,10 +49,20 @@
 //  - Disabled: \b 0
 //  - Enabled : \b 1
 //
-// Note that changing the setting of the BLAS mode requires a recompilation of all code using
-// the Blaze library.
+// \warning Changing the setting of the BLAS mode requires a recompilation of all code using
+// the Blaze library!
+//
+// \note It is possible to (de-)activate the BLAS mode via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_BLAS_MODE 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
-#define BLAZE_BLAS_MODE 0
+#ifndef BLAZE_BLAS_MODE
+#define BLAZE_BLAS_MODE 1
+#endif
 //*************************************************************************************************
 
 
@@ -68,10 +78,20 @@
 //  - Disabled: \b 0 (default)
 //  - Enabled : \b 1
 //
-// Note that changing the setting of this compilation switch requires a recompilation of all code
-// using the Blaze library.
+// \warning Changing the setting of this compilation switch requires a recompilation of all code
+// using the Blaze library!
+//
+// \note It is possible to (de-)activate the use of the BLAS matrix/vector multiplication kernels
+// via command line or by defining this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
 #define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -87,10 +107,20 @@
 //  - Disabled: \b 0
 //  - Enabled : \b 1 (default)
 //
-// Note that changing the setting of this compilation switch requires a recompilation of all code
-// using the Blaze library.
+// \warning Changing the setting of this compilation switch requires a recompilation of all code
+// code using the Blaze library!
+//
+// \note It is possible to (de-)activate the use of the BLAS matrix/matrix multiplication kernels
+// via command line or by defining this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
 #define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
+#endif
 //*************************************************************************************************
 
 
@@ -107,15 +137,25 @@
 //  - BLAS library is not parallelized: \b 0 (default)
 //  - BLAS library is parallelized    : \b 1
 //
-// Note that changing the setting of the BLAS mode requires a recompilation of all code using the
-// Blaze library.
+// \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
+// Blaze library!
+//
+// \note It is possible to (de-)activate the parallel BLAS mode via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_BLAS_IS_PARALLEL
 #define BLAZE_BLAS_IS_PARALLEL 0
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Compilation switch for the  of the BLAS include file.
+/*!\brief Compilation switch for the BLAS include file.
 // \ingroup config
 //
 // This compilation switch specifies the name of the BLAS include file. By default, the header
@@ -123,8 +163,18 @@
 // differs (as for instance in case of the MKL the file is called \c <mkl_cblas.h>) this switch
 // needs to be adapted accordingly.
 //
-// Note that changing the name of the BLAS include file requires a recompilation of all code using
-// the Blaze library.
+// \warning Changing the name of the BLAS include file requires a recompilation of all code using
+// the Blaze library!
+//
+// \note It is possible to specify the BLAS include file via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_BLAS_INCLUDE_FILE
 #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
+#endif
 //*************************************************************************************************

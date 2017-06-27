@@ -46,6 +46,16 @@
 // Note that changing the setting of the MPI parallel mode requires a recompilation of the
 // Blaze library. Also note that this switch is automatically set by the configuration script
 // of the Blaze library.
+//
+// \note It is possible to (de-)activate the MPI mode via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_MPI_PARALLEL_MODE 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_MPI_PARALLEL_MODE
 #define BLAZE_MPI_PARALLEL_MODE 0
+#endif
 //*************************************************************************************************

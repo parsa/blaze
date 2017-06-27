@@ -33,8 +33,6 @@
 //=================================================================================================
 
 
-namespace blaze {
-
 //*************************************************************************************************
 /*!\brief Type of the random number generator of the Blaze library.
 // \ingroup config
@@ -44,8 +42,16 @@ namespace blaze {
 // random number generator. For more information see the following reference documentation:
 //
 //   http://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine
-*/
-typedef std::mt19937  RNG;
-//*************************************************************************************************
+//
+// \note It is possible to specify the random number generator via command line or by defining
+// this symbol manually before including any Blaze header file:
 
-} // namespace blaze
+   \code
+   #define BLAZE_RANDOM_NUMBER_GENERATOR std::mt19937
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_RANDOM_NUMBER_GENERATOR
+#define BLAZE_RANDOM_NUMBER_GENERATOR std::mt19937
+#endif
+//*************************************************************************************************

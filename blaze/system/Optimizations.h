@@ -36,12 +36,29 @@
 #define _BLAZE_SYSTEM_OPTIMIZATIONS_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/config/Optimizations.h>
+
+
+namespace blaze {
+
 //=================================================================================================
 //
 //  OPTIMIZATION SETTINGS
 //
 //=================================================================================================
 
-#include <blaze/config/Optimizations.h>
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+constexpr bool usePadding          = BLAZE_USE_PADDING;
+constexpr bool useStreaming        = BLAZE_USE_STREAMING;
+constexpr bool useOptimizedKernels = BLAZE_USE_OPTIMIZED_KERNELS;
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

@@ -33,8 +33,6 @@
 //=================================================================================================
 
 
-namespace blaze {
-
 //*************************************************************************************************
 /*!\brief Compilation switch for the (de-)activation of the debug mode.
 // \ingroup config
@@ -48,8 +46,18 @@ namespace blaze {
 // Possible settings for the debug mode switch:
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
+//
+// \note It is possible to (de-)activate the debug mode via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_DEBUG_MODE 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_USE_DEBUG_MODE
 #define BLAZE_USE_DEBUG_MODE 0
+#endif
 //*************************************************************************************************
 
 
@@ -64,8 +72,16 @@ namespace blaze {
 // Possible settings for the function trace switch:
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
-*/
-#define BLAZE_USE_FUNCTION_TRACES 0
-//*************************************************************************************************
+//
+// \note It is possible to (de-)activate function traces via command line or by defining this
+// symbol manually before including any Blaze header file:
 
-} // namespace blaze
+   \code
+   #define BLAZE_USE_FUNCTION_TRACES 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_FUNCTION_TRACES
+#define BLAZE_USE_FUNCTION_TRACES 0
+#endif
+//*************************************************************************************************

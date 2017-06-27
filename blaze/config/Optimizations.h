@@ -33,8 +33,6 @@
 //=================================================================================================
 
 
-namespace blaze {
-
 //*************************************************************************************************
 /*!\brief Configuration of the padding of dense vectors and matrices.
 // \ingroup config
@@ -42,14 +40,27 @@ namespace blaze {
 // This configuration switch enables/disables the padding of dense vectors and matrices. Padding
 // is used by the Blaze library in order to achieve maximum performance for both dense vector
 // and matrix operations. Due to padding, the proper alignment of data elements can be guaranteed
-// and the need for remainder loops is minimized. In case the switch is set to \a true, padding
-// is enabled for all native dense vectors and matrices. If the switch is set to \a false, padding
-// is generally disabled.
+// and the need for remainder loops is minimized. In case padding is enabled, it is enabled for
+// all native dense vectors and matrices. If padding is disabled, it is generally disabled.
+//
+// Possible settings for padding:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
 //
 // \warning Note that disabling padding can considerably reduce the performance of all dense
 // vector and matrix operations!
+//
+// \note It is possible to (de-)activate padding via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
-constexpr bool usePadding = true;
+#ifndef BLAZE_USE_PADDING
+#define BLAZE_USE_PADDING 1;
+#endif
 //*************************************************************************************************
 
 
@@ -57,15 +68,27 @@ constexpr bool usePadding = true;
 /*!\brief Configuration of the streaming behavior.
 // \ingroup config
 //
-// For large vectors and matrices non-temporal stores can provide a significant performance
-// advantage of about 20%. However, this advantage is only in effect in case the memory bandwidth
-// of the target architecture is maxed out. If the target architecture's memory bandwidth cannot
-// be exhausted the use of non-temporal stores can decrease performance instead of increasing it.
+// Via this compilation switch streaming (i.e. non-temporal stores) can be (de-)activated. For
+// large vectors and matrices non-temporal stores can provide a significant performance advantage
+// of about 20%. However, this advantage is only in effect in case the memory bandwidth of the
+// target architecture is maxed out. If the target architecture's memory bandwidth cannot be
+// exhausted the use of non-temporal stores can decrease performance instead of increasing it.
 //
-// Via this compilation switch streaming (i.e. non-temporal stores) can be (de-)activated. If
-// set to \a true streaming is enabled, if set to \a false streaming is disabled.
+// Possible settings for streaming:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
+// \note It is possible to (de-)activate streaming via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_STREAMING 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
-constexpr bool useStreaming = true;
+#ifndef BLAZE_USE_STREAMING
+#define BLAZE_USE_STREAMING 1
+#endif
 //*************************************************************************************************
 
 
@@ -78,10 +101,22 @@ constexpr bool useStreaming = true;
 // the optimized kernels are used whenever possible. In case the switch is set to \a false all
 // optimized kernels are not used, even if it would be possible.
 //
+// Possible settings for the optimized kernels:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
 // \warning Note that disabling the optimized kernels causes a severe performance limitiation
 // to nearly all operations!
-*/
-constexpr bool useOptimizedKernels = true;
-//*************************************************************************************************
+//
+// \note It is possible to (de-)activate the optimized kernels via command line or by defining
+// this symbol manually before including any Blaze header file:
 
-} // namespace blaze
+   \code
+   #define BLAZE_USE_OPTIMIZED_KERNELS 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_OPTIMIZED_KERNELS
+#define BLAZE_USE_OPTIMIZED_KERNELS 1
+#endif
+//*************************************************************************************************

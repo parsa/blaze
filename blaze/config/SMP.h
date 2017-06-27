@@ -33,8 +33,6 @@
 //=================================================================================================
 
 
-namespace blaze {
-
 //*************************************************************************************************
 /*!\brief Compilation switch for the (de-)activation of the shared-memory parallelization
 // \ingroup config
@@ -47,8 +45,16 @@ namespace blaze {
 // Possible settings for the shared-memory parallelization switch:
 //  - Deactivated: \b 0
 //  - Activated  : \b 1 (default)
-*/
-#define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
-//*************************************************************************************************
+//
+// \note It is possible to (de-)activate the shared-memory parallelization via command line or by
+// defining this symbol manually before including any Blaze header file:
 
-} // namespace blaze
+   \code
+   #define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_SHARED_MEMORY_PARALLELIZATION
+#define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
+#endif
+//*************************************************************************************************

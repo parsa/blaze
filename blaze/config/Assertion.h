@@ -44,8 +44,18 @@
 // Possible settings for the internal assertion switch:
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
+//
+// \note It is possible to (de-)activate internal assertions via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_INTERNAL_ASSERTION 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_INTERNAL_ASSERTION
 #define BLAZE_INTERNAL_ASSERTION 0
+#endif
 //*************************************************************************************************
 
 
@@ -60,6 +70,16 @@
 // Possible settings for the user assertion switch:
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
+//
+// \note It is possible to (de-)activate user assertions via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USER_ASSERTION 1
+   #include <blaze/Blaze.h>
+   \endcode
 */
+#ifndef BLAZE_USER_ASSERTION
 #define BLAZE_USER_ASSERTION 0
+#endif
 //*************************************************************************************************
