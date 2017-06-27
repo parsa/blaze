@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -161,12 +162,12 @@ class SMatDeclLowExpr : public SparseMatrix< SMatDeclLowExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDeclLowExpr<MT,SO>  This;           //!< Type of this SMatDeclLowExpr instance.
-   typedef ResultType_<MT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>       OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<MT>      TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>        ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>         ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatDeclLowExpr<MT,SO>             This;           //!< Type of this SMatDeclLowExpr instance.
+   typedef LowerMatrix< ResultType_<MT> >     ResultType;     //!< Result type for expression template evaluations.
+   typedef LowerMatrix< OppositeType_<MT> >   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef LowerMatrix< TransposeType_<MT> >  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                   ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>                    ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclLowExpr& >  CompositeType;

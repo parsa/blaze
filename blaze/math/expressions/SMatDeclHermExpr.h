@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -162,12 +163,12 @@ class SMatDeclHermExpr : public SparseMatrix< SMatDeclHermExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDeclHermExpr<MT,SO>  This;           //!< Type of this SMatDeclHermExpr instance.
-   typedef ResultType_<MT>          ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>        OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<MT>       TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>         ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>          ReturnType;     //!< Return type for expression template evaluations.
+   typedef SMatDeclHermExpr<MT,SO>                This;           //!< Type of this SMatDeclHermExpr instance.
+   typedef HermitianMatrix< ResultType_<MT> >     ResultType;     //!< Result type for expression template evaluations.
+   typedef HermitianMatrix< OppositeType_<MT> >   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef HermitianMatrix< TransposeType_<MT> >  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef ElementType_<MT>                       ElementType;    //!< Resulting element type.
+   typedef ReturnType_<MT>                        ReturnType;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclHermExpr& >  CompositeType;
