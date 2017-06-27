@@ -237,11 +237,15 @@
 //
 // The second step is the configuration and customization of the \b Blaze library. Many aspects
 // of \b Blaze can be adapted to specific requirements, environments and architectures. The most
-// convenient way to configure \b Blaze is by means of <a href="https://cmake.org">CMake</a>.
-// Alternatively, the header files in the <tt>./blaze/config/</tt> subdirectory can be customized
-// manually. Since the default settings are reasonable for most systems this step can also be
-// skipped. However, in order to achieve maximum performance a customization of at least the
-// following configuration files is required:
+// convenient way to configure \b Blaze is to modify the headers in the <tt>./blaze/config/</tt>
+// subdirectory by means of <a href="https://cmake.org">CMake</a>. Alternatively these header
+// files can be customized manually. In both cases, however, the files are modified. If this is
+// not an option it is possible to configure \b Blaze via the command line (see the tutorial
+// section \ref configuration_files or the documentation in the configuration files).
+//
+// Since the default settings are reasonable for most systems this step can also be skipped.
+// However, in order to achieve maximum performance a customization of at least the following
+// configuration files is required:
 //
 //  - <b><tt>./blaze/config/BLAS.h</tt></b>: Via this configuration file \b Blaze can be enabled
 //    to use a third-party BLAS library for several basic linear algebra functions (such as for
@@ -11543,10 +11547,12 @@
 // \tableofcontents
 //
 //
-// Sometimes it might necessary to adapt \b Blaze to specific requirements. For this purpose
+// Sometimes it is necessary to adapt \b Blaze to specific requirements. For this purpose
 // \b Blaze provides several configuration files in the <tt>./blaze/config/</tt> subdirectory,
 // which provide ample opportunity to customize internal settings, behavior, and thresholds.
-// This chapter explains the most important of these configuration files.
+// This chapter explains the most important of these configuration files. For a complete
+// overview of all customization opportunities, please go to the configuration files in the
+// <tt>./blaze/config/</tt> subdirectory or see the complete \b Blaze documentation.
 //
 //
 // \n \section transpose_flag Default Vector Storage
@@ -11560,14 +11566,22 @@
    \endcode
 
 // The header file <tt>./blaze/config/TransposeFlag.h</tt> allows the configuration of the default
-// vector storage (i.e. the default transpose flag of the vectors). Via the \c defaultTransposeFlag
-// value the default transpose flag for all vector of the \b Blaze library can be specified:
+// vector storage (i.e. the default transpose flag) of all vectors within the \b Blaze library.
+// The default transpose flag is specified via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG macro:
 
    \code
-   constexpr bool defaultTransposeFlag = columnVector;
+   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
    \endcode
 
-// Valid settings for the \c defaultTransposeFlag are blaze::rowVector and blaze::columnVector.
+// Alternatively the default transpose flag can be specified via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Valid settings for \c BLAZE_DEFAULT_TRANSPOSE_FLAG are blaze::rowVector and blaze::columnVector.
 //
 //
 // \n \section storage_order Default Matrix Storage
@@ -11580,14 +11594,22 @@
    \endcode
 
 // The header file <tt>./blaze/config/StorageOrder.h</tt> allows the configuration of the default
-// matrix storage order. Via the \c defaultStorageOrder value the default storage order for all
-// matrices of the \b Blaze library can be specified.
+// matrix storage order. Via the \c BLAZE_DEFAULT_STORAGE_ORDER macro the default storage order
+// for all matrices of the \b Blaze library can be specified.
 
    \code
-   constexpr bool defaultStorageOrder = rowMajor;
+   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
    \endcode
 
-// Valid settings for the \c defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
+// Alternatively the default storage order can be specified via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Valid settings for \c BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
 //
 //
 // \n \section blas_mode BLAS Mode
@@ -11608,6 +11630,15 @@
    #define BLAZE_BLAS_IS_PARALLEL 1
    \endcode
 
+// Alternatively, both settings can be specified via command line or by defining the symbols
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_BLAS_MODE 1
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   #include <blaze/Blaze.h>
+   \endcode
+
 // In case no BLAS library is available, \b Blaze will still work and will not be reduced in
 // functionality, but performance may be limited.
 //
@@ -11621,7 +11652,15 @@
 // <tt>./blaze/config/CacheSize.h</tt> configuration file:
 
    \code
-   constexpr size_t cacheSize = 3145728UL;
+   #define BLAZE_CACHE_SIZE 3145728UL;
+   \endcode
+
+// The cache size can also be specified via command line or by defining this symbol manually
+// before including any Blaze header file:
+
+   \code
+   #define BLAZE_CACHE_SIZE 3145728UL
+   #include <blaze/Blaze.h>
    \endcode
 
 // \n \section vectorization Vectorization
@@ -11629,12 +11668,20 @@
 //
 // In order to achieve maximum performance and to exploit the compute power of a target platform
 // the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
-// MIC intrinsics, depending on which instruction set is available. However, it is possible to
-// disable the vectorization entirely by the compile time switch in the configuration file
+// AVX-512 intrinsics, depending on which instruction set is available. However, it is possible
+// to disable the vectorization entirely by the compile time switch in the configuration file
 // <tt>./blaze/config/Vectorization.h</tt>:
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
+   \endcode
+
+// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   #include <blaze/Blaze.h>
    \endcode
 
 // In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
@@ -11675,12 +11722,20 @@
 // that can be used to (de-)activate padding:
 
    \code
-   constexpr bool usePadding = true;
+   #define BLAZE_USE_PADDING 1;
    \endcode
 
-// If \c usePadding is set to \c true padding is enabled for all dense vectors and matrices, if
-// it is set to \c false padding is disabled. Note however that disabling padding can considerably
-// reduce the performance of all dense vector and matrix operations!
+// Alternatively it is possible to (de-)activate padding via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
+// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
+// the performance of all dense vector and matrix operations!
 //
 //
 // \n \section streaming Streaming (Non-Temporal Stores)
@@ -11696,12 +11751,20 @@
 // that can be used to (de-)activate streaming:
 
    \code
-   constexpr bool useStreaming = true;
+   #define BLAZE_USE_STREAMING 1
    \endcode
 
-// If \c useStreaming is set to \c true streaming is enabled, if it is set to \c false streaming
-// is disabled. It is recommended to consult the target architecture's white papers to decide
-// whether streaming is beneficial or hurtful for performance.
+// Alternatively streaming can be (de-)activated via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_STREAMING 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c useStreaming is set to 1 streaming is enabled, if it is set to 0 streaming is disabled.
+// It is recommended to consult the target architecture's white papers to decide whether streaming
+// is beneficial or hurtful for performance.
 //
 //
 // \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref block_vectors_and_matrices \n
