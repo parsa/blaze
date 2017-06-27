@@ -1026,8 +1026,19 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const Other (&array)[N][N] )
 // \param n The number of rows and columns of the array of elements.
 // \exception std::invalid_argument Invalid setup of diagonal custom matrix.
 //
-// This constructor creates an unpadded diagonal custom matrix of size \f$ n \times n \f$. The
-// construction fails if ...
+// This constructor creates an unpadded diagonal custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::DiagonalMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   std::vector<int> memory( 9UL );
+   DiagonalMatrix< CustomMatrix<int,unaligned,unpadded> > A( memory.data(), 3UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
@@ -1063,8 +1074,19 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( ElementType* ptr, size_t n )
 // \param nn The total number of elements between two rows/columns.
 // \exception std::invalid_argument Invalid setup of diagonal custom matrix.
 //
-// This constructor creates a diagonal custom matrix of size \f$ n \times n \f$. The construction
-// fails if ...
+// This constructor creates a diagonal custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::DiagonalMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::padded;
+
+   std::vector<int> memory( 24UL );
+   DiagonalMatrix< CustomMatrix<int,unaligned,padded> > A( memory.data(), 3UL, 8UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly

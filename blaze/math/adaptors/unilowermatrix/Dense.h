@@ -1036,8 +1036,22 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( const Other (&array)[N][N] )
 // \param n The number of rows and columns of the array of elements.
 // \exception std::invalid_argument Invalid setup of unilower custom matrix.
 //
-// This constructor creates an unpadded unilower custom matrix of size \f$ n \times n \f$. The
-// construction fails if ...
+// This constructor creates an unpadded unilower custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::UniLowerMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   std::vector<int> memory( 9UL );
+   memory[0] = 1;
+   memory[4] = 1;
+   memory[8] = 1;
+   UniLowerMatrix< CustomMatrix<int,unaligned,unpadded> > A( memory.data(), 3UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
@@ -1073,8 +1087,22 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( ElementType* ptr, size_t n )
 // \param nn The total number of elements between two rows/columns.
 // \exception std::invalid_argument Invalid setup of unilower custom matrix.
 //
-// This constructor creates a unilower custom matrix of size \f$ n \times n \f$. The construction
-// fails if ...
+// This constructor creates a unilower custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::UniLowerMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::padded;
+
+   std::vector<int> memory( 24UL );
+   memory[ 0] = 1;
+   memory[ 9] = 1;
+   memory[18] = 1;
+   UniLowerMatrix< CustomMatrix<int,unaligned,padded> > A( memory.data(), 3UL, 8UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly

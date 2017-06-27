@@ -1127,8 +1127,21 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( const Other (&array)[N][N] 
 // \param n The number of rows and columns of the array of elements.
 // \exception std::invalid_argument Invalid setup of Hermitian custom matrix.
 //
-// This constructor creates an unpadded Hermitian custom matrix of size \f$ n \times n \f$. The
-// construction fails if ...
+// This constructor creates an unpadded Hermitian custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::HermitianMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   using cplx = complex<float>;
+
+   std::vector<cplx> memory( 9UL );
+   HermitianMatrix< CustomMatrix<cplx,unaligned,unpadded> > A( memory.data(), 3UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
@@ -1164,8 +1177,21 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( ElementType* ptr, size_t n 
 // \param nn The total number of elements between two rows/columns.
 // \exception std::invalid_argument Invalid setup of Hermitian custom matrix.
 //
-// This constructor creates a Hermitian custom matrix of size \f$ n \times n \f$. The construction
-// fails if ...
+// This constructor creates a Hermitian custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::HermitianMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::padded;
+
+   using cplx = complex<float>;
+
+   std::vector<cplx> memory( 24UL );
+   HermitianMatrix< CustomMatrix<cplx,unaligned,padded> > A( memory.data(), 3UL, 8UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly

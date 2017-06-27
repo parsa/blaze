@@ -1044,7 +1044,18 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( const Other (&array
 // \param n The number of rows and columns of the array of elements.
 // \exception std::invalid_argument Invalid setup of strictly lower custom matrix.
 //
-// This constructor creates an unpadded strictly lower custom matrix of size \f$ n \times n \f$.
+// This constructor creates an unpadded strictly lower custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::StrictlyLowerMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   std::vector<int> memory( 9UL );
+   StrictlyLowerMatrix< CustomMatrix<int,unaligned,unpadded> > A( memory.data(), 3UL );
+   \endcode
+
 // The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
@@ -1082,8 +1093,19 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( ElementType* ptr, s
 // \param nn The total number of elements between two rows/columns.
 // \exception std::invalid_argument Invalid setup of strictly lower custom matrix.
 //
-// This constructor creates a strictly lower custom matrix of size \f$ n \times n \f$. The
-// construction fails if ...
+// This constructor creates a strictly lower custom matrix of size \f$ n \times n \f$:
+
+   \code
+   using blaze::StrictlyLowerMatrix;
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::padded;
+
+   std::vector<int> memory( 24UL );
+   StrictlyLowerMatrix< CustomMatrix<int,unaligned,padded> > A( memory.data(), 3UL, 8UL );
+   \endcode
+
+// The construction fails if ...
 //
 //  - ... the passed pointer is \c nullptr;
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
