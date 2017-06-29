@@ -65,16 +65,16 @@ namespace blaze {
 
    \code
    // Creating a type list consisting of two fundamental floating point data types
-   typedef BLAZE_TYPELIST_2( float, double )  Tmp;
+   using Tmp = BLAZE_TYPELIST_2( float, double );
 
    // Appending a type to the type list
-   typedef blaze::Append< Tmp, long double >::Result  Floats;  // Type list contains all floating point data types
+   using Floats = blaze::Append< Tmp, long double >::Result;  // Type list contains all floating point data types
 
    // Calculating the length of the type list (at compile time!)
    const int length = Length< Floats >::value;  // Value evaluates to 3
 
    // Accessing a specific type of the type list via indexing
-   typedef blaze::TypeAt< Floats, 0 >::Result  Index0;
+   using Index0 = blaze::TypeAt< Floats, 0 >::Result;
 
    // Searching the type list for a specific type
    const int index1 = blaze::Contains< Floats, double >::value;   // Value evaluates to 1
@@ -85,10 +85,10 @@ namespace blaze {
    const int index4 = blaze::IndexOf< Floats, int    >::value;    // Value evaluates to -1
 
    // Erasing the first occurrence of float from the type list
-   typedef blaze::Erase< Floats, float >::Result  NoFloat;
+   using NoFloat = blaze::Erase< Floats, float >::Result;
 
    // Removing all duplicates from the type list
-   typedef blaze::Unique< Floats >::Result  NoDuplicates;
+   using NoDuplicates = blaze::Unique< Floats >::Result;
    \endcode
 */
 /*!\brief Implementation of a type list.
@@ -108,7 +108,7 @@ namespace blaze {
 
    \code
    // Creating a type list consisting of the three fundamental data types
-   typedef BLAZE_TYPELIST_3( float, double, long double )  Floats;
+   using Floats = BLAZE_TYPELIST_3( float, double, long double );
    \endcode
 */
 template< typename H    // Head of the type list
@@ -116,8 +116,8 @@ template< typename H    // Head of the type list
 struct TypeList
 {
    //**Type definitions****************************************************************************
-   typedef H  Head;  //!< Type of the head of the type list.
-   typedef T  Tail;  //!< Type of the tail of the type list.
+   using Head = H;  //!< Type of the head of the type list.
+   using Tail = T;  //!< Type of the tail of the type list.
    //**********************************************************************************************
 };
 //*************************************************************************************************
@@ -140,7 +140,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of a single data type
-   typedef BLAZE_TYPELIST_1( int )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_1( int );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -161,7 +161,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of two data types
-   typedef BLAZE_TYPELIST_2( int, unsigned int )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_2( int, unsigned int );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -182,7 +182,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of three data types
-   typedef BLAZE_TYPELIST_3( float, double, long double )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_3( float, double, long double );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -203,7 +203,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of four data types
-   typedef BLAZE_TYPELIST_4( unsigned char, signed char, char, wchar_t )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_4( unsigned char, signed char, char, wchar_t );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -224,7 +224,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of five data types
-   typedef BLAZE_TYPELIST_5( char, short, int, long, float )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_5( char, short, int, long, float );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -245,7 +245,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of six data types
-   typedef BLAZE_TYPELIST_6( char, short, int, long, float, double )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_6( char, short, int, long, float, double );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -266,7 +266,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of seven data types
-   typedef BLAZE_TYPELIST_7( char, short, int, long, float, double, long double )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_7( char, short, int, long, float, double, long double );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -287,7 +287,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of eight data types
-   typedef BLAZE_TYPELIST_8( char, wchar_t, short, int, long, float, double, long double )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_8( char, wchar_t, short, int, long, float, double, long double );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -308,7 +308,7 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of nine data types
-   typedef BLAZE_TYPELIST_9( char, signed char, wchar_t, short, int, long, float, double, long double )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_9( char, signed char, wchar_t, short, int, long, float, double, long double );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -329,8 +329,8 @@ struct TypeList
 
    \code
    // Definition of a new type list consisting of ten data types
-   typedef BLAZE_TYPELIST_10( unsigned char, signed char, char, wchar_t, unsigned short,
-                              short, unsigned int, int, unsigned long, long )  MyTypes;
+   using MyTypes = BLAZE_TYPELIST_10( unsigned char, signed char, char, wchar_t, unsigned short,
+                                      short, unsigned int, int, unsigned long, long );
 
    // Calculating the length of the type list
    const int length = Length<MyTypes>::value;
@@ -361,8 +361,8 @@ struct TypeList
 // impression of the use of the Length class:
 
    \code
-   typedef BLAZE_TYPELIST_3( float, double, long double )  Floats;  // Defining a new type list
-   const int length = blaze::Length< Floats >::value;               // The length of the type list
+   using Floats = BLAZE_TYPELIST_3( float, double, long double );  // Defining a new type list
+   const int length = blaze::Length< Floats >::value;              // The length of the type list
    \endcode
 */
 template< typename TList >  // Type of the type list
@@ -423,8 +423,8 @@ struct Length< TypeList<Head,Tail> >
 // of the TypeAt class:
 
    \code
-   typedef BLAZE_TYPELIST_3( float, double, long double )  Floats;  // Defining a new type list
-   typedef blaze::TypeAt< Floats, 0 >::Result              Index0;  // Indexing of the type list at index 0
+   using Floats = BLAZE_TYPELIST_3( float, double, long double );  // Defining a new type list
+   using Index0 = blaze::TypeAt< Floats, 0 >::Result;              // Indexing of the type list at index 0
    \endcode
 
 // \note The access index is zero based!
@@ -445,7 +445,7 @@ template< typename Head    // Type of the head of the type list
 struct TypeAt< TypeList<Head,Tail>, 0 >
 {
    //**Member enumeration**************************************************************************
-   typedef Head  Result;  //!< Data type at index 0.
+   using Result = Head;  //!< Data type at index 0.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -461,7 +461,7 @@ template< size_t Index >  // Type list access index
 struct TypeAt< NullType, Index >
 {
    //**Member enumeration**************************************************************************
-   typedef NullType  Result;  //!< The resulting data type.
+   using Result = NullType;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -479,7 +479,7 @@ template< typename Head   // Type of the head of the type list
 struct TypeAt< TypeList<Head,Tail>, Index >
 {
    //**Member enumeration**************************************************************************
-   typedef typename TypeAt< Tail, Index-1 >::Result  Result;  //!< Data type at indexed position.
+   using Result = typename TypeAt< Tail, Index-1 >::Result;  //!< Data type at indexed position.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -510,9 +510,9 @@ struct TypeAt< TypeList<Head,Tail>, Index >
 // use of the Contains class:
 
    \code
-   typedef BLAZE_TYPELIST_3( float, double, long double )  Floats;  // Defining a new type list
-   const int index1 = blaze::Contains< Floats, double >::value;     // Value evaluates to 1
-   const int index2 = blaze::Contains< Floats, int    >::value;     // Value evaluates to 0
+   using Floats = BLAZE_TYPELIST_3( float, double, long double );  // Defining a new type list
+   const int index1 = blaze::Contains< Floats, double >::value;    // Value evaluates to 1
+   const int index2 = blaze::Contains< Floats, int    >::value;    // Value evaluates to 0
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -592,7 +592,7 @@ struct Contains< TypeList<Head,Tail>, Type >
    class D {};
 
    // Defining a new type list
-   typedef BLAZE_TYPELIST_2( A, C )  Types;
+   using Types = BLAZE_TYPELIST_2( A, C );
 
    // Searching for the type A in the type list
    const int a = blaze::ContainsRelated< Types, A >::value;  // Evaluates to 1, type A is found
@@ -675,9 +675,9 @@ struct ContainsRelated< TypeList<Head,Tail>, Type >
 // use of the IndexOf class:
 
    \code
-   typedef BLAZE_TYPELIST_3( float, double, long double )  Floats;  // Defining a new type list
-   const int index1 = blaze::IndexOf< Floats, double >::value;      // Value evaluates to 1
-   const int index2 = blaze::IndexOf< Floats, int    >::value;      // Value evaluates to -1
+   using Floats = BLAZE_TYPELIST_3( float, double, long double );  // Defining a new type list
+   const int index1 = blaze::IndexOf< Floats, double >::value;     // Value evaluates to 1
+   const int index2 = blaze::IndexOf< Floats, int    >::value;     // Value evaluates to -1
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -762,8 +762,8 @@ struct IndexOf< TypeList<Head,Tail>, Type >
 // class:
 
    \code
-   typedef BLAZE_TYPELIST_2( float, double )       Tmp;     // Defining a temporary type list
-   typedef blaze::Append<Tmp,long double>::Result  Floats;  // Type list contains all floating point data types
+   using Tmp = BLAZE_TYPELIST_2( float, double );          // Defining a temporary type list
+   using Floats = blaze::Append<Tmp,long double>::Result;  // Type list contains all floating point data types
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -781,7 +781,7 @@ template<>
 struct Append< NullType, NullType >
 {
    //**Type definitions****************************************************************************
-   typedef NullType  Result;  //!< The resulting data type.
+   using Result = NullType;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -797,7 +797,7 @@ template< typename Type >  // The type to be appended to the type list
 struct Append< NullType, Type >
 {
    //**Type definitions****************************************************************************
-   typedef BLAZE_TYPELIST_1( Type )  Result;  //!< The resulting data type.
+   using Result = BLAZE_TYPELIST_1( Type );  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -814,7 +814,7 @@ template< typename Head    // Type of the head of the type list
 struct Append< NullType, TypeList<Head,Tail> >
 {
    //**Type definitions****************************************************************************
-   typedef TypeList<Head,Tail>  Result;  //!< The resulting data type.
+   using Result = TypeList<Head,Tail>;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -832,7 +832,7 @@ template< typename Head    // Type of the head of the type list
 struct Append< TypeList<Head,Tail>, Type >
 {
    //**Type definitions****************************************************************************
-   typedef TypeList< Head, typename Append<Tail,Type>::Result >  Result;  //!< The resulting data type.
+   using Result = TypeList< Head, typename Append<Tail,Type>::Result >;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -859,10 +859,10 @@ struct Append< TypeList<Head,Tail>, Type >
 
    \code
    // Defining a temporary type list containing the type int twice
-   typedef BLAZE_TYPELIST_4( float, int, double, int )  Tmp;
+   using Tmp = BLAZE_TYPELIST_4( float, int, double, int );
 
    // Erasing the first occurrence of int from the type list
-   typedef blaze::Erase<Tmp,int>::Result  SingleInt;
+   using SingleInt = blaze::Erase<Tmp,int>::Result;
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -880,7 +880,7 @@ template< typename Type >  // The type to be erased from the type list
 struct Erase< NullType, Type >
 {
    //**Type definitions****************************************************************************
-   typedef NullType  Result;  //!< The resulting data type.
+   using Result = NullType;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -897,7 +897,7 @@ template< typename Type    // The type to be erased from the type list
 struct Erase< TypeList<Type,Tail>, Type >
 {
    //**Type definitions****************************************************************************
-   typedef Tail  Result;  //!< The resulting data type.
+   using Result = Tail;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -915,7 +915,7 @@ template< typename Head    // Type of the head of the type list
 struct Erase< TypeList<Head,Tail>, Type >
 {
    //**Type definitions****************************************************************************
-   typedef TypeList<Head,typename Erase<Tail,Type>::Result>  Result;  //!< The resulting data type.
+   using Result = TypeList<Head,typename Erase<Tail,Type>::Result>;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -934,10 +934,10 @@ struct Erase< TypeList<Head,Tail>, Type >
 
    \code
    // Defining a temporary type list containing the type int twice
-   typedef BLAZE_TYPELIST_4( float, int, double, int )  Tmp;
+   using Tmp = BLAZE_TYPELIST_4( float, int, double, int );
 
    // Erasing the all occurrences of int from the type list
-   typedef blaze::EraseAll<Tmp,int>::Result  NoInt;
+   using NoInt = blaze::EraseAll<Tmp,int>::Result;
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -955,7 +955,7 @@ template< typename Type >  // The type to be erased from the type list
 struct EraseAll< NullType, Type >
 {
    //**Type definitions****************************************************************************
-   typedef NullType  Result;  //!< The resulting data type.
+   using Result = NullType;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -972,7 +972,7 @@ template< typename Type    // The type to be erased from the type list
 struct EraseAll< TypeList<Type,Tail>, Type >
 {
    //**Type definitions****************************************************************************
-   typedef typename EraseAll<Tail,Type>::Result  Result;  //!< The resulting data type.
+   using Result = typename EraseAll<Tail,Type>::Result;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -990,7 +990,7 @@ template< typename Head    // Type of the head of the type list
 struct EraseAll< TypeList<Head,Tail>, Type >
 {
    //**Type definitions****************************************************************************
-   typedef TypeList<Head,typename EraseAll<Tail,Type>::Result>  Result;  //!< The resulting data type.
+   using Result = TypeList<Head,typename EraseAll<Tail,Type>::Result>;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1016,10 +1016,10 @@ struct EraseAll< TypeList<Head,Tail>, Type >
 
    \code
    // Defining a temporary type list containing the types int and float twice
-   typedef BLAZE_TYPELIST_5( float, int, double, int, float )  Tmp;
+   using Tmp = BLAZE_TYPELIST_5( float, int, double, int, float );
 
    // Removing all duplicates from the type list
-   typedef blaze::Unique<Tmp>::Result  NoDuplicates;
+   using NoDuplicates = blaze::Unique<Tmp>::Result;
    \endcode
 */
 template< typename TList >  // Type of the type list
@@ -1036,7 +1036,7 @@ template<>
 struct Unique< NullType >
 {
    //**Type definitions****************************************************************************
-   typedef NullType  Result;  //!< The resulting data type.
+   using Result = NullType;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1054,13 +1054,13 @@ struct Unique< TypeList<Head,Tail> >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename Unique<Tail>::Result     TL1;
-   typedef typename Erase<TL1,Head>::Result  TL2;
+   using TL1 = typename Unique<Tail>::Result;
+   using TL2 = typename Erase<TL1,Head>::Result;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef TypeList<Head,TL2>  Result;  //!< The resulting data type.
+   using Result = TypeList<Head,TL2>;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */

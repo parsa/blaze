@@ -98,13 +98,13 @@ class AlignedArray
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type         ElementType;     //!< Type of the array elements.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant array element.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant array element.
-   typedef Type&        Reference;       //!< Reference to a non-constant array element.
-   typedef const Type&  ConstReference;  //!< Reference to a constant array element.
-   typedef Type*        Iterator;        //!< Iterator over non-constant elements.
-   typedef const Type*  ConstIterator;   //!< Iterator over constant elements.
+   using ElementType    = Type;         //!< Type of the array elements.
+   using Pointer        = Type*;        //!< Pointer to a non-constant array element.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant array element.
+   using Reference      = Type&;        //!< Reference to a non-constant array element.
+   using ConstReference = const Type&;  //!< Reference to a constant array element.
+   using Iterator       = Type*;        //!< Iterator over non-constant elements.
+   using ConstIterator  = const Type*;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

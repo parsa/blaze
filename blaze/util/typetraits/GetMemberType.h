@@ -65,11 +65,11 @@ namespace blaze {
 
    \code
    struct MyType1 {
-      typedef float  ElementType;
+      using ElementType = float;
    };
 
    struct MyType2 {
-      typedef double  ElementType;
+      using ElementType = double;
    };
 
    struct MyType3 {};

@@ -74,7 +74,7 @@ class InputString
 
  public:
    //**Type definitions****************************************************************************
-   typedef std::string::size_type SizeType;  //!< Size type of the InputString.
+   using SizeType = std::string::size_type;  //!< Size type of the InputString.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

@@ -61,7 +61,7 @@ namespace blaze {
    \code
    using namespace blaze;
 
-   typedef int  Type;
+   using Type = int;
 
    Xor< IsSigned<Type>  , IsUnsigned<Type>      >::value  // Evaluates to 1
    Xor< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1

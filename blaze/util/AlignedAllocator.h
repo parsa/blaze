@@ -70,22 +70,22 @@ class AlignedAllocator
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type            ValueType;        //!< Type of the allocated values.
-   typedef Type*           Pointer;          //!< Type of a pointer to the allocated values.
-   typedef const Type*     ConstPointer;     //!< Type of a pointer-to-const to the allocated values.
-   typedef Type&           Reference;        //!< Type of a reference to the allocated values.
-   typedef const Type&     ConstReference;   //!< Type of a reference-to-const to the allocated values.
-   typedef std::size_t     SizeType;         //!< Size type of the aligned allocator.
-   typedef std::ptrdiff_t  DifferenceType;   //!< Difference type of the aligned allocator.
+   using ValueType      = Type;            //!< Type of the allocated values.
+   using Pointer        = Type*;           //!< Type of a pointer to the allocated values.
+   using ConstPointer   = const Type*;     //!< Type of a pointer-to-const to the allocated values.
+   using Reference      = Type&;           //!< Type of a reference to the allocated values.
+   using ConstReference = const Type&;     //!< Type of a reference-to-const to the allocated values.
+   using SizeType       = std::size_t;     //!< Size type of the aligned allocator.
+   using DifferenceType = std::ptrdiff_t;  //!< Difference type of the aligned allocator.
 
    // STL allocator requirements
-   typedef ValueType       value_type;       //!< Type of the allocated values.
-   typedef Pointer         pointer;          //!< Type of a pointer to the allocated values.
-   typedef ConstPointer    const_pointer;    //!< Type of a pointer-to-const to the allocated values.
-   typedef Reference       reference;        //!< Type of a reference to the allocated values.
-   typedef ConstReference  const_reference;  //!< Type of a reference-to-const to the allocated values.
-   typedef SizeType        size_type;        //!< Size type of the aligned allocator.
-   typedef DifferenceType  difference_type;  //!< Difference type of the aligned allocator.
+   using value_type      = ValueType;       //!< Type of the allocated values.
+   using pointer         = Pointer;         //!< Type of a pointer to the allocated values.
+   using const_pointer   = ConstPointer;    //!< Type of a pointer-to-const to the allocated values.
+   using reference       = Reference;       //!< Type of a reference to the allocated values.
+   using const_reference = ConstReference;  //!< Type of a reference-to-const to the allocated values.
+   using size_type       = SizeType;        //!< Size type of the aligned allocator.
+   using difference_type = DifferenceType;  //!< Difference type of the aligned allocator.
    //**********************************************************************************************
 
    //**rebind class definition*********************************************************************
@@ -94,7 +94,7 @@ class AlignedAllocator
    template< typename Type2 >
    struct rebind
    {
-      typedef AlignedAllocator<Type2>  other;  //!< Type of the other allocator.
+      using other = AlignedAllocator<Type2>;  //!< Type of the other allocator.
    };
    //**********************************************************************************************
 

@@ -63,7 +63,7 @@ namespace timing {
 // In contrast to the measurement of CPU time, the wall clock time also contains waiting times
 // such as input/output operations.
 */
-typedef Timer<WcPolicy>  WcTimer;
+using WcTimer = Timer<WcPolicy>;
 //*************************************************************************************************
 
 } // timing

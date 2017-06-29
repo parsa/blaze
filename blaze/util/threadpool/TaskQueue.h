@@ -65,12 +65,12 @@ class TaskQueue
 {
  private:
    //**Type definitions****************************************************************************
-   typedef std::deque<Task>  Tasks;  //!< FIFO container for tasks.
+   using Tasks = std::deque<Task>;  //!< FIFO container for tasks.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Tasks::size_type  SizeType;  //!< Size type of the task queue.
+   using SizeType = Tasks::size_type;  //!< Size type of the task queue.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

@@ -319,7 +319,7 @@ template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the value to be serialized
 EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T& value )
 {
-   typedef typename Stream::char_type  CharType;
+   using CharType = typename Stream::char_type;
    stream_.write( reinterpret_cast<const CharType*>( &value ), sizeof( T ) );
    return *this;
 }
@@ -352,7 +352,7 @@ template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the value to be deserialized
 EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& value )
 {
-   typedef typename Stream::char_type  CharType;
+   using CharType = typename Stream::char_type;
    stream_.read( reinterpret_cast<CharType*>( &value ), sizeof( T ) );
    return *this;
 }
@@ -389,7 +389,7 @@ template< typename Type >    // Type of the array elements
 inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
    Archive<Stream>::write( const Type* array, size_t count )
 {
-   typedef typename Stream::char_type  CharType;
+   using CharType = typename Stream::char_type;
    stream_.write( reinterpret_cast<const CharType*>( array ), count*sizeof(Type) );
    return *this;
 }
@@ -412,7 +412,7 @@ template< typename Type >    // Type of the array elements
 inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
    Archive<Stream>::read( Type* array, size_t count )
 {
-   typedef typename Stream::char_type  CharType;
+   using CharType = typename Stream::char_type;
    stream_.read( reinterpret_cast<CharType*>( array ), count*sizeof(Type) );
    return *this;
 }

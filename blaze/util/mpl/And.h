@@ -88,7 +88,7 @@ struct AndHelper<T>
    \code
    using namespace blaze;
 
-   typedef int  Type;
+   using Type = int;
 
    And< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 1
    And< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 0

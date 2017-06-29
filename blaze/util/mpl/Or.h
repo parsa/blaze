@@ -88,7 +88,7 @@ struct OrHelper<T>
    \code
    using namespace blaze;
 
-   typedef int  Type;
+   using Type = int;
 
    Or< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 1
    Or< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1

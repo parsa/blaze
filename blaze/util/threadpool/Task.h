@@ -57,7 +57,7 @@ namespace threadpool {
 /*!\brief Handle for a single, executable task.
 // \ingroup threads
 */
-typedef std::function<void(void)>  Task;
+using Task = std::function<void(void)>;
 //*************************************************************************************************
 
 } // namespace threadpool

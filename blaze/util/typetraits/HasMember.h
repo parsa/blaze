@@ -143,13 +143,13 @@ struct TYPE_TRAIT_NAME                                                          
    \code
    class MyType {
     public:
-      typedef int  PublicType;
+      using PublicType = int;
 
     protected:
-      typedef float  ProtectedType;
+      using ProtectedType = float;
 
     private:
-      typedef double  PrivateType;
+      using PrivateType = double;
    };
 
    BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasPublicType   , PublicType    );
@@ -228,7 +228,7 @@ struct TYPE_TRAIT_NAME                                                          
       void publicCompute();
 
     protected:
-      typedef float  ProtectedType;
+      using ProtectedType = float;
 
     private:
       int value_;

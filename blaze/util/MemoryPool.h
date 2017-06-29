@@ -103,7 +103,7 @@ class MemoryPool : private NonCopyable
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef std::vector<Block> Blocks;  //!< Vector of memory blocks.
+   using Blocks = std::vector<Block>;  //!< Vector of memory blocks.
    //**********************************************************************************************
 
  public:

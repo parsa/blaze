@@ -62,7 +62,7 @@ namespace timing {
 // the amount of time the measured program or code fragment uses in processing central processing
 // unit (CPU) instructions.
 */
-typedef Timer<CpuPolicy>  CpuTimer;
+using CpuTimer = Timer<CpuPolicy>;
 //*************************************************************************************************
 
 } // timing

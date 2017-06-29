@@ -103,15 +103,15 @@ template< typename TT, typename MT, typename LT, typename CT > class ThreadPool;
 // Examples:
 
    \code
-   typedef blaze::Thread< boost::thread
-                        , boost::mutex
-                        , boost::unique_lock<boost::mutex>
-                        , boost::condition_variable >  BoostThread;
+   using BoostThread = blaze::Thread< boost::thread
+                                    , boost::mutex
+                                    , boost::unique_lock<boost::mutex>
+                                    , boost::condition_variable >;
 
-   typedef blaze::Thread< std::thread
-                        , std::mutex
-                        , std::unique_lock<std::mutex>
-                        , std::condition_variable >  StdThread;
+   using StdThread = blaze::Thread< std::thread
+                                  , std::mutex
+                                  , std::unique_lock<std::mutex>
+                                  , std::condition_variable >;
    \endcode
 
 // For more information about the standard thread functionality, see [1] or [2] or the current
@@ -251,9 +251,9 @@ class Thread : private NonCopyable
 {
  private:
    //**Type definitions****************************************************************************
-   typedef TT                           ThreadType;      //!< Type of the encapsulated thread.
-   typedef ThreadPool<TT,MT,LT,CT>      ThreadPoolType;  //!< Type of the managing thread pool.
-   typedef std::unique_ptr<ThreadType>  ThreadHandle;    //!< Handle for a single thread.
+   using ThreadType     = TT;                           //!< Type of the encapsulated thread.
+   using ThreadPoolType = ThreadPool<TT,MT,LT,CT>;      //!< Type of the managing thread pool.
+   using ThreadHandle   = std::unique_ptr<ThreadType>;  //!< Handle for a single thread.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

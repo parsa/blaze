@@ -66,7 +66,7 @@ class Indices
 {
  public:
    //**Type definitions****************************************************************************
-   typedef std::vector<size_t>::const_iterator  ConstIterator;  //!< Iterator over the generated indices.
+   using ConstIterator = std::vector<size_t>::const_iterator;  //!< Iterator over the generated indices.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
