@@ -78,7 +78,7 @@ template< typename VT  // Type of the vector
 struct Vector
 {
    //**Type definitions****************************************************************************
-   typedef VT  VectorType;  //!< Type of the vector.
+   using VectorType = VT;  //!< Type of the vector.
    //**********************************************************************************************
 
    //**Non-const conversion operator***************************************************************
@@ -528,8 +528,8 @@ inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
 // \a false.
 
    \code
-   typedef blaze::DynamicVector<int>     VectorType;
-   typedef blaze::Subvector<VectorType>  SubvectorType;
+   using VectorType    = blaze::DynamicVector<int>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType vec1( 4UL );  // Setup of a 4-dimensional dynamic vector
    VectorType vec2( 4UL );  // Setup of a second 4-dimensional dynamic vector

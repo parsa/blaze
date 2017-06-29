@@ -91,14 +91,14 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2,TF>, TF 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side dense vector expression.
-   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side sparse vector expression.
-   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side dense vector expression.
-   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side sparse vector expression.
-   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side dense vector expression.
-   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side sparse vector expression.
-   typedef ElementType_<VT1>    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef ElementType_<VT2>    ET2;  //!< Element type of the right-hand side sparse vector expression.
+   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
+   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side sparse vector expression.
+   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side dense vector expression.
+   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side sparse vector expression.
+   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side dense vector expression.
+   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side sparse vector expression.
+   using ET1 = ElementType_<VT1>;    //!< Element type of the left-hand side dense vector expression.
+   using ET2 = ElementType_<VT2>;    //!< Element type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -111,33 +111,33 @@ class DVecSVecCrossExpr : public DenseVector< DVecSVecCrossExpr<VT1,VT2,TF>, TF 
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef SubExprTrait_< MultExprTrait_<RN1,RN2>, MultExprTrait_<RN1,RN2> >  ExprReturnType;
+   using ExprReturnType = SubExprTrait_< MultExprTrait_<RN1,RN2>, MultExprTrait_<RN1,RN2> >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecSVecCrossExpr<VT1,VT2,TF>  This;           //!< Type of this DVecSVecCrossExpr instance.
-   typedef CrossTrait_<RT1,RT2>           ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>       ElementType;    //!< Resulting element type.
+   using This          = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of this DVecSVecCrossExpr instance.
+   using ResultType    = CrossTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;       //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsComputation<VT1>, const StaticVector<ET1,3UL,TF>, CT1 >  LT;
+   using LT = If_< IsComputation<VT1>, const StaticVector<ET1,3UL,TF>, CT1 >;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef const StaticVector<ET2,3UL,TF>  RT;
+   using RT = const StaticVector<ET2,3UL,TF>;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

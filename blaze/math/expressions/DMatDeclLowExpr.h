@@ -165,21 +165,21 @@ class DMatDeclLowExpr : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatDeclLowExpr<MT,SO>             This;           //!< Type of this DMatDeclLowExpr instance.
-   typedef LowerMatrix< ResultType_<MT> >     ResultType;     //!< Result type for expression template evaluations.
-   typedef LowerMatrix< OppositeType_<MT> >   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef LowerMatrix< TransposeType_<MT> >  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>                   ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>                    ReturnType;     //!< Return type for expression template evaluations.
+   using This          = DMatDeclLowExpr<MT,SO>;             //!< Type of this DMatDeclLowExpr instance.
+   using ResultType    = LowerMatrix< ResultType_<MT> >;     //!< Result type for expression template evaluations.
+   using OppositeType  = LowerMatrix< OppositeType_<MT> >;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = LowerMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;                   //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;                    //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclLowExpr& >  CompositeType;
+   using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclLowExpr& >;
 
    //! Iterator over the elements of the dense matrix.
-   typedef typename GetConstIterator<MT>::Type  ConstIterator;
+   using ConstIterator = typename GetConstIterator<MT>::Type;
 
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

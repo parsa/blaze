@@ -100,14 +100,14 @@ inline const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef CompositeType_<VT1>    Lhs;            // Composite type of the left-hand side sparse vector expression
-   typedef CompositeType_<VT2>    Rhs;            // Composite type of the right-hand side dense vector expression
-   typedef RemoveReference_<Lhs>  X1;             // Auxiliary type for the left-hand side composite type
-   typedef RemoveReference_<Rhs>  X2;             // Auxiliary type for the right-hand side composite type
-   typedef ElementType_<X1>       ET1;            // Element type of the left-hand side sparse vector expression
-   typedef ElementType_<X2>       ET2;            // Element type of the right-hand side dense vector expression
-   typedef MultTrait_<ET1,ET2>    MultType;       // Multiplication result type
-   typedef ConstIterator_<X1>     ConstIterator;  // Iterator type of the left-hand sparse vector expression
+   using Lhs           = CompositeType_<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using Rhs           = CompositeType_<VT2>;    // Composite type of the right-hand side dense vector expression
+   using X1            = RemoveReference_<Lhs>;  // Auxiliary type for the left-hand side composite type
+   using X2            = RemoveReference_<Rhs>;  // Auxiliary type for the right-hand side composite type
+   using ET1           = ElementType_<X1>;       // Element type of the left-hand side sparse vector expression
+   using ET2           = ElementType_<X2>;       // Element type of the right-hand side dense vector expression
+   using MultType      = MultTrait_<ET1,ET2>;    // Multiplication result type
+   using ConstIterator = ConstIterator_<X1>;     // Iterator type of the left-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2 );

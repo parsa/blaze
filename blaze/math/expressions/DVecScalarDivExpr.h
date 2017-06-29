@@ -112,10 +112,10 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     RT;  //!< Result type of the dense vector expression.
-   typedef ReturnType_<VT>     RN;  //!< Return type of the dense vector expression.
-   typedef ElementType_<VT>    ET;  //!< Element type of the dense vector expression.
-   typedef CompositeType_<VT>  CT;  //!< Composite type of the dense vector expression.
+   using RT = ResultType_<VT>;     //!< Result type of the dense vector expression.
+   using RN = ReturnType_<VT>;     //!< Return type of the dense vector expression.
+   using ET = ElementType_<VT>;    //!< Element type of the dense vector expression.
+   using CT = CompositeType_<VT>;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -128,7 +128,7 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef DivExprTrait_<RN,ST>  ExprReturnType;
+   using ExprReturnType = DivExprTrait_<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -167,22 +167,22 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecScalarDivExpr<VT,ST,TF>  This;           //!< Type of this DVecScalarDivExpr instance.
-   typedef DivTrait_<RT,ST>             ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
+   using This          = DVecScalarDivExpr<VT,ST,TF>;  //!< Type of this DVecScalarDivExpr instance.
+   using ResultType    = DivTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DVecScalarDivExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DVecScalarDivExpr& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side scalar value.
-   typedef ST  RightOperand;
+   using RightOperand = ST;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -192,21 +192,21 @@ class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
-      typedef ElementType*                     PointerType;       //!< Pointer return type.
-      typedef ElementType&                     ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType;                      //!< Type of the underlying elements.
+      using PointerType      = ElementType*;                     //!< Pointer return type.
+      using ReferenceType    = ElementType&;                     //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense vector expression.
-      typedef ConstIterator_<VT>  IteratorType;
+      using IteratorType = ConstIterator_<VT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1052,8 +1052,8 @@ inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<VT,ST> >
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   typedef DivExprTrait_<VT,ST>       ReturnType;
-   typedef RightOperand_<ReturnType>  ScalarType;
+   using ReturnType = DivExprTrait_<VT,ST>;
+   using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
@@ -1156,9 +1156,9 @@ inline const EnableIf_< IsNumeric<ST2>
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef MultTrait_<ST1,ST2>         MultType;
-   typedef DivExprTrait_<VT,MultType>  ReturnType;
-   typedef RightOperand_<ReturnType>   ScalarType;
+   using MultType   = MultTrait_<ST1,ST2>;
+   using ReturnType = DivExprTrait_<VT,MultType>;
+   using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
@@ -1239,7 +1239,7 @@ struct DVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef DivTrait_<ST2,ST1>  ScalarType;
+   using ScalarType = DivTrait_<ST2,ST1>;
    //**********************************************************************************************
 
  public:
@@ -1271,7 +1271,7 @@ struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef DivTrait_<ST2,ST1>  ScalarType;
+   using ScalarType = DivTrait_<ST2,ST1>;
    //**********************************************************************************************
 
  public:

@@ -112,9 +112,9 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>    RT;  //!< Result type of the sparse matrix expression.
-   typedef OppositeType_<MT>  OT;  //!< Opposite type of the sparse matrix expression.
-   typedef ReturnType_<MT>    RN;  //!< Return type of the sparse matrix expression.
+   using RT = ResultType_<MT>;    //!< Result type of the sparse matrix expression.
+   using OT = OppositeType_<MT>;  //!< Opposite type of the sparse matrix expression.
+   using RN = ReturnType_<MT>;    //!< Return type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -153,23 +153,23 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatMapExpr<MT,OP,SO>       This;           //!< Type of this SMatMapExpr instance.
-   typedef UnaryMapTrait_<RT,OP>       ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   using This          = SMatMapExpr<MT,OP,SO>;       //!< Type of this SMatMapExpr instance.
+   using ResultType    = UnaryMapTrait_<RT,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
+   using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SMatMapExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SMatMapExpr& >;
 
    //! Composite data type of the sparse matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Data type of the custom unary operation.
-   typedef OP  Operation;
+   using Operation = OP;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -180,23 +180,23 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse matrix expression.
-      typedef ValueIndexPair<ElementType>  Element;
+      using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse matrix expression.
-      typedef ConstIterator_< RemoveReference_<Operand> >  IteratorType;
+      using IteratorType = ConstIterator_< RemoveReference_<Operand> >;
 
-      typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef Element                    ValueType;         //!< Type of the underlying pointers.
-      typedef ValueType*                 PointerType;       //!< Pointer return type.
-      typedef ValueType&                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
+      using ValueType        = Element;                    //!< Type of the underlying pointers.
+      using PointerType      = ValueType*;                 //!< Pointer return type.
+      using ReferenceType    = ValueType&;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying pointers.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying pointers.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -574,7 +574,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef Iterator_<MT2>  Iterator;
+      using Iterator = Iterator_<MT2>;
 
       assign( ~lhs, rhs.sm_ );
 
@@ -615,7 +615,7 @@ class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef Iterator_<MT2>  Iterator;
+      using Iterator = Iterator_<MT2>;
 
       assign( ~lhs, rhs.sm_ );
 

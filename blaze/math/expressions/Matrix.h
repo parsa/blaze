@@ -83,7 +83,7 @@ template< typename MT  // Type of the matrix
 struct Matrix
 {
    //**Type definitions****************************************************************************
-   typedef MT  MatrixType;  //!< Type of the matrix.
+   using MatrixType = MT;  //!< Type of the matrix.
    //**********************************************************************************************
 
    //**Non-const conversion operator***************************************************************
@@ -765,8 +765,8 @@ BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 // \a false.
 
    \code
-   typedef blaze::DynamicMatrix<int>     MatrixType;
-   typedef blaze::Submatrix<MatrixType>  SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<int>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
    MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix

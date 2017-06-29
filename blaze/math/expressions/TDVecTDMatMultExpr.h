@@ -127,12 +127,12 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     VRT;  //!< Result type of the left-hand side dense vector expression.
-   typedef ResultType_<MT>     MRT;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<VRT>   VET;  //!< Element type of the left-hand side dense vector epxression.
-   typedef ElementType_<MRT>   MET;  //!< Element type of the right-hand side dense matrix expression.
-   typedef CompositeType_<VT>  VCT;  //!< Composite type of the left-hand side dense vector expression.
-   typedef CompositeType_<MT>  MCT;  //!< Composite type of the right-hand side dense matrix expression.
+   using VRT = ResultType_<VT>;     //!< Result type of the left-hand side dense vector expression.
+   using MRT = ResultType_<MT>;     //!< Result type of the right-hand side dense matrix expression.
+   using VET = ElementType_<VRT>;   //!< Element type of the left-hand side dense vector epxression.
+   using MET = ElementType_<MRT>;   //!< Element type of the right-hand side dense matrix expression.
+   using VCT = CompositeType_<VT>;  //!< Composite type of the left-hand side dense vector expression.
+   using MCT = CompositeType_<MT>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -203,25 +203,25 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TDVecTDMatMultExpr<VT,MT>   This;           //!< Type of this TDVecTDMatMultExpr instance.
-   typedef MultTrait_<VRT,MRT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
+   using This          = TDVecTDMatMultExpr<VT,MT>;   //!< Type of this TDVecTDMatMultExpr instance.
+   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef IfTrue_< evaluateVector, const VRT, VCT >  LT;
+   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  RT;
+   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1029,7 +1029,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1> >
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
@@ -1712,7 +1712,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1> >
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          ResultType_<VT1> tmp( serial( x ) );
@@ -2370,7 +2370,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1> >
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          ResultType_<VT1> tmp( serial( x ) );
@@ -2735,14 +2735,14 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef TDVecTDMatMultExpr<VT,MT>  VMM;  //!< Type of the dense vector-dense matrix multiplication expression.
-   typedef ResultType_<VMM>           RES;  //!< Result type of the dense vector-dense matrix multiplication expression.
-   typedef ResultType_<VT>            VRT;  //!< Result type of the left-hand side dense vector expression.
-   typedef ResultType_<MT>            MRT;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<VRT>          VET;  //!< Element type of the left-hand side dense vector epxression.
-   typedef ElementType_<MRT>          MET;  //!< Element type of the right-hand side dense matrix expression.
-   typedef CompositeType_<VT>         VCT;  //!< Composite type of the left-hand side dense vector expression.
-   typedef CompositeType_<MT>         MCT;  //!< Composite type of the right-hand side dense matrix expression.
+   using VMM = TDVecTDMatMultExpr<VT,MT>;  //!< Type of the dense vector-dense matrix multiplication expression.
+   using RES = ResultType_<VMM>;           //!< Result type of the dense vector-dense matrix multiplication expression.
+   using VRT = ResultType_<VT>;            //!< Result type of the left-hand side dense vector expression.
+   using MRT = ResultType_<MT>;            //!< Result type of the right-hand side dense matrix expression.
+   using VET = ElementType_<VRT>;          //!< Element type of the left-hand side dense vector epxression.
+   using MET = ElementType_<MRT>;          //!< Element type of the right-hand side dense matrix expression.
+   using VCT = CompositeType_<VT>;         //!< Composite type of the left-hand side dense vector expression.
+   using MCT = CompositeType_<MT>;         //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2809,25 +2809,25 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecScalarMultExpr<VMM,ST,true>  This;           //!< Type of this DVecScalarMultExpr instance.
-   typedef MultTrait_<RES,ST>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>       TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>         ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>          SIMDType;       //!< Resulting SIMD element type.
-   typedef const ElementType                ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType                 CompositeType;  //!< Data type for composite expression templates.
+   using This          = DVecScalarMultExpr<VMM,ST,true>;  //!< Type of this DVecScalarMultExpr instance.
+   using ResultType    = MultTrait_<RES,ST>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;         //!< Resulting element type.
+   using SIMDType      = SIMDTrait_<ElementType>;          //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;                //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;                 //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef const TDVecTDMatMultExpr<VT,MT>  LeftOperand;
+   using LeftOperand = const TDVecTDMatMultExpr<VT,MT>;
 
    //! Composite type of the right-hand side scalar value.
-   typedef ST  RightOperand;
+   using RightOperand = ST;
 
    //! Type for the assignment of the dense vector operand of the left-hand side expression.
-   typedef IfTrue_< evaluateVector, const VRT, VCT >  LT;
+   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
 
    //! Type for the assignment of the dense matrix operand of the left-hand side expression.
-   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  RT;
+   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3639,7 +3639,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1,ST2> >
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
@@ -4324,7 +4324,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1,ST2> >
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          ResultType_<VT1> tmp( serial( scalar * x ) );
@@ -4985,7 +4985,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline EnableIf_< UseBlasKernel<VT1,VT2,MT1,ST2> >
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      typedef ElementType_<VT1>  ET;
+      using ET = ElementType_<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          ResultType_<VT1> tmp( serial( scalar * x ) );

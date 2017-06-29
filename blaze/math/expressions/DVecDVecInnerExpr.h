@@ -76,10 +76,10 @@ struct DVecDVecInnerExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   typedef RemoveReference_< CompositeType_<VT1> >  CT1;
+   using CT1 = RemoveReference_< CompositeType_<VT1> >;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef RemoveReference_< CompositeType_<VT2> >  CT2;
+   using CT2 = RemoveReference_< CompositeType_<VT2> >;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -141,11 +141,11 @@ inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef CompositeType_<VT1>  Lhs;
-   typedef CompositeType_<VT2>  Rhs;
-   typedef ElementType_<VT1>    ET1;
-   typedef ElementType_<VT2>    ET2;
-   typedef MultTrait_<ET1,ET2>  MultType;
+   using Lhs      = CompositeType_<VT1>;
+   using Rhs      = CompositeType_<VT2>;
+   using ET1      = ElementType_<VT1>;
+   using ET2      = ElementType_<VT2>;
+   using MultType = MultTrait_<ET1,ET2>;
 
    if( (~lhs).size() == 0UL ) return MultType();
 
@@ -214,11 +214,11 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef CompositeType_<VT1>  Lhs;
-   typedef CompositeType_<VT2>  Rhs;
-   typedef ElementType_<VT1>    ET1;
-   typedef ElementType_<VT2>    ET2;
-   typedef MultTrait_<ET1,ET2>  MultType;
+   using Lhs      = CompositeType_<VT1>;
+   using Rhs      = CompositeType_<VT2>;
+   using ET1      = ElementType_<VT1>;
+   using ET2      = ElementType_<VT2>;
+   using MultType = MultTrait_<ET1,ET2>;
 
    enum : size_t { SIMDSIZE = SIMDTrait<MultType>::size };
 

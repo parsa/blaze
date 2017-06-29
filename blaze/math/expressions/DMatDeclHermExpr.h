@@ -166,21 +166,21 @@ class DMatDeclHermExpr : public DenseMatrix< DMatDeclHermExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatDeclHermExpr<MT,SO>                This;           //!< Type of this DMatDeclHermExpr instance.
-   typedef HermitianMatrix< ResultType_<MT> >     ResultType;     //!< Result type for expression template evaluations.
-   typedef HermitianMatrix< OppositeType_<MT> >   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef HermitianMatrix< TransposeType_<MT> >  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>                       ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>                        ReturnType;     //!< Return type for expression template evaluations.
+   using This          = DMatDeclHermExpr<MT,SO>;                //!< Type of this DMatDeclHermExpr instance.
+   using ResultType    = HermitianMatrix< ResultType_<MT> >;     //!< Result type for expression template evaluations.
+   using OppositeType  = HermitianMatrix< OppositeType_<MT> >;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = HermitianMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;                       //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;                        //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclHermExpr& >  CompositeType;
+   using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclHermExpr& >;
 
    //! Iterator over the elements of the dense matrix.
-   typedef typename GetConstIterator<MT>::Type  ConstIterator;
+   using ConstIterator = typename GetConstIterator<MT>::Type;
 
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

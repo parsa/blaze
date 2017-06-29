@@ -99,10 +99,10 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     VRT;  //!< Result type of the left-hand side sparse vector expression.
-   typedef ResultType_<MT>     MRT;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef CompositeType_<VT>  VCT;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef CompositeType_<MT>  MCT;  //!< Composite type of the right-hand side sparse matrix expression.
+   using VRT = ResultType_<VT>;     //!< Result type of the left-hand side sparse vector expression.
+   using MRT = ResultType_<MT>;     //!< Result type of the right-hand side sparse matrix expression.
+   using VCT = CompositeType_<VT>;  //!< Composite type of the left-hand side sparse vector expression.
+   using MCT = CompositeType_<MT>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -130,24 +130,24 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TSVecSMatMultExpr<VT,MT>    This;           //!< Type of this TSVecSMatMultExpr instance.
-   typedef MultTrait_<VRT,MRT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
+   using This          = TSVecSMatMultExpr<VT,MT>;    //!< Type of this TSVecSMatMultExpr instance.
+   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   typedef IfTrue_< evaluateVector, const VRT, VCT >  LT;
+   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
 
    //! Type for the assignment of the right-hand side sparse matrix operand.
-   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  RT;
+   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -357,8 +357,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
-      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
@@ -463,8 +463,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
-      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
@@ -544,8 +544,8 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<VT2> >  VectorIterator;
-      typedef ConstIterator_< RemoveReference_<MT1> >  MatrixIterator;
+      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );

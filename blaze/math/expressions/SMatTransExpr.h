@@ -112,8 +112,8 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>     RT;  //!< Result type of the sparse matrix expression.
-   typedef CompositeType_<MT>  CT;  //!< Composite type of the sparse matrix expression.
+   using RT = ResultType_<MT>;     //!< Result type of the sparse matrix expression.
+   using CT = CompositeType_<MT>;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -167,21 +167,21 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransExpr<MT,SO>       This;           //!< Type of this SMatTransExpr instance.
-   typedef TransposeType_<MT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>            TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>           ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>            ReturnType;     //!< Return type for expression template evaluations.
+   using This          = SMatTransExpr<MT,SO>;       //!< Type of this SMatTransExpr instance.
+   using ResultType    = TransposeType_<MT>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = ResultType_<MT>;            //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;           //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SMatTransExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SMatTransExpr& >;
 
    //! Iterator over the elements of the dense matrix.
-   typedef typename GetConstIterator<MT>::Type  ConstIterator;
+   using ConstIterator = typename GetConstIterator<MT>::Type;
 
    //! Composite data type of the sparse matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

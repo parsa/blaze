@@ -126,10 +126,10 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>     RT;  //!< Result type of the dense matrix expression.
-   typedef ReturnType_<MT>     RN;  //!< Return type of the dense matrix expression.
-   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix expression.
-   typedef CompositeType_<MT>  CT;  //!< Composite type of the dense matrix expression.
+   using RT = ResultType_<MT>;     //!< Result type of the dense matrix expression.
+   using RN = ReturnType_<MT>;     //!< Return type of the dense matrix expression.
+   using ET = ElementType_<MT>;    //!< Element type of the dense matrix expression.
+   using CT = CompositeType_<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -142,7 +142,7 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN,ST>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -181,23 +181,23 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatScalarMultExpr<MT,ST,SO>  This;           //!< Type of this DMatScalarMultExpr instance.
-   typedef MultTrait_<RT,ST>             ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>      ElementType;    //!< Resulting element type.
+   using This          = DMatScalarMultExpr<MT,ST,SO>;  //!< Type of this DMatScalarMultExpr instance.
+   using ResultType    = MultTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DMatScalarMultExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatScalarMultExpr& >;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Composite type of the right-hand side scalar value.
-   typedef ST  RightOperand;
+   using RightOperand = ST;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -207,21 +207,21 @@ class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO 
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
-      typedef ElementType*                     PointerType;       //!< Pointer return type.
-      typedef ElementType&                     ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType;                      //!< Type of the underlying elements.
+      using PointerType      = ElementType*;                     //!< Pointer return type.
+      using ReferenceType    = ElementType&;                     //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef ConstIterator_<MT>  IteratorType;
+      using IteratorType = ConstIterator_<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1041,7 +1041,7 @@ inline const DMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef UnderlyingBuiltin_<MT>  ElementType;
+   using ElementType = UnderlyingBuiltin_<MT>;
    return DMatScalarMultExpr<MT,ElementType,SO>( ~dm, ElementType(-1) );
 }
 //*************************************************************************************************
@@ -1950,7 +1950,7 @@ struct DMatScalarDivExprTrait< DMatScalarMultExpr<MT,ST1,false>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef DivTrait_<ST1,ST2>  ScalarType;
+   using ScalarType = DivTrait_<ST1,ST2>;
    //**********************************************************************************************
 
  public:
@@ -1981,7 +1981,7 @@ struct TDMatScalarDivExprTrait< DMatScalarMultExpr<MT,ST1,true>, ST2 >
 {
  private:
    //**********************************************************************************************
-   typedef DivTrait_<ST1,ST2>  ScalarType;
+   using ScalarType = DivTrait_<ST1,ST2>;
    //**********************************************************************************************
 
  public:

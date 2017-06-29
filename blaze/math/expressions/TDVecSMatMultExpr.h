@@ -105,10 +105,10 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     VRT;  //!< Result type of the left-hand side dense vector expression.
-   typedef ResultType_<MT>     MRT;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef CompositeType_<VT>  VCT;  //!< Composite type of the left-hand side dense vector expression.
-   typedef CompositeType_<MT>  MCT;  //!< Composite type of the right-hand side sparse matrix expression.
+   using VRT = ResultType_<VT>;     //!< Result type of the left-hand side dense vector expression.
+   using MRT = ResultType_<MT>;     //!< Result type of the right-hand side sparse matrix expression.
+   using VCT = CompositeType_<VT>;  //!< Composite type of the left-hand side dense vector expression.
+   using MCT = CompositeType_<MT>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -136,24 +136,24 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef TDVecSMatMultExpr<VT,MT>    This;           //!< Type of this TDVecSMatMultExpr instance.
-   typedef MultTrait_<VRT,MRT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
+   using This          = TDVecSMatMultExpr<VT,MT>;    //!< Type of this TDVecSMatMultExpr instance.
+   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef IfTrue_< evaluateVector, const VRT, VCT >  LT;
+   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  RT;
+   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -356,7 +356,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<MT1> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {
@@ -457,7 +457,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<MT1> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {
@@ -530,7 +530,7 @@ class TDVecSMatMultExpr : public DenseVector< TDVecSMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      typedef ConstIterator_< RemoveReference_<MT1> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {

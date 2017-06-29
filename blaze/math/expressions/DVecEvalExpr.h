@@ -90,17 +90,17 @@ class DVecEvalExpr : public DenseVector< DVecEvalExpr<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DVecEvalExpr<VT,TF>  This;           //!< Type of this DVecEvalExpr instance.
-   typedef ResultType_<VT>      ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<VT>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>     ElementType;    //!< Resulting element type.
-   typedef ReturnType_<VT>      ReturnType;     //!< Return type for expression template evaluations.
+   using This          = DVecEvalExpr<VT,TF>;  //!< Type of this DVecEvalExpr instance.
+   using ResultType    = ResultType_<VT>;      //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<VT>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;     //!< Resulting element type.
+   using ReturnType    = ReturnType_<VT>;      //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite data type of the dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
+   using Operand = If_< IsExpression<VT>, const VT, const VT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

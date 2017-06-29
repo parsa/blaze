@@ -100,7 +100,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef CompositeType_<VT>  CT;  //!< Composite type of the dense vector expression.
+   using CT = CompositeType_<VT>;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -154,20 +154,20 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransExpr<VT,TF>     This;           //!< Type of this DVecTransExpr instance.
-   typedef TransposeType_<VT>       ResultType;     //!< Result type for expression template evaluations.
-   typedef ResultType_<VT>          TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>         ElementType;    //!< Resulting element type.
-   typedef ReturnType_<VT>          ReturnType;     //!< Return type for expression template evaluations.
+   using This          = DVecTransExpr<VT,TF>;  //!< Type of this DVecTransExpr instance.
+   using ResultType    = TransposeType_<VT>;    //!< Result type for expression template evaluations.
+   using TransposeType = ResultType_<VT>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;      //!< Resulting element type.
+   using ReturnType    = ReturnType_<VT>;       //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DVecTransExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DVecTransExpr& >;
 
    //! Iterator over the elements of the dense vector.
-   typedef typename GetConstIterator<VT>::Type  ConstIterator;
+   using ConstIterator = typename GetConstIterator<VT>::Type;
 
    //! Composite data type of the dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  Operand;
+   using Operand = If_< IsExpression<VT>, const VT, const VT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

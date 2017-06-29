@@ -160,21 +160,21 @@ class SMatDeclDiagExpr : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatDeclDiagExpr<MT,SO>               This;           //!< Type of this SMatDeclDiagExpr instance.
-   typedef DiagonalMatrix< ResultType_<MT> >     ResultType;     //!< Result type for expression template evaluations.
-   typedef DiagonalMatrix< OppositeType_<MT> >   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DiagonalMatrix< TransposeType_<MT> >  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>                      ElementType;    //!< Resulting element type.
-   typedef ReturnType_<MT>                       ReturnType;     //!< Return type for expression template evaluations.
+   using This          = SMatDeclDiagExpr<MT,SO>;               //!< Type of this SMatDeclDiagExpr instance.
+   using ResultType    = DiagonalMatrix< ResultType_<MT> >;     //!< Result type for expression template evaluations.
+   using OppositeType  = DiagonalMatrix< OppositeType_<MT> >;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = DiagonalMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;                      //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;                       //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclDiagExpr& >  CompositeType;
+   using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclDiagExpr& >;
 
    //! Iterator over the elements of the dense matrix.
-   typedef typename GetConstIterator<MT>::Type  ConstIterator;
+   using ConstIterator = typename GetConstIterator<MT>::Type;
 
    //! Composite data type of the sparse matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

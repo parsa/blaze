@@ -111,9 +111,9 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     RT;  //!< Result type of the sparse vector expression.
-   typedef ReturnType_<VT>     RN;  //!< Return type of the sparse vector expression.
-   typedef CompositeType_<VT>  CT;  //!< Composite type of the sparse vector expression.
+   using RT = ResultType_<VT>;     //!< Result type of the sparse vector expression.
+   using RN = ReturnType_<VT>;     //!< Return type of the sparse vector expression.
+   using CT = CompositeType_<VT>;  //!< Composite type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -126,7 +126,7 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN,ST>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -165,22 +165,22 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecScalarMultExpr<VT,ST,TF>  This;           //!< Type of this SVecScalarMultExpr instance.
-   typedef MultTrait_<RT,ST>             ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>      ElementType;    //!< Resulting element type.
+   using This          = SVecScalarMultExpr<VT,ST,TF>;  //!< Type of this SVecScalarMultExpr instance.
+   using ResultType    = MultTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SVecScalarMultExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SVecScalarMultExpr& >;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side scalar value.
-   typedef ST  RightOperand;
+   using RightOperand = ST;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -196,23 +196,23 @@ class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse vector expression.
-      typedef ValueIndexPair<ElementType>  Element;
+      using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      typedef ConstIterator_< RemoveReference_<LeftOperand> >  IteratorType;
+      using IteratorType = ConstIterator_< RemoveReference_<LeftOperand> >;
 
-      typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef Element                    ValueType;         //!< Type of the underlying pointers.
-      typedef ValueType*                 PointerType;       //!< Pointer return type.
-      typedef ValueType&                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
+      using ValueType        = Element;                    //!< Type of the underlying pointers.
+      using PointerType      = ValueType*;                 //!< Pointer return type.
+      using ReferenceType    = ValueType&;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying pointers.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying pointers.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -805,7 +805,7 @@ inline const SVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef UnderlyingBuiltin_<VT>  ElementType;
+   using ElementType = UnderlyingBuiltin_<VT>;
    return SVecScalarMultExpr<VT,ElementType,TF>( ~sv, ElementType(-1) );
 }
 //*************************************************************************************************
@@ -918,7 +918,7 @@ template< typename VT  // Type of the sparse vector
 inline const SVecScalarMultExpr<VT,ElementType_<VT>,TF>
    normalize( const SparseVector<VT,TF>& vec )
 {
-   typedef ElementType_<VT>  ElementType;
+   using ElementType = ElementType_<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
 
@@ -1492,10 +1492,10 @@ struct SVecScalarMultExprTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
 {
  public:
    //**********************************************************************************************
-   typedef If_< And< IsSparseVector<VT>, IsColumnVector<VT>
-                   , IsNumeric<ST1>, IsNumeric<ST2> >
-              , SVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
-              , INVALID_TYPE > Type;
+   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
+                        , IsNumeric<ST1>, IsNumeric<ST2> >
+                   , SVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
+                   , INVALID_TYPE >;
    //**********************************************************************************************
 };
 /*! \endcond */

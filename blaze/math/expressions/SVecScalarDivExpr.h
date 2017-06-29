@@ -106,9 +106,9 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>     RT;  //!< Result type of the sparse vector expression.
-   typedef ReturnType_<VT>     RN;  //!< Return type of the sparse vector expression.
-   typedef CompositeType_<VT>  CT;  //!< Composite type of the sparse vector expression.
+   using RT = ResultType_<VT>;     //!< Result type of the sparse vector expression.
+   using RN = ReturnType_<VT>;     //!< Return type of the sparse vector expression.
+   using CT = CompositeType_<VT>;  //!< Composite type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -121,7 +121,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   typedef DivExprTrait_<RN,ST>  ExprReturnType;
+   using ExprReturnType = DivExprTrait_<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -160,22 +160,22 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecScalarDivExpr<VT,ST,TF>  This;           //!< Type of this SVecScalarDivExpr instance.
-   typedef DivTrait_<RT,ST>             ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
+   using This          = SVecScalarDivExpr<VT,ST,TF>;  //!< Type of this SVecScalarDivExpr instance.
+   using ResultType    = DivTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SVecScalarDivExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SVecScalarDivExpr& >;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side scalar value.
-   typedef ST  RightOperand;
+   using RightOperand = ST;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -191,23 +191,23 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse vector expression.
-      typedef ValueIndexPair<ElementType>  Element;
+      using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      typedef ConstIterator_< RemoveReference_<LeftOperand> >  IteratorType;
+      using IteratorType = ConstIterator_< RemoveReference_<LeftOperand> >;
 
-      typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef Element                    ValueType;         //!< Type of the underlying pointers.
-      typedef ValueType*                 PointerType;       //!< Pointer return type.
-      typedef ValueType&                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
+      using ValueType        = Element;                    //!< Type of the underlying pointers.
+      using PointerType      = ValueType*;                 //!< Pointer return type.
+      using ReferenceType    = ValueType&;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying pointers.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying pointers.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -811,8 +811,8 @@ inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<VT,ST> >
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   typedef DivExprTrait_<VT,ST>       ReturnType;
-   typedef RightOperand_<ReturnType>  ScalarType;
+   using ReturnType = DivExprTrait_<VT,ST>;
+   using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
@@ -915,9 +915,9 @@ inline const EnableIf_< IsNumeric<ST2>
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   typedef MultTrait_<ST1,ST2>         MultType;
-   typedef DivExprTrait_<VT,MultType>  ReturnType;
-   typedef RightOperand_<ReturnType>   ScalarType;
+   using MultType   = MultTrait_<ST1,ST2>;
+   using ReturnType = DivExprTrait_<VT,MultType>;
+   using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );

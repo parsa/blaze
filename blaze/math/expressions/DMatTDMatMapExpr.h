@@ -113,14 +113,14 @@ class DMatTDMatMapExpr : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<MT1>    ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef ElementType_<MT2>    ET2;  //!< Element type of the right-hand side dense matrix expression.
-   typedef ReturnType_<MT1>     RN1;  //!< Return type of the left-hand side dense matrix expression.
-   typedef ReturnType_<MT2>     RN2;  //!< Return type of the right-hand side dense matrix expression.
-   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_<MT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_<MT2>;    //!< Element type of the right-hand side dense matrix expression.
+   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -159,32 +159,32 @@ class DMatTDMatMapExpr : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTDMatMapExpr<MT1,MT2,OP>  This;           //!< Type of this DMatTDMatMapExpr instance.
-   typedef BinaryMapTrait_<RT1,RT2,OP>   ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>      ElementType;    //!< Resulting element type.
+   using This          = DMatTDMatMapExpr<MT1,MT2,OP>;  //!< Type of this DMatTDMatMapExpr instance.
+   using ResultType    = BinaryMapTrait_<RT1,RT2,OP>;   //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) )  ReturnType;
+   using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DMatTDMatMapExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatTDMatMapExpr& >;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
 
    //! Data type of the custom unary operation.
-   typedef OP  Operation;
+   using Operation = OP;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef If_< RequiresEvaluation<MT1>, const RT1, CT1 >  LT;
+   using LT = If_< RequiresEvaluation<MT1>, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef If_< RequiresEvaluation<MT2>, const RT2, CT2 >  RT;
+   using RT = If_< RequiresEvaluation<MT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -448,7 +448,7 @@ class DMatTDMatMapExpr : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -795,7 +795,7 @@ class DMatTDMatMapExpr : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

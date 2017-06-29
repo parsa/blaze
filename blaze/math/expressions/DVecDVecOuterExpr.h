@@ -112,14 +112,14 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side dense vector expression.
-   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side dense vector expression.
-   typedef ElementType_<RT1>    ET1;  //!< Element type of the left-hand side dense vector expression.
-   typedef ElementType_<RT2>    ET2;  //!< Element type of the right-hand side dense vector expression.
-   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side dense vector expression.
-   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side dense vector expression.
-   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side dense vector expression.
-   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side dense vector expression.
+   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
+   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using ET1 = ElementType_<RT1>;    //!< Element type of the left-hand side dense vector expression.
+   using ET2 = ElementType_<RT2>;    //!< Element type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side dense vector expression.
+   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side dense vector expression.
+   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -142,7 +142,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -208,30 +208,30 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
 
  public:
    //**Type definitions****************************************************************************
-   typedef DVecDVecOuterExpr<VT1,VT2>  This;           //!< Type of this DVecDVecOuterExpr instance.
-   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< Resulting SIMD element type.
+   using This          = DVecDVecOuterExpr<VT1,VT2>;  //!< Type of this DVecDVecOuterExpr instance.
+   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DVecDVecOuterExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DVecDVecOuterExpr& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef IfTrue_< evaluateLeft, const RT1, CT1 >  LT;
+   using LT = IfTrue_< evaluateLeft, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef IfTrue_< evaluateRight, const RT2, CT2 >  RT;
+   using RT = IfTrue_< evaluateRight, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -241,24 +241,24 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
-      typedef ElementType*                     PointerType;       //!< Pointer return type.
-      typedef ElementType&                     ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType;                      //!< Type of the underlying elements.
+      using PointerType      = ElementType*;                     //!< Pointer return type.
+      using ReferenceType    = ElementType&;                     //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense matrix expression.
-      typedef ConstIterator_<VT1>  LeftIteratorType;
+      using LeftIteratorType = ConstIterator_<VT1>;
 
       //! ConstIterator type of the right-hand side dense matrix expression.
-      typedef ConstIterator_<VT2>  RightIteratorType;
+      using RightIteratorType = ConstIterator_<VT2>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -926,7 +926,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1745,7 +1745,7 @@ class DVecDVecOuterExpr : public DenseMatrix< DVecDVecOuterExpr<VT1,VT2>, false 
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

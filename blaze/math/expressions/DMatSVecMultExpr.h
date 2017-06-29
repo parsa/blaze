@@ -109,10 +109,10 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>     MRT;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<VT>     VRT;  //!< Result type of the right-hand side sparse vector expression.
-   typedef CompositeType_<MT>  MCT;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef CompositeType_<VT>  VCT;  //!< Composite type of the right-hand side sparse vector expression.
+   using MRT = ResultType_<MT>;     //!< Result type of the left-hand side dense matrix expression.
+   using VRT = ResultType_<VT>;     //!< Result type of the right-hand side sparse vector expression.
+   using MCT = CompositeType_<MT>;  //!< Composite type of the left-hand side dense matrix expression.
+   using VCT = CompositeType_<VT>;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -161,26 +161,26 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatSVecMultExpr<MT,VT>     This;           //!< Type of this DMatSVecMultExpr instance.
-   typedef MultTrait_<MRT,VRT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
+   using This          = DMatSVecMultExpr<MT,VT>;     //!< Type of this DMatSVecMultExpr instance.
+   using ResultType    = MultTrait_<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DMatSVecMultExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatSVecMultExpr& >;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef If_< IsExpression<VT>, const VT, const VT& >  RightOperand;
+   using RightOperand = If_< IsExpression<VT>, const VT, const VT& >;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   typedef IfTrue_< evaluateMatrix, const MRT, MCT >  LT;
+   using LT = IfTrue_< evaluateMatrix, const MRT, MCT >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef IfTrue_< evaluateVector, const VRT, VCT >  RT;
+   using RT = IfTrue_< evaluateVector, const VRT, VCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

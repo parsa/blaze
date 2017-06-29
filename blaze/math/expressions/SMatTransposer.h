@@ -75,17 +75,17 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransposer<MT,SO>  This;            //!< Type of this SMatTransposer instance.
-   typedef TransposeType_<MT>     ResultType;      //!< Result type for expression template evaluations.
-   typedef MT                     OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>        TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>       ElementType;     //!< Resulting element type.
-   typedef ReturnType_<MT>        ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<MT>         Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>    ConstReference;  //!< Reference to a constant matrix value.
-   typedef Iterator_<MT>          Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>     ConstIterator;   //!< Iterator over constant elements.
+   using This           = SMatTransposer<MT,SO>;  //!< Type of this SMatTransposer instance.
+   using ResultType     = TransposeType_<MT>;     //!< Result type for expression template evaluations.
+   using OppositeType   = MT;                     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = ResultType_<MT>;        //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<MT>;       //!< Resulting element type.
+   using ReturnType     = ReturnType_<MT>;        //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;            //!< Data type for composite expression templates.
+   using Reference      = Reference_<MT>;         //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;    //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_<MT>;          //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<MT>;     //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -510,7 +510,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
 
-      typedef ConstIterator_<MT2>  RhsIterator;
+      using RhsIterator = ConstIterator_<MT2>;
 
       const size_t m( rows() );
 
@@ -542,7 +542,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
       BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
 
-      typedef ConstIterator_<MT2>  RhsIterator;
+      using RhsIterator = ConstIterator_<MT2>;
 
       const size_t m( rows() );
       const size_t n( columns() );
@@ -605,17 +605,17 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SMatTransposer<MT,true>  This;            //!< Type of this SMatTransposer instance.
-   typedef TransposeType_<MT>       ResultType;      //!< Result type for expression template evaluations.
-   typedef MT                       OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef ResultType_<MT>          TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>         ElementType;     //!< Resulting element type.
-   typedef ReturnType_<MT>          ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<MT>           Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>      ConstReference;  //!< Reference to a constant matrix value.
-   typedef Iterator_<MT>            Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>       ConstIterator;   //!< Iterator over constant elements.
+   using This           = SMatTransposer<MT,true>;  //!< Type of this SMatTransposer instance.
+   using ResultType     = TransposeType_<MT>;       //!< Result type for expression template evaluations.
+   using OppositeType   = MT;                       //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = ResultType_<MT>;          //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<MT>;         //!< Resulting element type.
+   using ReturnType     = ReturnType_<MT>;          //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;              //!< Data type for composite expression templates.
+   using Reference      = Reference_<MT>;           //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;      //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_<MT>;            //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<MT>;       //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1007,7 +1007,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
       BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
 
-      typedef ConstIterator_<MT2>  RhsIterator;
+      using RhsIterator = ConstIterator_<MT2>;
 
       const size_t m( rows() );
       const size_t n( columns() );
@@ -1053,7 +1053,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
       BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
 
-      typedef ConstIterator_<MT2>  RhsIterator;
+      using RhsIterator = ConstIterator_<MT2>;
 
       const size_t n( columns() );
 

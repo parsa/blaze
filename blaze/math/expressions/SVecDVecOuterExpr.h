@@ -108,14 +108,14 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side sparse vector expression.
-   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side dense vector expression.
-   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side sparse vector expression.
-   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side dense vector expression.
-   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side dense vector expression.
-   typedef ElementType_<VT1>    ET1;  //!< Element type of the left-hand side sparse vector expression.
-   typedef ElementType_<VT2>    ET2;  //!< Element type of the right-hand side dense vector expression.
+   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side sparse vector expression.
+   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side sparse vector expression.
+   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
+   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using ET1 = ElementType_<VT1>;    //!< Element type of the left-hand side sparse vector expression.
+   using ET2 = ElementType_<VT2>;    //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -128,7 +128,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
    //**Evaluation strategy*************************************************************************
@@ -181,29 +181,29 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecDVecOuterExpr<VT1,VT2>  This;           //!< Type of this SVecDVecOuterExpr instance.
-   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   using This          = SVecDVecOuterExpr<VT1,VT2>;  //!< Type of this SVecDVecOuterExpr instance.
+   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const SVecDVecOuterExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SVecDVecOuterExpr& >;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef If_< IsComputation<VT1>, const RT1, CT1 >  LT;
+   using LT = If_< IsComputation<VT1>, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef If_< IsComputation<VT2>, const RT2, CT2 >  RT;
+   using RT = If_< IsComputation<VT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -214,26 +214,26 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
     public:
       //**Type definitions*************************************************************************
       //! Element type of the sparse matrix expression.
-      typedef ValueIndexPair<ElementType>  Element;
+      using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      typedef ConstIterator_< RemoveReference_<LeftOperand> >  IteratorType;
+      using IteratorType = ConstIterator_< RemoveReference_<LeftOperand> >;
 
       //! Element type of the dense vector expression
-      typedef ET2  RightElement;
+      using RightElement = ET2;
 
-      typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef Element                    ValueType;         //!< Type of the underlying pointers.
-      typedef ValueType*                 PointerType;       //!< Pointer return type.
-      typedef ValueType&                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
+      using ValueType        = Element;                    //!< Type of the underlying pointers.
+      using PointerType      = ValueType*;                 //!< Pointer return type.
+      using ReferenceType    = ValueType&;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying pointers.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying pointers.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -601,7 +601,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -636,7 +636,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -690,7 +690,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -735,7 +735,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns() , "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -800,7 +800,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -884,7 +884,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -919,7 +919,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -975,7 +975,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -1058,7 +1058,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -1093,7 +1093,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -1149,7 +1149,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -1232,7 +1232,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -1282,7 +1282,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -1353,7 +1353,7 @@ class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  ConstIterator;
+      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand

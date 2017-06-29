@@ -148,7 +148,7 @@ inline ElementType_<MT> det4x4( const DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    CompositeType_<MT> A( ~dm );
 
@@ -186,7 +186,7 @@ inline ElementType_<MT> det5x5( const DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    CompositeType_<MT> A( ~dm );
 
@@ -240,7 +240,7 @@ inline ElementType_<MT> det6x6( const DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    CompositeType_<MT> A( ~dm );
 
@@ -325,9 +325,9 @@ ElementType_<MT> detNxN( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square symmetric matrix detected" );
 
-   typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
-   typedef RemoveAdaptor_<RT>  URT;
+   using RT  = ResultType_<MT>;
+   using ET  = ElementType_<MT>;
+   using URT = RemoveAdaptor_<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( URT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( URT );
@@ -383,7 +383,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline ElementType_<MT> det( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    if( !isSquare( ~dm ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

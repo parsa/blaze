@@ -116,10 +116,10 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>    RT;  //!< Result type of the dense matrix expression.
-   typedef OppositeType_<MT>  OT;  //!< Opposite type of the dense matrix expression.
-   typedef ElementType_<MT>   ET;  //!< Element type of the dense matrix expression.
-   typedef ReturnType_<MT>    RN;  //!< Return type of the dense matrix expression.
+   using RT = ResultType_<MT>;    //!< Result type of the dense matrix expression.
+   using OT = OppositeType_<MT>;  //!< Opposite type of the dense matrix expression.
+   using ET = ElementType_<MT>;   //!< Element type of the dense matrix expression.
+   using RN = ReturnType_<MT>;    //!< Return type of the dense matrix expression.
 
    //! Definition of the HasSIMDEnabled type trait.
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
@@ -173,23 +173,23 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatMapExpr<MT,OP,SO>       This;           //!< Type of this DMatMapExpr instance.
-   typedef UnaryMapTrait_<RT,OP>       ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   using This          = DMatMapExpr<MT,OP,SO>;       //!< Type of this DMatMapExpr instance.
+   using ResultType    = UnaryMapTrait_<RT,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef decltype( std::declval<OP>()( std::declval<RN>() ) )  ReturnType;
+   using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
 
    //! Data type for composite expression templates.
-   typedef IfTrue_< useAssign, const ResultType, const DMatMapExpr& >  CompositeType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatMapExpr& >;
 
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, const MT, const MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
 
    //! Data type of the custom unary operation.
-   typedef OP  Operation;
+   using Operation = OP;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -199,21 +199,21 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType                      ValueType;         //!< Type of the underlying elements.
-      typedef ElementType*                     PointerType;       //!< Pointer return type.
-      typedef ElementType&                     ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType;                      //!< Type of the underlying elements.
+      using PointerType      = ElementType*;                     //!< Pointer return type.
+      using ReferenceType    = ElementType&;                     //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      typedef ConstIterator_<MT>  IteratorType;
+      using IteratorType = ConstIterator_<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -711,7 +711,7 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO == SO2, RT, OT >  TmpType;
+      using TmpType = IfTrue_< SO == SO2, RT, OT >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );
@@ -940,7 +940,7 @@ class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO == SO2, RT, OT >  TmpType;
+      using TmpType = IfTrue_< SO == SO2, RT, OT >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );

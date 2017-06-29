@@ -109,12 +109,12 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side sparse matrix expression.
-   typedef ReturnType_<MT1>     RN1;  //!< Return type of the left-hand side sparse matrix expression.
-   typedef ReturnType_<MT2>     RN2;  //!< Return type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side sparse matrix expression.
+   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -127,7 +127,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef AddExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = AddExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -161,23 +161,23 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SMatSMatAddExpr<MT1,MT2>    This;           //!< Type of this SMatSMatAddExpr instance.
-   typedef AddTrait_<RT1,RT2>          ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   using This          = SMatSMatAddExpr<MT1,MT2>;    //!< Type of this SMatSMatAddExpr instance.
+   using ResultType    = AddTrait_<RT1,RT2>;          //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -345,7 +345,7 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
+      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
 
       assign( ~lhs, rhs.lhs_ );
 
@@ -395,8 +395,8 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -476,8 +476,8 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<CT1> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<CT2> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand

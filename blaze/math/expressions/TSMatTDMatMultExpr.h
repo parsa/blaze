@@ -149,12 +149,12 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side sparse matrix expression.
-   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ElementType_<RT1>    ET1;  //!< Element type of the left-hand side dense matrix expression.
-   typedef ElementType_<RT2>    ET2;  //!< Element type of the right-hand side sparse matrix expression.
-   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side sparse matrix expression.
-   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_<RT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_<RT2>;    //!< Element type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -238,43 +238,43 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    //! Type of the functor for forwarding an expression to another assign kernel.
    /*! In case a temporary matrix needs to be created, this functor is used to forward the
        resulting expression to another assign kernel. */
-   typedef IfTrue_< HERM
-                  , DeclHerm
-                  , IfTrue_< SYM
-                           , DeclSym
-                           , IfTrue_< LOW
-                                    , IfTrue_< UPP
-                                             , DeclDiag
-                                             , DeclLow >
-                                    , IfTrue_< UPP
-                                             , DeclUpp
-                                             , Noop > > > >  ForwardFunctor;
+   using ForwardFunctor = IfTrue_< HERM
+                                 , DeclHerm
+                                 , IfTrue_< SYM
+                                          , DeclSym
+                                          , IfTrue_< LOW
+                                                   , IfTrue_< UPP
+                                                            , DeclDiag
+                                                            , DeclLow >
+                                                   , IfTrue_< UPP
+                                                            , DeclUpp
+                                                            , Noop > > > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this TSMatTDMatMultExpr instance.
-   typedef TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>  This;
+   using This = TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
-   typedef const ElementType           ReturnType;     //!< Return type for expression template evaluations.
-   typedef const ResultType            CompositeType;  //!< Data type for composite expression templates.
+   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   typedef IfTrue_< evaluateLeft, const RT1, CT1 >  LT;
+   using LT = IfTrue_< evaluateLeft, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   typedef IfTrue_< evaluateRight, const RT2, CT2 >  RT;
+   using RT = IfTrue_< evaluateRight, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -541,7 +541,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       reset( C );
 
@@ -656,7 +656,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
@@ -830,7 +830,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, ResultType, OppositeType >  TmpType;
+      using TmpType = IfTrue_< SO, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -974,7 +974,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       if( IsDiagonal<MT5>::value )
       {
@@ -1076,7 +1076,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
@@ -1344,7 +1344,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       if( IsDiagonal<MT5>::value )
       {
@@ -1446,7 +1446,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      typedef ConstIterator_<MT4>  ConstIterator;
+      using ConstIterator = ConstIterator_<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
 
@@ -1737,7 +1737,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2,SF,HF,
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, ResultType, OppositeType >  TmpType;
+      using TmpType = IfTrue_< SO, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

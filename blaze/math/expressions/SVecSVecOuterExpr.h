@@ -96,12 +96,12 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT1>     RT1;  //!< Result type of the left-hand side sparse vector expression.
-   typedef ResultType_<VT2>     RT2;  //!< Result type of the right-hand side sparse vector expression.
-   typedef ReturnType_<VT1>     RN1;  //!< Return type of the left-hand side sparse vector expression.
-   typedef ReturnType_<VT2>     RN2;  //!< Return type of the right-hand side sparse vector expression.
-   typedef CompositeType_<VT1>  CT1;  //!< Composite type of the left-hand side sparse vector expression.
-   typedef CompositeType_<VT2>  CT2;  //!< Composite type of the right-hand side sparse vector expression.
+   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side sparse vector expression.
+   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side sparse vector expression.
+   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side sparse vector expression.
+   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side sparse vector expression.
+   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
+   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -114,34 +114,34 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SVecSVecOuterExpr<VT1,VT2>  This;           //!< Type of this SVecSVecOuterExpr instance.
-   typedef MultTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>   OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>    ElementType;    //!< Resulting element type.
+   using This          = SVecSVecOuterExpr<VT1,VT2>;  //!< Type of this SVecSVecOuterExpr instance.
+   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side sparse vector expression.
-   typedef If_< IsExpression<VT1>, const VT1, const VT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side sparse vector expression.
-   typedef If_< IsExpression<VT2>, const VT2, const VT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   typedef If_< IsComputation<VT1>, const RT1, CT1 >  LT;
+   using LT = If_< IsComputation<VT1>, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   typedef If_< IsComputation<VT2>, const RT2, CT2 >  RT;
+   using RT = If_< IsComputation<VT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -306,8 +306,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -354,8 +354,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -400,8 +400,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -458,8 +458,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -513,8 +513,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -561,8 +561,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -611,8 +611,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -659,8 +659,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -709,8 +709,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -780,8 +780,8 @@ class SVecSVecOuterExpr : public SparseMatrix< SVecSVecOuterExpr<VT1,VT2>, false
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      typedef ConstIterator_< RemoveReference_<LT> >  LeftIterator;
-      typedef ConstIterator_< RemoveReference_<RT> >  RightIterator;
+      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand

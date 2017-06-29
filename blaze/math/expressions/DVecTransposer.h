@@ -78,19 +78,19 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DVecTransposer<VT,TF>    This;            //!< Type of this DVecTransposer instance.
-   typedef TransposeType_<VT>       ResultType;      //!< Result type for expression template evaluations.
-   typedef ResultType_<VT>          TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>         ElementType;     //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;        //!< SIMD type of the vector elements.
-   typedef ReturnType_<VT>          ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<VT>           Reference;       //!< Reference to a non-constant vector value.
-   typedef ConstReference_<VT>      ConstReference;  //!< Reference to a constant vector value.
-   typedef Pointer_<VT>             Pointer;         //!< Pointer to a non-constant vector value.
-   typedef ConstPointer_<VT>        ConstPointer;    //!< Pointer to a constant vector value.
-   typedef Iterator_<VT>            Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<VT>       ConstIterator;   //!< Iterator over constant elements.
+   using This           = DVecTransposer<VT,TF>;    //!< Type of this DVecTransposer instance.
+   using ResultType     = TransposeType_<VT>;       //!< Result type for expression template evaluations.
+   using TransposeType  = ResultType_<VT>;          //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<VT>;         //!< Type of the vector elements.
+   using SIMDType       = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType     = ReturnType_<VT>;          //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;              //!< Data type for composite expression templates.
+   using Reference      = Reference_<VT>;           //!< Reference to a non-constant vector value.
+   using ConstReference = ConstReference_<VT>;      //!< Reference to a constant vector value.
+   using Pointer        = Pointer_<VT>;             //!< Pointer to a non-constant vector value.
+   using ConstPointer   = ConstPointer_<VT>;        //!< Pointer to a constant vector value.
+   using Iterator       = Iterator_<VT>;            //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<VT>;       //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -519,7 +519,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_<VT2>  RhsConstIterator;
+      using RhsConstIterator = ConstIterator_<VT2>;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] = element->value();
@@ -576,7 +576,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_<VT2>  RhsConstIterator;
+      using RhsConstIterator = ConstIterator_<VT2>;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] += element->value();
@@ -633,7 +633,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_<VT2>  RhsConstIterator;
+      using RhsConstIterator = ConstIterator_<VT2>;
 
       for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
          dv_[element->index()] -= element->value();
@@ -690,7 +690,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
 
-      typedef ConstIterator_<VT2>  RhsConstIterator;
+      using RhsConstIterator = ConstIterator_<VT2>;
 
       const VT tmp( dv_ );
       dv_.reset();

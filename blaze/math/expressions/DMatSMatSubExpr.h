@@ -110,10 +110,10 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT1>  RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<MT2>  RT2;  //!< Result type of the right-hand side sparse matrix expression.
-   typedef ReturnType_<MT1>  RN1;  //!< Return type of the left-hand side dense matrix expression.
-   typedef ReturnType_<MT2>  RN2;  //!< Return type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_<MT1>;  //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_<MT2>;  //!< Result type of the right-hand side sparse matrix expression.
+   using RN1 = ReturnType_<MT1>;  //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_<MT2>;  //!< Return type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -126,7 +126,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef SubExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = SubExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
@@ -145,23 +145,23 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatSMatSubExpr<MT1,MT2,SO>  This;           //!< Type of this DMatSMatSubExpr instance.
-   typedef SubTrait_<RT1,RT2>           ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
+   using This          = DMatSMatSubExpr<MT1,MT2,SO>;  //!< Type of this DMatSMatSubExpr instance.
+   using ResultType    = SubTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -341,7 +341,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
+      using TmpType = IfTrue_< SO == SO2, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -520,7 +520,7 @@ class DMatSMatSubExpr : public DenseMatrix< DMatSMatSubExpr<MT1,MT2,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO == SO2, ResultType, OppositeType >  TmpType;
+      using TmpType = IfTrue_< SO == SO2, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

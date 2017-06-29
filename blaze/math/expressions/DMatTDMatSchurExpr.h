@@ -111,12 +111,12 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT1>     RT1;  //!< Result type of the left-hand side dense matrix expression.
-   typedef ResultType_<MT2>     RT2;  //!< Result type of the right-hand side dense matrix expression.
-   typedef ReturnType_<MT1>     RN1;  //!< Return type of the left-hand side dense matrix expression.
-   typedef ReturnType_<MT2>     RN2;  //!< Return type of the right-hand side dense matrix expression.
-   typedef CompositeType_<MT1>  CT1;  //!< Composite type of the left-hand side dense matrix expression.
-   typedef CompositeType_<MT2>  CT2;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -129,7 +129,7 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   typedef MultExprTrait_<RN1,RN2>  ExprReturnType;
+   using ExprReturnType = MultExprTrait_<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -168,23 +168,23 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
 
  public:
    //**Type definitions****************************************************************************
-   typedef DMatTDMatSchurExpr<MT1,MT2>  This;           //!< Type of this DMatTDMatSchurExpr instance.
-   typedef SchurTrait_<RT1,RT2>         ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<ResultType>     ElementType;    //!< Resulting element type.
+   using This          = DMatTDMatSchurExpr<MT1,MT2>;  //!< Type of this DMatTDMatSchurExpr instance.
+   using ResultType    = SchurTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   typedef const IfTrue_< returnExpr, ExprReturnType, ElementType >  ReturnType;
+   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   typedef const ResultType  CompositeType;
+   using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side dense matrix expression.
-   typedef If_< IsExpression<MT1>, const MT1, const MT1& >  LeftOperand;
+   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   typedef If_< IsExpression<MT2>, const MT2, const MT2& >  RightOperand;
+   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -432,7 +432,7 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -764,7 +764,7 @@ class DMatTDMatSchurExpr : public DenseMatrix< DMatTDMatSchurExpr<MT1,MT2>, fals
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef IfTrue_< SO, OppositeType, ResultType >  TmpType;
+      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

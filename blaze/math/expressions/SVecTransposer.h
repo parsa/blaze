@@ -76,16 +76,16 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef SVecTransposer<VT,TF>  This;            //!< Type of this SVecTransposer instance.
-   typedef TransposeType_<VT>     ResultType;      //!< Result type for expression template evaluations.
-   typedef ResultType_<VT>        TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>       ElementType;     //!< Resulting element type.
-   typedef ReturnType_<VT>        ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&            CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<VT>         Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<VT>    ConstReference;  //!< Reference to a constant matrix value.
-   typedef Iterator_<VT>          Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<VT>     ConstIterator;   //!< Iterator over constant elements.
+   using This           = SVecTransposer<VT,TF>;  //!< Type of this SVecTransposer instance.
+   using ResultType     = TransposeType_<VT>;     //!< Result type for expression template evaluations.
+   using TransposeType  = ResultType_<VT>;        //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<VT>;       //!< Resulting element type.
+   using ReturnType     = ReturnType_<VT>;        //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;            //!< Data type for composite expression templates.
+   using Reference      = Reference_<VT>;         //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<VT>;    //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_<VT>;          //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<VT>;     //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
