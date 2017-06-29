@@ -196,8 +196,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed vector element.
-   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
+   using ElementBase  = ValueIndexPair<Type>;  //!< Base class for the compressed vector element.
+   using IteratorBase = ElementBase*;          //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
@@ -272,17 +272,17 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef CompressedVector<Type,TF>   This;            //!< Type of this CompressedVector instance.
-   typedef SparseVector<This,TF>       BaseType;        //!< Base type of this CompressedVector instance.
-   typedef This                        ResultType;      //!< Result type for expression template evaluations.
-   typedef CompressedVector<Type,!TF>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                        ElementType;     //!< Type of the compressed vector elements.
-   typedef const Type&                 ReturnType;      //!< Return type for expression template evaluations.
-   typedef const CompressedVector&     CompositeType;   //!< Data type for composite expression templates.
-   typedef VectorAccessProxy<This>     Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&                 ConstReference;  //!< Reference to a constant vector value.
-   typedef Element*                    Iterator;        //!< Iterator over non-constant elements.
-   typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
+   using This           = CompressedVector<Type,TF>;   //!< Type of this CompressedVector instance.
+   using BaseType       = SparseVector<This,TF>;       //!< Base type of this CompressedVector instance.
+   using ResultType     = This;                        //!< Result type for expression template evaluations.
+   using TransposeType  = CompressedVector<Type,!TF>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = Type;                        //!< Type of the compressed vector elements.
+   using ReturnType     = const Type&;                 //!< Return type for expression template evaluations.
+   using CompositeType  = const CompressedVector&;     //!< Data type for composite expression templates.
+   using Reference      = VectorAccessProxy<This>;     //!< Reference to a non-constant vector value.
+   using ConstReference = const Type&;                 //!< Reference to a constant vector value.
+   using Iterator       = Element*;                    //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;              //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -290,7 +290,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CompressedVector<NewType,TF>  Other;  //!< The type of the other CompressedVector.
+      using Other = CompressedVector<NewType,TF>;  //!< The type of the other CompressedVector.
    };
    //**********************************************************************************************
 
@@ -299,7 +299,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      typedef CompressedVector<Type,TF>  Other;  //!< The type of the other CompressedVector.
+      using Other = CompressedVector<Type,TF>;  //!< The type of the other CompressedVector.
    };
    //**********************************************************************************************
 
@@ -1163,7 +1163,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator%=( const V
 {
    using blaze::assign;
 
-   typedef CrossTrait_< This, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1226,8 +1226,8 @@ inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<Type,Other>            DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<Type,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -2132,7 +2132,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef AddTrait_< This, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -2187,7 +2187,7 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   typedef SubTrait_< This, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );

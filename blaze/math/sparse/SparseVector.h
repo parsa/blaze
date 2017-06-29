@@ -92,10 +92,10 @@ template< typename T1  // Type of the left-hand side sparse vector
         , bool TF2 >   // Transpose flag of the right-hand side sparse vector
 inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
-   typedef ConstIterator_< RemoveReference_<CT1> >  LhsConstIterator;
-   typedef ConstIterator_< RemoveReference_<CT2> >  RhsConstIterator;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
+   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -218,8 +218,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
-   typedef CompositeType_<VT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using CT = CompositeType_<VT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -262,9 +262,9 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
-   typedef CompositeType_<VT>  CT;
-   typedef ConstReference_< RemoveReference_<CT> >  ConstReference;
-   typedef ConstIterator_< RemoveReference_<CT> >   ConstIterator;
+   using CT = CompositeType_<VT>;
+   using ConstReference = ConstReference_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    if( IsUniform<VT>::value || (~sv).size() < 2UL )
       return true;
@@ -313,8 +313,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
 {
-   typedef ElementType_<VT>    ElementType;
-   typedef ConstIterator_<VT>  ConstIterator;
+   using ElementType   = ElementType_<VT>;
+   using ConstIterator = ConstIterator_<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
 
@@ -400,9 +400,9 @@ const ElementType_<VT> min( const SparseVector<VT,TF>& sv )
 {
    using blaze::min;
 
-   typedef ElementType_<VT>    ET;
-   typedef CompositeType_<VT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using ET = ElementType_<VT>;
+   using CT = CompositeType_<VT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -457,9 +457,9 @@ const ElementType_<VT> max( const SparseVector<VT,TF>& sv )
 {
    using blaze::max;
 
-   typedef ElementType_<VT>    ET;
-   typedef CompositeType_<VT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using ET = ElementType_<VT>;
+   using CT = CompositeType_<VT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 

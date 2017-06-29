@@ -215,8 +215,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed matrix element.
-   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
+   using ElementBase  = ValueIndexPair<Type>;  //!< Base class for the compressed matrix element.
+   using IteratorBase = ElementBase*;          //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
@@ -291,18 +291,18 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef CompressedMatrix<Type,SO>   This;            //!< Type of this CompressedMatrix instance.
-   typedef SparseMatrix<This,SO>       BaseType;        //!< Base type of this CompressedMatrix instance.
-   typedef This                        ResultType;      //!< Result type for expression template evaluations.
-   typedef CompressedMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef CompressedMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                        ElementType;     //!< Type of the compressed matrix elements.
-   typedef const Type&                 ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                 CompositeType;   //!< Data type for composite expression templates.
-   typedef MatrixAccessProxy<This>     Reference;       //!< Reference to a compressed matrix value.
-   typedef const Type&                 ConstReference;  //!< Reference to a constant compressed matrix value.
-   typedef Element*                    Iterator;        //!< Iterator over non-constant elements.
-   typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
+   using This           = CompressedMatrix<Type,SO>;   //!< Type of this CompressedMatrix instance.
+   using BaseType       = SparseMatrix<This,SO>;       //!< Base type of this CompressedMatrix instance.
+   using ResultType     = This;                        //!< Result type for expression template evaluations.
+   using OppositeType   = CompressedMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = CompressedMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = Type;                        //!< Type of the compressed matrix elements.
+   using ReturnType     = const Type&;                 //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;                 //!< Data type for composite expression templates.
+   using Reference      = MatrixAccessProxy<This>;     //!< Reference to a compressed matrix value.
+   using ConstReference = const Type&;                 //!< Reference to a constant compressed matrix value.
+   using Iterator       = Element*;                    //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;              //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -310,7 +310,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CompressedMatrix<NewType,SO>  Other;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<NewType,SO>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -320,7 +320,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef CompressedMatrix<Type,SO>  Other;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<Type,SO>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -1375,8 +1375,8 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<Type,Other>            DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<Type,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -2808,7 +2808,7 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   typedef ConstIterator_<MT>  RhsIterator;
+   using RhsIterator = ConstIterator_<MT>;
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
@@ -2991,8 +2991,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ValueIndexPair<Type>  ElementBase;   //!< Base class for the compressed matrix element.
-   typedef ElementBase*          IteratorBase;  //!< Iterator over non-constant base elements.
+   using ElementBase  = ValueIndexPair<Type>;  //!< Base class for the compressed matrix element.
+   using IteratorBase = ElementBase*;          //!< Iterator over non-constant base elements.
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
@@ -3067,18 +3067,18 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
 
  public:
    //**Type definitions****************************************************************************
-   typedef CompressedMatrix<Type,true>   This;            //!< Type of this CompressedMatrix instance.
-   typedef SparseMatrix<This,true>       BaseType;        //!< Base type of this CompressedMatrix instance.
-   typedef This                          ResultType;      //!< Result type for expression template evaluations.
-   typedef CompressedMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef CompressedMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                          ElementType;     //!< Type of the compressed matrix elements.
-   typedef const Type&                   ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                   CompositeType;   //!< Data type for composite expression templates.
-   typedef MatrixAccessProxy<This>       Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
-   typedef Element*                      Iterator;        //!< Iterator over non-constant elements.
-   typedef const Element*                ConstIterator;   //!< Iterator over constant elements.
+   using This           = CompressedMatrix<Type,true>;   //!< Type of this CompressedMatrix instance.
+   using BaseType       = SparseMatrix<This,true>;       //!< Base type of this CompressedMatrix instance.
+   using ResultType     = This;                          //!< Result type for expression template evaluations.
+   using OppositeType   = CompressedMatrix<Type,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = CompressedMatrix<Type,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = Type;                          //!< Type of the compressed matrix elements.
+   using ReturnType     = const Type&;                   //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;                   //!< Data type for composite expression templates.
+   using Reference      = MatrixAccessProxy<This>;       //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;                   //!< Reference to a constant matrix value.
+   using Iterator       = Element*;                      //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;                //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3086,7 +3086,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CompressedMatrix<NewType,true>  Other;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<NewType,true>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -3096,7 +3096,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef CompressedMatrix<Type,true>  Other;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<Type,true>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -4149,8 +4149,8 @@ inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<Type,Other>            DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<Type,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -5589,7 +5589,7 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   typedef ConstIterator_<MT>  RhsIterator;
+   using RhsIterator = ConstIterator_<MT>;
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );

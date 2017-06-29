@@ -74,10 +74,10 @@ class ValueIndexPair : private SparseElement
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type         ValueType;       //!< The value type of the value-index-pair.
-   typedef size_t       IndexType;       //!< The index type of the value-index-pair.
-   typedef Type&        Reference;       //!< Reference return type.
-   typedef const Type&  ConstReference;  //!< Reference-to-const return type.
+   using ValueType      = Type;         //!< The value type of the value-index-pair.
+   using IndexType      = size_t;       //!< The index type of the value-index-pair.
+   using Reference      = Type&;        //!< Reference return type.
+   using ConstReference = const Type&;  //!< Reference-to-const return type.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

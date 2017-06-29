@@ -102,8 +102,8 @@ class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> 
 {
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<VT>  RepresentedType;  //!< Type of the represented sparse vector element.
-   typedef RepresentedType&  RawReference;     //!< Raw reference to the represented element.
+   using RepresentedType = ElementType_<VT>;  //!< Type of the represented sparse vector element.
+   using RawReference    = RepresentedType&;  //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

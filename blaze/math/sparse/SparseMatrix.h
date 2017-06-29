@@ -116,10 +116,10 @@ template< typename T1    // Type of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse matrix
 inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2,false>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
-   typedef ConstIterator_< RemoveReference_<CT1> >  LhsConstIterator;
-   typedef ConstIterator_< RemoveReference_<CT2> >  RhsConstIterator;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
+   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -190,10 +190,10 @@ template< typename T1    // Type of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse matrix
 inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,true>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
-   typedef ConstIterator_< RemoveReference_<CT1> >  LhsConstIterator;
-   typedef ConstIterator_< RemoveReference_<CT2> >  RhsConstIterator;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
+   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -370,8 +370,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isnan( const SparseMatrix<MT,SO>& sm )
 {
-   typedef CompositeType_<MT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using CT = CompositeType_<MT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -431,11 +431,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsSymmetric<MT>::value )
       return true;
@@ -524,12 +524,12 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isHermitian( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ElementType_<MT>    ET;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using ET  = ElementType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsHermitian<MT>::value )
       return true;
@@ -602,7 +602,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    const size_t ibegin( ( IsStrictlyLower<MT>::value )?( 1UL ):( 0UL ) );
    const size_t iend  ( ( IsStrictlyUpper<MT>::value )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
@@ -638,7 +638,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    const size_t jbegin( ( IsStrictlyUpper<MT>::value )?( 1UL ):( 0UL ) );
    const size_t jend  ( ( IsStrictlyLower<MT>::value )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
@@ -674,8 +674,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   typedef ConstReference_<MT>  ConstReference;
-   typedef ConstIterator_<MT>   ConstIterator;
+   using ConstReference = ConstReference_<MT>;
+   using ConstIterator  = ConstIterator_<MT>;
 
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
@@ -726,8 +726,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   typedef ConstReference_<MT>  ConstReference;
-   typedef ConstIterator_<MT>   ConstIterator;
+   using ConstReference = ConstReference_<MT>;
+   using ConstIterator  = ConstIterator_<MT>;
 
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
@@ -861,11 +861,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isLower( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsLower<MT>::value )
       return true;
@@ -952,11 +952,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniLower( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsUniLower<MT>::value )
       return true;
@@ -1059,11 +1059,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1148,11 +1148,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUpper( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsUpper<MT>::value )
       return true;
@@ -1239,11 +1239,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1346,11 +1346,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1435,11 +1435,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsDiagonal<MT>::value )
       return true;
@@ -1520,11 +1520,11 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isIdentity( const SparseMatrix<MT,SO>& sm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
-   typedef ConstIterator_< RemoveReference_<Tmp> >  ConstIterator;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
 
    if( IsIdentity<MT>::value )
       return true;
@@ -1602,9 +1602,9 @@ const ElementType_<MT> min( const SparseMatrix<MT,SO>& sm )
 {
    using blaze::min;
 
-   typedef ElementType_<MT>    ET;
-   typedef CompositeType_<MT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using ET = ElementType_<MT>;
+   using CT = CompositeType_<MT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -1651,9 +1651,9 @@ const ElementType_<MT> max( const SparseMatrix<MT,SO>& sm )
 {
    using blaze::max;
 
-   typedef ElementType_<MT>    ET;
-   typedef CompositeType_<MT>  CT;
-   typedef ConstIterator_< RemoveReference_<CT> >  ConstIterator;
+   using ET = ElementType_<MT>;
+   using CT = CompositeType_<MT>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 

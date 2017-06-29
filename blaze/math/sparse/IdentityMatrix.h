@@ -219,16 +219,16 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef IdentityMatrix<Type,SO>   This;            //!< Type of this IdentityMatrix instance.
-   typedef SparseMatrix<This,SO>     BaseType;        //!< Base type of this IdentityMatrix instance.
-   typedef This                      ResultType;      //!< Result type for expression template evaluations.
-   typedef IdentityMatrix<Type,!SO>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef IdentityMatrix<Type,!SO>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                      ElementType;     //!< Type of the identity matrix elements.
-   typedef const Type                ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&               CompositeType;   //!< Data type for composite expression templates.
-   typedef const Type                Reference;       //!< Reference to a identity matrix element.
-   typedef const Type                ConstReference;  //!< Reference to a constant identity matrix element.
+   using This           = IdentityMatrix<Type,SO>;   //!< Type of this IdentityMatrix instance.
+   using BaseType       = SparseMatrix<This,SO>;     //!< Base type of this IdentityMatrix instance.
+   using ResultType     = This;                      //!< Result type for expression template evaluations.
+   using OppositeType   = IdentityMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = IdentityMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = Type;                      //!< Type of the identity matrix elements.
+   using ReturnType     = const Type;                //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;               //!< Data type for composite expression templates.
+   using Reference      = const Type;                //!< Reference to a identity matrix element.
+   using ConstReference = const Type;                //!< Reference to a constant identity matrix element.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -236,7 +236,7 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef IdentityMatrix<NewType,SO>  Other;  //!< The type of the other IdentityMatrix.
+      using Other = IdentityMatrix<NewType,SO>;  //!< The type of the other IdentityMatrix.
    };
    //**********************************************************************************************
 
@@ -246,7 +246,7 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef IdentityMatrix<Type,SO>  Other;  //!< The type of the other IdentityMatrix.
+      using Other = IdentityMatrix<Type,SO>;  //!< The type of the other IdentityMatrix.
    };
    //**********************************************************************************************
 
@@ -258,20 +258,20 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
     public:
       //**Type definitions*************************************************************************
       //! Element type of the identity matrix.
-      typedef ValueIndexPair<Type>  Element;
+      using Element = ValueIndexPair<Type>;
 
-      typedef std::forward_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef Element                    ValueType;         //!< Type of the underlying pointers.
-      typedef ValueType*                 PointerType;       //!< Pointer return type.
-      typedef ValueType&                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
+      using ValueType        = Element;                    //!< Type of the underlying pointers.
+      using PointerType      = ValueType*;                 //!< Pointer return type.
+      using ReferenceType    = ValueType&;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying pointers.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying pointers.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Default constructor**********************************************************************
@@ -396,7 +396,7 @@ class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef ConstIterator  Iterator;  //!< Iterator over non-constant elements.
+   using Iterator = ConstIterator;  //!< Iterator over non-constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

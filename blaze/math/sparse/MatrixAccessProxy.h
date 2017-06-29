@@ -108,8 +108,8 @@ class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> 
 
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  RepresentedType;  //!< Type of the represented sparse matrix element.
-   typedef RepresentedType&  RawReference;     //!< Raw reference to the represented element.
+   using RepresentedType = ElementType_<MT>;  //!< Type of the represented sparse matrix element.
+   using RawReference    = RepresentedType&;  //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
