@@ -61,7 +61,7 @@
    \endcode
 */
 #ifndef BLAZE_BLAS_MODE
-#define BLAZE_BLAS_MODE 1
+#define BLAZE_BLAS_MODE 0
 #endif
 //*************************************************************************************************
 
