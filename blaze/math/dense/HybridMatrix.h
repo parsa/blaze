@@ -217,23 +217,23 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef HybridMatrix<Type,M,N,SO>   This;           //!< Type of this HybridMatrix instance.
-   typedef DenseMatrix<This,SO>        BaseType;       //!< Base type of this HybridMatrix instance.
-   typedef This                        ResultType;     //!< Result type for expression template evaluations.
-   typedef HybridMatrix<Type,M,N,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef HybridMatrix<Type,N,M,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                        ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                 ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
+   using This          = HybridMatrix<Type,M,N,SO>;           //!< Type of this HybridMatrix instance.
+   using BaseType      = DenseMatrix<This,SO>;       //!< Base type of this HybridMatrix instance.
+   using ResultType    = This;     //!< Result type for expression template evaluations.
+   using OppositeType  = HybridMatrix<Type,M,N,!SO>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = HybridMatrix<Type,N,M,!SO>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;    //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;       //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;     //!< Return type for expression template evaluations.
+   using CompositeType = const This&;  //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -241,7 +241,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef HybridMatrix<NewType,M,N,SO>  Other;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<NewType,M,N,SO>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -251,7 +251,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef HybridMatrix<Type,NewM,NewN,SO>  Other;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<Type,NewM,NewN,SO>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -1479,9 +1479,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -3366,23 +3366,23 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
 {
  public:
    //**Type definitions****************************************************************************
-   typedef HybridMatrix<Type,M,N,true>   This;           //!< Type of this HybridMatrix instance.
-   typedef DenseMatrix<This,true>        BaseType;       //!< Base type of this HybridMatrix instance.
-   typedef This                          ResultType;     //!< Result type for expression template evaluations.
-   typedef HybridMatrix<Type,M,N,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef HybridMatrix<Type,N,M,false>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                          ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>       SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                   CompositeType;  //!< Data type for composite expression templates.
+   using This          = HybridMatrix<Type,M,N,true>;   //!< Type of this HybridMatrix instance.
+   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this HybridMatrix instance.
+   using ResultType    = This;                          //!< Result type for expression template evaluations.
+   using OppositeType  = HybridMatrix<Type,M,N,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = HybridMatrix<Type,N,M,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                          //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;       //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;                   //!< Return type for expression template evaluations.
+   using CompositeType = const This&;                   //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3390,7 +3390,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef HybridMatrix<NewType,M,N,true>  Other;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<NewType,M,N,true>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -3400,7 +3400,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef HybridMatrix<Type,NewM,NewN,true>  Other;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<Type,NewM,NewN,true>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -4629,9 +4629,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );

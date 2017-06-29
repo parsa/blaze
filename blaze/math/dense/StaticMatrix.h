@@ -217,23 +217,23 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef StaticMatrix<Type,M,N,SO>   This;           //!< Type of this StaticMatrix instance.
-   typedef DenseMatrix<This,SO>        BaseType;       //!< Base type of this StaticMatrix instance.
-   typedef This                        ResultType;     //!< Result type for expression template evaluations.
-   typedef StaticMatrix<Type,M,N,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef StaticMatrix<Type,N,M,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                        ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                 ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                 CompositeType;  //!< Data type for composite expression templates.
+   using This          = StaticMatrix<Type,M,N,SO>;   //!< Type of this StaticMatrix instance.
+   using BaseType      = DenseMatrix<This,SO>;        //!< Base type of this StaticMatrix instance.
+   using ResultType    = This;                        //!< Result type for expression template evaluations.
+   using OppositeType  = StaticMatrix<Type,M,N,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = StaticMatrix<Type,N,M,!SO>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                        //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;                 //!< Return type for expression template evaluations.
+   using CompositeType = const This&;                 //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -241,7 +241,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef StaticMatrix<NewType,M,N,SO>  Other;  //!< The type of the other StaticMatrix.
+      using Other = StaticMatrix<NewType,M,N,SO>;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
@@ -251,7 +251,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef StaticMatrix<Type,NewM,NewN,SO>  Other;  //!< The type of the other StaticMatrix.
+      using Other = StaticMatrix<Type,NewM,NewN,SO>;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
@@ -1393,9 +1393,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -3189,23 +3189,23 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 {
  public:
    //**Type definitions****************************************************************************
-   typedef StaticMatrix<Type,M,N,true>   This;           //!< Type of this StaticMatrix instance.
-   typedef DenseMatrix<This,true>        BaseType;       //!< Base type of this StaticMatrix instance.
-   typedef This                          ResultType;     //!< Result type for expression template evaluations.
-   typedef StaticMatrix<Type,M,N,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef StaticMatrix<Type,N,M,false>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                          ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>       SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                   ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                   CompositeType;  //!< Data type for composite expression templates.
+   using This          = StaticMatrix<Type,M,N,true>;   //!< Type of this StaticMatrix instance.
+   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this StaticMatrix instance.
+   using ResultType    = This;                          //!< Result type for expression template evaluations.
+   using OppositeType  = StaticMatrix<Type,M,N,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = StaticMatrix<Type,N,M,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                          //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;       //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;                   //!< Return type for expression template evaluations.
+   using CompositeType = const This&;                   //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3213,7 +3213,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef StaticMatrix<NewType,M,N,true>  Other;  //!< The type of the other StaticMatrix.
+      using Other = StaticMatrix<NewType,M,N,true>;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
@@ -3223,7 +3223,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef StaticMatrix<Type,NewM,NewN,true>  Other;  //!< The type of the other StaticMatrix.
+      using Other = StaticMatrix<Type,NewM,NewN,true>;  //!< The type of the other StaticMatrix.
    };
    //**********************************************************************************************
 
@@ -4369,9 +4369,9 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );

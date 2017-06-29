@@ -162,16 +162,16 @@ namespace blaze {
    using blaze::unpadded;
 
    // Definition of a custom row-major matrix for unaligned, unpadded integer arrays
-   typedef CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+   using UnalignedUnpadded = CustomMatrix<int,unaligned,unpadded,rowMajor>;
 
    // Definition of a custom column-major matrix for unaligned but padded 'float' arrays
-   typedef CustomMatrix<float,unaligned,padded,columnMajor>  UnalignedPadded;
+   using UnalignedPadded = CustomMatrix<float,unaligned,padded,columnMajor>;
 
    // Definition of a custom row-major matrix for aligned, unpadded 'double' arrays
-   typedef CustomMatrix<double,aligned,unpadded,rowMajor>  AlignedUnpadded;
+   using AlignedUnpadded = CustomMatrix<double,aligned,unpadded,rowMajor>;
 
    // Definition of a custom column-major matrix for aligned, padded 'complex<double>' arrays
-   typedef CustomMatrix<complex<double>,aligned,padded,columnMajor>  AlignedPadded;
+   using AlignedPadded = CustomMatrix<complex<double>,aligned,padded,columnMajor>;
    \endcode
 
 // \n \section custommatrix_special_properties Special Properties of Custom Matrices
@@ -226,7 +226,7 @@ namespace blaze {
    using blaze::unaligned;
    using blaze::unpadded;
 
-   typedef CustomMatrix<int,unaligned,unpadded>  CustomType;
+   using CustomType = CustomMatrix<int,unaligned,unpadded>;
 
    std::vector<int> vec( 6UL, 10 );    // Vector of 6 integers of the value 10
    CustomType A( &vec[0], 2UL, 3UL );  // Represent the std::vector as Blaze dense matrix
@@ -292,7 +292,7 @@ namespace blaze {
    using blaze::aligned;
    using blaze::padded;
 
-   typedef CustomMatrix<double,aligned,padded>  CustomType;
+   using CustomType = CustomMatrix<double,aligned,padded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
@@ -318,7 +318,7 @@ namespace blaze {
    using blaze::aligned;
    using blaze::unpadded;
 
-   typedef CustomMatrix<double,aligned,unpadded>  CustomType;
+   using CustomType = CustomMatrix<double,aligned,unpadded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
@@ -412,30 +412,30 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomMatrix<Type,AF,PF,SO>  This;      //!< Type of this CustomMatrix instance.
-   typedef DenseMatrix<This,SO>         BaseType;  //!< Base type of this CustomMatrix instance.
+   using This     = CustomMatrix<Type,AF,PF,SO>;  //!< Type of this CustomMatrix instance.
+   using BaseType = DenseMatrix<This,SO>;         //!< Base type of this CustomMatrix instance.
 
    //! Result type for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,SO>  ResultType;
+   using ResultType = DynamicMatrix<RemoveConst_<Type>,SO>;
 
    //! Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,!SO>  OppositeType;
+   using OppositeType = DynamicMatrix<RemoveConst_<Type>,!SO>;
 
    //! Transpose type for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,!SO>  TransposeType;
+   using TransposeType = DynamicMatrix<RemoveConst_<Type>,!SO>;
 
-   typedef Type                     ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
+   using ElementType   = Type;                     //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
+   using CompositeType = const This&;              //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,AF>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,AF>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -443,7 +443,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CustomMatrix<NewType,AF,PF,SO>  Other;  //!< The type of the other CustomMatrix.
+      using Other = CustomMatrix<NewType,AF,PF,SO>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -453,7 +453,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef CustomMatrix<Type,AF,PF,SO>  Other;  //!< The type of the other CustomMatrix.
+      using Other = CustomMatrix<Type,AF,PF,SO>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -1441,9 +1441,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -3295,30 +3295,30 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomMatrix<Type,AF,PF,true>  This;      //!< Type of this CustomMatrix instance.
-   typedef DenseMatrix<This,true>         BaseType;  //!< Base type of this CustomMatrix instance.
+   using This     = CustomMatrix<Type,AF,PF,true>;  //!< Type of this CustomMatrix instance.
+   using BaseType = DenseMatrix<This,true>;         //!< Base type of this CustomMatrix instance.
 
    //! Result type for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,true>  ResultType;
+   using ResultType = DynamicMatrix<RemoveConst_<Type>,true>;
 
    //! Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,false>  OppositeType;
+   using OppositeType = DynamicMatrix<RemoveConst_<Type>,false>;
 
    //! Transpose type for expression template evaluations.
-   typedef DynamicMatrix<RemoveConst_<Type>,false>  TransposeType;
+   using TransposeType = DynamicMatrix<RemoveConst_<Type>,false>;
 
-   typedef Type                     ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
+   using ElementType   = Type;                     //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
+   using CompositeType = const This&;              //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,AF>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,AF>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3326,7 +3326,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef CustomMatrix<NewType,AF,PF,true>  Other;  //!< The type of the other CustomMatrix.
+      using Other = CustomMatrix<NewType,AF,PF,true>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -3336,7 +3336,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef CustomMatrix<Type,AF,PF,true>  Other;  //!< The type of the other CustomMatrix.
+      using Other = CustomMatrix<Type,AF,PF,true>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -4310,9 +4310,9 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true>&
    CustomMatrix<Type,AF,PF,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );

@@ -105,7 +105,7 @@ inline void invertGeneral2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -153,7 +153,7 @@ inline void invertSymmetric2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const MT& A( ~dm );
    MT& B( ~dm );
@@ -201,7 +201,7 @@ inline void invertHermitian2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const MT& A( ~dm );
    MT& B( ~dm );
@@ -249,7 +249,7 @@ inline void invertLower2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -326,7 +326,7 @@ inline void invertUpper2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -403,7 +403,7 @@ inline void invertDiagonal2x2( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 2UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 2UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -513,7 +513,7 @@ inline void invertGeneral3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -567,7 +567,7 @@ inline void invertSymmetric3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -620,7 +620,7 @@ inline void invertHermitian3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -673,7 +673,7 @@ inline void invertLower3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -721,7 +721,7 @@ inline void invertUniLower3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -759,7 +759,7 @@ inline void invertUpper3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -807,7 +807,7 @@ inline void invertUniUpper3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,3UL,3UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -845,7 +845,7 @@ inline void invertDiagonal3x3( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 3UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 3UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -958,7 +958,7 @@ inline void invertGeneral4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1041,7 +1041,7 @@ inline void invertSymmetric4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1119,7 +1119,7 @@ inline void invertHermitian4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1197,7 +1197,7 @@ inline void invertLower4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1253,7 +1253,7 @@ inline void invertUniLower4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1296,7 +1296,7 @@ inline void invertUpper4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1352,7 +1352,7 @@ inline void invertUniUpper4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,4UL,4UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1395,7 +1395,7 @@ inline void invertDiagonal4x4( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 4UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 4UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -1511,7 +1511,7 @@ inline void invertGeneral5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1650,7 +1650,7 @@ inline void invertSymmetric5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1771,7 +1771,7 @@ inline void invertHermitian5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1892,7 +1892,7 @@ inline void invertLower5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -1960,7 +1960,7 @@ inline void invertUniLower5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2009,7 +2009,7 @@ inline void invertUpper5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2078,7 +2078,7 @@ inline void invertUniUpper5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,5UL,5UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2127,7 +2127,7 @@ inline void invertDiagonal5x5( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 5UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 5UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 
@@ -2245,7 +2245,7 @@ inline void invertGeneral6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2475,7 +2475,7 @@ inline void invertSymmetric6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2686,7 +2686,7 @@ inline void invertHermitian6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2897,7 +2897,7 @@ inline void invertLower6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -2978,7 +2978,7 @@ inline void invertUniLower6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -3035,7 +3035,7 @@ inline void invertUpper6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -3116,7 +3116,7 @@ inline void invertUniUpper6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const StaticMatrix<ET,6UL,6UL,SO> A( ~dm );
    MT& B( ~dm );
@@ -3173,7 +3173,7 @@ inline void invertDiagonal6x6( DenseMatrix<MT,SO>& dm )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    == 6UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() == 6UL, "Invalid number of columns detected" );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    MT& A( ~dm );
 

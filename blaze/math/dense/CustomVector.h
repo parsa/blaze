@@ -152,16 +152,16 @@ namespace blaze {
    using blaze::unpadded;
 
    // Definition of a custom column vector for unaligned, unpadded integer arrays
-   typedef CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+   using UnalignedUnpadded = CustomVector<int,unaligned,unpadded,columnVector>;
 
    // Definition of a custom column vector for unaligned but padded 'float' arrays
-   typedef CustomVector<float,unaligned,padded,columnVector>  UnalignedPadded;
+   using UnalignedPadded = CustomVector<float,unaligned,padded,columnVector>;
 
    // Definition of a custom row vector for aligned, unpadded 'double' arrays
-   typedef CustomVector<double,aligned,unpadded,rowVector>  AlignedUnpadded;
+   using AlignedUnpadded = CustomVector<double,aligned,unpadded,rowVector>;
 
    // Definition of a custom row vector for aligned, padded 'complex<double>' arrays
-   typedef CustomVector<complex<double>,aligned,padded,rowVector>  AlignedPadded;
+   using AlignedPadded = CustomVector<complex<double>,aligned,padded,rowVector>;
    \endcode
 
 // \n \section customvector_special_properties Special Properties of Custom Vectors
@@ -216,7 +216,7 @@ namespace blaze {
    using blaze::unaligned;
    using blaze::unpadded;
 
-   typedef CustomVector<int,unaligned,unpadded>  CustomType;
+   using CustomType = CustomVector<int,unaligned,unpadded>;
 
    std::vector<int> vec( 5UL, 10 );  // Vector of 5 integers of the value 10
    CustomType a( &vec[0], 5UL );     // Represent the std::vector as Blaze dense vector
@@ -275,7 +275,7 @@ namespace blaze {
    using blaze::aligned;
    using blaze::padded;
 
-   typedef CustomVector<double,aligned,padded>  CustomType;
+   using CustomType = CustomVector<double,aligned,padded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
@@ -301,7 +301,7 @@ namespace blaze {
    using blaze::aligned;
    using blaze::unpadded;
 
-   typedef CustomVector<double,aligned,unpadded>  CustomType;
+   using CustomType = CustomVector<double,aligned,unpadded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
@@ -397,27 +397,27 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,AF,PF,TF>  This;      //!< Type of this CustomVector instance.
-   typedef DenseVector<This,TF>         BaseType;  //!< Base type of this CustomVector instance.
+   using This     = CustomVector<Type,AF,PF,TF>;  //!< Type of this CustomVector instance.
+   using BaseType = DenseVector<This,TF>;         //!< Base type of this CustomVector instance.
 
    //! Result type for expression template evaluations.
-   typedef DynamicVector<RemoveConst_<Type>,TF>  ResultType;
+   using ResultType = DynamicVector<RemoveConst_<Type>,TF>;
 
    //! Transpose type for expression template evaluations.
-   typedef DynamicVector<RemoveConst_<Type>,!TF>  TransposeType;
+   using TransposeType = DynamicVector<RemoveConst_<Type>,!TF>;
 
-   typedef Type                     ElementType;    //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the vector elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&      CompositeType;  //!< Data type for composite expression templates.
+   using ElementType   = Type;                     //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
+   using CompositeType = const CustomVector&;      //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant vector value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant vector value.
+   using Reference      = Type&;        //!< Reference to a non-constant vector value.
+   using ConstReference = const Type&;  //!< Reference to a constant vector value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant vector value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant vector value.
 
-   typedef DenseIterator<Type,AF>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,AF>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -425,7 +425,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CustomVector<NewType,AF,PF,TF>  Other;  //!< The type of the other CustomVector.
+      using Other = CustomVector<NewType,AF,PF,TF>;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
@@ -434,7 +434,7 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      typedef CustomVector<Type,AF,PF,TF>  Other;  //!< The type of the other CustomVector.
+      using Other = CustomVector<Type,AF,PF,TF>;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
@@ -1367,7 +1367,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( con
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1412,7 +1412,7 @@ inline CustomVector<Type,AF,PF,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1458,7 +1458,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator%=( con
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2664,27 +2664,27 @@ class CustomVector<Type,AF,padded,TF>
 {
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,AF,padded,TF>  This;      //!< Type of this CustomVector instance.
-   typedef DenseVector<This,TF>             BaseType;  //!< Base type of this CustomVector instance.
+   using This     = CustomVector<Type,AF,padded,TF>;  //!< Type of this CustomVector instance.
+   using BaseType = DenseVector<This,TF>;             //!< Base type of this CustomVector instance.
 
    //! Result type for expression template evaluations.
-   typedef DynamicVector<RemoveConst_<Type>,TF>  ResultType;
+   using ResultType = DynamicVector<RemoveConst_<Type>,TF>;
 
    //! Transpose type for expression template evaluations.
-   typedef DynamicVector<RemoveConst_<Type>,!TF>  TransposeType;
+   using TransposeType = DynamicVector<RemoveConst_<Type>,!TF>;
 
-   typedef Type                     ElementType;    //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the vector elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&      CompositeType;  //!< Data type for composite expression templates.
+   using ElementType   = Type;                     //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
+   using CompositeType = const CustomVector&;      //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant vector value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant vector value.
+   using Reference      = Type&;        //!< Reference to a non-constant vector value.
+   using ConstReference = const Type&;  //!< Reference to a constant vector value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant vector value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant vector value.
 
-   typedef DenseIterator<Type,AF>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,AF>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -2692,7 +2692,7 @@ class CustomVector<Type,AF,padded,TF>
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef CustomVector<NewType,AF,padded,TF>  Other;  //!< The type of the other CustomVector.
+      using Other = CustomVector<NewType,AF,padded,TF>;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
@@ -2701,7 +2701,7 @@ class CustomVector<Type,AF,padded,TF>
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      typedef CustomVector<Type,AF,padded,TF>  Other;  //!< The type of the other CustomVector.
+      using Other = CustomVector<Type,AF,padded,TF>;  //!< The type of the other CustomVector.
    };
    //**********************************************************************************************
 
@@ -3636,7 +3636,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -3682,7 +3682,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -3730,7 +3730,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );

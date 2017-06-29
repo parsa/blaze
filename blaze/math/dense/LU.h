@@ -101,7 +101,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
 
-   typedef ElementType_<MT2>  ET;
+   using ET = ElementType_<MT2>;
 
    const int m( numeric_cast<int>( (~A).rows()    ) );
    const int n( numeric_cast<int>( (~A).columns() ) );
@@ -233,8 +233,8 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   typedef ElementType_<MT2>  ET2;
-   typedef ElementType_<MT3>  ET3;
+   using ET2 = ElementType_<MT2>;
+   using ET3 = ElementType_<MT3>;
 
    const size_t m( (~A).rows()    );
    const size_t n( (~A).columns() );

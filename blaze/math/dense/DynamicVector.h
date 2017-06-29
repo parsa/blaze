@@ -183,22 +183,22 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicVector<Type,TF>   This;           //!< Type of this DynamicVector instance.
-   typedef DenseVector<This,TF>     BaseType;       //!< Base type of this DynamicVector instance.
-   typedef This                     ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicVector<Type,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;    //!< Type of the vector elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the vector elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations
-   typedef const DynamicVector&     CompositeType;  //!< Data type for composite expression templates.
+   using This          = DynamicVector<Type,TF>;   //!< Type of this DynamicVector instance.
+   using BaseType      = DenseVector<This,TF>;     //!< Base type of this DynamicVector instance.
+   using ResultType    = This;                     //!< Result type for expression template evaluations.
+   using TransposeType = DynamicVector<Type,!TF>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                     //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
+   using CompositeType = const DynamicVector&;     //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant vector value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant vector value.
+   using Reference      = Type&;        //!< Reference to a non-constant vector value.
+   using ConstReference = const Type&;  //!< Reference to a constant vector value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant vector value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant vector value.
 
-   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -206,7 +206,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      typedef DynamicVector<NewType,TF>  Other;  //!< The type of the other DynamicVector.
+      using Other = DynamicVector<NewType,TF>;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
@@ -215,7 +215,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      typedef DynamicVector<Type,TF>  Other;  //!< The type of the other DynamicVector.
+      using Other = DynamicVector<Type,TF>;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
@@ -1309,7 +1309,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator%=( const Vector<
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< This, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );

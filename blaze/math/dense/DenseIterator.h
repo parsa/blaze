@@ -59,21 +59,21 @@ class DenseIterator
 {
  public:
    //**Type definitions****************************************************************************
-   typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-   typedef Type                             ValueType;         //!< Type of the underlying elements.
-   typedef Type*                            PointerType;       //!< Pointer return type.
-   typedef Type&                            ReferenceType;     //!< Reference return type.
-   typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+   using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+   using ValueType        = Type;                             //!< Type of the underlying elements.
+   using PointerType      = Type*;                            //!< Pointer return type.
+   using ReferenceType    = Type&;                            //!< Reference return type.
+   using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
    // STL iterator requirements
-   typedef IteratorCategory  iterator_category;  //!< The iterator category.
-   typedef ValueType         value_type;         //!< Type of the underlying elements.
-   typedef PointerType       pointer;            //!< Pointer return type.
-   typedef ReferenceType     reference;          //!< Reference return type.
-   typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+   using iterator_category = IteratorCategory;  //!< The iterator category.
+   using value_type        = ValueType;         //!< Type of the underlying elements.
+   using pointer           = PointerType;       //!< Pointer return type.
+   using reference         = ReferenceType;     //!< Reference return type.
+   using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
    //! SIMD type of the elements.
-   typedef SIMDTrait_<Type>  SIMDType;
+   using SIMDType = SIMDTrait_<Type>;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

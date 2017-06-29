@@ -148,8 +148,8 @@ template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
 inline bool operator==( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,false>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -184,8 +184,8 @@ template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
 inline bool operator==( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,true>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -221,8 +221,8 @@ template< typename T1  // Type of the left-hand side dense matrix
         , bool SO >    // Storage order
 inline bool operator==( const DenseMatrix<T1,SO>& lhs, const DenseMatrix<T2,!SO>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -268,9 +268,9 @@ template< typename T1  // Type of the left-hand side dense matrix
         , bool SO >    // Storage order of the left-hand side dense matrix
 inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,false>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
-   typedef ConstIterator_< RemoveReference_<CT2> >  ConstIterator;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -315,9 +315,9 @@ template< typename T1  // Type of the left-hand side dense matrix
         , bool SO >    // Storage order of the left-hand side dense matrix
 inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,true>& rhs )
 {
-   typedef CompositeType_<T1>  CT1;
-   typedef CompositeType_<T2>  CT2;
-   typedef ConstIterator_< RemoveReference_<CT2> >  ConstIterator;
+   using CT1 = CompositeType_<T1>;
+   using CT2 = CompositeType_<T2>;
+   using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -384,7 +384,7 @@ template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
 inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
 {
-   typedef CompositeType_<T1>  CT1;
+   using CT1 = CompositeType_<T1>;
 
    // Evaluation of the dense matrix operand
    CT1 A( ~mat );
@@ -418,7 +418,7 @@ template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
 inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
 {
-   typedef CompositeType_<T1>  CT1;
+   using CT1 = CompositeType_<T1>;
 
    // Evaluation of the dense matrix operand
    CT1 A( ~mat );
@@ -639,7 +639,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isnan( const DenseMatrix<MT,SO>& dm )
 {
-   typedef CompositeType_<MT>  CT;
+   using CT = CompositeType_<MT>;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
@@ -699,7 +699,7 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
-   typedef CompositeType_<MT>  CT;
+   using CT = CompositeType_<MT>;
 
    if( IsSymmetric<MT>::value )
       return true;
@@ -777,8 +777,8 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isHermitian( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ElementType_<MT>    ET;
-   typedef CompositeType_<MT>  CT;
+   using ET = ElementType_<MT>;
+   using CT = CompositeType_<MT>;
 
    if( IsHermitian<MT>::value )
       return true;
@@ -1072,10 +1072,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isLower( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsLower<MT>::value )
       return true;
@@ -1157,10 +1157,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniLower( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsUniLower<MT>::value )
       return true;
@@ -1244,10 +1244,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1327,10 +1327,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsUpper<MT>::value )
       return true;
@@ -1412,10 +1412,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1499,10 +1499,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1583,10 +1583,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsDiagonal<MT>::value )
       return true;
@@ -1685,10 +1685,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isIdentity( const DenseMatrix<MT,SO>& dm )
 {
-   typedef ResultType_<MT>     RT;
-   typedef ReturnType_<MT>     RN;
-   typedef CompositeType_<MT>  CT;
-   typedef If_< IsExpression<RN>, const RT, CT >  Tmp;
+   using RT  = ResultType_<MT>;
+   using RN  = ReturnType_<MT>;
+   using CT  = CompositeType_<MT>;
+   using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
    if( IsIdentity<MT>::value )
       return true;
@@ -1763,8 +1763,8 @@ const ElementType_<MT> min( const DenseMatrix<MT,SO>& dm )
 {
    using blaze::min;
 
-   typedef ElementType_<MT>    ET;
-   typedef CompositeType_<MT>  CT;
+   using ET = ElementType_<MT>;
+   using CT = CompositeType_<MT>;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
@@ -1810,8 +1810,8 @@ const ElementType_<MT> max( const DenseMatrix<MT,SO>& dm )
 {
    using blaze::max;
 
-   typedef ElementType_<MT>    ET;
-   typedef CompositeType_<MT>  CT;
+   using ET = ElementType_<MT>;
+   using CT = CompositeType_<MT>;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 

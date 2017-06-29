@@ -193,7 +193,7 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
-   typedef ElementType_<MT1>  ET1;
+   using ET1 = ElementType_<MT1>;
 
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );

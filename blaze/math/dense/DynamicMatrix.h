@@ -212,23 +212,23 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,SO>   This;           //!< Type of this DynamicMatrix instance.
-   typedef DenseMatrix<This,SO>     BaseType;       //!< Base type of this DynamicMatrix instance.
-   typedef This                     ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                     ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>  SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
+   using This          = DynamicMatrix<Type,SO>;   //!< Type of this DynamicMatrix instance.
+   using BaseType      = DenseMatrix<This,SO>;     //!< Base type of this DynamicMatrix instance.
+   using ResultType    = This;                     //!< Result type for expression template evaluations.
+   using OppositeType  = DynamicMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = DynamicMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                     //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
+   using CompositeType = const This&;              //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -236,7 +236,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef DynamicMatrix<NewType,SO>  Other;  //!< The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<NewType,SO>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -246,7 +246,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef DynamicMatrix<Type,SO>  Other;  //!< The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<Type,SO>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -1355,9 +1355,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
@@ -3288,23 +3288,23 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 {
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,true>   This;           //!< Type of this DynamicMatrix instance.
-   typedef DenseMatrix<This,true>     BaseType;       //!< Base type of this DynamicMatrix instance.
-   typedef This                       ResultType;     //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                       ElementType;    //!< Type of the matrix elements.
-   typedef SIMDTrait_<ElementType>    SIMDType;       //!< SIMD type of the matrix elements.
-   typedef const Type&                ReturnType;     //!< Return type for expression template evaluations.
-   typedef const This&                CompositeType;  //!< Data type for composite expression templates.
+   using This          = DynamicMatrix<Type,true>;   //!< Type of this DynamicMatrix instance.
+   using BaseType      = DenseMatrix<This,true>;     //!< Base type of this DynamicMatrix instance.
+   using ResultType    = This;                       //!< Result type for expression template evaluations.
+   using OppositeType  = DynamicMatrix<Type,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = DynamicMatrix<Type,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                       //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;    //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;                //!< Return type for expression template evaluations.
+   using CompositeType = const This&;                //!< Data type for composite expression templates.
 
-   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+   using Reference      = Type&;        //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;  //!< Reference to a constant matrix value.
+   using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3312,7 +3312,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      typedef DynamicMatrix<NewType,true>  Other;  //!< The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<NewType,true>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -3322,7 +3322,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      typedef DynamicMatrix<Type,true>  Other;  //!< The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<Type,true>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -4435,9 +4435,9 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   typedef TransExprTrait_<This>   TT;
-   typedef CTransExprTrait_<This>  CT;
-   typedef InvExprTrait_<This>     IT;
+   using TT = TransExprTrait_<This>;
+   using CT = CTransExprTrait_<This>;
+   using IT = InvExprTrait_<This>;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
