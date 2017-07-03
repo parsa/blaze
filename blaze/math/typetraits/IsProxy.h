@@ -42,7 +42,8 @@
 
 #include <utility>
 #include <blaze/math/proxy/Forward.h>
-#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -64,18 +65,15 @@ struct IsProxyHelper
 {
  private:
    //**********************************************************************************************
-   typedef char (&Yes)[1];
-   typedef char (&No) [2];
-
    template< typename PT, typename RT >
-   static Yes test( const Proxy<PT,RT>& );
+   static TrueType test( const Proxy<PT,RT>& );
 
-   static No test( ... );
+   static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   enum : bool { value = ( sizeof( test( std::declval< RemoveCV_<T> >() ) ) == sizeof( Yes ) ) };
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -107,7 +105,7 @@ struct IsProxyHelper
    \endcode
 */
 template< typename T >
-struct IsProxy : public BoolConstant< IsProxyHelper<T>::value >
+struct IsProxy : public IsProxyHelper<T>::Type
 {};
 //*************************************************************************************************
 
