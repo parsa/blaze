@@ -40,17 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/diagonalmatrix/Sparse.h>
-#include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/hermitianmatrix/Sparse.h>
-#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/lowermatrix/Sparse.h>
-#include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h>
-#include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
-#include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/uppermatrix/Sparse.h>
+#include <blaze/math/adaptors/DiagonalMatrix.h>
+#include <blaze/math/adaptors/HermitianMatrix.h>
+#include <blaze/math/adaptors/LowerMatrix.h>
+#include <blaze/math/adaptors/SymmetricMatrix.h>
+#include <blaze/math/adaptors/UpperMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatSMatSchurExpr.h>
 #include <blaze/math/expressions/DMatTSMatSchurExpr.h>
