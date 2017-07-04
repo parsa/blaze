@@ -520,7 +520,8 @@ BLAZE_ALWAYS_INLINE const T
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-struct SIMDf32MultExpr : public SIMDf32< SIMDf32MultExpr<T1,T2> >
+struct SIMDf32MultExpr
+   : public SIMDf32< SIMDf32MultExpr<T1,T2> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf32MultExpr<T1,T2>;  //!< Type of this SIMDf32MultExpr instance.
@@ -707,7 +708,8 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
-struct SIMDf64MultExpr : public SIMDf64< SIMDf64MultExpr<T1,T2> >
+struct SIMDf64MultExpr
+   : public SIMDf64< SIMDf64MultExpr<T1,T2> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf64MultExpr<T1,T2>;  //!< Type of this SIMDf64MultExpr instance.

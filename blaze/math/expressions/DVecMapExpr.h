@@ -97,9 +97,10 @@ namespace blaze {
 template< typename VT  // Type of the dense vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
-class DVecMapExpr : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
-                  , private VecMapExpr
-                  , private Computation
+class DVecMapExpr
+   : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
+   , private VecMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -2395,7 +2396,8 @@ inline const DVecMapExpr<VT,Real,TF>& real( const DVecMapExpr<VT,Real,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct Size< DVecMapExpr<VT,OP,TF> > : public Size<VT>
+struct Size< DVecMapExpr<VT,OP,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

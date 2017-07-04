@@ -106,9 +106,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
-                    , private MatTransExpr
-                    , private If< IsComputation<MT>, Computation, Transformation >::Type
+class SMatTransExpr
+   : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
+   , private MatTransExpr
+   , private If< IsComputation<MT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -850,7 +851,8 @@ inline const MultExprTrait_< TransExprTrait_<MT>, ST >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< SMatTransExpr<MT,SO> > : public Columns<MT>
+struct Rows< SMatTransExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -867,7 +869,8 @@ struct Rows< SMatTransExpr<MT,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatTransExpr<MT,SO> > : public Rows<MT>
+struct Columns< SMatTransExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

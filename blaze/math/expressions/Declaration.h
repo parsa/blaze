@@ -67,11 +67,12 @@ namespace blaze {
 // type trait recognizes the class as valid declaration expression template.
 */
 template< typename T >
-struct Declaration : private If_< IsComputation<T>
-                                , Computation
-                                , If_< IsTransformation<T>
-                                     , Transformation
-                                     , EmptyType > >
+struct Declaration
+   : private If_< IsComputation<T>
+                , Computation
+                , If_< IsTransformation<T>
+                     , Transformation
+                     , EmptyType > >
 {};
 //*************************************************************************************************
 

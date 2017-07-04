@@ -63,7 +63,8 @@ namespace blaze {
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDi8 : public SIMDPack< T >
+struct SIMDi8
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -75,7 +76,8 @@ struct SIMDi8 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDint8 : public SIMDi8< SIMDint8 >
+struct SIMDint8
+   : public SIMDi8< SIMDint8 >
 {
    using This      = SIMDint8;
    using BaseType  = SIMDi8<This>;
@@ -123,7 +125,8 @@ struct SIMDint8 : public SIMDi8< SIMDint8 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDuint8 : public SIMDi8< SIMDuint8 >
+struct SIMDuint8
+   : public SIMDi8< SIMDuint8 >
 {
    using This      = SIMDuint8;
    using BaseType  = SIMDi8<This>;
@@ -180,7 +183,8 @@ struct SIMDuint8 : public SIMDi8< SIMDuint8 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDci8 : public SIMDPack< T >
+struct SIMDci8
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -192,7 +196,8 @@ struct SIMDci8 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcint8 : public SIMDci8< SIMDcint8 >
+struct SIMDcint8
+   : public SIMDci8< SIMDcint8 >
 {
    using This      = SIMDcint8;
    using BaseType  = SIMDci8<This>;
@@ -240,7 +245,8 @@ struct SIMDcint8 : public SIMDci8< SIMDcint8 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcuint8 : public SIMDci8< SIMDcuint8 >
+struct SIMDcuint8
+   : public SIMDci8< SIMDcuint8 >
 {
    using This      = SIMDcuint8;
    using BaseType  = SIMDci8<This>;
@@ -297,7 +303,8 @@ struct SIMDcuint8 : public SIMDci8< SIMDcuint8 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDi16 : public SIMDPack< T >
+struct SIMDi16
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -309,7 +316,8 @@ struct SIMDi16 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDint16 : public SIMDi16< SIMDint16 >
+struct SIMDint16
+   : public SIMDi16< SIMDint16 >
 {
    using This      = SIMDint16;
    using BaseType  = SIMDi16<This>;
@@ -357,7 +365,8 @@ struct SIMDint16 : public SIMDi16< SIMDint16 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDuint16 : public SIMDi16< SIMDuint16 >
+struct SIMDuint16
+   : public SIMDi16< SIMDuint16 >
 {
    using This      = SIMDuint16;
    using BaseType  = SIMDi16<This>;
@@ -414,7 +423,8 @@ struct SIMDuint16 : public SIMDi16< SIMDuint16 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDci16 : public SIMDPack< T >
+struct SIMDci16
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -426,7 +436,8 @@ struct SIMDci16 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcint16 : public SIMDci16< SIMDcint16 >
+struct SIMDcint16
+   : public SIMDci16< SIMDcint16 >
 {
    using This      = SIMDcint16;
    using BaseType  = SIMDci16<This>;
@@ -474,7 +485,8 @@ struct SIMDcint16 : public SIMDci16< SIMDcint16 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcuint16 : public SIMDci16< SIMDcuint16 >
+struct SIMDcuint16
+   : public SIMDci16< SIMDcuint16 >
 {
    using This      = SIMDcuint16;
    using BaseType  = SIMDci16<This>;
@@ -531,7 +543,8 @@ struct SIMDcuint16 : public SIMDci16< SIMDcuint16 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDi32 : public SIMDPack< T >
+struct SIMDi32
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -543,7 +556,8 @@ struct SIMDi32 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDint32 : public SIMDi32< SIMDint32 >
+struct SIMDint32
+   : public SIMDi32< SIMDint32 >
 {
    using This      = SIMDint32;
    using BaseType  = SIMDi32<This>;
@@ -591,7 +605,8 @@ struct SIMDint32 : public SIMDi32< SIMDint32 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDuint32 : public SIMDi32< SIMDuint32 >
+struct SIMDuint32
+   : public SIMDi32< SIMDuint32 >
 {
    using This      = SIMDuint32;
    using BaseType  = SIMDi32<This>;
@@ -648,7 +663,8 @@ struct SIMDuint32 : public SIMDi32< SIMDuint32 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDci32 : public SIMDPack< T >
+struct SIMDci32
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -660,7 +676,8 @@ struct SIMDci32 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcint32 : public SIMDci32< SIMDcint32 >
+struct SIMDcint32
+   : public SIMDci32< SIMDcint32 >
 {
    using This      = SIMDcint32;
    using BaseType  = SIMDci32<This>;
@@ -708,7 +725,8 @@ struct SIMDcint32 : public SIMDci32< SIMDcint32 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcuint32 : public SIMDci32< SIMDcuint32 >
+struct SIMDcuint32
+   : public SIMDci32< SIMDcuint32 >
 {
    using This      = SIMDcuint32;
    using BaseType  = SIMDci32<This>;
@@ -765,7 +783,8 @@ struct SIMDcuint32 : public SIMDci32< SIMDcuint32 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDi64 : public SIMDPack< T >
+struct SIMDi64
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -777,7 +796,8 @@ struct SIMDi64 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDint64 : public SIMDi64< SIMDint64 >
+struct SIMDint64
+   : public SIMDi64< SIMDint64 >
 {
    using This      = SIMDint64;
    using BaseType  = SIMDi64<This>;
@@ -825,7 +845,8 @@ struct SIMDint64 : public SIMDi64< SIMDint64 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDuint64 : public SIMDi64< SIMDuint64 >
+struct SIMDuint64
+   : public SIMDi64< SIMDuint64 >
 {
    using This      = SIMDuint64;
    using BaseType  = SIMDi64<This>;
@@ -882,7 +903,8 @@ struct SIMDuint64 : public SIMDi64< SIMDuint64 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDci64 : public SIMDPack< T >
+struct SIMDci64
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -894,7 +916,8 @@ struct SIMDci64 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcint64 : public SIMDci64< SIMDcint64 >
+struct SIMDcint64
+   : public SIMDci64< SIMDcint64 >
 {
    using This      = SIMDcint64;
    using BaseType  = SIMDci64<This>;
@@ -942,7 +965,8 @@ struct SIMDcint64 : public SIMDci64< SIMDcint64 >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcuint64 : public SIMDci64< SIMDcuint64 >
+struct SIMDcuint64
+   : public SIMDci64< SIMDcuint64 >
 {
    using This      = SIMDcuint64;
    using BaseType  = SIMDci64<This>;
@@ -999,7 +1023,8 @@ struct SIMDcuint64 : public SIMDci64< SIMDcuint64 >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDf32 : public SIMDPack< T >
+struct SIMDf32
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1011,7 +1036,8 @@ struct SIMDf32 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDfloat : public SIMDf32< SIMDfloat >
+struct SIMDfloat
+   : public SIMDf32< SIMDfloat >
 {
    using This      = SIMDfloat;
    using BaseType  = SIMDf32<This>;
@@ -1070,7 +1096,8 @@ struct SIMDfloat : public SIMDf32< SIMDfloat >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDcf32 : public SIMDPack< T >
+struct SIMDcf32
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1082,7 +1109,8 @@ struct SIMDcf32 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcfloat : public SIMDcf32< SIMDcfloat >
+struct SIMDcfloat
+   : public SIMDcf32< SIMDcfloat >
 {
    using This      = SIMDcfloat;
    using BaseType  = SIMDcf32<This>;
@@ -1139,7 +1167,8 @@ struct SIMDcfloat : public SIMDcf32< SIMDcfloat >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDf64 : public SIMDPack< T >
+struct SIMDf64
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1151,7 +1180,8 @@ struct SIMDf64 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDdouble : public SIMDf64< SIMDdouble >
+struct SIMDdouble
+   : public SIMDf64< SIMDdouble >
 {
    using This      = SIMDdouble;
    using BaseType  = SIMDf64<This>;
@@ -1210,7 +1240,8 @@ struct SIMDdouble : public SIMDf64< SIMDdouble >
 */
 /*! \cond BLAZE_INTERNAL */
 template< typename T >  // Type of the SIMD element
-struct SIMDcf64 : public SIMDPack< T >
+struct SIMDcf64
+   : public SIMDPack< T >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1222,7 +1253,8 @@ struct SIMDcf64 : public SIMDPack< T >
 // \ingroup simd
 */
 /*! \cond BLAZE_INTERNAL */
-struct SIMDcdouble : public SIMDcf64< SIMDcdouble >
+struct SIMDcdouble
+   : public SIMDcf64< SIMDcdouble >
 {
    using This      = SIMDcdouble;
    using BaseType  = SIMDcf64<This>;

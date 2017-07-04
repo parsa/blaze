@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the MatMatSubExpr base class, the IsMatMatSubExpr type trait
 // recognizes the class as valid matrix subtraction expression template.
 */
-struct MatMatSubExpr : private SubExpr
+struct MatMatSubExpr
+   : private SubExpr
 {};
 //*************************************************************************************************
 

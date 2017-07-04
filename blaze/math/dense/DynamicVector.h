@@ -179,7 +179,8 @@ namespace blaze {
 */
 template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
-class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
+class DynamicVector
+   : public DenseVector< DynamicVector<Type,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
@@ -2676,7 +2677,8 @@ inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcep
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct HasConstDataAccess< DynamicVector<T,TF> > : public TrueType
+struct HasConstDataAccess< DynamicVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2693,7 +2695,8 @@ struct HasConstDataAccess< DynamicVector<T,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct HasMutableDataAccess< DynamicVector<T,TF> > : public TrueType
+struct HasMutableDataAccess< DynamicVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2710,7 +2713,8 @@ struct HasMutableDataAccess< DynamicVector<T,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsAligned< DynamicVector<T,TF> > : public TrueType
+struct IsAligned< DynamicVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2727,7 +2731,8 @@ struct IsAligned< DynamicVector<T,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsPadded< DynamicVector<T,TF> > : public BoolConstant<usePadding>
+struct IsPadded< DynamicVector<T,TF> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2744,7 +2749,8 @@ struct IsPadded< DynamicVector<T,TF> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsResizable< DynamicVector<T,TF> > : public TrueType
+struct IsResizable< DynamicVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2761,7 +2767,8 @@ struct IsResizable< DynamicVector<T,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsShrinkable< DynamicVector<T,TF> > : public TrueType
+struct IsShrinkable< DynamicVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

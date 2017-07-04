@@ -74,7 +74,8 @@ namespace blaze {
    \endcode
 */
 template< typename T, typename = EnableIf_< IsMatrix<T> > >
-struct StorageOrder : public BoolConstant< ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor ) >
+struct StorageOrder
+   : public BoolConstant< ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor ) >
 {};
 //*************************************************************************************************
 

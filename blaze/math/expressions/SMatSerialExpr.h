@@ -94,9 +94,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-class SMatSerialExpr : public SparseMatrix< SMatSerialExpr<MT,SO>, SO >
-                     , private MatSerialExpr
-                     , private Computation
+class SMatSerialExpr
+   : public SparseMatrix< SMatSerialExpr<MT,SO>, SO >
+   , private MatSerialExpr
+   , private Computation
 {
  public:
    //**Type definitions****************************************************************************
@@ -882,7 +883,8 @@ inline const SMatSerialExpr<MT,SO> serial( const SMatSerialExpr<MT,SO>& sm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< SMatSerialExpr<MT,SO> > : public Rows<MT>
+struct Rows< SMatSerialExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -899,7 +901,8 @@ struct Rows< SMatSerialExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatSerialExpr<MT,SO> > : public Columns<MT>
+struct Columns< SMatSerialExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

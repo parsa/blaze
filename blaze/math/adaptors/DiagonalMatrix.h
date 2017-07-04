@@ -920,7 +920,8 @@ inline MT& derestrict( DiagonalMatrix<MT,SO,DF>& m )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct Rows< DiagonalMatrix<MT,SO,DF> > : public Rows<MT>
+struct Rows< DiagonalMatrix<MT,SO,DF> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -937,7 +938,8 @@ struct Rows< DiagonalMatrix<MT,SO,DF> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct Columns< DiagonalMatrix<MT,SO,DF> > : public Columns<MT>
+struct Columns< DiagonalMatrix<MT,SO,DF> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -954,7 +956,8 @@ struct Columns< DiagonalMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsSquare< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -971,7 +974,8 @@ struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSymmetric< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsSymmetric< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1006,7 +1010,8 @@ struct IsHermitian< DiagonalMatrix<MT,SO,DF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsLower< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsLower< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1023,7 +1028,8 @@ struct IsLower< DiagonalMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsUpper< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1040,7 +1046,8 @@ struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsAdaptor< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1057,7 +1064,8 @@ struct IsAdaptor< DiagonalMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsRestricted< DiagonalMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1074,7 +1082,8 @@ struct IsRestricted< DiagonalMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public TrueType
+struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1091,7 +1100,8 @@ struct HasConstDataAccess< DiagonalMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
+struct IsAligned< DiagonalMatrix<MT,SO,DF> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1108,7 +1118,8 @@ struct IsAligned< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
+struct IsPadded< DiagonalMatrix<MT,SO,DF> >
+   : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1125,7 +1136,8 @@ struct IsPadded< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>:
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
+struct IsResizable< DiagonalMatrix<MT,SO,DF> >
+   : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1142,7 +1154,8 @@ struct IsResizable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsResizabl
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsShrinkable< DiagonalMatrix<MT,SO,DF> > : public BoolConstant< IsShrinkable<MT>::value >
+struct IsShrinkable< DiagonalMatrix<MT,SO,DF> >
+   : public BoolConstant< IsShrinkable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

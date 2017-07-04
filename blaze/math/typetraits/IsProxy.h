@@ -105,7 +105,8 @@ struct IsProxyHelper
    \endcode
 */
 template< typename T >
-struct IsProxy : public IsProxyHelper<T>::Type
+struct IsProxy
+   : public IsProxyHelper<T>::Type
 {};
 //*************************************************************************************************
 

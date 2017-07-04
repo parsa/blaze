@@ -2185,7 +2185,8 @@ struct HasMutableDataAccess< Submatrix<MT,AF,SO,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsAligned< Submatrix<MT,aligned,SO,true> > : public TrueType
+struct IsAligned< Submatrix<MT,aligned,SO,true> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

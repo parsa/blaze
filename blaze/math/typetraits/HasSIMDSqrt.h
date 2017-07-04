@@ -113,7 +113,8 @@ struct HasSIMDSqrtHelper< double >
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDSqrt : public BoolConstant< HasSIMDSqrtHelper< Decay_<T> >::value >
+struct HasSIMDSqrt
+   : public BoolConstant< HasSIMDSqrtHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 

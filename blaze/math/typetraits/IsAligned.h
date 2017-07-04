@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsAligned : public FalseType
+struct IsAligned
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -95,7 +96,8 @@ struct IsAligned : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAligned< const T > : public IsAligned<T>
+struct IsAligned< const T >
+   : public IsAligned<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +109,8 @@ struct IsAligned< const T > : public IsAligned<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAligned< volatile T > : public IsAligned<T>
+struct IsAligned< volatile T >
+   : public IsAligned<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -119,7 +122,8 @@ struct IsAligned< volatile T > : public IsAligned<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAligned< const volatile T > : public IsAligned<T>
+struct IsAligned< const volatile T >
+   : public IsAligned<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

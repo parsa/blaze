@@ -98,7 +98,8 @@ namespace blaze {
 //
 */
 template< typename VT >  // Type of the sparse vector
-class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> >
+class VectorAccessProxy
+   : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> >
 {
  public:
    //**Type definitions****************************************************************************

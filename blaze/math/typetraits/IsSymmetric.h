@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSymmetric : public FalseType
+struct IsSymmetric
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsSymmetric : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsSymmetric< const T > : public IsSymmetric<T>
+struct IsSymmetric< const T >
+   : public IsSymmetric<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsSymmetric< const T > : public IsSymmetric<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsSymmetric< volatile T > : public IsSymmetric<T>
+struct IsSymmetric< volatile T >
+   : public IsSymmetric<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsSymmetric< volatile T > : public IsSymmetric<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsSymmetric< const volatile T > : public IsSymmetric<T>
+struct IsSymmetric< const volatile T >
+   : public IsSymmetric<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

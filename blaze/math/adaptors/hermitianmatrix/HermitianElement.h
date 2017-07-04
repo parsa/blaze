@@ -107,7 +107,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class HermitianElement : private SparseElement
+class HermitianElement
+   : private SparseElement
 {
  private:
    //**Type definitions****************************************************************************

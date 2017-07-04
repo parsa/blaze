@@ -2050,7 +2050,8 @@ class Column<MT,false,false,false>
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class ColumnElement : private SparseElement
+   class ColumnElement
+      : private SparseElement
    {
     public:
       //**Constructor******************************************************************************

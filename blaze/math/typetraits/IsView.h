@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsView : public BoolConstant< And< IsBaseOf<View,T>, Not< IsBaseOf<T,View> > >::value >
+struct IsView
+   : public BoolConstant< And< IsBaseOf<View,T>, Not< IsBaseOf<T,View> > >::value >
 {};
 //*************************************************************************************************
 

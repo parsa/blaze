@@ -213,7 +213,8 @@ template< typename Type                    // Data type of the matrix
         , size_t M                         // Number of rows
         , size_t N                         // Number of columns
         , bool SO = defaultStorageOrder >  // Storage order
-class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
+class HybridMatrix
+   : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -3362,7 +3363,8 @@ inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& 
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,true>, true >
+class HybridMatrix<Type,M,N,true>
+   : public DenseMatrix< HybridMatrix<Type,M,N,true>, true >
 {
  public:
    //**Type definitions****************************************************************************
@@ -6721,7 +6723,8 @@ inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) n
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
+struct HasConstDataAccess< HybridMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6738,7 +6741,8 @@ struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
+struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6755,7 +6759,8 @@ struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsAligned< HybridMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
+struct IsAligned< HybridMatrix<T,M,N,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6772,7 +6777,8 @@ struct IsAligned< HybridMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsPadded< HybridMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
+struct IsPadded< HybridMatrix<T,M,N,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6789,7 +6795,8 @@ struct IsPadded< HybridMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsResizable< HybridMatrix<T,M,N,SO> > : public TrueType
+struct IsResizable< HybridMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -66,7 +66,8 @@ namespace blaze {
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
-struct SIMDf32FmaddExpr : public SIMDf32< SIMDf32FmaddExpr<T1,T2,T3> >
+struct SIMDf32FmaddExpr
+   : public SIMDf32< SIMDf32FmaddExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf32FmaddExpr<T1,T2,T3>;  //!< Type of this SIMDf32FMaddExpr instance.
@@ -129,7 +130,8 @@ struct SIMDf32FmaddExpr : public SIMDf32< SIMDf32FmaddExpr<T1,T2,T3> >
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side subtraction operand
-struct SIMDf32FmsubExpr : public SIMDf32< SIMDf32FmsubExpr<T1,T2,T3> >
+struct SIMDf32FmsubExpr
+   : public SIMDf32< SIMDf32FmsubExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf32MultExpr<T1,T2>;  //!< Type of this SIMDf32FMsubExpr instance.
@@ -778,7 +780,8 @@ BLAZE_ALWAYS_INLINE const auto
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side addition operand
-struct SIMDf64FmaddExpr : public SIMDf64< SIMDf64FmaddExpr<T1,T2,T3> >
+struct SIMDf64FmaddExpr
+   : public SIMDf64< SIMDf64FmaddExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf64FmaddExpr<T1,T2,T3>;  //!< Type of this SIMDf64FMaddExpr instance.
@@ -841,7 +844,8 @@ struct SIMDf64FmaddExpr : public SIMDf64< SIMDf64FmaddExpr<T1,T2,T3> >
 template< typename T1    // Type of the left-hand side multiplication operand
         , typename T2    // Type of the right-hand side multiplication operand
         , typename T3 >  // Type of the right-hand side subtraction operand
-struct SIMDf64FmsubExpr : public SIMDf64< SIMDf64FmsubExpr<T1,T2,T3> >
+struct SIMDf64FmsubExpr
+   : public SIMDf64< SIMDf64FmsubExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
    using This     = SIMDf64MultExpr<T1,T2>;  //!< Type of this SIMDf64FMsubExpr instance.

@@ -97,7 +97,8 @@ struct IsSIMDEnabledHelper
 // is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsSIMDEnabled : public BoolConstant< IsSIMDEnabledHelper<T>::value >
+struct IsSIMDEnabled
+   : public BoolConstant< IsSIMDEnabledHelper<T>::value >
 {};
 //*************************************************************************************************
 

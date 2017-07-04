@@ -61,7 +61,8 @@ namespace blaze {
 // case a class is derived from the View base class, the IsView type trait recognizes the class
 // as valid view.
 */
-struct View : private Expression
+struct View
+   : private Expression
 {};
 //*************************************************************************************************
 

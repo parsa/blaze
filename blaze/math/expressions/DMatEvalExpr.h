@@ -95,9 +95,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatEvalExpr : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
-                   , private MatEvalExpr
-                   , private Computation
+class DMatEvalExpr
+   : public DenseMatrix< DMatEvalExpr<MT,SO>, SO >
+   , private MatEvalExpr
+   , private Computation
 {
  public:
    //**Type definitions****************************************************************************
@@ -853,7 +854,8 @@ inline const DMatEvalExpr<MT,SO> eval( const DMatEvalExpr<MT,SO>& dm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatEvalExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatEvalExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -870,7 +872,8 @@ struct Rows< DMatEvalExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatEvalExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatEvalExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

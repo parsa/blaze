@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct Columns : public PtrdiffT<-1L>
+struct Columns
+   : public PtrdiffT<-1L>
 {};
 //*************************************************************************************************
 
@@ -83,7 +84,8 @@ struct Columns : public PtrdiffT<-1L>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const T > : public Columns<T>
+struct Columns< const T >
+   : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -95,7 +97,8 @@ struct Columns< const T > : public Columns<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< volatile T > : public Columns<T>
+struct Columns< volatile T >
+   : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +110,8 @@ struct Columns< volatile T > : public Columns<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const volatile T > : public Columns<T>
+struct Columns< const volatile T >
+   : public Columns<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

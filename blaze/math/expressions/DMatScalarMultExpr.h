@@ -120,9 +120,10 @@ namespace blaze {
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-class DMatScalarMultExpr : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO >
-                         , private MatScalarMultExpr
-                         , private Computation
+class DMatScalarMultExpr
+   : public DenseMatrix< DMatScalarMultExpr<MT,ST,SO>, SO >
+   , private MatScalarMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1720,7 +1721,8 @@ inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST1,SO1>, DMatScalarMultExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
+struct Rows< DMatScalarMultExpr<MT,ST,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1737,7 +1739,8 @@ struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< DMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
+struct Columns< DMatScalarMultExpr<MT,ST,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

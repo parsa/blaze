@@ -87,7 +87,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsIdentity : public BoolConstant< And< IsUniLower<T>, IsUniUpper<T> >::value >
+struct IsIdentity
+   : public BoolConstant< And< IsUniLower<T>, IsUniUpper<T> >::value >
 {};
 //*************************************************************************************************
 
@@ -98,7 +99,8 @@ struct IsIdentity : public BoolConstant< And< IsUniLower<T>, IsUniUpper<T> >::va
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsIdentity< const T > : public IsIdentity<T>
+struct IsIdentity< const T >
+   : public IsIdentity<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -110,7 +112,8 @@ struct IsIdentity< const T > : public IsIdentity<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsIdentity< volatile T > : public IsIdentity<T>
+struct IsIdentity< volatile T >
+   : public IsIdentity<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -122,7 +125,8 @@ struct IsIdentity< volatile T > : public IsIdentity<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsIdentity< const volatile T > : public IsIdentity<T>
+struct IsIdentity< const volatile T >
+   : public IsIdentity<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

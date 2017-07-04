@@ -63,7 +63,8 @@ namespace blaze {
 // IsVecScalarMultExpr type trait recognizes the class as valid vector/scalar multiplication
 // expression template.
 */
-struct VecScalarMultExpr : private MultExpr
+struct VecScalarMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the MatInvExpr base class, the IsMatInvExpr type trait recognizes
 // the class as valid matrix inversion expression template.
 */
-struct MatInvExpr : private Expression
+struct MatInvExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

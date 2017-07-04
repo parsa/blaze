@@ -213,7 +213,8 @@ template< typename Type                    // Data type of the matrix
         , size_t M                         // Number of rows
         , size_t N                         // Number of columns
         , bool SO = defaultStorageOrder >  // Storage order
-class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
+class StaticMatrix
+   : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -3185,7 +3186,8 @@ inline void StaticMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& 
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,true>, true >
+class StaticMatrix<Type,M,N,true>
+   : public DenseMatrix< StaticMatrix<Type,M,N,true>, true >
 {
  public:
    //**Type definitions****************************************************************************
@@ -6375,7 +6377,8 @@ inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) n
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Rows< StaticMatrix<T,M,N,SO> > : public PtrdiffT<M>
+struct Rows< StaticMatrix<T,M,N,SO> >
+   : public PtrdiffT<M>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6392,7 +6395,8 @@ struct Rows< StaticMatrix<T,M,N,SO> > : public PtrdiffT<M>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Columns< StaticMatrix<T,M,N,SO> > : public PtrdiffT<N>
+struct Columns< StaticMatrix<T,M,N,SO> >
+   : public PtrdiffT<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6409,7 +6413,8 @@ struct Columns< StaticMatrix<T,M,N,SO> > : public PtrdiffT<N>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool SO >
-struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
+struct IsSquare< StaticMatrix<T,N,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6426,7 +6431,8 @@ struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasConstDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
+struct HasConstDataAccess< StaticMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6443,7 +6449,8 @@ struct HasConstDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
+struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6460,7 +6467,8 @@ struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsStatic< StaticMatrix<T,M,N,SO> > : public TrueType
+struct IsStatic< StaticMatrix<T,M,N,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6477,7 +6485,8 @@ struct IsStatic< StaticMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsAligned< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
+struct IsAligned< StaticMatrix<T,M,N,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6494,7 +6503,8 @@ struct IsAligned< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsPadded< StaticMatrix<T,M,N,SO> > : public BoolConstant<usePadding>
+struct IsPadded< StaticMatrix<T,M,N,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************

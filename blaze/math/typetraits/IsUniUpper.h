@@ -83,7 +83,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsUniUpper : public FalseType
+struct IsUniUpper
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -94,7 +95,8 @@ struct IsUniUpper : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< const T > : public IsUniUpper<T>
+struct IsUniUpper< const T >
+   : public IsUniUpper<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -106,7 +108,8 @@ struct IsUniUpper< const T > : public IsUniUpper<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< volatile T > : public IsUniUpper<T>
+struct IsUniUpper< volatile T >
+   : public IsUniUpper<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -118,7 +121,8 @@ struct IsUniUpper< volatile T > : public IsUniUpper<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniUpper< const volatile T > : public IsUniUpper<T>
+struct IsUniUpper< const volatile T >
+   : public IsUniUpper<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

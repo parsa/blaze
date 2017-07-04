@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the VecSerialExpr base class, the IsVecSerialExpr type trait recognizes
 // the class as valid vector serial evaluation expression template.
 */
-struct VecSerialExpr : private SerialExpr
+struct VecSerialExpr
+   : private SerialExpr
 {};
 //*************************************************************************************************
 

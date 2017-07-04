@@ -95,7 +95,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class UpperProxy : public Proxy< UpperProxy<MT>, ElementType_<MT> >
+class UpperProxy
+   : public Proxy< UpperProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Type definitions****************************************************************************

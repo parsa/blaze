@@ -157,7 +157,8 @@ class SymmetricMatrix<MT,SO,false,false>
    /*!\brief Access proxy for a specific shared element of the sparse symmetric matrix.
    */
    template< typename IteratorType >  // Type of the sparse matrix iterator
-   class SharedElement : private SparseElement
+   class SharedElement
+      : private SparseElement
    {
     public:
       //**Type definitions*************************************************************************

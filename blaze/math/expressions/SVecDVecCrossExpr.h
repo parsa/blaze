@@ -85,9 +85,10 @@ namespace blaze {
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-class SVecDVecCrossExpr : public DenseVector< SVecDVecCrossExpr<VT1,VT2,TF>, TF >
-                        , private CrossExpr
-                        , private Computation
+class SVecDVecCrossExpr
+   : public DenseVector< SVecDVecCrossExpr<VT1,VT2,TF>, TF >
+   , private CrossExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -564,7 +565,8 @@ inline const SVecDVecCrossExpr<VT1,VT2,TF>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
-struct Size< SVecDVecCrossExpr<VT1,VT2,TF> > : public PtrdiffT<3L>
+struct Size< SVecDVecCrossExpr<VT1,VT2,TF> >
+   : public PtrdiffT<3L>
 {};
 /*! \endcond */
 //*************************************************************************************************

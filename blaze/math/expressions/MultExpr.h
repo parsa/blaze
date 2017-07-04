@@ -63,7 +63,8 @@ namespace blaze {
 // expression template. Only in case a class is derived from the MultExpr base class, the
 // IsMultExpr type trait recognizes the class as valid multiplication expression template.
 */
-struct MultExpr : private Expression
+struct MultExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

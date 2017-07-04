@@ -181,7 +181,8 @@ namespace blaze {
 template< typename Type                     // Data type of the vector
         , size_t N                          // Number of elements
         , bool TF = defaultTransposeFlag >  // Transpose flag
-class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
+class StaticVector
+   : public DenseVector< StaticVector<Type,N,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
@@ -2684,7 +2685,8 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexc
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct Size< StaticVector<T,N,TF> > : public PtrdiffT<N>
+struct Size< StaticVector<T,N,TF> >
+   : public PtrdiffT<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2701,7 +2703,8 @@ struct Size< StaticVector<T,N,TF> > : public PtrdiffT<N>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasConstDataAccess< StaticVector<T,N,TF> > : public TrueType
+struct HasConstDataAccess< StaticVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2718,7 +2721,8 @@ struct HasConstDataAccess< StaticVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasMutableDataAccess< StaticVector<T,N,TF> > : public TrueType
+struct HasMutableDataAccess< StaticVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2735,7 +2739,8 @@ struct HasMutableDataAccess< StaticVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsStatic< StaticVector<T,N,TF> > : public TrueType
+struct IsStatic< StaticVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2752,7 +2757,8 @@ struct IsStatic< StaticVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsAligned< StaticVector<T,N,TF> > : public TrueType
+struct IsAligned< StaticVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2769,7 +2775,8 @@ struct IsAligned< StaticVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsPadded< StaticVector<T,N,TF> > : public BoolConstant<usePadding>
+struct IsPadded< StaticVector<T,N,TF> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************

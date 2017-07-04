@@ -113,7 +113,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class HermitianValue : public Proxy< HermitianValue<MT> >
+class HermitianValue
+   : public Proxy< HermitianValue<MT> >
 {
  private:
    //**Type definitions****************************************************************************

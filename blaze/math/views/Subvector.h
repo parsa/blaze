@@ -1374,7 +1374,8 @@ struct HasMutableDataAccess< Subvector<VT,AF,TF,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsAligned< Subvector<VT,aligned,TF,true> > : public TrueType
+struct IsAligned< Subvector<VT,aligned,TF,true> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

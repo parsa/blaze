@@ -95,7 +95,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class NumericProxy : public Proxy< NumericProxy<MT> >
+class NumericProxy
+   : public Proxy< NumericProxy<MT> >
 {
  private:
    //**struct BuiltinType**************************************************************************

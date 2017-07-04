@@ -109,9 +109,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
-                    , private MatTransExpr
-                    , private If< IsComputation<MT>, Computation, Transformation >::Type
+class DMatTransExpr
+   : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
+   , private MatTransExpr
+   , private If< IsComputation<MT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -885,7 +886,8 @@ inline const MultExprTrait_< TransExprTrait_<MT>, ST >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatTransExpr<MT,SO> > : public Columns<MT>
+struct Rows< DMatTransExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -902,7 +904,8 @@ struct Rows< DMatTransExpr<MT,SO> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatTransExpr<MT,SO> > : public Rows<MT>
+struct Columns< DMatTransExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the MatMatMapExpr base class, the IsMatMatMapExpr type trait recognizes the class
 // as valid binary matrix map expression template.
 */
-struct MatMatMapExpr : private BinaryMapExpr
+struct MatMatMapExpr
+   : private BinaryMapExpr
 {};
 //*************************************************************************************************
 

@@ -146,7 +146,8 @@ class Submatrix<MT,AF,false,false>
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class SubmatrixElement : private SparseElement
+   class SubmatrixElement
+      : private SparseElement
    {
     public:
       //**Constructor******************************************************************************
@@ -2720,7 +2721,8 @@ class Submatrix<MT,AF,true,false>
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class SubmatrixElement : private SparseElement
+   class SubmatrixElement
+      : private SparseElement
    {
     public:
       //**Constructor******************************************************************************

@@ -78,7 +78,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
+class DMatTransposer
+   : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -1148,7 +1149,8 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 // row-major matrices.
 */
 template< typename MT >  // Type of the dense matrix
-class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, true >
+class DMatTransposer<MT,true>
+   : public DenseMatrix< DMatTransposer<MT,true>, true >
 {
  public:
    //**Type definitions****************************************************************************

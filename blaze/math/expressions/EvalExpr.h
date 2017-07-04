@@ -62,7 +62,8 @@ namespace blaze {
 // base class, the IsEvalExpr type trait recognizes the class as valid evaluation expression
 // template.
 */
-struct EvalExpr : private Expression
+struct EvalExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

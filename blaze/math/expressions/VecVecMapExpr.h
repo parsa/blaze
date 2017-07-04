@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the VecVecMapExpr base class, the IsVecVecMapExpr type trait recognizes the class
 // as valid binary vector map expression template.
 */
-struct VecVecMapExpr : private BinaryMapExpr
+struct VecVecMapExpr
+   : private BinaryMapExpr
 {};
 //*************************************************************************************************
 

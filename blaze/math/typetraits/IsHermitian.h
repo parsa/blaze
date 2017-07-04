@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsHermitian : public FalseType
+struct IsHermitian
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsHermitian : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsHermitian< const T > : public IsHermitian<T>
+struct IsHermitian< const T >
+   : public IsHermitian<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsHermitian< const T > : public IsHermitian<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsHermitian< volatile T > : public IsHermitian<T>
+struct IsHermitian< volatile T >
+   : public IsHermitian<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsHermitian< volatile T > : public IsHermitian<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsHermitian< const volatile T > : public IsHermitian<T>
+struct IsHermitian< const volatile T >
+   : public IsHermitian<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

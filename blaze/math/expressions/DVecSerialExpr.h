@@ -84,9 +84,10 @@ namespace blaze {
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-class DVecSerialExpr : public DenseVector< DVecSerialExpr<VT,TF>, TF >
-                     , private VecSerialExpr
-                     , private Computation
+class DVecSerialExpr
+   : public DenseVector< DVecSerialExpr<VT,TF>, TF >
+   , private VecSerialExpr
+   , private Computation
 {
  public:
    //**Type definitions****************************************************************************
@@ -805,7 +806,8 @@ inline const DVecSerialExpr<VT,TF> serial( const DVecSerialExpr<VT,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecSerialExpr<VT,TF> > : public Size<VT>
+struct Size< DVecSerialExpr<VT,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

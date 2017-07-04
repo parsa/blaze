@@ -94,9 +94,10 @@ namespace blaze {
 template< typename VT  // Type of the sparse vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
-class SVecMapExpr : public SparseVector< SVecMapExpr<VT,OP,TF>, TF >
-                  , private VecMapExpr
-                  , private Computation
+class SVecMapExpr
+   : public SparseVector< SVecMapExpr<VT,OP,TF>, TF >
+   , private VecMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -2152,7 +2153,8 @@ inline const SVecMapExpr<VT,Real,TF>& real( const SVecMapExpr<VT,Real,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct Size< SVecMapExpr<VT,OP,TF> > : public Size<VT>
+struct Size< SVecMapExpr<VT,OP,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

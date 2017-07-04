@@ -110,9 +110,10 @@ namespace blaze {
 template< typename MT  // Type of the dense matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
-class DMatMapExpr : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
-                  , private MatMapExpr
-                  , private Computation
+class DMatMapExpr
+   : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
+   , private MatMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -2408,7 +2409,8 @@ inline const DMatMapExpr<MT,Real,SO>& real( const DMatMapExpr<MT,Real,SO>& dm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Rows< DMatMapExpr<MT,OP,SO> > : public Rows<MT>
+struct Rows< DMatMapExpr<MT,OP,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2425,7 +2427,8 @@ struct Rows< DMatMapExpr<MT,OP,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Columns< DMatMapExpr<MT,OP,SO> > : public Columns<MT>
+struct Columns< DMatMapExpr<MT,OP,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

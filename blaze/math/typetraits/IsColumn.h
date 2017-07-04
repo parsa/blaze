@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsColumn : public FalseType
+struct IsColumn
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsColumn : public FalseType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsColumn< Column<MT,SO,DF,SF> > : public TrueType
+struct IsColumn< Column<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsColumn< Column<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsColumn< const Column<MT,SO,DF,SF> > : public TrueType
+struct IsColumn< const Column<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsColumn< const Column<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsColumn< volatile Column<MT,SO,DF,SF> > : public TrueType
+struct IsColumn< volatile Column<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -129,7 +133,8 @@ struct IsColumn< volatile Column<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsColumn< const volatile Column<MT,SO,DF,SF> > : public TrueType
+struct IsColumn< const volatile Column<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

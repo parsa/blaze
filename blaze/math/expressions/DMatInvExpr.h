@@ -90,9 +90,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatInvExpr : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
-                  , private MatInvExpr
-                  , private Computation
+class DMatInvExpr
+   : public DenseMatrix< DMatInvExpr<MT,SO>, SO >
+   , private MatInvExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -493,7 +494,8 @@ inline typename DMatInvExpr<MT,SO>::Operand inv( const DMatInvExpr<MT,SO>& dm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatInvExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatInvExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -510,7 +512,8 @@ struct Rows< DMatInvExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatInvExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatInvExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

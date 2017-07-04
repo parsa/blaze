@@ -72,7 +72,8 @@ namespace blaze {
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
+class SVecTransposer
+   : public SparseVector< SVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************

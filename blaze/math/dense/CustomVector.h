@@ -393,7 +393,8 @@ template< typename Type                     // Data type of the vector
         , bool AF                           // Alignment flag
         , bool PF                           // Padding flag
         , bool TF = defaultTransposeFlag >  // Transpose flag
-class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
+class CustomVector
+   : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
@@ -5092,7 +5093,8 @@ inline void swap( CustomVector<Type,AF,PF,TF>& a, CustomVector<Type,AF,PF,TF>& b
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
+struct HasConstDataAccess< CustomVector<T,AF,PF,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5109,7 +5111,8 @@ struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
+struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5126,7 +5129,8 @@ struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
-struct IsCustom< CustomVector<T,AF,PF,TF> > : public TrueType
+struct IsCustom< CustomVector<T,AF,PF,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5143,7 +5147,8 @@ struct IsCustom< CustomVector<T,AF,PF,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool PF, bool TF >
-struct IsAligned< CustomVector<T,aligned,PF,TF> > : public TrueType
+struct IsAligned< CustomVector<T,aligned,PF,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5160,7 +5165,8 @@ struct IsAligned< CustomVector<T,aligned,PF,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool TF >
-struct IsPadded< CustomVector<T,AF,padded,TF> > : public TrueType
+struct IsPadded< CustomVector<T,AF,padded,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

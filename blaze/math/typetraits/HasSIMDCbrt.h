@@ -106,7 +106,8 @@ struct HasSIMDCbrtHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDCbrt : public BoolConstant< HasSIMDCbrtHelper< Decay_<T> >::value >
+struct HasSIMDCbrt
+   : public BoolConstant< HasSIMDCbrtHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 

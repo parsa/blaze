@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the DeclDiagExpr base class, the IsDeclDiagExpr type trait recognizes
 // the class as valid decldiag expression template.
 */
-struct DeclDiagExpr : private DeclExpr
+struct DeclDiagExpr
+   : private DeclExpr
 {};
 //*************************************************************************************************
 

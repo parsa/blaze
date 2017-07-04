@@ -293,7 +293,8 @@ struct SIMDTraitBase< complex<double> >
 //    \a size is set to 1.
 */
 template< typename T >
-class SIMDTrait : public SIMDTraitBase< RemoveCV_<T> >
+class SIMDTrait
+   : public SIMDTraitBase< RemoveCV_<T> >
 {};
 //*************************************************************************************************
 

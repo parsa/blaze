@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the SchurExpr base class, the IsSchurExpr type trait recognizes the class as
 // valid Schur product expression template.
 */
-struct SchurExpr : private Expression
+struct SchurExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

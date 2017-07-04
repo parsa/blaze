@@ -87,7 +87,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsDiagonal : public BoolConstant< And< IsLower<T>, IsUpper<T> >::value >
+struct IsDiagonal
+   : public BoolConstant< And< IsLower<T>, IsUpper<T> >::value >
 {};
 //*************************************************************************************************
 
@@ -98,7 +99,8 @@ struct IsDiagonal : public BoolConstant< And< IsLower<T>, IsUpper<T> >::value >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< const T > : public IsDiagonal<T>
+struct IsDiagonal< const T >
+   : public IsDiagonal<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -110,7 +112,8 @@ struct IsDiagonal< const T > : public IsDiagonal<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< volatile T > : public IsDiagonal<T>
+struct IsDiagonal< volatile T >
+   : public IsDiagonal<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -122,7 +125,8 @@ struct IsDiagonal< volatile T > : public IsDiagonal<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsDiagonal< const volatile T > : public IsDiagonal<T>
+struct IsDiagonal< const volatile T >
+   : public IsDiagonal<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

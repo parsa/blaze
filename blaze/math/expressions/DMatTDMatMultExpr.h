@@ -164,9 +164,10 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool HF       // Hermitian flag
         , bool LF       // Lower flag
         , bool UF >     // Upper flag
-class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, false >
-                        , private MatMatMultExpr
-                        , private Computation
+class DMatTDMatMultExpr
+   : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, false >
+   , private MatMatMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -8462,7 +8463,8 @@ inline const DMatTDMatMultExpr<MT1,MT2,SF,HF,true,true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct Rows< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > : public Rows<MT1>
+struct Rows< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
+   : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -8479,7 +8481,8 @@ struct Rows< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > : public Rows<MT1>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct Columns< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > : public Columns<MT2>
+struct Columns< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
+   : public Columns<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

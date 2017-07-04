@@ -106,9 +106,10 @@ namespace blaze {
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
-class DVecScalarDivExpr : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
-                        , private VecScalarDivExpr
-                        , private Computation
+class DVecScalarDivExpr
+   : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
+   , private VecScalarDivExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1182,7 +1183,8 @@ inline const EnableIf_< IsNumeric<ST2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarDivExpr<VT,ST,TF> > : public Size<VT>
+struct Size< DVecScalarDivExpr<VT,ST,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

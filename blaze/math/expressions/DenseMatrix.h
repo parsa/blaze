@@ -68,7 +68,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-struct DenseMatrix : public Matrix<MT,SO>
+struct DenseMatrix
+   : public Matrix<MT,SO>
 {};
 //*************************************************************************************************
 

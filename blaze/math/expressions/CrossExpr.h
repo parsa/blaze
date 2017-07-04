@@ -62,7 +62,8 @@ namespace blaze {
 // the CrossExpr base class, the IsCrossExpr type trait recognizes the class as valid cross
 // product expression template.
 */
-struct CrossExpr : private Expression
+struct CrossExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

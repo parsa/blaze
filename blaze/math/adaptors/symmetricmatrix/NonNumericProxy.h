@@ -100,7 +100,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class NonNumericProxy : public Proxy< NonNumericProxy<MT>, ValueType_< ElementType_<MT> > >
+class NonNumericProxy
+   : public Proxy< NonNumericProxy<MT>, ValueType_< ElementType_<MT> > >
 {
  private:
    //**Enumerations********************************************************************************

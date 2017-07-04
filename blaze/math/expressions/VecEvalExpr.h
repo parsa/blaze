@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the VecEvalExpr base class, the IsVecEvalExpr type trait recognizes
 // the class as valid vector evaluation expression template.
 */
-struct VecEvalExpr : private EvalExpr
+struct VecEvalExpr
+   : private EvalExpr
 {};
 //*************************************************************************************************
 

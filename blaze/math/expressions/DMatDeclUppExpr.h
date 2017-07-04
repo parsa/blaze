@@ -109,9 +109,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatDeclUppExpr : public DenseMatrix< DMatDeclUppExpr<MT,SO>, SO >
-                      , private DeclUppExpr
-                      , private Declaration<MT>
+class DMatDeclUppExpr
+   : public DenseMatrix< DMatDeclUppExpr<MT,SO>, SO >
+   , private DeclUppExpr
+   , private Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
@@ -1061,7 +1062,8 @@ inline const DisableIf_< IsUpper<MT>, MultExprTrait_< DeclUppExprTrait_<MT>, ST 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatDeclUppExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatDeclUppExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1078,7 +1080,8 @@ struct Rows< DMatDeclUppExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatDeclUppExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatDeclUppExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

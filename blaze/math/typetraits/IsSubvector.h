@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSubvector : public FalseType
+struct IsSubvector
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsSubvector : public FalseType
 // \ingroup math_type_traits
 */
 template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< Subvector<VT,AF,TF,DF> > : public TrueType
+struct IsSubvector< Subvector<VT,AF,TF,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsSubvector< Subvector<VT,AF,TF,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< const Subvector<VT,AF,TF,DF> > : public TrueType
+struct IsSubvector< const Subvector<VT,AF,TF,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsSubvector< const Subvector<VT,AF,TF,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< volatile Subvector<VT,AF,TF,DF> > : public TrueType
+struct IsSubvector< volatile Subvector<VT,AF,TF,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -129,7 +133,8 @@ struct IsSubvector< volatile Subvector<VT,AF,TF,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< const volatile Subvector<VT,AF,TF,DF> > : public TrueType
+struct IsSubvector< const volatile Subvector<VT,AF,TF,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

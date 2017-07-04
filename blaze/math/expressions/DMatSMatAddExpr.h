@@ -105,9 +105,10 @@ namespace blaze {
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order
-class DMatSMatAddExpr : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
-                      , private MatMatAddExpr
-                      , private Computation
+class DMatSMatAddExpr
+   : public DenseMatrix< DMatSMatAddExpr<MT1,MT2,SO>, SO >
+   , private MatMatAddExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************

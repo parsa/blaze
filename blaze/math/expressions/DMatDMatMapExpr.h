@@ -106,9 +106,10 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename OP   // Type of the custom operation
         , bool SO >     // Storage order
-class DMatDMatMapExpr : public DenseMatrix< DMatDMatMapExpr<MT1,MT2,OP,SO>, SO >
-                      , private MatMatMapExpr
-                      , private Computation
+class DMatDMatMapExpr
+   : public DenseMatrix< DMatDMatMapExpr<MT1,MT2,OP,SO>, SO >
+   , private MatMatMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************

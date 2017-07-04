@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the MatEvalExpr base class, the IsMatEvalExpr type trait recognizes
 // the class as valid matrix evaluation expression template.
 */
-struct MatEvalExpr : private EvalExpr
+struct MatEvalExpr
+   : private EvalExpr
 {};
 //*************************************************************************************************
 

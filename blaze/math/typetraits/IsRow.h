@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsRow : public FalseType
+struct IsRow
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsRow : public FalseType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsRow< Row<MT,SO,DF,SF> > : public TrueType
+struct IsRow< Row<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsRow< Row<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsRow< const Row<MT,SO,DF,SF> > : public TrueType
+struct IsRow< const Row<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsRow< const Row<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsRow< volatile Row<MT,SO,DF,SF> > : public TrueType
+struct IsRow< volatile Row<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -129,7 +133,8 @@ struct IsRow< volatile Row<MT,SO,DF,SF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool SO, bool DF, bool SF >
-struct IsRow< const volatile Row<MT,SO,DF,SF> > : public TrueType
+struct IsRow< const volatile Row<MT,SO,DF,SF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

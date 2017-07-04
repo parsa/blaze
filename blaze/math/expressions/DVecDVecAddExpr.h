@@ -97,9 +97,10 @@ namespace blaze {
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-class DVecDVecAddExpr : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
-                      , private VecVecAddExpr
-                      , private Computation
+class DVecDVecAddExpr
+   : public DenseVector< DVecDVecAddExpr<VT1,VT2,TF>, TF >
+   , private VecVecAddExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************

@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsPadded : public FalseType
+struct IsPadded
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -84,7 +85,8 @@ struct IsPadded : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< const T > : public IsPadded<T>
+struct IsPadded< const T >
+   : public IsPadded<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -96,7 +98,8 @@ struct IsPadded< const T > : public IsPadded<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< volatile T > : public IsPadded<T>
+struct IsPadded< volatile T >
+   : public IsPadded<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -108,7 +111,8 @@ struct IsPadded< volatile T > : public IsPadded<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsPadded< const volatile T > : public IsPadded<T>
+struct IsPadded< const volatile T >
+   : public IsPadded<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

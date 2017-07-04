@@ -62,7 +62,8 @@ namespace blaze {
 // Only in case a class is derived from the MatMatMultExpr base class, the IsMatMatMultExpr
 // type trait recognizes the class as valid matrix multiplication expression template.
 */
-struct MatMatMultExpr : private MultExpr
+struct MatMatMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

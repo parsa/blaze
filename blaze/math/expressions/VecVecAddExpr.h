@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the VecVecAddExpr base class, the IsVecVecAddExpr type trait recognizes the
 // class as valid vector addition expression template.
 */
-struct VecVecAddExpr : private AddExpr
+struct VecVecAddExpr
+   : private AddExpr
 {};
 //*************************************************************************************************
 

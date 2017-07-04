@@ -2045,7 +2045,8 @@ class Row<MT,false,false,false>
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class RowElement : private SparseElement
+   class RowElement
+      : private SparseElement
    {
     public:
       //**Constructor******************************************************************************

@@ -98,7 +98,8 @@ namespace blaze {
 // to the sparse matrix elements while preserving the intuitive use of the function call operator.
 */
 template< typename MT >  // Type of the sparse matrix
-class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> >
+class MatrixAccessProxy
+   : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Enumerations********************************************************************************

@@ -62,7 +62,8 @@ namespace blaze {
 // is derived from the VecVecMultExpr base class, the IsVecVecMultExpr type trait recognizes the
 // class as valid vector multiplication expression template.
 */
-struct VecVecMultExpr : private MultExpr
+struct VecVecMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

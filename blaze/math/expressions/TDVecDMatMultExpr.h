@@ -124,9 +124,10 @@ namespace blaze {
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side dense matrix
-class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
-                        , private TVecMatMultExpr
-                        , private Computation
+class TDVecDMatMultExpr
+   : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
+   , private TVecMatMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -4818,7 +4819,8 @@ inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<VT,MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT >
-struct Size< TDVecDMatMultExpr<VT,MT> > : public Columns<MT>
+struct Size< TDVecDMatMultExpr<VT,MT> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

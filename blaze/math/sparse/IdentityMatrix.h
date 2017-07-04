@@ -215,7 +215,8 @@ namespace blaze {
 */
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
-class IdentityMatrix : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
+class IdentityMatrix
+   : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -1800,7 +1801,8 @@ inline IdentityMatrix<ElementType_<MT>,SO>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsSquare< IdentityMatrix<MT,SO> > : public TrueType
+struct IsSquare< IdentityMatrix<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1817,7 +1819,8 @@ struct IsSquare< IdentityMatrix<MT,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsSymmetric< IdentityMatrix<MT,SO> > : public TrueType
+struct IsSymmetric< IdentityMatrix<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1834,7 +1837,8 @@ struct IsSymmetric< IdentityMatrix<MT,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsHermitian< IdentityMatrix<MT,SO> > : public TrueType
+struct IsHermitian< IdentityMatrix<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1851,7 +1855,8 @@ struct IsHermitian< IdentityMatrix<MT,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniLower< IdentityMatrix<MT,SO> > : public TrueType
+struct IsUniLower< IdentityMatrix<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1868,7 +1873,8 @@ struct IsUniLower< IdentityMatrix<MT,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUniUpper< IdentityMatrix<MT,SO> > : public TrueType
+struct IsUniUpper< IdentityMatrix<MT,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1885,7 +1891,8 @@ struct IsUniUpper< IdentityMatrix<MT,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsResizable< IdentityMatrix<T,SO> > : public TrueType
+struct IsResizable< IdentityMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

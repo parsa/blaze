@@ -74,7 +74,8 @@ namespace blaze {
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
+class DVecTransposer
+   : public DenseVector< DVecTransposer<VT,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************

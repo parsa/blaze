@@ -95,7 +95,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class DiagonalProxy : public Proxy< DiagonalProxy<MT>, ElementType_<MT> >
+class DiagonalProxy
+   : public Proxy< DiagonalProxy<MT>, ElementType_<MT> >
 {
  private:
    //**Type definitions****************************************************************************

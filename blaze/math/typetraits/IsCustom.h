@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsCustom : public FalseType
+struct IsCustom
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -95,7 +96,8 @@ struct IsCustom : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsCustom< const T > : public IsCustom<T>
+struct IsCustom< const T >
+   : public IsCustom<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +109,8 @@ struct IsCustom< const T > : public IsCustom<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsCustom< volatile T > : public IsCustom<T>
+struct IsCustom< volatile T >
+   : public IsCustom<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -119,7 +122,8 @@ struct IsCustom< volatile T > : public IsCustom<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsCustom< const volatile T > : public IsCustom<T>
+struct IsCustom< const volatile T >
+   : public IsCustom<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

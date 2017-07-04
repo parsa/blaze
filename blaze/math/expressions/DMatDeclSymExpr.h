@@ -110,9 +110,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatDeclSymExpr : public DenseMatrix< DMatDeclSymExpr<MT,SO>, SO >
-                      , private DeclSymExpr
-                      , private Declaration<MT>
+class DMatDeclSymExpr
+   : public DenseMatrix< DMatDeclSymExpr<MT,SO>, SO >
+   , private DeclSymExpr
+   , private Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
@@ -1062,7 +1063,8 @@ inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclSymExprTrait_<MT>,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatDeclSymExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatDeclSymExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1079,7 +1081,8 @@ struct Rows< DMatDeclSymExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatDeclSymExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatDeclSymExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

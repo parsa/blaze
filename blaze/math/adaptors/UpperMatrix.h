@@ -954,7 +954,8 @@ inline MT& derestrict( UpperMatrix<MT,SO,DF>& m )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct Rows< UpperMatrix<MT,SO,DF> > : public Rows<MT>
+struct Rows< UpperMatrix<MT,SO,DF> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -971,7 +972,8 @@ struct Rows< UpperMatrix<MT,SO,DF> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct Columns< UpperMatrix<MT,SO,DF> > : public Columns<MT>
+struct Columns< UpperMatrix<MT,SO,DF> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -988,7 +990,8 @@ struct Columns< UpperMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< UpperMatrix<MT,SO,DF> > : public TrueType
+struct IsSquare< UpperMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1005,7 +1008,8 @@ struct IsSquare< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsUpper< UpperMatrix<MT,SO,DF> > : public TrueType
+struct IsUpper< UpperMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1022,7 +1026,8 @@ struct IsUpper< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< UpperMatrix<MT,SO,DF> > : public TrueType
+struct IsAdaptor< UpperMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1039,7 +1044,8 @@ struct IsAdaptor< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< UpperMatrix<MT,SO,DF> > : public TrueType
+struct IsRestricted< UpperMatrix<MT,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1056,7 +1062,8 @@ struct IsRestricted< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public TrueType
+struct HasConstDataAccess< UpperMatrix<MT,SO,true> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1073,7 +1080,8 @@ struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAligned< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::value >
+struct IsAligned< UpperMatrix<MT,SO,DF> >
+   : public BoolConstant< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1090,7 +1098,8 @@ struct IsAligned< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsAligned<MT>::
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsPadded< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::value >
+struct IsPadded< UpperMatrix<MT,SO,DF> >
+   : public BoolConstant< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1107,7 +1116,8 @@ struct IsPadded< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsPadded<MT>::va
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<MT>::value >
+struct IsResizable< UpperMatrix<MT,SO,DF> >
+   : public BoolConstant< IsResizable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1124,7 +1134,8 @@ struct IsResizable< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsResizable<M
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsShrinkable< UpperMatrix<MT,SO,DF> > : public BoolConstant< IsShrinkable<MT>::value >
+struct IsShrinkable< UpperMatrix<MT,SO,DF> >
+   : public BoolConstant< IsShrinkable<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

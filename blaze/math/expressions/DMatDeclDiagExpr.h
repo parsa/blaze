@@ -107,9 +107,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatDeclDiagExpr : public DenseMatrix< DMatDeclDiagExpr<MT,SO>, SO >
-                       , private DeclDiagExpr
-                       , private Declaration<MT>
+class DMatDeclDiagExpr
+   : public DenseMatrix< DMatDeclDiagExpr<MT,SO>, SO >
+   , private DeclDiagExpr
+   , private Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
@@ -1033,7 +1034,8 @@ inline const DisableIf_< IsDiagonal<MT>, MultExprTrait_< DeclDiagExprTrait_<MT>,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatDeclDiagExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatDeclDiagExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1050,7 +1052,8 @@ struct Rows< DMatDeclDiagExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatDeclDiagExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatDeclDiagExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

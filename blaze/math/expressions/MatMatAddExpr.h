@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the MatMatAddExpr base class, the IsMatMatAddExpr type trait recognizes the
 // class as valid matrix addition expression template.
 */
-struct MatMatAddExpr : private AddExpr
+struct MatMatAddExpr
+   : private AddExpr
 {};
 //*************************************************************************************************
 

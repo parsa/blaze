@@ -62,7 +62,8 @@ namespace blaze {
 // is derived from the VecVecDivExpr base class, the IsVecVecDivExpr type trait recognizes
 // the class as valid vector division expression template.
 */
-struct VecVecDivExpr : private DivExpr
+struct VecVecDivExpr
+   : private DivExpr
 {};
 //*************************************************************************************************
 

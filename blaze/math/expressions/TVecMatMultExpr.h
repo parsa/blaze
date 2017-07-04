@@ -63,7 +63,8 @@ namespace blaze {
 // IsTVecMatMultExpr type trait recognizes the class as valid vector/matrix multiplication
 // expression template.
 */
-struct TVecMatMultExpr : private MultExpr
+struct TVecMatMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

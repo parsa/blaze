@@ -175,7 +175,8 @@ namespace blaze {
 template< typename Type                     // Data type of the vector
         , size_t N                          // Number of elements
         , bool TF = defaultTransposeFlag >  // Transpose flag
-class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
+class HybridVector
+   : public DenseVector< HybridVector<Type,N,TF>, TF >
 {
  public:
    //**Type definitions****************************************************************************
@@ -2760,7 +2761,8 @@ inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexc
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasConstDataAccess< HybridVector<T,N,TF> > : public TrueType
+struct HasConstDataAccess< HybridVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2777,7 +2779,8 @@ struct HasConstDataAccess< HybridVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct HasMutableDataAccess< HybridVector<T,N,TF> > : public TrueType
+struct HasMutableDataAccess< HybridVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2794,7 +2797,8 @@ struct HasMutableDataAccess< HybridVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsAligned< HybridVector<T,N,TF> > : public TrueType
+struct IsAligned< HybridVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2811,7 +2815,8 @@ struct IsAligned< HybridVector<T,N,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsPadded< HybridVector<T,N,TF> > : public BoolConstant<usePadding>
+struct IsPadded< HybridVector<T,N,TF> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2828,7 +2833,8 @@ struct IsPadded< HybridVector<T,N,TF> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsResizable< HybridVector<T,N,TF> > : public TrueType
+struct IsResizable< HybridVector<T,N,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

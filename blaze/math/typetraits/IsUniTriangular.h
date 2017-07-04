@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsUniTriangular : public BoolConstant< Or< IsUniLower<T>, IsUniUpper<T> >::value >
+struct IsUniTriangular
+   : public BoolConstant< Or< IsUniLower<T>, IsUniUpper<T> >::value >
 {};
 //*************************************************************************************************
 

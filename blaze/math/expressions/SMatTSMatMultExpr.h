@@ -118,9 +118,10 @@ namespace blaze {
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false >
-                        , private MatMatMultExpr
-                        , private Computation
+class SMatTSMatMultExpr
+   : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false >
+   , private MatMatMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1245,7 +1246,8 @@ inline const SMatTSMatMultExpr<MT1,MT2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Rows< SMatTSMatMultExpr<MT1,MT2> > : public Rows<MT1>
+struct Rows< SMatTSMatMultExpr<MT1,MT2> >
+   : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1262,7 +1264,8 @@ struct Rows< SMatTSMatMultExpr<MT1,MT2> > : public Rows<MT1>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Columns< SMatTSMatMultExpr<MT1,MT2> > : public Columns<MT2>
+struct Columns< SMatTSMatMultExpr<MT1,MT2> >
+   : public Columns<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

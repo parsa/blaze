@@ -95,9 +95,10 @@ template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , typename OP   // Type of the custom operation
         , bool TF >     // Transpose flag
-class DVecDVecMapExpr : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
-                      , private VecVecMapExpr
-                      , private Computation
+class DVecDVecMapExpr
+   : public DenseVector< DVecDVecMapExpr<VT1,VT2,OP,TF>, TF >
+   , private VecVecMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************

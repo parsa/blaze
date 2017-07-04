@@ -102,9 +102,10 @@ namespace blaze {
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-class SVecDVecOuterExpr : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true >
-                        , private VecTVecMultExpr
-                        , private Computation
+class SVecDVecOuterExpr
+   : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true >
+   , private VecTVecMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1468,7 +1469,8 @@ inline const SVecDVecOuterExpr<VT1,VT2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Rows< SVecDVecOuterExpr<VT1,VT2> > : public Size<VT1>
+struct Rows< SVecDVecOuterExpr<VT1,VT2> >
+   : public Size<VT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1485,7 +1487,8 @@ struct Rows< SVecDVecOuterExpr<VT1,VT2> > : public Size<VT1>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Columns< SVecDVecOuterExpr<VT1,VT2> > : public Size<VT2>
+struct Columns< SVecDVecOuterExpr<VT1,VT2> >
+   : public Size<VT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

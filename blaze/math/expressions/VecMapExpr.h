@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the VecMapExpr base class, the IsVecMapExpr type trait recognizes the class as
 // valid unary vector map expression template.
 */
-struct VecMapExpr : private UnaryMapExpr
+struct VecMapExpr
+   : private UnaryMapExpr
 {};
 //*************************************************************************************************
 

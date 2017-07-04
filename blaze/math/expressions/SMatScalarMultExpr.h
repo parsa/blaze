@@ -114,9 +114,10 @@ namespace blaze {
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO >
-                         , private MatScalarMultExpr
-                         , private Computation
+class SMatScalarMultExpr
+   : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO >
+   , private MatScalarMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1490,7 +1491,8 @@ inline const MultExprTrait_< SMatScalarMultExpr<MT1,ST1,SO1>, SMatScalarMultExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< SMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
+struct Rows< SMatScalarMultExpr<MT,ST,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1507,7 +1509,8 @@ struct Rows< SMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< SMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
+struct Columns< SMatScalarMultExpr<MT,ST,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -116,7 +116,8 @@ struct IsSMPAssignableHelper
    \endcode
 */
 template< typename T >
-struct IsSMPAssignable : public BoolConstant< IsSMPAssignableHelper<T>::value >
+struct IsSMPAssignable
+   : public BoolConstant< IsSMPAssignableHelper<T>::value >
 {};
 //*************************************************************************************************
 

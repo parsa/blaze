@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the MatMapExpr base class, the IsMatMapExpr type trait recognizes the class as
 // valid unary matrix map expression template.
 */
-struct MatMapExpr : private UnaryMapExpr
+struct MatMapExpr
+   : private UnaryMapExpr
 {};
 //*************************************************************************************************
 

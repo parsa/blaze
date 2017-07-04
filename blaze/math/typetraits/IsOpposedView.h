@@ -78,7 +78,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsOpposedView : public FalseType
+struct IsOpposedView
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -89,7 +90,8 @@ struct IsOpposedView : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsOpposedView< const T > : public IsOpposedView<T>
+struct IsOpposedView< const T >
+   : public IsOpposedView<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -101,7 +103,8 @@ struct IsOpposedView< const T > : public IsOpposedView<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsOpposedView< volatile T > : public IsOpposedView<T>
+struct IsOpposedView< volatile T >
+   : public IsOpposedView<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -113,7 +116,8 @@ struct IsOpposedView< volatile T > : public IsOpposedView<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsOpposedView< const volatile T > : public IsOpposedView<T>
+struct IsOpposedView< const volatile T >
+   : public IsOpposedView<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

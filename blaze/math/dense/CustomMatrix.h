@@ -408,7 +408,8 @@ template< typename Type                    // Data type of the matrix
         , bool AF                          // Alignment flag
         , bool PF                          // Padding flag
         , bool SO = defaultStorageOrder >  // Storage order
-class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
+class CustomMatrix
+   : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -3291,7 +3292,8 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,!SO>
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
-class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,PF,true>, true >
+class CustomMatrix<Type,AF,PF,true>
+   : public DenseMatrix< CustomMatrix<Type,AF,PF,true>, true >
 {
  public:
    //**Type definitions****************************************************************************
@@ -6374,7 +6376,8 @@ inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
+struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6391,7 +6394,8 @@ struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
+struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6408,7 +6412,8 @@ struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
-struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public TrueType
+struct IsCustom< CustomMatrix<T,AF,PF,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6425,7 +6430,8 @@ struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool PF, bool SO >
-struct IsAligned< CustomMatrix<T,aligned,PF,SO> > : public TrueType
+struct IsAligned< CustomMatrix<T,aligned,PF,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6442,7 +6448,8 @@ struct IsAligned< CustomMatrix<T,aligned,PF,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool SO >
-struct IsPadded< CustomMatrix<T,AF,padded,SO> > : public TrueType
+struct IsPadded< CustomMatrix<T,AF,padded,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

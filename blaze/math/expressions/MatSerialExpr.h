@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the MatSerialExpr base class, the IsMatSerialExpr type trait recognizes
 // the class as valid matrix serial evaluation expression template.
 */
-struct MatSerialExpr : private SerialExpr
+struct MatSerialExpr
+   : private SerialExpr
 {};
 //*************************************************************************************************
 

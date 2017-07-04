@@ -62,7 +62,8 @@ namespace blaze {
 // from the SerialExpr base class, the IsSerialExpr type trait recognizes the class as valid
 // serial evaluation expression template.
 */
-struct SerialExpr : private Expression
+struct SerialExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

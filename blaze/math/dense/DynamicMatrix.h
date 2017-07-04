@@ -208,7 +208,8 @@ namespace blaze {
 */
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
-class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
+class DynamicMatrix
+   : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -3284,7 +3285,8 @@ inline void DynamicMatrix<Type,SO>::schurAssign( const SparseMatrix<MT,!SO>& rhs
 // column-major matrices.
 */
 template< typename Type >  // Data type of the matrix
-class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, true >
+class DynamicMatrix<Type,true>
+   : public DenseMatrix< DynamicMatrix<Type,true>, true >
 {
  public:
    //**Type definitions****************************************************************************
@@ -6562,7 +6564,8 @@ inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcep
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct HasConstDataAccess< DynamicMatrix<T,SO> > : public TrueType
+struct HasConstDataAccess< DynamicMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6579,7 +6582,8 @@ struct HasConstDataAccess< DynamicMatrix<T,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public TrueType
+struct HasMutableDataAccess< DynamicMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6596,7 +6600,8 @@ struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsAligned< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
+struct IsAligned< DynamicMatrix<T,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6613,7 +6618,8 @@ struct IsAligned< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsPadded< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
+struct IsPadded< DynamicMatrix<T,SO> >
+   : public BoolConstant<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6630,7 +6636,8 @@ struct IsPadded< DynamicMatrix<T,SO> > : public BoolConstant<usePadding>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsResizable< DynamicMatrix<T,SO> > : public TrueType
+struct IsResizable< DynamicMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6647,7 +6654,8 @@ struct IsResizable< DynamicMatrix<T,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsShrinkable< DynamicMatrix<T,SO> > : public TrueType
+struct IsShrinkable< DynamicMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

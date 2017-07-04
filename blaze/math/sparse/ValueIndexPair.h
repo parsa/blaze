@@ -70,7 +70,8 @@ namespace blaze {
 // matrix.
 */
 template< typename Type >  // Type of the value element
-class ValueIndexPair : private SparseElement
+class ValueIndexPair
+   : private SparseElement
 {
  public:
    //**Type definitions****************************************************************************

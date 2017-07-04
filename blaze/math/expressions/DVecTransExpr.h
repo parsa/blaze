@@ -94,9 +94,10 @@ namespace blaze {
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
-                    , private VecTransExpr
-                    , private If< IsComputation<VT>, Computation, Transformation >::Type
+class DVecTransExpr
+   : public DenseVector< DVecTransExpr<VT,TF>, TF >
+   , private VecTransExpr
+   , private If< IsComputation<VT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************
@@ -799,7 +800,8 @@ inline typename DVecTransExpr<VT,TF>::Operand trans( const DVecTransExpr<VT,TF>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecTransExpr<VT,TF> > : public Size<VT>
+struct Size< DVecTransExpr<VT,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

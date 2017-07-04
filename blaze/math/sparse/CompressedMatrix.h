@@ -211,7 +211,8 @@ namespace blaze {
 */
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
-class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
+class CompressedMatrix
+   : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 {
  private:
    //**Type definitions****************************************************************************
@@ -226,7 +227,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    // This struct grants access to the data members of the base class and adapts the copy and
    // move semantics of the value-index-pair.
    */
-   struct Element : public ElementBase
+   struct Element
+      : public ElementBase
    {
       //**Constructors*****************************************************************************
       explicit Element() = default;
@@ -2987,7 +2989,8 @@ inline void CompressedMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 // column-major matrices.
 */
 template< typename Type >  // Data type of the matrix
-class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,true>, true >
+class CompressedMatrix<Type,true>
+   : public SparseMatrix< CompressedMatrix<Type,true>, true >
 {
  private:
    //**Type definitions****************************************************************************
@@ -3002,7 +3005,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    // This struct grants access to the data members of the base class and adapts the copy and
    // move semantics of the value-index-pair.
    */
-   struct Element : public ElementBase
+   struct Element
+      : public ElementBase
    {
       //**Constructors*****************************************************************************
       explicit Element() = default;
@@ -5933,7 +5937,8 @@ inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) n
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsResizable< CompressedMatrix<T,SO> > : public TrueType
+struct IsResizable< CompressedMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5950,7 +5955,8 @@ struct IsResizable< CompressedMatrix<T,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsShrinkable< CompressedMatrix<T,SO> > : public TrueType
+struct IsShrinkable< CompressedMatrix<T,SO> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -192,7 +192,8 @@ namespace blaze {
 */
 template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
-class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
+class CompressedVector
+   : public SparseVector< CompressedVector<Type,TF>, TF >
 {
  private:
    //**Type definitions****************************************************************************
@@ -207,7 +208,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    // This struct grants access to the data members of the base class and adapts the copy and
    // move semantics of the value-index-pair.
    */
-   struct Element : public ElementBase
+   struct Element
+      : public ElementBase
    {
       //**Constructors*****************************************************************************
       explicit Element() = default;
@@ -2430,7 +2432,8 @@ inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) n
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsResizable< CompressedVector<T,TF> > : public TrueType
+struct IsResizable< CompressedVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2447,7 +2450,8 @@ struct IsResizable< CompressedVector<T,TF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsShrinkable< CompressedVector<T,TF> > : public TrueType
+struct IsShrinkable< CompressedVector<T,TF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the DeclSymExpr base class, the IsDeclSymExpr type trait recognizes
 // the class as valid declsym expression template.
 */
-struct DeclSymExpr : private DeclExpr
+struct DeclSymExpr
+   : private DeclExpr
 {};
 //*************************************************************************************************
 

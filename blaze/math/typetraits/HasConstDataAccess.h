@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct HasConstDataAccess : public FalseType
+struct HasConstDataAccess
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -83,7 +84,8 @@ struct HasConstDataAccess : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct HasConstDataAccess< const T > : public HasConstDataAccess<T>
+struct HasConstDataAccess< const T >
+   : public HasConstDataAccess<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -95,7 +97,8 @@ struct HasConstDataAccess< const T > : public HasConstDataAccess<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct HasConstDataAccess< volatile T > : public HasConstDataAccess<T>
+struct HasConstDataAccess< volatile T >
+   : public HasConstDataAccess<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +110,8 @@ struct HasConstDataAccess< volatile T > : public HasConstDataAccess<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct HasConstDataAccess< const volatile T > : public HasConstDataAccess<T>
+struct HasConstDataAccess< const volatile T >
+   : public HasConstDataAccess<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

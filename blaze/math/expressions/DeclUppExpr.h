@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the DeclUppExpr base class, the IsDeclUppExpr type trait recognizes the class
 // as valid declupp expression template.
 */
-struct DeclUppExpr : private DeclExpr
+struct DeclUppExpr
+   : private DeclExpr
 {};
 //*************************************************************************************************
 

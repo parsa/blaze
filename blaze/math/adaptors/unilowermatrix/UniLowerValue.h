@@ -102,7 +102,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class UniLowerValue : public Proxy< UniLowerValue<MT> >
+class UniLowerValue
+   : public Proxy< UniLowerValue<MT> >
 {
  private:
    //**struct BuiltinType**************************************************************************

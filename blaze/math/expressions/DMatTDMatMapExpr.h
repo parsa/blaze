@@ -107,9 +107,10 @@ namespace blaze {
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
         , typename OP >  // Type of the custom operation
-class DMatTDMatMapExpr : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false >
-                       , private MatMatMapExpr
-                       , private Computation
+class DMatTDMatMapExpr
+   : public DenseMatrix< DMatTDMatMapExpr<MT1,MT2,OP>, false >
+   , private MatMatMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************

@@ -63,7 +63,8 @@ namespace blaze {
 // IsMatScalarMultExpr type trait recognizes the class as valid matrix/scalar multiplication
 // expression template.
 */
-struct MatScalarMultExpr : private MultExpr
+struct MatScalarMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

@@ -106,9 +106,10 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
-class SMatMapExpr : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
-                  , private MatMapExpr
-                  , private Computation
+class SMatMapExpr
+   : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
+   , private MatMapExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -2302,7 +2303,8 @@ inline const SMatMapExpr<MT,Imag,SO>& imag( const SMatMapExpr<MT,Imag,SO>& sm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Rows< SMatMapExpr<MT,OP,SO> > : public Rows<MT>
+struct Rows< SMatMapExpr<MT,OP,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2319,7 +2321,8 @@ struct Rows< SMatMapExpr<MT,OP,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Columns< SMatMapExpr<MT,OP,SO> > : public Columns<MT>
+struct Columns< SMatMapExpr<MT,OP,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

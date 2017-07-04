@@ -79,7 +79,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsRestricted : public FalseType
+struct IsRestricted
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -90,7 +91,8 @@ struct IsRestricted : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< const T > : public IsRestricted<T>
+struct IsRestricted< const T >
+   : public IsRestricted<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +104,8 @@ struct IsRestricted< const T > : public IsRestricted<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< volatile T > : public IsRestricted<T>
+struct IsRestricted< volatile T >
+   : public IsRestricted<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -114,7 +117,8 @@ struct IsRestricted< volatile T > : public IsRestricted<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRestricted< const volatile T > : public IsRestricted<T>
+struct IsRestricted< const volatile T >
+   : public IsRestricted<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

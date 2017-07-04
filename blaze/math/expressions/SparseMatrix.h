@@ -67,7 +67,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-struct SparseMatrix : public Matrix<MT,SO>
+struct SparseMatrix
+   : public Matrix<MT,SO>
 {};
 //*************************************************************************************************
 

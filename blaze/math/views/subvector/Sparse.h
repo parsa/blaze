@@ -130,7 +130,8 @@ class Subvector<VT,AF,TF,false>
    */
    template< typename VectorType      // Type of the sparse vector
            , typename IteratorType >  // Type of the sparse vector iterator
-   class SubvectorElement : private SparseElement
+   class SubvectorElement
+      : private SparseElement
    {
     public:
       //**Constructor******************************************************************************

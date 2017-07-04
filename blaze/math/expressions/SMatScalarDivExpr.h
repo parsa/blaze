@@ -110,9 +110,10 @@ namespace blaze {
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
-                        , private MatScalarDivExpr
-                        , private Computation
+class SMatScalarDivExpr
+   : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
+   , private MatScalarDivExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1009,7 +1010,8 @@ inline const EnableIf_< IsNumeric<ST2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< SMatScalarDivExpr<MT,ST,SO> > : public Rows<MT>
+struct Rows< SMatScalarDivExpr<MT,ST,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1026,7 +1028,8 @@ struct Rows< SMatScalarDivExpr<MT,ST,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< SMatScalarDivExpr<MT,ST,SO> > : public Columns<MT>
+struct Columns< SMatScalarDivExpr<MT,ST,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

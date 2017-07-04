@@ -107,7 +107,8 @@ struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigne
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDAbs : public BoolConstant< HasSIMDAbsHelper< Decay_<T> >::value >
+struct HasSIMDAbs
+   : public BoolConstant< HasSIMDAbsHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 

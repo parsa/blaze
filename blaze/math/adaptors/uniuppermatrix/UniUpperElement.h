@@ -93,7 +93,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class UniUpperElement : private SparseElement
+class UniUpperElement
+   : private SparseElement
 {
  private:
    //**Type definitions****************************************************************************

@@ -63,7 +63,8 @@ namespace blaze {
 // VecTVecMultExpr base class, the IsVecTVecMultExpr type trait recognizes the class as valid
 // outer product expression template.
 */
-struct VecTVecMultExpr : private MultExpr
+struct VecTVecMultExpr
+   : private MultExpr
 {};
 //*************************************************************************************************
 

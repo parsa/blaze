@@ -71,7 +71,8 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
+class SMatTransposer
+   : public SparseMatrix< SMatTransposer<MT,SO>, SO >
 {
  public:
    //**Type definitions****************************************************************************
@@ -601,7 +602,8 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
 // row-major matrices.
 */
 template< typename MT >  // Type of the sparse matrix
-class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, true >
+class SMatTransposer<MT,true>
+   : public SparseMatrix< SMatTransposer<MT,true>, true >
 {
  public:
    //**Type definitions****************************************************************************

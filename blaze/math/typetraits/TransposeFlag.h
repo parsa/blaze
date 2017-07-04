@@ -74,7 +74,8 @@ namespace blaze {
    \endcode
 */
 template< typename T, typename = EnableIf_< IsVector<T> > >
-struct TransposeFlag : public BoolConstant< ( IsRowVector<T>::value ? rowVector : columnVector ) >
+struct TransposeFlag
+   : public BoolConstant< ( IsRowVector<T>::value ? rowVector : columnVector ) >
 {};
 //*************************************************************************************************
 

@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the MatScalarDivExpr base class, the IsMatScalarDivExpr type trait
 // recognizes the class as valid matrix/scalar divsion expression template.
 */
-struct MatScalarDivExpr : private DivExpr
+struct MatScalarDivExpr
+   : private DivExpr
 {};
 //*************************************************************************************************
 

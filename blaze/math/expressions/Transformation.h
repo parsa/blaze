@@ -62,7 +62,8 @@ namespace blaze {
 // Transformation base class, the IsTransformation type trait recognizes the class as valid
 // transformation expression template.
 */
-struct Transformation : private Operation
+struct Transformation
+   : private Operation
 {};
 //*************************************************************************************************
 

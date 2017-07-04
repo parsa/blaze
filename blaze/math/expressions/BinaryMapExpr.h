@@ -62,7 +62,8 @@ namespace blaze {
 // BinaryMapExpr base class, the IsBinaryMapExpr type trait recognizes the class as valid binary
 // map expression template.
 */
-struct BinaryMapExpr : private Expression
+struct BinaryMapExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

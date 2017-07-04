@@ -105,9 +105,10 @@ namespace blaze {
 template< typename VT  // Type of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
-class SVecScalarMultExpr : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF >
-                         , private VecScalarMultExpr
-                         , private Computation
+class SVecScalarMultExpr
+   : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF >
+   , private VecScalarMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1471,7 +1472,8 @@ inline const MultExprTrait_< SVecScalarMultExpr<VT,ST,true>, MT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< SVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
+struct Size< SVecScalarMultExpr<VT,ST,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

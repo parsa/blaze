@@ -110,9 +110,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatDeclHermExpr : public DenseMatrix< DMatDeclHermExpr<MT,SO>, SO >
-                       , private DeclHermExpr
-                       , private Declaration<MT>
+class DMatDeclHermExpr
+   : public DenseMatrix< DMatDeclHermExpr<MT,SO>, SO >
+   , private DeclHermExpr
+   , private Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
@@ -1062,7 +1063,8 @@ inline const DisableIf_< IsHermitian<MT>, MultExprTrait_< DeclHermExprTrait_<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatDeclHermExpr<MT,SO> > : public Rows<MT>
+struct Rows< DMatDeclHermExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1079,7 +1081,8 @@ struct Rows< DMatDeclHermExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatDeclHermExpr<MT,SO> > : public Columns<MT>
+struct Columns< DMatDeclHermExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

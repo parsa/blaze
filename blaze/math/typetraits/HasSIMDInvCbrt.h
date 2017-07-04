@@ -104,7 +104,8 @@ struct HasSIMDInvCbrtHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDInvCbrt : public BoolConstant< HasSIMDInvCbrtHelper< Decay_<T> >::value >
+struct HasSIMDInvCbrt
+   : public BoolConstant< HasSIMDInvCbrtHelper< Decay_<T> >::value >
 {};
 //*************************************************************************************************
 

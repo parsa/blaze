@@ -85,7 +85,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsAdaptor : public FalseType
+struct IsAdaptor
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -96,7 +97,8 @@ struct IsAdaptor : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< const T > : public IsAdaptor<T>
+struct IsAdaptor< const T >
+   : public IsAdaptor<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -108,7 +110,8 @@ struct IsAdaptor< const T > : public IsAdaptor<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< volatile T > : public IsAdaptor<T>
+struct IsAdaptor< volatile T >
+   : public IsAdaptor<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -120,7 +123,8 @@ struct IsAdaptor< volatile T > : public IsAdaptor<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsAdaptor< const volatile T > : public IsAdaptor<T>
+struct IsAdaptor< const volatile T >
+   : public IsAdaptor<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

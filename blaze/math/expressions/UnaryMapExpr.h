@@ -62,7 +62,8 @@ namespace blaze {
 // UnaryMapExpr base class, the IsUnaryMapExpr type trait recognizes the class as valid unary
 // map expression template.
 */
-struct UnaryMapExpr : private Expression
+struct UnaryMapExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

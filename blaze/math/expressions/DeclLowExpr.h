@@ -62,7 +62,8 @@ namespace blaze {
 // derived from the DeclLowExpr base class, the IsDeclLowExpr type trait recognizes the class
 // as valid decllow expression template.
 */
-struct DeclLowExpr : private DeclExpr
+struct DeclLowExpr
+   : private DeclExpr
 {};
 //*************************************************************************************************
 

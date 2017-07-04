@@ -99,7 +99,8 @@ struct IsGeneral
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< const T > : public IsGeneral<T>
+struct IsGeneral< const T >
+   : public IsGeneral<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -111,7 +112,8 @@ struct IsGeneral< const T > : public IsGeneral<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< volatile T > : public IsGeneral<T>
+struct IsGeneral< volatile T >
+   : public IsGeneral<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -123,7 +125,8 @@ struct IsGeneral< volatile T > : public IsGeneral<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsGeneral< const volatile T > : public IsGeneral<T>
+struct IsGeneral< const volatile T >
+   : public IsGeneral<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

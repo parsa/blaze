@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the DeclHermExpr base class, the IsDeclHermExpr type trait recognizes
 // the class as valid declherm expression template.
 */
-struct DeclHermExpr : private DeclExpr
+struct DeclHermExpr
+   : private DeclExpr
 {};
 //*************************************************************************************************
 

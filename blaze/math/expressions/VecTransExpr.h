@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the VecTransExpr base class, the IsVecTransExpr type trait recognizes
 // the class as valid vector transposition expression template.
 */
-struct VecTransExpr : private TransExpr
+struct VecTransExpr
+   : private TransExpr
 {};
 //*************************************************************************************************
 

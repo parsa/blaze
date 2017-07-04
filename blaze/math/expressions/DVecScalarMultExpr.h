@@ -114,9 +114,10 @@ namespace blaze {
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
-class DVecScalarMultExpr : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF >
-                         , private VecScalarMultExpr
-                         , private Computation
+class DVecScalarMultExpr
+   : public DenseVector< DVecScalarMultExpr<VT,ST,TF>, TF >
+   , private VecScalarMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -1838,7 +1839,8 @@ inline const MultExprTrait_< DVecScalarMultExpr<VT,ST,true>, MT >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
+struct Size< DVecScalarMultExpr<VT,ST,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -64,7 +64,8 @@ namespace blaze {
 // derives from \a FalseType.
 */
 template< typename T >
-struct IsUniform : public FalseType
+struct IsUniform
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -75,7 +76,8 @@ struct IsUniform : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniform< const T > : public IsUniform<T>
+struct IsUniform< const T >
+   : public IsUniform<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -87,7 +89,8 @@ struct IsUniform< const T > : public IsUniform<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniform< volatile T > : public IsUniform<T>
+struct IsUniform< volatile T >
+   : public IsUniform<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -99,7 +102,8 @@ struct IsUniform< volatile T > : public IsUniform<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsUniform< const volatile T > : public IsUniform<T>
+struct IsUniform< const volatile T >
+   : public IsUniform<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -83,9 +83,10 @@ namespace blaze {
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-class SVecEvalExpr : public SparseVector< SVecEvalExpr<VT,TF>, TF >
-                   , private VecEvalExpr
-                   , private Computation
+class SVecEvalExpr
+   : public SparseVector< SVecEvalExpr<VT,TF>, TF >
+   , private VecEvalExpr
+   , private Computation
 {
  public:
    //**Type definitions****************************************************************************
@@ -683,7 +684,8 @@ inline const SVecEvalExpr<VT,TF> eval( const SVecEvalExpr<VT,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecEvalExpr<VT,TF> > : public Size<VT>
+struct Size< SVecEvalExpr<VT,TF> >
+   : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

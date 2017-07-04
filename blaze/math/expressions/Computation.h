@@ -63,7 +63,8 @@ namespace blaze {
 // class, the IsComputation type trait recognizes the class as valid computational expression
 // template.
 */
-struct Computation : private Operation
+struct Computation
+   : private Operation
 {};
 //*************************************************************************************************
 

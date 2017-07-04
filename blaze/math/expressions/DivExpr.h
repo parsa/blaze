@@ -62,7 +62,8 @@ namespace blaze {
 // template. Only in case a class is derived from the DivExpr base class, the IsDivExpr type
 // trait recognizes the class as valid division expression template.
 */
-struct DivExpr : private Expression
+struct DivExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

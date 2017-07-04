@@ -110,7 +110,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class SymmetricValue : public Proxy< SymmetricValue<MT> >
+class SymmetricValue
+   : public Proxy< SymmetricValue<MT> >
 {
  private:
    //**Type definitions****************************************************************************

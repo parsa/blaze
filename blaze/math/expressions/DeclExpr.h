@@ -62,7 +62,8 @@ namespace blaze {
 // the DeclExpr base class, the IsDeclExpr type trait recognizes the class as valid declaration
 // expression template.
 */
-struct DeclExpr : private Expression
+struct DeclExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

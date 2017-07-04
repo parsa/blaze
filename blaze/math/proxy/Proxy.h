@@ -134,17 +134,18 @@ namespace blaze {
 */
 template< typename PT          // Type of the proxy
         , typename RT = int >  // Type of the represented element
-class Proxy : public If_< IsVector<RT>
-                        , If_< IsDenseVector<RT>
-                             , DenseVectorProxy<PT,RT>
-                             , SparseVectorProxy<PT,RT> >
-                        , If_< IsMatrix<RT>
-                             , If_< IsDenseMatrix<RT>
-                                  , DenseMatrixProxy<PT,RT>
-                                  , SparseMatrixProxy<PT,RT> >
-                             , If_< IsComplex<RT>
-                                  , ComplexProxy<PT,RT>
-                                  , DefaultProxy<PT,RT> > > >
+class Proxy
+   : public If_< IsVector<RT>
+               , If_< IsDenseVector<RT>
+                    , DenseVectorProxy<PT,RT>
+                    , SparseVectorProxy<PT,RT> >
+               , If_< IsMatrix<RT>
+                    , If_< IsDenseMatrix<RT>
+                         , DenseMatrixProxy<PT,RT>
+                         , SparseMatrixProxy<PT,RT> >
+                    , If_< IsComplex<RT>
+                         , ComplexProxy<PT,RT>
+                         , DefaultProxy<PT,RT> > > >
 {};
 //*************************************************************************************************
 

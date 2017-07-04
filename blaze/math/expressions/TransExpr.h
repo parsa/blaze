@@ -62,7 +62,8 @@ namespace blaze {
 // template. Only in case a class is derived from the TransExpr base class, the IsTransExpr type
 // trait recognizes the class as valid transposition expression template.
 */
-struct TransExpr : private Expression
+struct TransExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

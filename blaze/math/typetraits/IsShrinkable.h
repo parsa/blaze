@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsShrinkable : public FalseType
+struct IsShrinkable
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -83,7 +84,8 @@ struct IsShrinkable : public FalseType
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsShrinkable< const T > : public IsShrinkable<T>
+struct IsShrinkable< const T >
+   : public IsShrinkable<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -95,7 +97,8 @@ struct IsShrinkable< const T > : public IsShrinkable<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsShrinkable< volatile T > : public IsShrinkable<T>
+struct IsShrinkable< volatile T >
+   : public IsShrinkable<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +110,8 @@ struct IsShrinkable< volatile T > : public IsShrinkable<T>
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsShrinkable< const volatile T > : public IsShrinkable<T>
+struct IsShrinkable< const volatile T >
+   : public IsShrinkable<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

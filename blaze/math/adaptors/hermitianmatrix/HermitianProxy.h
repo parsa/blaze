@@ -96,7 +96,8 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class HermitianProxy : public Proxy< HermitianProxy<MT> >
+class HermitianProxy
+   : public Proxy< HermitianProxy<MT> >
 {
  private:
    //**struct BuiltinType**************************************************************************

@@ -82,7 +82,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSubmatrix : public FalseType
+struct IsSubmatrix
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsSubmatrix : public FalseType
 // \ingroup math_type_traits
 */
 template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< Submatrix<MT,AF,SO,DF> > : public TrueType
+struct IsSubmatrix< Submatrix<MT,AF,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +107,8 @@ struct IsSubmatrix< Submatrix<MT,AF,SO,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> > : public TrueType
+struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +120,8 @@ struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> > : public TrueType
+struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -129,7 +133,8 @@ struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> > : public TrueType
 // \ingroup math_type_traits
 */
 template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF> > : public TrueType
+struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

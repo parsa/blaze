@@ -62,7 +62,8 @@ namespace blaze {
 // class is derived from the VecVecSubExpr base class, the IsVecVecSubExpr type trait
 // recognizes the class as valid vector subtraction expression template.
 */
-struct VecVecSubExpr : private SubExpr
+struct VecVecSubExpr
+   : private SubExpr
 {};
 //*************************************************************************************************
 

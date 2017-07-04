@@ -62,7 +62,8 @@ namespace blaze {
 // a class is derived from the MatTransExpr base class, the IsMatTransExpr type trait recognizes
 // the class as valid matrix transposition expression template.
 */
-struct MatTransExpr : private TransExpr
+struct MatTransExpr
+   : private TransExpr
 {};
 //*************************************************************************************************
 

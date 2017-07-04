@@ -67,7 +67,8 @@ namespace blaze {
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-struct DenseVector : public Vector<VT,TF>
+struct DenseVector
+   : public Vector<VT,TF>
 {};
 //*************************************************************************************************
 

@@ -62,7 +62,8 @@ namespace blaze {
 // case a class is derived from the AddExpr base class, the IsAddExpr type trait recognizes the
 // class as valid addition expression template.
 */
-struct AddExpr : private Expression
+struct AddExpr
+   : private Expression
 {};
 //*************************************************************************************************
 

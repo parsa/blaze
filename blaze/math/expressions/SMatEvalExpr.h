@@ -94,9 +94,10 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-class SMatEvalExpr : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
-                   , private MatEvalExpr
-                   , private Computation
+class SMatEvalExpr
+   : public SparseMatrix< SMatEvalExpr<MT,SO>, SO >
+   , private MatEvalExpr
+   , private Computation
 {
  public:
    //**Type definitions****************************************************************************
@@ -862,7 +863,8 @@ inline const SMatEvalExpr<MT,SO> eval( const SMatEvalExpr<MT,SO>& sm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< SMatEvalExpr<MT,SO> > : public Rows<MT>
+struct Rows< SMatEvalExpr<MT,SO> >
+   : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -879,7 +881,8 @@ struct Rows< SMatEvalExpr<MT,SO> > : public Rows<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatEvalExpr<MT,SO> > : public Columns<MT>
+struct Columns< SMatEvalExpr<MT,SO> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

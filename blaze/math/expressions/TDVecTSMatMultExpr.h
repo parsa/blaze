@@ -93,9 +93,10 @@ namespace blaze {
 */
 template< typename VT    // Type of the left-hand side dense vector
         , typename MT >  // Type of the right-hand side sparse matrix
-class TDVecTSMatMultExpr : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
-                         , private TVecMatMultExpr
-                         , private Computation
+class TDVecTSMatMultExpr
+   : public DenseVector< TDVecTSMatMultExpr<VT,MT>, true >
+   , private TVecMatMultExpr
+   , private Computation
 {
  private:
    //**Type definitions****************************************************************************
@@ -833,7 +834,8 @@ inline const DisableIf_< IsMatMatMultExpr<MT>, TDVecTSMatMultExpr<VT,MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT >
-struct Size< TDVecTSMatMultExpr<VT,MT> > : public Columns<MT>
+struct Size< TDVecTSMatMultExpr<VT,MT> >
+   : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
