@@ -105,8 +105,8 @@ namespace blaze {
    \code
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,columnMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<double,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,columnMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,columnMajor>;
 
    DenseMatrix D;
    SparseMatrix S;
@@ -151,8 +151,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    \code
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,columnMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<double,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,columnMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,columnMajor>;
 
    const DenseMatrix D( ... );
    const SparseMatrix S( ... );
@@ -724,7 +724,7 @@ template< bool RF      // Relaxation flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Column<MT,SO,false,SF>& column )
 {
-   typedef ConstIterator_< Column<MT,SO,false,SF> >  ConstIterator;
+   using ConstIterator = ConstIterator_< Column<MT,SO,false,SF> >;
 
    const ConstIterator end( column.end() );
    for( ConstIterator element=column.begin(); element!=end; ++element )
@@ -963,7 +963,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline DerestrictTrait_< Column<MT,SO,DF,SF> > derestrict( Column<MT,SO,DF,SF>& column )
 {
-   typedef DerestrictTrait_< Column<MT,SO,DF,SF> >  ReturnType;
+   using ReturnType = DerestrictTrait_< Column<MT,SO,DF,SF> >;
    return ReturnType( derestrict( column.matrix_ ), column.col_ );
 }
 /*! \endcond */

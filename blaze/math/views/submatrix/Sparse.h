@@ -120,25 +120,25 @@ class Submatrix<MT,AF,false,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the sparse matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Submatrix<MT,AF,false,false>  This;           //!< Type of this Submatrix instance.
-   typedef SparseMatrix<This,false>      BaseType;       //!< Base type of this Submatrix instance.
-   typedef SubmatrixTrait_<MT>           ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>     OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>              ElementType;    //!< Type of the submatrix elements.
-   typedef ReturnType_<MT>               ReturnType;     //!< Return type for expression template evaluations
-   typedef const Submatrix&              CompositeType;  //!< Data type for composite expression templates.
+   using This          = Submatrix<MT,AF,false,false>;  //!< Type of this Submatrix instance.
+   using BaseType      = SparseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -268,18 +268,18 @@ class Submatrix<MT,AF,false,false>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
-      typedef SubmatrixElement<MatrixType,IteratorType>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                  PointerType;       //!< Pointer return type.
-      typedef ValueType                                  ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;                  //!< The iterator category.
+      using ValueType        = SubmatrixElement<MatrixType,IteratorType>;  //!< Type of the underlying elements.
+      using PointerType      = ValueType;                                  //!< Pointer return type.
+      using ReferenceType    = ValueType;                                  //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Default constructor**********************************************************************
@@ -423,10 +423,10 @@ class Submatrix<MT,AF,false,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator< const MT, ConstIterator_<MT> >  ConstIterator;
+   using ConstIterator = SubmatrixIterator< const MT, ConstIterator_<MT> >;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1068,7 +1068,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef CompositeType_<MT2>  Right;
+   using Right = CompositeType_<MT2>;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -1122,7 +1122,7 @@ inline Submatrix<MT,AF,false,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -1176,7 +1176,7 @@ inline Submatrix<MT,AF,false,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -1230,7 +1230,7 @@ inline Submatrix<MT,AF,false,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -1284,7 +1284,7 @@ inline Submatrix<MT,AF,false,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1375,8 +1375,8 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -1836,8 +1836,8 @@ inline typename Submatrix<MT,AF,false,false>::Iterator
    \code
    using blaze::rowMajor;
 
-   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
+   using MatrixType    = blaze::CompressedMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
@@ -2534,7 +2534,7 @@ inline void Submatrix<MT,AF,false,false>::assign( const SparseMatrix<MT2,true>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  RhsIterator;
+   using RhsIterator = ConstIterator_<MT2>;
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
@@ -2583,7 +2583,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false>::addAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -2616,7 +2616,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false>::subAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -2649,7 +2649,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -2694,25 +2694,25 @@ class Submatrix<MT,AF,true,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the sparse matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Submatrix<MT,AF,true,false>  This;           //!< Type of this Submatrix instance.
-   typedef SparseMatrix<This,true>      BaseType;       //!< Base type of this Submatrix instance.
-   typedef SubmatrixTrait_<MT>          ResultType;     //!< Result type for expression template evaluations.
-   typedef OppositeType_<ResultType>    OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>             ElementType;    //!< Type of the submatrix elements.
-   typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
-   typedef const Submatrix&             CompositeType;  //!< Data type for composite expression templates.
+   using This          = Submatrix<MT,AF,true,false>;  //!< Type of this Submatrix instance.
+   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT>;          //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant submatrix value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -2842,18 +2842,18 @@ class Submatrix<MT,AF,true,false>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
-      typedef SubmatrixElement<MatrixType,IteratorType>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                  PointerType;       //!< Pointer return type.
-      typedef ValueType                                  ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;                  //!< The iterator category.
+      using ValueType        = SubmatrixElement<MatrixType,IteratorType>;  //!< Type of the underlying elements.
+      using PointerType      = ValueType;                                  //!< Pointer return type.
+      using ReferenceType    = ValueType;                                  //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Default constructor**********************************************************************
@@ -2997,10 +2997,10 @@ class Submatrix<MT,AF,true,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubmatrixIterator< const MT, ConstIterator_<MT> >  ConstIterator;
+   using ConstIterator = SubmatrixIterator< const MT, ConstIterator_<MT> >;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3608,7 +3608,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   typedef CompositeType_<MT2>  Right;
+   using Right = CompositeType_<MT2>;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) ) {
@@ -3662,7 +3662,7 @@ inline Submatrix<MT,AF,true,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -3716,7 +3716,7 @@ inline Submatrix<MT,AF,true,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -3770,7 +3770,7 @@ inline Submatrix<MT,AF,true,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -3824,7 +3824,7 @@ inline Submatrix<MT,AF,true,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   typedef MultTrait_< ResultType, ResultType_<MT2> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
@@ -3915,8 +3915,8 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -4355,8 +4355,8 @@ inline typename Submatrix<MT,AF,true,false>::Iterator
    \code
    using blaze::rowMajor;
 
-   typedef blaze::CompressedMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>              SubmatrixType;
+   using MatrixType    = blaze::CompressedMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
@@ -5044,7 +5044,7 @@ inline void Submatrix<MT,AF,true,false>::assign( const SparseMatrix<MT2,false>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  RhsIterator;
+   using RhsIterator = ConstIterator_<MT2>;
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );
@@ -5093,7 +5093,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false>::addAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<MT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -5126,7 +5126,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false>::subAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<MT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -5159,7 +5159,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   typedef SchurTrait_< ResultType, ResultType_<MT2> >  SchurType;
+   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 

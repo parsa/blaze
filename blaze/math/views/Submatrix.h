@@ -125,8 +125,8 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<int,columnMajor>;
 
    DenseMatrix  D;
    SparseMatrix S;
@@ -196,8 +196,8 @@ inline SubmatrixExprTrait_<MT,unaligned>
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<int,columnMajor>;
 
    const DenseMatrix  D( ... );
    const SparseMatrix S( ... );
@@ -297,8 +297,8 @@ inline SubmatrixExprTrait_<MT,unaligned>
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<int,columnMajor>;
 
    DenseMatrix  D;
    SparseMatrix S;
@@ -330,8 +330,8 @@ inline SubmatrixExprTrait_<MT,unaligned>
    \code
    using blaze::rowMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType,aligned>   SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType,aligned>;
 
    MatrixType D( 13UL, 17UL );
    // ... Resizing and initialization
@@ -385,8 +385,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>     DenseMatrix;
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrix;
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<int,columnMajor>;
 
    const DenseMatrix  D( ... );
    const SparseMatrix S( ... );
@@ -417,8 +417,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
    \code
    using blaze::rowMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<const MatrixType,aligned>   SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<const MatrixType,aligned>;
 
    const MatrixType D( ... );
 
@@ -513,7 +513,7 @@ inline const EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef RemoveReference_< LeftOperand_<VT> >  MT;
+   using MT = RemoveReference_< LeftOperand_<VT> >;
 
    LeftOperand_<VT>  left ( (~vector).leftOperand()  );
    RightOperand_<VT> right( (~vector).rightOperand() );
@@ -556,7 +556,7 @@ inline const EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef RemoveReference_< RightOperand_<VT> >  MT;
+   using MT = RemoveReference_< RightOperand_<VT> >;
 
    LeftOperand_<VT>  left ( (~vector).leftOperand()  );
    RightOperand_<VT> right( (~vector).rightOperand() );
@@ -691,8 +691,8 @@ inline const EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   typedef RemoveReference_< LeftOperand_<MT> >   MT1;
-   typedef RemoveReference_< RightOperand_<MT> >  MT2;
+   using MT1 = RemoveReference_< LeftOperand_<MT> >;
+   using MT2 = RemoveReference_< RightOperand_<MT> >;
 
    LeftOperand_<MT>  left ( (~matrix).leftOperand()  );
    RightOperand_<MT> right( (~matrix).rightOperand() );
@@ -1264,7 +1264,7 @@ inline bool isDefault( const Submatrix<MT,AF,SO,false>& sm )
 {
    using blaze::isDefault;
 
-   typedef ConstIterator_< Submatrix<MT,AF,SO,false> >  ConstIterator;
+   using ConstIterator = ConstIterator_< Submatrix<MT,AF,SO,false> >;
 
    const size_t iend( ( SO == rowMajor)?( sm.rows() ):( sm.columns() ) );
 
@@ -1322,7 +1322,7 @@ inline bool isIntact( const Submatrix<MT,AF,SO,DF>& sm ) noexcept
 // following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1359,7 +1359,7 @@ inline bool isSymmetric( const Submatrix<MT,AF,SO,DF>& sm )
 // (\f$ A = \overline{A^T} \f$). The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1406,7 +1406,7 @@ inline bool isHermitian( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1452,7 +1452,7 @@ inline bool isLower( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1498,7 +1498,7 @@ inline bool isUniLower( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1545,7 +1545,7 @@ inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1591,7 +1591,7 @@ inline bool isUpper( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1637,7 +1637,7 @@ inline bool isUniUpper( const Submatrix<MT,AF,SO,DF>& sm )
 // The following code example demonstrates the use of the function:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+   using Matrix = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
    Matrix A( 32UL, 16UL );
    // ... Initialization
@@ -1772,7 +1772,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order
 inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true>& sm )
 {
-   typedef ResultType_< Submatrix<MT,AF,SO,true> >  RT;
+   using RT = ResultType_< Submatrix<MT,AF,SO,true> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -2094,7 +2094,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline DerestrictTrait_< Submatrix<MT,AF,SO,DF> > derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
-   typedef DerestrictTrait_< Submatrix<MT,AF,SO,DF> >  ReturnType;
+   using ReturnType = DerestrictTrait_< Submatrix<MT,AF,SO,DF> >;
    return ReturnType( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
 }
 /*! \endcond */

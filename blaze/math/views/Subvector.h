@@ -108,8 +108,8 @@ namespace blaze {
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
-   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+   using DenseVector  = blaze::DynamicVector<double,columnVector>;
+   using SparseVector = blaze::CompressedVector<int,rowVector>;
 
    DenseVector  d;
    SparseVector s;
@@ -176,8 +176,8 @@ inline SubvectorExprTrait_<VT,unaligned>
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
-   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+   using DenseVector  = blaze::DynamicVector<double,columnVector>;
+   using SparseVector = blaze::CompressedVector<int,rowVector>;
 
    const DenseVector  d( ... );
    const SparseVector s( ... );
@@ -272,8 +272,8 @@ inline SubvectorExprTrait_<VT,unaligned>
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
-   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+   using DenseVector  = blaze::DynamicVector<double,columnVector>;
+   using SparseVector = blaze::CompressedVector<int,rowVector>;
 
    DenseVector  d;
    SparseVector s;
@@ -304,8 +304,8 @@ inline SubvectorExprTrait_<VT,unaligned>
    \code
    using blaze::columnVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::Subvector<VectorType,aligned>       SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,columnVector>;
+   using SubvectorType = blaze::Subvector<VectorType,aligned>;
 
    VectorType d( 17UL );
    // ... Resizing and initialization
@@ -356,8 +356,8 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  DenseVector;
-   typedef blaze::CompressedVector<int,rowVector>     SparseVector;
+   using DenseVector  = blaze::DynamicVector<double,columnVector>;
+   using SparseVector = blaze::CompressedVector<int,rowVector>;
 
    const DenseVector  d( ... );
    const SparseVector s( ... );
@@ -387,8 +387,8 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
    \code
    using blaze::columnVector;
 
-   typedef blaze::DynamicVector<double,columnVector>   VectorType;
-   typedef blaze::Subvector<const VectorType,aligned>  SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,columnVector>;
+   using SubvectorType = blaze::Subvector<const VectorType,aligned>;
 
    const VectorType d( ... );
 
@@ -998,7 +998,7 @@ template< bool RF      // Relaxation flag
         , bool TF >    // Transpose flag
 inline bool isDefault( const Subvector<VT,AF,TF,false>& sv )
 {
-   typedef ConstIterator_< Subvector<VT,AF,TF,false> >  ConstIterator;
+   using ConstIterator = ConstIterator_< Subvector<VT,AF,TF,false> >;
 
    const ConstIterator end( sv.end() );
    for( ConstIterator element=sv.begin(); element!=end; ++element )
@@ -1283,7 +1283,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline DerestrictTrait_< Subvector<VT,AF,TF,DF> > derestrict( Subvector<VT,AF,TF,DF>& sv )
 {
-   typedef DerestrictTrait_< Subvector<VT,AF,TF,DF> >  ReturnType;
+   using ReturnType = DerestrictTrait_< Subvector<VT,AF,TF,DF> >;
    return ReturnType( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
 }
 /*! \endcond */

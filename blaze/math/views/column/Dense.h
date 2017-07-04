@@ -125,37 +125,37 @@ class Column<MT,true,true,SF>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,true,true,SF>     This;           //!< Type of this Column instance.
-   typedef DenseVector<This,false>     BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
-   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&               CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,true,true,SF>;     //!< Type of this Column instance.
+   using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Column&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant column value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant column value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -831,7 +831,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator=( const Vector
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -884,7 +884,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator+=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
@@ -935,7 +935,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator-=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
@@ -985,7 +985,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator*=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
@@ -1078,7 +1078,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator/=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, col_ ) ) {
@@ -1126,7 +1126,7 @@ inline Column<MT,true,true,SF>& Column<MT,true,true,SF>::operator%=( const Vecto
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -2218,30 +2218,30 @@ class Column<MT,false,true,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,false,true,false>  This;           //!< Type of this Column instance.
-   typedef DenseVector<This,false>      BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>             ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>             ElementType;    //!< Type of the column elements.
-   typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&                CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,false,true,false>;  //!< Type of this Column instance.
+   using BaseType      = DenseVector<This,false>;      //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;             //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the column elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Column&;                //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant column value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant column value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
    //**********************************************************************************************
 
    //**ColumnIterator class definition*************************************************************
@@ -2253,20 +2253,20 @@ class Column<MT,false,true,false>
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >  Reference;
+      using Reference = If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >;
 
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
-      typedef ValueType*                       PointerType;       //!< Pointer return type.
-      typedef Reference                        ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
+      using PointerType      = ValueType*;                       //!< Pointer return type.
+      using ReferenceType    = Reference;                        //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2541,10 +2541,10 @@ class Column<MT,false,true,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef ColumnIterator<const MT>  ConstIterator;
+   using ConstIterator = ColumnIterator<const MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, ColumnIterator<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnIterator<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3118,7 +3118,7 @@ inline Column<MT,false,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -3171,7 +3171,7 @@ inline Column<MT,false,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
@@ -3222,7 +3222,7 @@ inline Column<MT,false,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
@@ -3272,7 +3272,7 @@ inline Column<MT,false,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
@@ -3365,7 +3365,7 @@ inline Column<MT,false,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, col_ ) ) {
@@ -3413,7 +3413,7 @@ inline Column<MT,false,true,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -4068,37 +4068,37 @@ class Column<MT,false,true,true>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,false,true,true>  This;           //!< Type of this Column instance.
-   typedef DenseVector<This,false>     BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the column elements.
-   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&               CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,false,true,true>;  //!< Type of this Column instance.
+   using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Column&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant column value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant column value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4759,7 +4759,7 @@ inline Column<MT,false,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -4812,7 +4812,7 @@ inline Column<MT,false,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, col_ ) ) {
@@ -4863,7 +4863,7 @@ inline Column<MT,false,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, col_ ) ) {
@@ -4913,7 +4913,7 @@ inline Column<MT,false,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, col_ ) ) {
@@ -5006,7 +5006,7 @@ inline Column<MT,false,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, col_ ) ) {
@@ -5054,7 +5054,7 @@ inline Column<MT,false,true,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );

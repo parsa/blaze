@@ -124,37 +124,37 @@ class Row<MT,true,true,SF>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Row<MT,true,true,SF>        This;           //!< Type of this Row instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
-   typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the row elements.
-   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Row<MT,true,true,SF>;        //!< Type of this Row instance.
+   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
+   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the row elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant row value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant row value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -829,7 +829,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Vector<VT,tr
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -882,7 +882,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator+=( const Vector<VT,t
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -933,7 +933,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator-=( const Vector<VT,t
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -983,7 +983,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const DenseVector
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
@@ -1076,7 +1076,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator/=( const DenseVector
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
@@ -1124,7 +1124,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator%=( const Vector<VT,t
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
@@ -2218,30 +2218,30 @@ class Row<MT,false,true,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Row<MT,false,true,false>    This;           //!< Type of this Row instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
-   typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
-   typedef ElementType_<MT>            ReturnType;     //!< Return type for expression template evaluations
-   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Row<MT,false,true,false>;    //!< Type of this Row instance.
+   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
+   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
+   using ReturnType    = ElementType_<MT>;            //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant row value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant row value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
    //**********************************************************************************************
 
    //**RowIterator class definition****************************************************************
@@ -2253,20 +2253,20 @@ class Row<MT,false,true,false>
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >  Reference;
+      using Reference = If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >;
 
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
-      typedef ValueType*                       PointerType;       //!< Pointer return type.
-      typedef Reference                        ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
+      using PointerType      = ValueType*;                       //!< Pointer return type.
+      using ReferenceType    = Reference;                        //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2541,10 +2541,10 @@ class Row<MT,false,true,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef RowIterator<const MT>  ConstIterator;
+   using ConstIterator = RowIterator<const MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, RowIterator<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3111,7 +3111,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Vect
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -3163,7 +3163,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator+=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -3213,7 +3213,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator-=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -3262,7 +3262,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const Den
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
@@ -3353,7 +3353,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator/=( const Den
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
@@ -3400,7 +3400,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator%=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
@@ -4055,37 +4055,37 @@ class Row<MT,false,true,true>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Row<MT,false,true,true>     This;           //!< Type of this Row instance.
-   typedef DenseVector<This,true>      BaseType;       //!< Base type of this Row instance.
-   typedef RowTrait_<MT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the row elements.
-   typedef SIMDTrait_<ElementType>     SIMDType;       //!< SIMD type of the row elements.
-   typedef ElementType_<MT>            ReturnType;     //!< Return type for expression template evaluations
-   typedef const Row&                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Row<MT,false,true,true>;     //!< Type of this Row instance.
+   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
+   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
+   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the row elements.
+   using ReturnType    = ElementType_<MT>;            //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant row value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant row value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant row value.
-   typedef If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4744,7 +4744,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Vector
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, 0UL ) ) {
@@ -4796,7 +4796,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator+=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
@@ -4846,7 +4846,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator-=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
@@ -4895,7 +4895,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
@@ -4986,7 +4986,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator/=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row_, 0UL ) ) {
@@ -5033,7 +5033,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator%=( const Vecto
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );

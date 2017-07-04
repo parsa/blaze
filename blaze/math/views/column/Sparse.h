@@ -118,30 +118,30 @@ class Column<MT,true,false,SF>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,true,false,SF>    This;           //!< Type of this Column instance.
-   typedef SparseVector<This,false>    BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>            ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>            ElementType;    //!< Type of the column elements.
-   typedef ReturnType_<MT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&               CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,true,false,SF>;    //!< Type of this Column instance.
+   using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Column&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -655,7 +655,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator=( const Dens
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -711,7 +711,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator=( const Spar
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -768,7 +768,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator+=( const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -825,7 +825,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator+=( const Spa
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -884,7 +884,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator-=( const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -942,7 +942,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator-=( const Spa
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -998,7 +998,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator*=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1052,7 +1052,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator/=( const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -1104,7 +1104,7 @@ inline Column<MT,true,false,SF>& Column<MT,true,false,SF>::operator%=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -1192,8 +1192,8 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,true,false,SF> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -1880,7 +1880,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void Column<MT,true,false,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -1913,7 +1913,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void Column<MT,true,false,SF>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -1947,7 +1947,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void Column<MT,true,false,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -1980,7 +1980,7 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void Column<MT,true,false,SF>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -2025,24 +2025,24 @@ class Column<MT,false,false,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,false,false,false>  This;           //!< Type of this Column instance.
-   typedef SparseVector<This,false>      BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>              ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>    TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>              ElementType;    //!< Type of the column elements.
-   typedef ReturnType_<MT>               ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&                 CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,false,false,false>;  //!< Type of this Column instance.
+   using BaseType      = SparseVector<This,false>;      //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;              //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the column elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Column&;                 //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
    //**********************************************************************************************
 
    //**ColumnElement class definition**************************************************************
@@ -2172,18 +2172,18 @@ class Column<MT,false,false,false>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag               IteratorCategory;  //!< The iterator category.
-      typedef ColumnElement<MatrixType,IteratorType>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                               PointerType;       //!< Pointer return type.
-      typedef ValueType                               ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                               DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;               //!< The iterator category.
+      using ValueType        = ColumnElement<MatrixType,IteratorType>;  //!< Type of the underlying elements.
+      using PointerType      = ValueType;                               //!< Pointer return type.
+      using ReferenceType    = ValueType;                               //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                               //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2354,10 +2354,10 @@ class Column<MT,false,false,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef ColumnIterator< const MT, ConstIterator_<MT> >  ConstIterator;
+   using ConstIterator = ColumnIterator< const MT, ConstIterator_<MT> >;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, ColumnIterator< MT, Iterator_<MT> > >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnIterator< MT, Iterator_<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2889,7 +2889,7 @@ inline Column<MT,false,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2943,7 +2943,7 @@ inline Column<MT,false,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2996,7 +2996,7 @@ inline Column<MT,false,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -3049,7 +3049,7 @@ inline Column<MT,false,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -3100,7 +3100,7 @@ inline Column<MT,false,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -3185,8 +3185,8 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,false> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -3899,7 +3899,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void Column<MT,false,false,false>::addAssign( const Vector<VT,false>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -3929,7 +3929,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void Column<MT,false,false,false>::subAssign( const Vector<VT,false>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -3971,30 +3971,30 @@ class Column<MT,false,false,true>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef If_< IsExpression<MT>, MT, MT& >  Operand;
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Column<MT,false,false,true>  This;           //!< Type of this Column instance.
-   typedef SparseVector<This,false>     BaseType;       //!< Base type of this Column instance.
-   typedef ColumnTrait_<MT>             ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>   TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>             ElementType;    //!< Type of the column elements.
-   typedef ReturnType_<MT>              ReturnType;     //!< Return type for expression template evaluations
-   typedef const Column&                CompositeType;  //!< Data type for composite expression templates.
+   using This          = Column<MT,false,false,true>;  //!< Type of this Column instance.
+   using BaseType      = SparseVector<This,false>;     //!< Base type of this Column instance.
+   using ResultType    = ColumnTrait_<MT>;             //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the column elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Column&;                //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   typedef ConstReference_<MT>  ConstReference;
+   using ConstReference = ConstReference_<MT>;
 
    //! Reference to a non-constant column value.
-   typedef If_< IsConst<MT>, ConstReference, Reference_<MT> >  Reference;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<MT>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<MT>, ConstIterator, Iterator_<MT> >  Iterator;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4501,7 +4501,7 @@ inline Column<MT,false,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -4557,7 +4557,7 @@ inline Column<MT,false,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >  Right;
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
@@ -4614,7 +4614,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -4671,7 +4671,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -4730,7 +4730,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -4788,7 +4788,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -4844,7 +4844,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -4898,7 +4898,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -4950,7 +4950,7 @@ inline Column<MT,false,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -5036,8 +5036,8 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    // Depending on the two involved data types, an integer division is applied or a
    // floating point division is selected.
@@ -5702,7 +5702,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void Column<MT,false,false,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -5734,7 +5734,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void Column<MT,false,false,true>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -5767,7 +5767,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void Column<MT,false,false,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -5799,7 +5799,7 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void Column<MT,false,false,true>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );

@@ -105,24 +105,24 @@ class Subvector<VT,AF,TF,false>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the sparse vector expression.
-   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
+   using Operand = If_< IsExpression<VT>, VT, VT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<VT,AF,TF,false>   This;           //!< Type of this Subvector instance.
-   typedef SparseVector<This,TF>       BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<VT>         ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>            ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<VT>             ReturnType;     //!< Return type for expression template evaluations
-   typedef const Subvector&            CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<VT,AF,TF,false>;   //!< Type of this Subvector instance.
+   using BaseType      = SparseVector<This,TF>;       //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<VT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   typedef ConstReference_<VT>  ConstReference;
+   using ConstReference = ConstReference_<VT>;
 
    //! Reference to a non-constant subvector value.
-   typedef If_< IsConst<VT>, ConstReference, Reference_<VT> >  Reference;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
    //**********************************************************************************************
 
    //**SubvectorElement class definition***********************************************************
@@ -252,18 +252,18 @@ class Subvector<VT,AF,TF,false>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::forward_iterator_tag                  IteratorCategory;  //!< The iterator category.
-      typedef SubvectorElement<VectorType,IteratorType>  ValueType;         //!< Type of the underlying elements.
-      typedef ValueType                                  PointerType;       //!< Pointer return type.
-      typedef ValueType                                  ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                                  DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::forward_iterator_tag;                  //!< The iterator category.
+      using ValueType        = SubvectorElement<VectorType,IteratorType>;  //!< Type of the underlying elements.
+      using PointerType      = ValueType;                                  //!< Pointer return type.
+      using ReferenceType    = ValueType;                                  //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                                  //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Default constructor**********************************************************************
@@ -407,10 +407,10 @@ class Subvector<VT,AF,TF,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubvectorIterator< const VT, ConstIterator_<VT> >  ConstIterator;
+   using ConstIterator = SubvectorIterator< const VT, ConstIterator_<VT> >;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator< VT, Iterator_<VT> > >  Iterator;
+   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< VT, Iterator_<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -956,7 +956,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -1008,7 +1008,7 @@ inline Subvector<VT,AF,TF,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1061,7 +1061,7 @@ inline Subvector<VT,AF,TF,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1115,7 +1115,7 @@ inline Subvector<VT,AF,TF,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef MultTrait_< ResultType, ResultType_<VT2> >  MultType;
+   using MultType = MultTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1169,7 +1169,7 @@ inline Subvector<VT,AF,TF,false>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef DivTrait_< ResultType, ResultType_<VT2> >  DivType;
+   using DivType = DivTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1223,7 +1223,7 @@ inline Subvector<VT,AF,TF,false>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT2> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1302,8 +1302,8 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DivTrait_<ElementType,Other>     DT;
-   typedef If_< IsNumeric<DT>, DT, Other >  Tmp;
+   using DT  = DivTrait_<ElementType,Other>;
+   using Tmp = If_< IsNumeric<DT>, DT, Other >;
 
    const Iterator last( end() );
 
@@ -2027,7 +2027,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side dense vector
 inline void Subvector<VT,AF,TF,false>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -2061,7 +2061,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void Subvector<VT,AF,TF,false>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
-   typedef AddTrait_< ResultType, ResultType_<VT2> >  AddType;
+   using AddType = AddTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
@@ -2095,7 +2095,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side dense vector
 inline void Subvector<VT,AF,TF,false>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
@@ -2129,7 +2129,7 @@ template< typename VT     // Type of the sparse vector
 template< typename VT2 >  // Type of the right-hand side sparse vector
 inline void Subvector<VT,AF,TF,false>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
-   typedef SubTrait_< ResultType, ResultType_<VT2> >  SubType;
+   using SubType = SubTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );

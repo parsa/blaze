@@ -112,31 +112,31 @@ class Subvector<VT,unaligned,TF,true>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
+   using Operand = If_< IsExpression<VT>, VT, VT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<VT,unaligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>             BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<VT>              ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>       TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>                 ElementType;    //!< Type of the subvector elements.
-   typedef SIMDTrait_<ElementType>          SIMDType;       //!< SIMD type of the subvector elements.
-   typedef ReturnType_<VT>                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const Subvector&                 CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<VT,unaligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;             //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<VT>;              //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;                 //!< Type of the subvector elements.
+   using SIMDType      = SIMDTrait_<ElementType>;          //!< SIMD type of the subvector elements.
+   using ReturnType    = ReturnType_<VT>;                  //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;                 //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   typedef ConstReference_<VT>  ConstReference;
+   using ConstReference = ConstReference_<VT>;
 
    //! Reference to a non-constant subvector value.
-   typedef If_< IsConst<VT>, ConstReference, Reference_<VT> >  Reference;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
 
    //! Pointer to a constant subvector value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant subvector value.
-   typedef If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -148,26 +148,26 @@ class Subvector<VT,unaligned,TF,true>
     public:
       //**Type definitions*************************************************************************
       //! The iterator category.
-      typedef typename std::iterator_traits<IteratorType>::iterator_category  IteratorCategory;
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
 
       //! Type of the underlying elements.
-      typedef typename std::iterator_traits<IteratorType>::value_type  ValueType;
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
 
       //! Pointer return type.
-      typedef typename std::iterator_traits<IteratorType>::pointer  PointerType;
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
 
       //! Reference return type.
-      typedef typename std::iterator_traits<IteratorType>::reference  ReferenceType;
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
 
       //! Difference between two iterators.
-      typedef typename std::iterator_traits<IteratorType>::difference_type  DifferenceType;
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -541,10 +541,10 @@ class Subvector<VT,unaligned,TF,true>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   typedef SubvectorIterator< ConstIterator_<VT> >  ConstIterator;
+   using ConstIterator = SubvectorIterator< ConstIterator_<VT> >;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<VT>, ConstIterator, SubvectorIterator< Iterator_<VT> > >  Iterator;
+   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< Iterator_<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1245,7 +1245,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -1297,7 +1297,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset_ ) ) {
@@ -1347,7 +1347,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset_ ) ) {
@@ -1398,7 +1398,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset_ ) ) {
@@ -1492,7 +1492,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset_ ) ) {
@@ -1541,7 +1541,7 @@ inline Subvector<VT,unaligned,TF,true>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT2> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2666,37 +2666,37 @@ class Subvector<VT,aligned,TF,true>
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef If_< IsExpression<VT>, VT, VT& >  Operand;
+   using Operand = If_< IsExpression<VT>, VT, VT& >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<VT,aligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>           BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<VT>            ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>     TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>               ElementType;    //!< Type of the subvector elements.
-   typedef SIMDTrait_<ElementType>        SIMDType;       //!< SIMD type of the subvector elements.
-   typedef ReturnType_<VT>                ReturnType;     //!< Return type for expression template evaluations
-   typedef const Subvector&               CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<VT,aligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;           //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<VT>;            //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;               //!< Type of the subvector elements.
+   using SIMDType      = SIMDTrait_<ElementType>;        //!< SIMD type of the subvector elements.
+   using ReturnType    = ReturnType_<VT>;                //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   typedef ConstReference_<VT>  ConstReference;
+   using ConstReference = ConstReference_<VT>;
 
    //! Reference to a non-constant subvector value.
-   typedef If_< IsConst<VT>, ConstReference, Reference_<VT> >  Reference;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
 
    //! Pointer to a constant subvector value.
-   typedef const ElementType*  ConstPointer;
+   using ConstPointer = const ElementType*;
 
    //! Pointer to a non-constant subvector value.
-   typedef If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >  Pointer;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >;
 
    //! Iterator over constant elements.
-   typedef ConstIterator_<VT>  ConstIterator;
+   using ConstIterator = ConstIterator_<VT>;
 
    //! Iterator over non-constant elements.
-   typedef If_< IsConst<VT>, ConstIterator, Iterator_<VT> >  Iterator;
+   using Iterator = If_< IsConst<VT>, ConstIterator, Iterator_<VT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3384,7 +3384,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset_ ) ) {
@@ -3436,7 +3436,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset_ ) ) {
@@ -3486,7 +3486,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset_ ) ) {
@@ -3537,7 +3537,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset_ ) ) {
@@ -3631,7 +3631,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   typedef If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >  Right;
+   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset_ ) ) {
@@ -3680,7 +3680,7 @@ inline Subvector<VT,aligned,TF,true>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   typedef CrossTrait_< ResultType, ResultType_<VT2> >  CrossType;
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -4793,19 +4793,19 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef DVecDVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
+   using CPE = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
+   using RT  = ResultType_<CPE>;               //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<CPE,unaligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>              BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<CPE,unaligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;              //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<RT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;        //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;                 //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;                  //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4964,19 +4964,19 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef DVecSVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
+   using CPE = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
+   using RT  = ResultType_<CPE>;               //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<CPE,unaligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>              BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<CPE,unaligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;              //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<RT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;        //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;                 //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;                  //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -5135,19 +5135,19 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SVecDVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
+   using CPE = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
+   using RT  = ResultType_<CPE>;               //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<CPE,unaligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>              BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<CPE,unaligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;              //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<RT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;        //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;                 //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;                  //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -5306,19 +5306,19 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef SVecSVecCrossExpr<VT1,VT2,TF>  CPE;  //!< Type of the cross product expression.
-   typedef ResultType_<CPE>               RT;   //!< Result type of the cross product expression.
+   using CPE = SVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
+   using RT  = ResultType_<CPE>;               //!< Result type of the cross product expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef Subvector<CPE,unaligned,TF,true>  This;           //!< Type of this Subvector instance.
-   typedef DenseVector<This,TF>              BaseType;       //!< Base type of this Subvector instance.
-   typedef SubvectorTrait_<RT>               ResultType;     //!< Result type for expression template evaluations.
-   typedef TransposeType_<ResultType>        TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef ElementType_<CPE>                 ElementType;    //!< Type of the subvector elements.
-   typedef ReturnType_<CPE>                  ReturnType;     //!< Return type for expression template evaluations
-   typedef const ResultType                  CompositeType;  //!< Data type for composite expression templates.
+   using This          = Subvector<CPE,unaligned,TF,true>;  //!< Type of this Subvector instance.
+   using BaseType      = DenseVector<This,TF>;              //!< Base type of this Subvector instance.
+   using ResultType    = SubvectorTrait_<RT>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;        //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;                 //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;                  //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
