@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsPod : public BoolConstant< std::is_pod<T>::value >
+struct IsPod
+   : public BoolConstant< std::is_pod<T>::value >
 {};
 //*************************************************************************************************
 

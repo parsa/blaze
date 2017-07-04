@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsLong : public FalseType
+struct IsLong
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsLong : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for the plain 'long' type.
 template<>
-struct IsLong<long> : public TrueType
+struct IsLong<long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsLong<long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'const long'.
 template<>
-struct IsLong<const long> : public TrueType
+struct IsLong<const long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsLong<const long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'volatile long'.
 template<>
-struct IsLong<volatile long> : public TrueType
+struct IsLong<volatile long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsLong<volatile long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'const volatile long'.
 template<>
-struct IsLong<const volatile long> : public TrueType
+struct IsLong<const volatile long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -122,7 +127,8 @@ struct IsLong<const volatile long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for the plain 'unsigned long' type.
 template<>
-struct IsLong<unsigned long> : public TrueType
+struct IsLong<unsigned long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -132,7 +138,8 @@ struct IsLong<unsigned long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'const unsigned long'.
 template<>
-struct IsLong<const unsigned long> : public TrueType
+struct IsLong<const unsigned long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -142,7 +149,8 @@ struct IsLong<const unsigned long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'volatile unsigned long'.
 template<>
-struct IsLong<volatile unsigned long> : public TrueType
+struct IsLong<volatile unsigned long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -152,7 +160,8 @@ struct IsLong<volatile unsigned long> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLong type trait for 'const volatile unsigned long'.
 template<>
-struct IsLong<const volatile unsigned long> : public TrueType
+struct IsLong<const volatile unsigned long>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

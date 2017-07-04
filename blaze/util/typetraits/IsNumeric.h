@@ -76,7 +76,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsNumeric : public BoolConstant< IsBuiltin<T>::value && !IsBoolean<T>::value && !IsVoid<T>::value >
+struct IsNumeric
+   : public BoolConstant< IsBuiltin<T>::value && !IsBoolean<T>::value && !IsVoid<T>::value >
 {};
 //*************************************************************************************************
 
@@ -85,7 +86,8 @@ struct IsNumeric : public BoolConstant< IsBuiltin<T>::value && !IsBoolean<T>::va
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsNumeric type trait for the plain 'complex' type.
 template< typename T >
-struct IsNumeric< complex<T> > : public IsNumeric<T>::Type
+struct IsNumeric< complex<T> >
+   : public IsNumeric<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -95,7 +97,8 @@ struct IsNumeric< complex<T> > : public IsNumeric<T>::Type
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsNumeric type trait for 'const complex'.
 template< typename T >
-struct IsNumeric< const complex<T> > : public IsNumeric<T>::Type
+struct IsNumeric< const complex<T> >
+   : public IsNumeric<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,7 +108,8 @@ struct IsNumeric< const complex<T> > : public IsNumeric<T>::Type
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsNumeric type trait for 'volatile complex'.
 template< typename T >
-struct IsNumeric< volatile complex<T> > : public IsNumeric<T>::Type
+struct IsNumeric< volatile complex<T> >
+   : public IsNumeric<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -115,7 +119,8 @@ struct IsNumeric< volatile complex<T> > : public IsNumeric<T>::Type
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsNumeric type trait for 'const volatile complex'.
 template< typename T >
-struct IsNumeric< const volatile complex<T> > : public IsNumeric<T>::Type
+struct IsNumeric< const volatile complex<T> >
+   : public IsNumeric<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************

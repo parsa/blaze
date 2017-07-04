@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsIntegral : public BoolConstant< std::is_integral<T>::value >
+struct IsIntegral
+   : public BoolConstant< std::is_integral<T>::value >
 {};
 //*************************************************************************************************
 

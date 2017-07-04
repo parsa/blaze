@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsBuiltin : public BoolConstant< std::is_fundamental<T>::value >
+struct IsBuiltin
+   : public BoolConstant< std::is_fundamental<T>::value >
 {};
 //*************************************************************************************************
 

@@ -559,7 +559,8 @@ template< typename T                // Type of the singleton (CRTP pattern)
         , typename D6 = NullType    // Type of the sixth lifetime dependency
         , typename D7 = NullType    // Type of the seventh lifetime dependency
         , typename D8 = NullType >  // Type of the eighth lifetime dependency
-class Singleton : private NonCopyable
+class Singleton
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -667,7 +668,8 @@ template< typename T     // Type of the singleton (CRTP pattern)
         , typename D5    // Type of the fifth lifetime dependency
         , typename D6    // Type of the sixth lifetime dependency
         , typename D7 >  // Type of the eighth lifetime dependency
-class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType> : private NonCopyable
+class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -771,7 +773,8 @@ template< typename T     // Type of the singleton (CRTP pattern)
         , typename D4    // Type of the fourth lifetime dependency
         , typename D5    // Type of the fifth lifetime dependency
         , typename D6 >  // Type of the eighth lifetime dependency
-class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -870,7 +873,8 @@ template< typename T     // Type of the singleton (CRTP pattern)
         , typename D3    // Type of the third lifetime dependency
         , typename D4    // Type of the fourth lifetime dependency
         , typename D5 >  // Type of the fifth lifetime dependency
-class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -964,7 +968,8 @@ template< typename T     // Type of the singleton (CRTP pattern)
         , typename D2    // Type of the second lifetime dependency
         , typename D3    // Type of the third lifetime dependency
         , typename D4 >  // Type of the fourth lifetime dependency
-class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -1053,7 +1058,8 @@ template< typename T     // Type of the singleton (CRTP pattern)
         , typename D1    // Type of the first lifetime dependency
         , typename D2    // Type of the second lifetime dependency
         , typename D3 >  // Type of the third lifetime dependency
-class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -1137,7 +1143,8 @@ class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType> : priva
 template< typename T     // Type of the singleton (CRTP pattern)
         , typename D1    // Type of the first lifetime dependency
         , typename D2 >  // Type of the second lifetime dependency
-class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -1216,7 +1223,8 @@ class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType> :
 */
 template< typename T     // Type of the singleton (CRTP pattern)
         , typename D1 >  // Type of the lifetime dependency
-class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************
@@ -1290,7 +1298,8 @@ class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullT
 // are specified.
 */
 template< typename T >  // Type of the singleton (CRTP pattern)
-class Singleton<T,NullType,NullType,NullType,NullType,NullType,NullType,NullType,NullType> : private NonCopyable
+class Singleton<T,NullType,NullType,NullType,NullType,NullType,NullType,NullType,NullType>
+   : private NonCopyable
 {
  public:
    //**Type definitions****************************************************************************

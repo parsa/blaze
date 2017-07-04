@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsArray : public BoolConstant< std::is_array<T>::value >
+struct IsArray
+   : public BoolConstant< std::is_array<T>::value >
 {};
 //*************************************************************************************************
 

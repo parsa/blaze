@@ -74,7 +74,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsRValueReference : public BoolConstant< std::is_rvalue_reference<T>::value >
+struct IsRValueReference
+   : public BoolConstant< std::is_rvalue_reference<T>::value >
 {};
 //*************************************************************************************************
 

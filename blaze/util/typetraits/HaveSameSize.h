@@ -90,7 +90,8 @@ namespace blaze {
    \endcode
 */
 template< typename T1, typename T2 >
-class HaveSameSize : public BoolConstant< sizeof(T1) == sizeof(T2) >
+class HaveSameSize
+   : public BoolConstant< sizeof(T1) == sizeof(T2) >
 {};
 //*************************************************************************************************
 
@@ -106,7 +107,8 @@ class HaveSameSize : public BoolConstant< sizeof(T1) == sizeof(T2) >
 // for any given type \a T since the \a void type has no size.
 */
 template< typename T >
-class HaveSameSize<void,T> : public FalseType
+class HaveSameSize<void,T>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -123,7 +125,8 @@ class HaveSameSize<void,T> : public FalseType
 // for any given type \a T since the \a void type has no size.
 */
 template< typename T >
-class HaveSameSize<T,void> : public FalseType
+class HaveSameSize<T,void>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -140,7 +143,8 @@ class HaveSameSize<T,void> : public FalseType
 // \a TrueType since both arguments are \a void.
 */
 template<>
-class HaveSameSize<void,void> : public TrueType
+class HaveSameSize<void,void>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

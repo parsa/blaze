@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsLongDouble : public FalseType
+struct IsLongDouble
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -81,7 +82,8 @@ struct IsLongDouble : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLongDouble type trait for the plain 'long double' type.
 template<>
-struct IsLongDouble<long double> : public TrueType
+struct IsLongDouble<long double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +93,8 @@ struct IsLongDouble<long double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLongDouble type trait for 'const long double'.
 template<>
-struct IsLongDouble<const long double> : public TrueType
+struct IsLongDouble<const long double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -101,7 +104,8 @@ struct IsLongDouble<const long double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLongDouble type trait for 'volatile long double'.
 template<>
-struct IsLongDouble<volatile long double> : public TrueType
+struct IsLongDouble<volatile long double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -111,7 +115,8 @@ struct IsLongDouble<volatile long double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsLongDouble type trait for 'const volatile long double'.
 template<>
-struct IsLongDouble<const volatile long double> : public TrueType
+struct IsLongDouble<const volatile long double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

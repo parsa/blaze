@@ -74,7 +74,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsSigned : public BoolConstant< std::is_signed<T>::value >
+struct IsSigned
+   : public BoolConstant< std::is_signed<T>::value >
 {};
 //*************************************************************************************************
 

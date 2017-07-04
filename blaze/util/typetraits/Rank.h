@@ -69,7 +69,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct Rank : public IntegralConstant<size_t,0UL>
+struct Rank
+   : public IntegralConstant<size_t,0UL>
 {};
 //*************************************************************************************************
 
@@ -78,7 +79,8 @@ struct Rank : public IntegralConstant<size_t,0UL>
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the Rank type trait for empty arrays.
 template< typename T >
-struct Rank<T[]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
+struct Rank<T[]>
+   : public IntegralConstant<size_t,1UL+Rank<T>::value>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -88,7 +90,8 @@ struct Rank<T[]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the Rank type trait for non-empty arrays.
 template< typename T, unsigned int N >
-struct Rank<T[N]> : public IntegralConstant<size_t,1UL+Rank<T>::value>
+struct Rank<T[N]>
+   : public IntegralConstant<size_t,1UL+Rank<T>::value>
 {};
 /*! \endcond */
 //*************************************************************************************************

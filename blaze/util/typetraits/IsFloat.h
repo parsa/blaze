@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsFloat : public FalseType
+struct IsFloat
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -81,7 +82,8 @@ struct IsFloat : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsFloat type trait for the plain 'float' type.
 template<>
-struct IsFloat<float> : public TrueType
+struct IsFloat<float>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +93,8 @@ struct IsFloat<float> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsFloat type trait for 'const float'.
 template<>
-struct IsFloat<const float> : public TrueType
+struct IsFloat<const float>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -101,7 +104,8 @@ struct IsFloat<const float> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsFloat type trait for 'volatile float'.
 template<>
-struct IsFloat<volatile float> : public TrueType
+struct IsFloat<volatile float>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -111,7 +115,8 @@ struct IsFloat<volatile float> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsFloat type trait for 'const volatile float'.
 template<>
-struct IsFloat<const volatile float> : public TrueType
+struct IsFloat<const volatile float>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

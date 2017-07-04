@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsObject : public BoolConstant< std::is_object<T>::value >
+struct IsObject
+   : public BoolConstant< std::is_object<T>::value >
 {};
 //*************************************************************************************************
 

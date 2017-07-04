@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsCharacter : public FalseType
+struct IsCharacter
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsCharacter : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsCharacter type trait for the plain 'char' type.
 template<>
-struct IsCharacter<char> : public TrueType
+struct IsCharacter<char>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsCharacter<char> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsCharacter type trait for the plain 'signed char' type.
 template<>
-struct IsCharacter<signed char> : public TrueType
+struct IsCharacter<signed char>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsCharacter<signed char> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsCharacter type trait for the plain 'unsigned char' type.
 template<>
-struct IsCharacter<unsigned char> : public TrueType
+struct IsCharacter<unsigned char>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsCharacter<unsigned char> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsCharacter type trait for the plain 'wchar_t' type.
 template<>
-struct IsCharacter<wchar_t> : public TrueType
+struct IsCharacter<wchar_t>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -122,7 +127,8 @@ struct IsCharacter<wchar_t> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Partial specialization of the IsCharacter type trait 'const' qualified types.
 template< typename T >
-struct IsCharacter<const T> : public IsCharacter<T>::Type
+struct IsCharacter<const T>
+   : public IsCharacter<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -132,7 +138,8 @@ struct IsCharacter<const T> : public IsCharacter<T>::Type
 /*! \cond BLAZE_INTERNAL */
 //! Partial specialization of the IsCharacter type trait 'volatile' qualified types.
 template< typename T >
-struct IsCharacter<volatile T> : public IsCharacter<T>::Type
+struct IsCharacter<volatile T>
+   : public IsCharacter<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -142,7 +149,8 @@ struct IsCharacter<volatile T> : public IsCharacter<T>::Type
 /*! \cond BLAZE_INTERNAL */
 //! Partial specialization of the IsCharacter type trait 'const volatile' types.
 template< typename T >
-struct IsCharacter<const volatile T> : public IsCharacter<T>::Type
+struct IsCharacter<const volatile T>
+   : public IsCharacter<T>::Type
 {};
 /*! \endcond */
 //*************************************************************************************************

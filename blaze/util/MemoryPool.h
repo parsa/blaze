@@ -65,7 +65,8 @@ namespace blaze {
 // specified number of objects. The memory of these blocks is managed as a single free list.
 */
 template< typename Type, size_t Blocksize >
-class MemoryPool : private NonCopyable
+class MemoryPool
+   : private NonCopyable
 {
  private:
    //**union FreeObject****************************************************************************

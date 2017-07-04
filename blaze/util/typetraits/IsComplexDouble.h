@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsComplexDouble : public FalseType
+struct IsComplexDouble
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsComplexDouble : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexDouble type trait for the plain 'complex<double>' type.
 template<>
-struct IsComplexDouble< complex<double> > : public TrueType
+struct IsComplexDouble< complex<double> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsComplexDouble< complex<double> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexDouble type trait for 'const complex<double>'.
 template<>
-struct IsComplexDouble< const complex<double> > : public TrueType
+struct IsComplexDouble< const complex<double> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsComplexDouble< const complex<double> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexDouble type trait for 'volatile complex<double>'.
 template<>
-struct IsComplexDouble< volatile complex<double> > : public TrueType
+struct IsComplexDouble< volatile complex<double> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsComplexDouble< volatile complex<double> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexDouble type trait for 'const volatile complex<double>'
 template<>
-struct IsComplexDouble< const volatile complex<double> > : public TrueType
+struct IsComplexDouble< const volatile complex<double> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

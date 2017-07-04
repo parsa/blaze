@@ -77,7 +77,8 @@ namespace blaze {
    \endcode
 */
 template< typename Base, typename Derived >
-class IsBaseOf : public BoolConstant< std::is_base_of< RemoveCV_<Base>, RemoveCV_<Derived> >::value >
+class IsBaseOf
+   : public BoolConstant< std::is_base_of< RemoveCV_<Base>, RemoveCV_<Derived> >::value >
 {};
 //*************************************************************************************************
 

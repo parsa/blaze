@@ -75,7 +75,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsUnion : public BoolConstant< std::is_union<T>::value >
+struct IsUnion
+   : public BoolConstant< std::is_union<T>::value >
 {};
 //*************************************************************************************************
 

@@ -77,7 +77,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsEnum : public BoolConstant< std::is_enum<T>::value >
+struct IsEnum
+   : public BoolConstant< std::is_enum<T>::value >
 {};
 //*************************************************************************************************
 

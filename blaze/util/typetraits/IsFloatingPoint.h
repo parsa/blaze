@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsFloatingPoint : public BoolConstant< std::is_floating_point<T>::value >
+struct IsFloatingPoint
+   : public BoolConstant< std::is_floating_point<T>::value >
 {};
 //*************************************************************************************************
 

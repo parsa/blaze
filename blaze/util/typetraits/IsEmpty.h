@@ -75,7 +75,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsEmpty : public BoolConstant< std::is_empty<T>::value >
+struct IsEmpty
+   : public BoolConstant< std::is_empty<T>::value >
 {};
 //*************************************************************************************************
 

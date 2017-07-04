@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsShort : public FalseType
+struct IsShort
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsShort : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for the plain 'short' type.
 template<>
-struct IsShort<short> : public TrueType
+struct IsShort<short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsShort<short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'const short'.
 template<>
-struct IsShort<const short> : public TrueType
+struct IsShort<const short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsShort<const short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'volatile short'.
 template<>
-struct IsShort<volatile short> : public TrueType
+struct IsShort<volatile short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsShort<volatile short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'const volatile short'.
 template<>
-struct IsShort<const volatile short> : public TrueType
+struct IsShort<const volatile short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -122,7 +127,8 @@ struct IsShort<const volatile short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for the plain 'unsigned short' type.
 template<>
-struct IsShort<unsigned short> : public TrueType
+struct IsShort<unsigned short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -132,7 +138,8 @@ struct IsShort<unsigned short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'const unsigned short'.
 template<>
-struct IsShort<const unsigned short> : public TrueType
+struct IsShort<const unsigned short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -142,7 +149,8 @@ struct IsShort<const unsigned short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'volatile unsigned short'.
 template<>
-struct IsShort<volatile unsigned short> : public TrueType
+struct IsShort<volatile unsigned short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -152,7 +160,8 @@ struct IsShort<volatile unsigned short> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsShort type trait for 'const volatile unsigned short'.
 template<>
-struct IsShort<const volatile unsigned short> : public TrueType
+struct IsShort<const volatile unsigned short>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

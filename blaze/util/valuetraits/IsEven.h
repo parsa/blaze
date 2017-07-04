@@ -70,7 +70,8 @@ namespace blaze {
    \endcode
 */
 template< size_t N >
-struct IsEven : public BoolConstant< N % 2UL == 0UL >
+struct IsEven
+   : public BoolConstant< N % 2UL == 0UL >
 {};
 //*************************************************************************************************
 

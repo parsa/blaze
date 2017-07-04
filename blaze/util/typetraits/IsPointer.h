@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsPointer : public BoolConstant< std::is_pointer<T>::value >
+struct IsPointer
+   : public BoolConstant< std::is_pointer<T>::value >
 {};
 //*************************************************************************************************
 

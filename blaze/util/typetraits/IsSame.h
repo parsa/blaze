@@ -74,7 +74,8 @@ namespace blaze {
    \endcode
 */
 template< typename A, typename B >
-struct IsStrictlySame : public FalseType
+struct IsStrictlySame
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -83,7 +84,8 @@ struct IsStrictlySame : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsStrictlySame class template for a single, matching data type.
 template< typename T >
-struct IsStrictlySame<T,T> : public TrueType
+struct IsStrictlySame<T,T>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -135,7 +137,8 @@ struct IsSameHelper
    \endcode
 */
 template< typename A, typename B >
-struct IsSame : public BoolConstant< IsSameHelper<A,B>::value >
+struct IsSame
+   : public BoolConstant< IsSameHelper<A,B>::value >
 {};
 //*************************************************************************************************
 

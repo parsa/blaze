@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T, size_t Size >
-struct HasSize : public BoolConstant< sizeof( T ) == Size >
+struct HasSize
+   : public BoolConstant< sizeof( T ) == Size >
 {};
 //*************************************************************************************************
 
@@ -89,7 +90,8 @@ struct HasSize : public BoolConstant< sizeof( T ) == Size >
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<void,Size> : public BoolConstant< 0 == Size >
+struct HasSize<void,Size>
+   : public BoolConstant< 0 == Size >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -107,7 +109,8 @@ struct HasSize<void,Size> : public BoolConstant< 0 == Size >
 // \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<const void,Size> : public BoolConstant< 0 == Size >
+struct HasSize<const void,Size>
+   : public BoolConstant< 0 == Size >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -125,7 +128,8 @@ struct HasSize<const void,Size> : public BoolConstant< 0 == Size >
 // \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<volatile void,Size> : public BoolConstant< 0 == Size >
+struct HasSize<volatile void,Size>
+   : public BoolConstant< 0 == Size >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -143,7 +147,8 @@ struct HasSize<volatile void,Size> : public BoolConstant< 0 == Size >
 // and the class derives from \a FalseType.
 */
 template< size_t Size >
-struct HasSize<const volatile void,Size> : public BoolConstant< 0 == Size >
+struct HasSize<const volatile void,Size>
+   : public BoolConstant< 0 == Size >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -177,7 +182,8 @@ struct HasSize<const volatile void,Size> : public BoolConstant< 0 == Size >
    \endcode
 */
 template< typename T >
-struct Has1Byte : public HasSize<T,1UL>
+struct Has1Byte
+   : public HasSize<T,1UL>
 {};
 //*************************************************************************************************
 
@@ -210,7 +216,8 @@ struct Has1Byte : public HasSize<T,1UL>
    \endcode
 */
 template< typename T >
-struct Has2Bytes : public HasSize<T,2UL>
+struct Has2Bytes
+   : public HasSize<T,2UL>
 {};
 //*************************************************************************************************
 
@@ -243,7 +250,8 @@ struct Has2Bytes : public HasSize<T,2UL>
    \endcode
 */
 template< typename T >
-struct Has4Bytes : public HasSize<T,4UL>
+struct Has4Bytes
+   : public HasSize<T,4UL>
 {};
 //*************************************************************************************************
 
@@ -276,7 +284,8 @@ struct Has4Bytes : public HasSize<T,4UL>
    \endcode
 */
 template< typename T >
-struct Has8Bytes : public HasSize<T,8UL>
+struct Has8Bytes
+   : public HasSize<T,8UL>
 {};
 //*************************************************************************************************
 

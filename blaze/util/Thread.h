@@ -247,7 +247,8 @@ template< typename TT    // Type of the encapsulated thread
         , typename MT    // Type of the synchronization mutex
         , typename LT    // Type of the mutex lock
         , typename CT >  // Type of the condition variable
-class Thread : private NonCopyable
+class Thread
+   : private NonCopyable
 {
  private:
    //**Type definitions****************************************************************************

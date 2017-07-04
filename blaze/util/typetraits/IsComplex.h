@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsComplex : public FalseType
+struct IsComplex
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsComplex : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplex type trait for the plain 'complex' type.
 template< typename T >
-struct IsComplex< complex<T> > : public TrueType
+struct IsComplex< complex<T> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsComplex< complex<T> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplex type trait for 'const complex'.
 template< typename T >
-struct IsComplex< const complex<T> > : public TrueType
+struct IsComplex< const complex<T> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsComplex< const complex<T> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplex type trait for 'volatile complex'.
 template< typename T >
-struct IsComplex< volatile complex<T> > : public TrueType
+struct IsComplex< volatile complex<T> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsComplex< volatile complex<T> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplex type trait for 'const volatile complex'
 template< typename T >
-struct IsComplex< const volatile complex<T> > : public TrueType
+struct IsComplex< const volatile complex<T> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

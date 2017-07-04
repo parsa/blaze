@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsVolatile : public BoolConstant< std::is_volatile<T>::value  >
+struct IsVolatile
+   : public BoolConstant< std::is_volatile<T>::value  >
 {};
 //*************************************************************************************************
 

@@ -165,7 +165,8 @@ inline void     setSeed( uint32_t seed );
 //   http://en.cppreference.com/w/cpp/numeric/random
 */
 template< typename Type >  // Type of the random number generator
-class Random : private NonCreatable
+class Random
+   : private NonCreatable
 {
  private:
    //**Member variables****************************************************************************

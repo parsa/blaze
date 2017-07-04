@@ -69,7 +69,8 @@ namespace blaze {
    \endcode
 */
 template< ptrdiff_t N >
-struct PtrdiffT : public IntegralConstant<ptrdiff_t,N>
+struct PtrdiffT
+   : public IntegralConstant<ptrdiff_t,N>
 {};
 //*************************************************************************************************
 

@@ -68,7 +68,8 @@ namespace blaze {
    \endcode
 */
 template< typename T, T N >
-struct IntegralConstant : public std::integral_constant<T,N>
+struct IntegralConstant
+   : public std::integral_constant<T,N>
 {
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */

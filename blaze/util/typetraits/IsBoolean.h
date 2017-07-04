@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsBoolean : public FalseType
+struct IsBoolean
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -81,7 +82,8 @@ struct IsBoolean : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsBoolean type trait for the plain 'bool' type.
 template<>
-struct IsBoolean<bool> : public TrueType
+struct IsBoolean<bool>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +93,8 @@ struct IsBoolean<bool> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsBoolean type trait for 'const bool'.
 template<>
-struct IsBoolean<const bool> : public TrueType
+struct IsBoolean<const bool>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -101,7 +104,8 @@ struct IsBoolean<const bool> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsBoolean type trait for 'volatile bool'.
 template<>
-struct IsBoolean<volatile bool> : public TrueType
+struct IsBoolean<volatile bool>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -111,7 +115,8 @@ struct IsBoolean<volatile bool> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsBoolean type trait for 'const volatile bool'
 template<>
-struct IsBoolean<const volatile bool> : public TrueType
+struct IsBoolean<const volatile bool>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

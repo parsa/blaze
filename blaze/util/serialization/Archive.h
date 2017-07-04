@@ -138,7 +138,8 @@ namespace blaze {
 // for any possible destination.
 */
 template< typename Stream >  // Type of the bound stream
-class Archive : private NonCopyable
+class Archive
+   : private NonCopyable
 {
  public:
    //**Constructors********************************************************************************

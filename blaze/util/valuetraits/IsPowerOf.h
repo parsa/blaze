@@ -77,7 +77,8 @@ namespace blaze {
    \endcode
 */
 template< size_t B, size_t N >
-struct IsPowerOf : public BoolConstant< IsPowerOf<B,N/B>::value >
+struct IsPowerOf
+   : public BoolConstant< IsPowerOf<B,N/B>::value >
 {};
 //*************************************************************************************************
 
@@ -93,7 +94,8 @@ struct IsPowerOf : public BoolConstant< IsPowerOf<B,N/B>::value >
 // not, \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< size_t N >
-struct IsPowerOf<2,N> : public BoolConstant< ( N & (N-1) ) == 0UL >
+struct IsPowerOf<2,N>
+   : public BoolConstant< ( N & (N-1) ) == 0UL >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -109,7 +111,8 @@ struct IsPowerOf<2,N> : public BoolConstant< ( N & (N-1) ) == 0UL >
 // to 0, the nested type definition \a Type to \a FalseType, and it derives from \a FalseType.
 */
 template<>
-struct IsPowerOf<2,0> : public FalseType
+struct IsPowerOf<2,0>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -126,7 +129,8 @@ struct IsPowerOf<2,0> : public FalseType
 // \a TrueType, and it derives from \a TrueType.
 */
 template< size_t B >
-struct IsPowerOf<B,1> : public TrueType
+struct IsPowerOf<B,1>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -143,7 +147,8 @@ struct IsPowerOf<B,1> : public TrueType
 // from \a FalseType.
 */
 template< size_t N >
-struct IsPowerOf<1,N> : public FalseType
+struct IsPowerOf<1,N>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -160,7 +165,8 @@ struct IsPowerOf<1,N> : public FalseType
 // \a TrueType.
 */
 template<>
-struct IsPowerOf<1,1> : public TrueType
+struct IsPowerOf<1,1>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -177,7 +183,8 @@ struct IsPowerOf<1,1> : public TrueType
 // \a FalseType.
 */
 template< size_t B >
-struct IsPowerOf<B,0> : public FalseType
+struct IsPowerOf<B,0>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -194,7 +201,8 @@ struct IsPowerOf<B,0> : public FalseType
 // \a FalseType.
 */
 template< size_t N >
-struct IsPowerOf<0,N> : public FalseType
+struct IsPowerOf<0,N>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -211,7 +219,8 @@ struct IsPowerOf<0,N> : public FalseType
 // and it derives from \a TrueType.
 */
 template<>
-struct IsPowerOf<0,0> : public TrueType
+struct IsPowerOf<0,0>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

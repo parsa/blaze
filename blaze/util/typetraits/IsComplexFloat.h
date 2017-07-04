@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsComplexFloat : public FalseType
+struct IsComplexFloat
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsComplexFloat : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexFloat type trait for the plain 'complex<float>' type.
 template<>
-struct IsComplexFloat< complex<float> > : public TrueType
+struct IsComplexFloat< complex<float> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsComplexFloat< complex<float> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexFloat type trait for 'const complex<float>'.
 template<>
-struct IsComplexFloat< const complex<float> > : public TrueType
+struct IsComplexFloat< const complex<float> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsComplexFloat< const complex<float> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexFloat type trait for 'volatile complex<float>'.
 template<>
-struct IsComplexFloat< volatile complex<float> > : public TrueType
+struct IsComplexFloat< volatile complex<float> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsComplexFloat< volatile complex<float> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsComplexFloat type trait for 'const volatile complex<float>'
 template<>
-struct IsComplexFloat< const volatile complex<float> > : public TrueType
+struct IsComplexFloat< const volatile complex<float> >
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

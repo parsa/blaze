@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsDouble : public FalseType
+struct IsDouble
+   : public FalseType
 {};
 //*************************************************************************************************
 
@@ -81,7 +82,8 @@ struct IsDouble : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsDouble type trait for the plain 'double' type.
 template<>
-struct IsDouble<double> : public TrueType
+struct IsDouble<double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +93,8 @@ struct IsDouble<double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsDouble type trait for 'const double'.
 template<>
-struct IsDouble<const double> : public TrueType
+struct IsDouble<const double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -101,7 +104,8 @@ struct IsDouble<const double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsDouble type trait for 'volatile double'.
 template<>
-struct IsDouble<volatile double> : public TrueType
+struct IsDouble<volatile double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -111,7 +115,8 @@ struct IsDouble<volatile double> : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsDouble type trait for 'const volatile double'.
 template<>
-struct IsDouble<const volatile double> : public TrueType
+struct IsDouble<const volatile double>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

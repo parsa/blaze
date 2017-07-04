@@ -200,7 +200,8 @@ using EnableIfTrue_ = typename EnableIfTrue<Condition,T>::Type;
 */
 template< typename Condition  // Compile time condition
         , typename T=void >   // The type to be instantiated
-struct EnableIf : public EnableIfTrue<Condition::value,T>
+struct EnableIf
+   : public EnableIfTrue<Condition::value,T>
 {};
 //*************************************************************************************************
 

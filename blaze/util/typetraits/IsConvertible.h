@@ -84,7 +84,8 @@ namespace blaze {
    \endcode
 */
 template< typename From, typename To >
-struct IsConvertible : public BoolConstant< std::is_convertible<From,To>::value >
+struct IsConvertible
+   : public BoolConstant< std::is_convertible<From,To>::value >
 {};
 //*************************************************************************************************
 

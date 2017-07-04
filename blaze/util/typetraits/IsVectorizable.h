@@ -130,7 +130,8 @@ struct IsVectorizableHelper<void>
    \endcode
 */
 template< typename T >
-struct IsVectorizable : public BoolConstant< IsVectorizableHelper< RemoveCV_<T> >::value >
+struct IsVectorizable
+   : public BoolConstant< IsVectorizableHelper< RemoveCV_<T> >::value >
 {};
 //*************************************************************************************************
 

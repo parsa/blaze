@@ -75,7 +75,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsArithmetic : public BoolConstant< std::is_arithmetic<T>::value >
+struct IsArithmetic
+   : public BoolConstant< std::is_arithmetic<T>::value >
 {};
 //*************************************************************************************************
 

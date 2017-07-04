@@ -77,7 +77,8 @@ namespace blaze {
    \endcode
 */
 template< template< typename > class TypeTrait, typename... Ts >
-struct Any : public BoolConstant< Or< TypeTrait<Ts>... >::value >
+struct Any
+   : public BoolConstant< Or< TypeTrait<Ts>... >::value >
 {};
 //*************************************************************************************************
 

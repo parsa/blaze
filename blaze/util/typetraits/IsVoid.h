@@ -72,7 +72,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsVoid : public BoolConstant< std::is_void<T>::value >
+struct IsVoid
+   : public BoolConstant< std::is_void<T>::value >
 {};
 //*************************************************************************************************
 

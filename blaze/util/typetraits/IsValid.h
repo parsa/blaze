@@ -73,7 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsValid : public TrueType
+struct IsValid
+   : public TrueType
 {};
 //*************************************************************************************************
 
@@ -82,7 +83,8 @@ struct IsValid : public TrueType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsValid type trait for the plain 'INVALID_TYPE' type.
 template<>
-struct IsValid<INVALID_TYPE> : public FalseType
+struct IsValid<INVALID_TYPE>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -92,7 +94,8 @@ struct IsValid<INVALID_TYPE> : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsValid type trait for 'const INVALID_TYPE'.
 template<>
-struct IsValid<const INVALID_TYPE> : public FalseType
+struct IsValid<const INVALID_TYPE>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +105,8 @@ struct IsValid<const INVALID_TYPE> : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsValid type trait for 'volatile INVALID_TYPE'.
 template<>
-struct IsValid<volatile INVALID_TYPE> : public FalseType
+struct IsValid<volatile INVALID_TYPE>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +116,8 @@ struct IsValid<volatile INVALID_TYPE> : public FalseType
 /*! \cond BLAZE_INTERNAL */
 //! Specialization of the IsValid type trait for 'const volatile INVALID_TYPE'.
 template<>
-struct IsValid<const volatile INVALID_TYPE> : public FalseType
+struct IsValid<const volatile INVALID_TYPE>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -76,7 +76,8 @@ namespace blaze {
    \endcode
 */
 template< size_t M, size_t N >
-struct IsMultipleOf : public BoolConstant< M % N == 0UL >
+struct IsMultipleOf
+   : public BoolConstant< M % N == 0UL >
 {};
 //*************************************************************************************************
 
@@ -87,7 +88,8 @@ struct IsMultipleOf : public BoolConstant< M % N == 0UL >
 // \ingroup type_traits
 */
 template< size_t M >
-struct IsMultipleOf<M,0UL> : public FalseType
+struct IsMultipleOf<M,0UL>
+   : public FalseType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -99,7 +101,8 @@ struct IsMultipleOf<M,0UL> : public FalseType
 // \ingroup type_traits
 */
 template<>
-struct IsMultipleOf<0,0> : public TrueType
+struct IsMultipleOf<0,0>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
