@@ -251,7 +251,7 @@ void makeHermitian( CustomMatrix<Type,AF,PF,SO>& matrix )
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
 
-   typedef UnderlyingBuiltin_<Type>  BT;
+   using BT = UnderlyingBuiltin_<Type>;
 
    if( !isSquare( ~matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
@@ -294,7 +294,7 @@ void makeHermitian( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const A
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
 
-   typedef UnderlyingBuiltin_<Type>  BT;
+   using BT = UnderlyingBuiltin_<Type>;
 
    if( !isSquare( ~matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

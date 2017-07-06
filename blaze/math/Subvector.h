@@ -183,7 +183,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector ) const
 {
-   typedef ElementType_< Subvector<VT,AF,TF,false> >  ElementType;
+   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
 
    const size_t size( subvector.size() );
 
@@ -216,7 +216,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector, size_t nonzeros ) const
 {
-   typedef ElementType_< Subvector<VT,AF,TF,false> >  ElementType;
+   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
 
    const size_t size( subvector.size() );
 
@@ -253,7 +253,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector,
                                                           const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Subvector<VT,AF,TF,false> >  ElementType;
+   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
 
    const size_t size( subvector.size() );
 
@@ -290,7 +290,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector,
                                                           size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Subvector<VT,AF,TF,false> >  ElementType;
+   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
 
    const size_t size( subvector.size() );
 

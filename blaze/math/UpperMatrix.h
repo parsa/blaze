@@ -333,7 +333,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,SO,DF>& mat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -389,7 +389,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,false,DF>& 
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -439,7 +439,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,true,DF>& m
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -513,7 +513,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,SO,DF>& mat
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -577,7 +577,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,false,DF>& 
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -631,7 +631,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,true,DF>& m
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -714,7 +714,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( UpperMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef ElementType_<MT>  Type;
+   using Type = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -742,7 +742,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeHermitian( UpperMatrix<MT,SO,DF>& matrix )
 {
-   typedef UnderlyingBuiltin_< ElementType_<MT> >  Type;
+   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -773,7 +773,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( UpperMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef UnderlyingBuiltin_< ElementType_<MT> >  Type;
+   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 

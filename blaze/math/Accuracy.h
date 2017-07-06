@@ -70,7 +70,7 @@ class NegativeAccuracy
 {
  public:
    //**Type definitions****************************************************************************
-   typedef A  PositiveType;  //!< The positive accuracy type.
+   using PositiveType = A;  //!< The positive accuracy type.
    //**********************************************************************************************
 
  private:
@@ -499,7 +499,7 @@ class Accuracy
 {
  public:
    //**Type definitions****************************************************************************
-   typedef NegativeAccuracy<Accuracy>  NegativeType;  //!< The negated accuracy type.
+   using NegativeType = NegativeAccuracy<Accuracy>;  //!< The negated accuracy type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

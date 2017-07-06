@@ -333,7 +333,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -389,7 +389,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -441,7 +441,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -516,7 +516,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -580,7 +580,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -636,7 +636,7 @@ inline void Rand< StrictlyUpperMatrix<MT,SO,DF> >::randomize( StrictlyUpperMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 

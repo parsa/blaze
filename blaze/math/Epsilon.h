@@ -70,7 +70,7 @@ class NegativeEpsilon
 {
  public:
    //**Type definitions****************************************************************************
-   typedef E  PositiveType;  //!< The positive epsilon type.
+   using PositiveType = E;  //!< The positive epsilon type.
    //**********************************************************************************************
 
  private:
@@ -498,7 +498,7 @@ class Epsilon
 {
  public:
    //**Type definitions****************************************************************************
-   typedef NegativeEpsilon<Epsilon>  NegativeType;  //!< The negative epsilon type.
+   using NegativeType = NegativeEpsilon<Epsilon>;  //!< The negative epsilon type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

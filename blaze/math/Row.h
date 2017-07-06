@@ -183,7 +183,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row ) const
 {
-   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
 
    const size_t size( row.size() );
 
@@ -216,7 +216,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros ) const
 {
-   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
 
    const size_t size( row.size() );
 
@@ -253,7 +253,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row,
                                                    const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
 
    const size_t size( row.size() );
 
@@ -290,7 +290,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros,
                                                    const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Row<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
 
    const size_t size( row.size() );
 

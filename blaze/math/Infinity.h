@@ -88,7 +88,7 @@ class NegativeInfinity
 {
  public:
    //**Type definitions****************************************************************************
-   typedef I  PositiveType;  //!< The positive infinity type.
+   using PositiveType = I;  //!< The positive infinity type.
    //**********************************************************************************************
 
  private:
@@ -525,7 +525,7 @@ class Infinity
 {
  public:
    //**Type definitions****************************************************************************
-   typedef NegativeInfinity<Infinity>  NegativeType;  //!< The negative infinity type.
+   using NegativeType = NegativeInfinity<Infinity>;  //!< The negative infinity type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

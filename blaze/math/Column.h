@@ -183,7 +183,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column ) const
 {
-   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Column<MT,SO,false,SF> >;
 
    const size_t size( column.size() );
 
@@ -216,7 +216,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column, size_t nonzeros ) const
 {
-   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Column<MT,SO,false,SF> >;
 
    const size_t size( column.size() );
 
@@ -253,7 +253,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column,
                                                        const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Column<MT,SO,false,SF> >;
 
    const size_t size( column.size() );
 
@@ -290,7 +290,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Column<MT,SO,false,SF> >::randomize( Column<MT,SO,false,SF>& column, size_t nonzeros,
                                                        const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Column<MT,SO,false,SF> >  ElementType;
+   using ElementType = ElementType_< Column<MT,SO,false,SF> >;
 
    const size_t size( column.size() );
 

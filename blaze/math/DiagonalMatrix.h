@@ -324,7 +324,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -378,7 +378,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -448,7 +448,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -510,7 +510,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   typedef ElementType_<MT>  ET;
+   using ET = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -589,7 +589,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef ElementType_<MT>  Type;
+   using Type = ElementType_<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -617,7 +617,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix )
 {
-   typedef UnderlyingBuiltin_< ElementType_<MT> >  Type;
+   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -648,7 +648,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   typedef UnderlyingBuiltin_< ElementType_<MT> >  Type;
+   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 

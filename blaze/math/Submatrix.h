@@ -206,7 +206,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix ) const
 {
-   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
+   using ElementType = ElementType_< Submatrix<MT,AF,SO,false> >;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -240,7 +240,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix, size_t nonzeros ) const
 {
-   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
+   using ElementType = ElementType_< Submatrix<MT,AF,SO,false> >;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -278,7 +278,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix,
                                                           const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
+   using ElementType = ElementType_< Submatrix<MT,AF,SO,false> >;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
@@ -316,7 +316,7 @@ template< typename Arg >  // Min/max argument type
 inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( Submatrix<MT,AF,SO,false>& submatrix,
                                                           size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   typedef ElementType_< Submatrix<MT,AF,SO,false> >  ElementType;
+   using ElementType = ElementType_< Submatrix<MT,AF,SO,false> >;
 
    const size_t m( submatrix.rows()    );
    const size_t n( submatrix.columns() );
