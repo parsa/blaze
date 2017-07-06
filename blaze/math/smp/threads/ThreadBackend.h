@@ -695,17 +695,17 @@ inline size_t ThreadBackend<TT,MT,LT,CT>::initPool()
 // executed.
 */
 #if BLAZE_CPP_THREADS_PARALLEL_MODE
-typedef ThreadBackend< std::thread
-                     , std::mutex
-                     , std::unique_lock< std::mutex >
-                     , std::condition_variable
-                     >  TheThreadBackend;
+using TheThreadBackend = ThreadBackend< std::thread
+                                      , std::mutex
+                                      , std::unique_lock< std::mutex >
+                                      , std::condition_variable
+                                      >;
 #elif BLAZE_BOOST_THREADS_PARALLEL_MODE
-typedef ThreadBackend< boost::thread
-                     , boost::mutex
-                     , boost::unique_lock< boost::mutex >
-                     , boost::condition_variable
-                     >  TheThreadBackend;
+using TheThreadBackend = ThreadBackend< boost::thread
+                                      , boost::mutex
+                                      , boost::unique_lock< boost::mutex >
+                                      , boost::condition_variable
+                                      >;
 #endif
 /*! \endcond */
 //*************************************************************************************************

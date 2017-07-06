@@ -102,10 +102,10 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                   ET1;
-   typedef ElementType_<MT2>                   ET2;
-   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -186,7 +186,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
@@ -337,10 +337,10 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                   ET1;
-   typedef ElementType_<MT2>                   ET2;
-   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -421,7 +421,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
@@ -572,10 +572,10 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                   ET1;
-   typedef ElementType_<MT2>                   ET2;
-   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -657,7 +657,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
@@ -809,10 +809,10 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<MT1>                   ET1;
-   typedef ElementType_<MT2>                   ET2;
-   typedef SubmatrixExprTrait_<MT1,aligned>    AlignedTarget;
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<MT1>;
+   using ET2 = ElementType_<MT2>;
+   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -894,7 +894,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubmatrixExprTrait_<MT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );

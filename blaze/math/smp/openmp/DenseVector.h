@@ -99,10 +99,10 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
-   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<VT1>;
+   using ET2 = ElementType_<VT2>;
+   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -174,7 +174,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -315,10 +315,10 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
-   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<VT1>;
+   using ET2 = ElementType_<VT2>;
+   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -390,7 +390,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -531,10 +531,10 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
-   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<VT1>;
+   using ET2 = ElementType_<VT2>;
+   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -606,7 +606,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -748,10 +748,10 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
-   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<VT1>;
+   using ET2 = ElementType_<VT2>;
+   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -824,7 +824,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
@@ -965,10 +965,10 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   typedef ElementType_<VT1>                   ET1;
-   typedef ElementType_<VT2>                   ET2;
-   typedef SubvectorExprTrait_<VT1,aligned>    AlignedTarget;
-   typedef SubvectorExprTrait_<VT1,unaligned>  UnalignedTarget;
+   using ET1 = ElementType_<VT1>;
+   using ET2 = ElementType_<VT2>;
+   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
+   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
