@@ -348,7 +348,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef ElementType_< HermitianMatrix<MT,SO,DF> >  ET;
+   using ET = ElementType_< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin<ET>::value ||
             column < row ||
@@ -392,7 +392,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef ElementType_< HermitianMatrix<MT,SO,DF> >  ET;
+   using ET = ElementType_< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin<ET>::value ||
             row < column ||

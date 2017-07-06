@@ -78,7 +78,7 @@ namespace blaze {
 // by means of a \f$ 3 \times 3 \f$ dense Hermitian matrix:
 
    \code
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<int> >  Symmetric;
+   using Symmetric = blaze::SymmetricMatrix< blaze::CompressedMatrix<int> >;
 
    // Creating a 3x3 symmetric sparse matrix
    //
@@ -107,17 +107,17 @@ class SymmetricElement
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  ElementType;   //!< Type of the represented matrix element.
-   typedef Iterator_<MT>     IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   using ElementType  = ElementType_<MT>;  //!< Type of the represented matrix element.
+   using IteratorType = Iterator_<MT>;     //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SymmetricValue<MT>        ValueType;       //!< The value type of the value-index-pair.
-   typedef size_t                    IndexType;       //!< The index type of the value-index-pair.
-   typedef SymmetricValue<MT>        Reference;       //!< Reference return type.
-   typedef const SymmetricValue<MT>  ConstReference;  //!< Reference-to-const return type.
-   typedef SymmetricElement*         Pointer;         //!< Pointer return type.
+   using ValueType      = SymmetricValue<MT>;        //!< The value type of the value-index-pair.
+   using IndexType      = size_t;                    //!< The index type of the value-index-pair.
+   using Reference      = SymmetricValue<MT>;        //!< Reference return type.
+   using ConstReference = const SymmetricValue<MT>;  //!< Reference-to-const return type.
+   using Pointer        = SymmetricElement*;         //!< Pointer return type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

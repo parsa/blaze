@@ -82,8 +82,8 @@ namespace blaze {
 // by means of a \f$ 3 \times 3 \f$ dense Hermitian matrix:
 
    \code
-   typedef std::complex<double>  cplx;
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<cplx> >  Hermitian;
+   using cplx = std::complex<double>;
+   using Hermitian = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx> >;
 
    // Creating a 3x3 Hermitian dense matrix
    //
@@ -112,17 +112,17 @@ class HermitianElement
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  ElementType;   //!< Type of the represented matrix element.
-   typedef Iterator_<MT>     IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   using ElementType  = ElementType_<MT>;  //!< Type of the represented matrix element.
+   using IteratorType = Iterator_<MT>;     //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef HermitianValue<MT>        ValueType;       //!< The value type of the value-index-pair.
-   typedef size_t                    IndexType;       //!< The index type of the value-index-pair.
-   typedef HermitianValue<MT>        Reference;       //!< Reference return type.
-   typedef const HermitianValue<MT>  ConstReference;  //!< Reference-to-const return type.
-   typedef HermitianElement*         Pointer;         //!< Pointer return type.
+   using ValueType      = HermitianValue<MT>;        //!< The value type of the value-index-pair.
+   using IndexType      = size_t;                    //!< The index type of the value-index-pair.
+   using Reference      = HermitianValue<MT>;        //!< Reference return type.
+   using ConstReference = const HermitianValue<MT>;  //!< Reference-to-const return type.
+   using Pointer        = HermitianElement*;         //!< Pointer return type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

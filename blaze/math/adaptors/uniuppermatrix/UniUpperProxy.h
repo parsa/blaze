@@ -104,7 +104,7 @@ class UniUpperProxy
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef typename MT::Reference  ReferenceType;
+   using ReferenceType = typename MT::Reference;
    //**********************************************************************************************
 
    //**struct BuiltinType**************************************************************************
@@ -112,7 +112,7 @@ class UniUpperProxy
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct BuiltinType { typedef INVALID_TYPE  Type; };
+   struct BuiltinType { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -121,21 +121,21 @@ class UniUpperProxy
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct ComplexType { typedef typename T::value_type  Type; };
+   struct ComplexType { using Type = typename T::value_type; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of the represented matrix element.
-   typedef ElementType_<MT>  RepresentedType;
+   using RepresentedType = ElementType_<MT>;
 
    //! Value type of the represented complex element.
-   typedef typename If_< IsComplex<RepresentedType>
-                       , ComplexType<RepresentedType>
-                       , BuiltinType<RepresentedType> >::Type  ValueType;
+   using ValueType = typename If_< IsComplex<RepresentedType>
+                                 , ComplexType<RepresentedType>
+                                 , BuiltinType<RepresentedType> >::Type;
 
-   typedef ValueType  value_type;  //!< Value type of the represented complex element.
+   using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

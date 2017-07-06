@@ -114,27 +114,27 @@ class UniUpperMatrix<MT,SO,true>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
-   typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
-   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
+   using OT = OppositeType_<MT>;   //!< Opposite type of the dense matrix.
+   using TT = TransposeType_<MT>;  //!< Transpose type of the dense matrix.
+   using ET = ElementType_<MT>;    //!< Element type of the dense matrix.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef UniUpperMatrix<MT,SO,true>   This;            //!< Type of this UniUpperMatrix instance.
-   typedef DenseMatrix<This,SO>         BaseType;        //!< Base type of this UniUpperMatrix instance.
-   typedef This                         ResultType;      //!< Result type for expression template evaluations.
-   typedef UniUpperMatrix<OT,!SO,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef UniLowerMatrix<TT,!SO,true>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                           ElementType;     //!< Type of the matrix elements.
-   typedef SIMDType_<MT>                SIMDType;        //!< SIMD type of the matrix elements.
-   typedef ReturnType_<MT>              ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                  CompositeType;   //!< Data type for composite expression templates.
-   typedef UniUpperProxy<MT>            Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>          ConstReference;  //!< Reference to a constant matrix value.
-   typedef Pointer_<MT>                 Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef ConstPointer_<MT>            ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef ConstIterator_<MT>           ConstIterator;   //!< Iterator over constant elements.
+   using This           = UniUpperMatrix<MT,SO,true>;   //!< Type of this UniUpperMatrix instance.
+   using BaseType       = DenseMatrix<This,SO>;         //!< Base type of this UniUpperMatrix instance.
+   using ResultType     = This;                         //!< Result type for expression template evaluations.
+   using OppositeType   = UniUpperMatrix<OT,!SO,true>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = UniLowerMatrix<TT,!SO,true>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = ET;                           //!< Type of the matrix elements.
+   using SIMDType       = SIMDType_<MT>;                //!< SIMD type of the matrix elements.
+   using ReturnType     = ReturnType_<MT>;              //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;                  //!< Data type for composite expression templates.
+   using Reference      = UniUpperProxy<MT>;            //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;          //!< Reference to a constant matrix value.
+   using Pointer        = Pointer_<MT>;                 //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = ConstPointer_<MT>;            //!< Pointer to a constant matrix value.
+   using ConstIterator  = ConstIterator_<MT>;           //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -143,7 +143,7 @@ class UniUpperMatrix<MT,SO,true>
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
       //! The type of the other UniUpperMatrix.
-      typedef UniUpperMatrix< typename MT::template Rebind<NewType>::Other >  Other;
+      using Other = UniUpperMatrix< typename MT::template Rebind<NewType>::Other >;
    };
    //**********************************************************************************************
 
@@ -154,7 +154,7 @@ class UniUpperMatrix<MT,SO,true>
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
       //! The type of the other UniUpperMatrix.
-      typedef UniUpperMatrix< typename MT::template Resize<NewM,NewN>::Other >  Other;
+      using Other = UniUpperMatrix< typename MT::template Resize<NewM,NewN>::Other >;
    };
    //**********************************************************************************************
 
@@ -165,18 +165,18 @@ class UniUpperMatrix<MT,SO,true>
    {
     public:
       //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef ElementType_<MT>                 ValueType;         //!< Type of the underlying elements.
-      typedef UniUpperProxy<MT>                PointerType;       //!< Pointer return type.
-      typedef UniUpperProxy<MT>                ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType_<MT>;                 //!< Type of the underlying elements.
+      using PointerType      = UniUpperProxy<MT>;                //!< Pointer return type.
+      using ReferenceType    = UniUpperProxy<MT>;                //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

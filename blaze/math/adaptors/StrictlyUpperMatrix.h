@@ -447,7 +447,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    const RhsIterator last( (~rhs).end() );
    RhsIterator element( (~rhs).lowerBound( ( column <= row )?( 0UL ):( column - row ) ) );
@@ -495,7 +495,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    if( row < column )
       return true;
@@ -661,7 +661,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -721,7 +721,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );

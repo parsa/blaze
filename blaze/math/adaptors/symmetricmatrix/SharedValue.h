@@ -68,11 +68,11 @@ class SharedValue
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type         ValueType;       //!< Type of the shared value.
-   typedef Type&        Reference;       //!< Reference to the shared value.
-   typedef const Type&  ConstReference;  //!< Reference-to-const to the shared value.
-   typedef Type*        Pointer;         //!< Pointer to the shared value.
-   typedef const Type*  ConstPointer;    //!< Pointer-to-const to the shared value.
+   using ValueType      = Type;         //!< Type of the shared value.
+   using Reference      = Type&;        //!< Reference to the shared value.
+   using ConstReference = const Type&;  //!< Reference-to-const to the shared value.
+   using Pointer        = Type*;        //!< Pointer to the shared value.
+   using ConstPointer   = const Type*;  //!< Pointer-to-const to the shared value.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

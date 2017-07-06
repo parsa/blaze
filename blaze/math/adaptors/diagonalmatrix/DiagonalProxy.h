@@ -101,14 +101,14 @@ class DiagonalProxy
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   typedef AddConst_< typename MT::Reference >  ReferenceType;
+   using ReferenceType = AddConst_< typename MT::Reference >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>              RepresentedType;  //!< Type of the represented matrix element.
-   typedef AddReference_<ReferenceType>  RawReference;     //!< Reference-to-non-const to the represented element.
-   typedef const RepresentedType&        ConstReference;   //!< Reference-to-const to the represented element.
+   using RepresentedType = ElementType_<MT>;              //!< Type of the represented matrix element.
+   using RawReference    = AddReference_<ReferenceType>;  //!< Reference-to-non-const to the represented element.
+   using ConstReference  = const RepresentedType&;        //!< Reference-to-const to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

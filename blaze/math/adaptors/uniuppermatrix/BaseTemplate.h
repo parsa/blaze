@@ -204,7 +204,7 @@ namespace blaze {
    using blaze::UniUpperMatrix;
    using blaze::rowMajor;
 
-   typedef UniUpperMatrix< CompressedMatrix<double,rowMajor> >  CompressedUniUpper;
+   using CompressedUniUpper = UniUpperMatrix< CompressedMatrix<double,rowMajor> >;
 
    // Default constructed, row-major 3x3 uniupper compressed matrix
    CompressedUniUpper A( 3 );
@@ -260,7 +260,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef UniUpperMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomUniUpper;
+   using CustomUniUpper = UniUpperMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 uniupper custom matrix from a properly initialized array
    double array[9] = { 1.0, 2.0, 3.0,

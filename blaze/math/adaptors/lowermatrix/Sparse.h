@@ -100,25 +100,25 @@ class LowerMatrix<MT,SO,false>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef OppositeType_<MT>   OT;  //!< Opposite type of the sparse matrix.
-   typedef TransposeType_<MT>  TT;  //!< Transpose type of the sparse matrix.
-   typedef ElementType_<MT>    ET;  //!< Element type of the sparse matrix.
+   using OT = OppositeType_<MT>;   //!< Opposite type of the sparse matrix.
+   using TT = TransposeType_<MT>;  //!< Transpose type of the sparse matrix.
+   using ET = ElementType_<MT>;    //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef LowerMatrix<MT,SO,false>   This;            //!< Type of this LowerMatrix instance.
-   typedef SparseMatrix<This,SO>      BaseType;        //!< Base type of this LowerMatrix instance.
-   typedef This                       ResultType;      //!< Result type for expression template evaluations.
-   typedef LowerMatrix<OT,!SO,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef UpperMatrix<TT,!SO,false>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                         ElementType;     //!< Type of the matrix elements.
-   typedef ReturnType_<MT>            ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                CompositeType;   //!< Data type for composite expression templates.
-   typedef LowerProxy<MT>             Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>        ConstReference;  //!< Reference to a constant matrix value.
-   typedef Iterator_<MT>              Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>         ConstIterator;   //!< Iterator over constant elements.
+   using This           = LowerMatrix<MT,SO,false>;   //!< Type of this LowerMatrix instance.
+   using BaseType       = SparseMatrix<This,SO>;      //!< Base type of this LowerMatrix instance.
+   using ResultType     = This;                       //!< Result type for expression template evaluations.
+   using OppositeType   = LowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = UpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = ET;                         //!< Type of the matrix elements.
+   using ReturnType     = ReturnType_<MT>;            //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;                //!< Data type for composite expression templates.
+   using Reference      = LowerProxy<MT>;             //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;        //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_<MT>;              //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<MT>;         //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -127,7 +127,7 @@ class LowerMatrix<MT,SO,false>
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
       //! The type of the other LowerMatrix.
-      typedef LowerMatrix< typename MT::template Rebind<NewType>::Other >  Other;
+      using Other = LowerMatrix< typename MT::template Rebind<NewType>::Other >;
    };
    //**********************************************************************************************
 
@@ -138,7 +138,7 @@ class LowerMatrix<MT,SO,false>
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
       //! The type of the other LowerMatrix.
-      typedef LowerMatrix< typename MT::template Resize<NewM,NewN>::Other >  Other;
+      using Other = LowerMatrix< typename MT::template Resize<NewM,NewN>::Other >;
    };
    //**********************************************************************************************
 

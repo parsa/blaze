@@ -109,25 +109,25 @@ class SymmetricMatrix<MT,SO,true,false>
 {
  private:
    //**Type definitions****************************************************************************
-   typedef OppositeType_<MT>   OT;  //!< Opposite type of the dense matrix.
-   typedef TransposeType_<MT>  TT;  //!< Transpose type of the dense matrix.
-   typedef ElementType_<MT>    ET;  //!< Element type of the dense matrix.
+   using OT = OppositeType_<MT>;   //!< Opposite type of the dense matrix.
+   using TT = TransposeType_<MT>;  //!< Transpose type of the dense matrix.
+   using ET = ElementType_<MT>;    //!< Element type of the dense matrix.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef SymmetricMatrix<MT,SO,true,false>   This;            //!< Type of this SymmetricMatrix instance.
-   typedef DenseMatrix<This,SO>                BaseType;        //!< Base type of this SymmetricMatrix instance.
-   typedef This                                ResultType;      //!< Result type for expression template evaluations.
-   typedef SymmetricMatrix<OT,!SO,true,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef SymmetricMatrix<TT,!SO,true,false>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                                  ElementType;     //!< Type of the matrix elements.
-   typedef ReturnType_<MT>                     ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                         CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<MT>                      Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>                 ConstReference;  //!< Reference to a constant matrix value.
-   typedef Pointer_<MT>                        Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef ConstPointer_<MT>                   ConstPointer;    //!< Pointer to a constant matrix value.
+   using This           = SymmetricMatrix<MT,SO,true,false>;   //!< Type of this SymmetricMatrix instance.
+   using BaseType       = DenseMatrix<This,SO>;                //!< Base type of this SymmetricMatrix instance.
+   using ResultType     = This;                                //!< Result type for expression template evaluations.
+   using OppositeType   = SymmetricMatrix<OT,!SO,true,false>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = SymmetricMatrix<TT,!SO,true,false>;  //!< Transpose type for expression template evaluations.
+   using ElementType    = ET;                                  //!< Type of the matrix elements.
+   using ReturnType     = ReturnType_<MT>;                     //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;                         //!< Data type for composite expression templates.
+   using Reference      = Reference_<MT>;                      //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;                 //!< Reference to a constant matrix value.
+   using Pointer        = Pointer_<MT>;                        //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = ConstPointer_<MT>;                   //!< Pointer to a constant matrix value.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -136,7 +136,7 @@ class SymmetricMatrix<MT,SO,true,false>
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
       //! The type of the other SymmetricMatrix.
-      typedef SymmetricMatrix< typename MT::template Rebind<NewType>::Other >  Other;
+      using Other = SymmetricMatrix< typename MT::template Rebind<NewType>::Other >;
    };
    //**********************************************************************************************
 
@@ -147,7 +147,7 @@ class SymmetricMatrix<MT,SO,true,false>
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
       //! The type of the other SymmetricMatrix.
-      typedef SymmetricMatrix< typename MT::template Resize<NewM,NewN>::Other >  Other;
+      using Other = SymmetricMatrix< typename MT::template Resize<NewM,NewN>::Other >;
    };
    //**********************************************************************************************
 
@@ -160,22 +160,22 @@ class SymmetricMatrix<MT,SO,true,false>
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense matrix element.
-      typedef If_< IsConst<MatrixType>
-                 , ConstReference_<MatrixType>
-                 , Reference_<MatrixType> >  Reference;
+      using Reference = If_< IsConst<MatrixType>
+                           , ConstReference_<MatrixType>
+                           , Reference_<MatrixType> >;
 
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef RemoveReference_<Reference>      ValueType;         //!< Type of the underlying elements.
-      typedef ValueType*                       PointerType;       //!< Pointer return type.
-      typedef Reference                        ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
+      using PointerType      = ValueType*;                       //!< Pointer return type.
+      using ReferenceType    = Reference;                        //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -455,8 +455,8 @@ class SymmetricMatrix<MT,SO,true,false>
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef MatrixIterator<MT>        Iterator;       //!< Iterator over non-constant elements.
-   typedef MatrixIterator<const MT>  ConstIterator;  //!< Iterator over constant elements.
+   using Iterator      = MatrixIterator<MT>;        //!< Iterator over non-constant elements.
+   using ConstIterator = MatrixIterator<const MT>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -853,8 +853,8 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO>&
 {
    using blaze::resize;
 
-   typedef RemoveAdaptor_<ResultType_<MT2> >          RT;
-   typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
+   using RT  = RemoveAdaptor_<ResultType_<MT2> >;
+   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
 
    if( IsSymmetric<MT2>::value ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -896,8 +896,8 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,!SO>
 {
    using blaze::resize;
 
-   typedef RemoveAdaptor_< ResultType_<MT2> >         RT;
-   typedef If_< IsComputation<MT2>, RT, const MT2& >  Tmp;
+   using RT  = RemoveAdaptor_< ResultType_<MT2> >;
+   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
 
    if( IsSymmetric<MT2>::value ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -1392,7 +1392,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 {
    using blaze::resize;
 
-   typedef If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >  Tmp;
+   using Tmp = If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1499,7 +1499,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   typedef If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >  Tmp;
+   using Tmp = If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1603,7 +1603,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   typedef If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >  Tmp;
+   using Tmp = If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1709,7 +1709,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
 {
-   typedef If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >  Tmp;
+   using Tmp = If_< IsSymmetric<MT2>, CompositeType_<MT2>, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1781,7 +1781,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 {
    using blaze::resize;
 
-   typedef MultTrait_< MT, ResultType_<MT2> >  Tmp;
+   using Tmp = MultTrait_< MT, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Tmp );
 
@@ -2594,7 +2594,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::assign( const SparseMatrix<MT2,SO
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT2>;
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -2670,7 +2670,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT2>;
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -2746,7 +2746,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT2>;
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -2822,7 +2822,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<M
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   typedef ConstIterator_<MT2>  ConstIterator;
+   using ConstIterator = ConstIterator_<MT2>;
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )

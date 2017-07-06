@@ -88,8 +88,8 @@ namespace blaze {
 // sparse Hermitian matrix:
 
    \code
-   typedef std::complex<double>  cplx;
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<cplx> >  Hermitian;
+   using cplx = std::complex<double>;
+   using Hermitian = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx> >;
 
    // Creating a 3x3 Hermitian dense matrix
    //
@@ -118,7 +118,7 @@ class HermitianValue
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::Iterator  IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   using IteratorType = typename MT::Iterator;  //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
    //**struct BuiltinType**************************************************************************
@@ -126,7 +126,7 @@ class HermitianValue
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct BuiltinType { typedef INVALID_TYPE  Type; };
+   struct BuiltinType { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -135,20 +135,20 @@ class HermitianValue
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct ComplexType { typedef typename T::value_type  Type; };
+   struct ComplexType { using Type = typename T::value_type; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  RepresentedType;  //!< Type of the represented matrix element.
+   using RepresentedType = ElementType_<MT>;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
-   typedef typename If_< IsComplex<RepresentedType>
-                       , ComplexType<RepresentedType>
-                       , BuiltinType<RepresentedType> >::Type  ValueType;
+   using ValueType = typename If_< IsComplex<RepresentedType>
+                                 , ComplexType<RepresentedType>
+                                 , BuiltinType<RepresentedType> >::Type;
 
-   typedef ValueType  value_type;  //!< Value type of the represented complex element.
+   using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

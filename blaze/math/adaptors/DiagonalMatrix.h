@@ -353,8 +353,8 @@ inline void lu( const DiagonalMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   typedef ElementType_<MT3>  ET3;
-   typedef ElementType_<MT4>  ET4;
+   using ET3 = ElementType_<MT3>;
+   using ET4 = ElementType_<MT4>;
 
    const size_t n( (~A).rows() );
 
@@ -506,7 +506,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    const size_t index( column - row );
 
@@ -552,7 +552,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    const size_t index( row - column );
 
@@ -695,7 +695,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows() );
 
@@ -744,7 +744,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t N( (~rhs).columns() );
 

@@ -178,7 +178,7 @@ namespace blaze {
    using blaze::StrictlyUpperMatrix;
    using blaze::rowMajor;
 
-   typedef StrictlyUpperMatrix< CompressedMatrix<double,rowMajor> >  CompressedStrictlyUpper;
+   using CompressedStrictlyUpper = StrictlyUpperMatrix< CompressedMatrix<double,rowMajor> >;
 
    // Default constructed, row-major 3x3 strictly upper compressed matrix
    CompressedStrictlyUpper A( 3 );
@@ -234,7 +234,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef StrictlyUpperMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomStrictlyUpper;
+   using CustomStrictlyUpper = StrictlyUpperMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 strictly upper custom matrix from a properly initialized array
    double array[9] = { 0.0, 1.0, 2.0,

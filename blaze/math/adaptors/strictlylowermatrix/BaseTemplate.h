@@ -178,7 +178,7 @@ namespace blaze {
    using blaze::StrictlyLowerMatrix;
    using blaze::rowMajor;
 
-   typedef StrictlyLowerMatrix< CompressedMatrix<double,rowMajor> >  CompressedStrictlyLower;
+   using CompressedStrictlyLower = StrictlyLowerMatrix< CompressedMatrix<double,rowMajor> >;
 
    // Default constructed, row-major 3x3 strictly lower compressed matrix
    CompressedStrictlyLower A( 3 );
@@ -234,7 +234,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef StrictlyLowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomStrictlyLower;
+   using CustomStrictlyLower = StrictlyLowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 strictly lower custom matrix from a properly initialized array
    double array[9] = { 0.0, 0.0, 0.0,

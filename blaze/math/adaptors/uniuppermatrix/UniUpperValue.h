@@ -86,7 +86,7 @@ namespace blaze {
 // illustrates this by means of a \f$ 3 \times 3 \f$ sparse upper unitriangular matrix:
 
    \code
-   typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<int> >  UniUpper;
+   using UniUpper = blaze::UniUpperMatrix< blaze::CompressedMatrix<int> >;
 
    // Creating a 3x3 upper unitriangular sparse matrix
    UniUpper A( 3UL );
@@ -111,7 +111,7 @@ class UniUpperValue
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct BuiltinType { typedef INVALID_TYPE  Type; };
+   struct BuiltinType { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -120,20 +120,20 @@ class UniUpperValue
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct ComplexType { typedef typename T::value_type  Type; };
+   struct ComplexType { using Type = typename T::value_type; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  RepresentedType;   //!< Type of the represented matrix element.
+   using RepresentedType = ElementType_<MT>;   //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
-   typedef typename If_< IsComplex<RepresentedType>
-                       , ComplexType<RepresentedType>
-                       , BuiltinType<RepresentedType> >::Type  ValueType;
+   using ValueType = typename If_< IsComplex<RepresentedType>
+                                 , ComplexType<RepresentedType>
+                                 , BuiltinType<RepresentedType> >::Type;
 
-   typedef ValueType  value_type;  //!< Value type of the represented complex element.
+   using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

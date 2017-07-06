@@ -104,7 +104,7 @@ class NumericProxy
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct BuiltinType { typedef INVALID_TYPE  Type; };
+   struct BuiltinType { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -113,22 +113,22 @@ class NumericProxy
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
-   struct ComplexType { typedef typename T::value_type  Type; };
+   struct ComplexType { using Type = typename T::value_type; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>     RepresentedType;  //!< Type of the represented matrix element.
-   typedef Reference_<MT>       Reference;        //!< Reference to the represented element.
-   typedef ConstReference_<MT>  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef NumericProxy*        Pointer;          //!< Pointer to the represented element.
-   typedef const NumericProxy*  ConstPointer;     //!< Pointer-to-const to the represented element.
+   using RepresentedType = ElementType_<MT>;     //!< Type of the represented matrix element.
+   using Reference       = Reference_<MT>;       //!< Reference to the represented element.
+   using ConstReference  = ConstReference_<MT>;  //!< Reference-to-const to the represented element.
+   using Pointer         = NumericProxy*;        //!< Pointer to the represented element.
+   using ConstPointer    = const NumericProxy*;  //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
-   typedef typename If_< IsComplex<RepresentedType>
-                       , ComplexType<RepresentedType>
-                       , BuiltinType<RepresentedType> >::Type  ValueType;
+   using ValueType = typename If_< IsComplex<RepresentedType>
+                                 , ComplexType<RepresentedType>
+                                 , BuiltinType<RepresentedType> >::Type;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

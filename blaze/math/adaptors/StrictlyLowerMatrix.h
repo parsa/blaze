@@ -446,7 +446,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    if( column < row )
       return true;
@@ -496,7 +496,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    const RhsIterator last( (~rhs).end() );
    RhsIterator element( (~rhs).lowerBound( ( row <= column )?( 0UL ):( row - column ) ) );
@@ -660,7 +660,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -723,7 +723,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );

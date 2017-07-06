@@ -294,7 +294,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomSymmetric;
+   using CustomSymmetric = SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 symmetric custom matrix from a properly initialized array
    double array[9] = { 1.0, 2.0, 4.0,
@@ -557,7 +557,7 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef SymmetricMatrix< DynamicMatrix<double,columnMajor> >  DynamicSymmetric;
+   using DynamicSymmetric = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
 
    DynamicSymmetric A( 10UL );
    Row<DynamicSymmetric> row5 = row( A, 5UL );

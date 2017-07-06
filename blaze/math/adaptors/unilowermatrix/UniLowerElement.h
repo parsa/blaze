@@ -77,7 +77,7 @@ namespace blaze {
 // matrix:
 
    \code
-   typedef blaze::UniLowerMatrix< blaze::CompressedMatrix<int> >  UniLower;
+   using UniLower = blaze::UniLowerMatrix< blaze::CompressedMatrix<int> >;
 
    // Creating a 3x3 lower unitriangular sparse matrix
    UniLower A( 3UL );
@@ -98,17 +98,17 @@ class UniLowerElement
 {
  private:
    //**Type definitions****************************************************************************
-   typedef ElementType_<MT>  ElementType;   //!< Type of the represented matrix element.
-   typedef Iterator_<MT>     IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   using ElementType  = ElementType_<MT>;  //!< Type of the represented matrix element.
+   using IteratorType = Iterator_<MT>;     //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef UniLowerValue<MT>        ValueType;       //!< The value type of the value-index-pair.
-   typedef size_t                   IndexType;       //!< The index type of the value-index-pair.
-   typedef UniLowerValue<MT>        Reference;       //!< Reference return type.
-   typedef const UniLowerValue<MT>  ConstReference;  //!< Reference-to-const return type.
-   typedef UniLowerElement*         Pointer;         //!< Pointer return type.
+   using ValueType      = UniLowerValue<MT>;        //!< The value type of the value-index-pair.
+   using IndexType      = size_t;                   //!< The index type of the value-index-pair.
+   using Reference      = UniLowerValue<MT>;        //!< Reference return type.
+   using ConstReference = const UniLowerValue<MT>;  //!< Reference-to-const return type.
+   using Pointer        = UniLowerElement*;         //!< Pointer return type.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

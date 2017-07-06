@@ -177,7 +177,7 @@ namespace blaze {
    using blaze::DiagonalMatrix;
    using blaze::rowMajor;
 
-   typedef DiagonalMatrix< CompressedMatrix<double,rowMajor> >  CompressedDiagonal;
+   using CompressedDiagonal = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
 
    // Default constructed, row-major 3x3 diagonal compressed matrix
    CompressedDiagonal A( 3 );
@@ -229,7 +229,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef DiagonalMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomDiagonal;
+   using CustomDiagonal = DiagonalMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 diagonal custom matrix from a properly initialized array
    double array[9] = { 1.0, 0.0, 0.0,
@@ -381,10 +381,10 @@ namespace blaze {
 
    \code
    // Recommendation 1: use dense matrices for small diagonal matrices
-   typedef blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >  SmallDiagonalMatrix;
+   using SmallDiagonalMatrix = blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >;
 
    // Recommendation 2: use sparse matrices for large diagonal matrices
-   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >  LargeDiagonalMatrix;
+   using LargeDiagonalMatrix = blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >;
    \endcode
 
 // \n \section diagonalmatrix_arithmetic_operations Arithmetic Operations

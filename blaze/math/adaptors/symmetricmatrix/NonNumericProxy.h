@@ -89,7 +89,7 @@ namespace blaze {
    using blaze::StaticVector;
    using blaze::SymmetricMatrix;
 
-   typedef StaticVector<int,3UL>  Vector;
+   using Vector = StaticVector<int,3UL>;
 
    // Creating a 3x3 symmetric sparses matrix
    SymmetricMatrix< CompressedMatrix< Vector > > A( 3UL );
@@ -111,14 +111,14 @@ class NonNumericProxy
 
    //**Type definitions****************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef ElementType_<MT>  ET;  //!< Element type of the adapted matrix.
+   using ET = ElementType_<MT>;  //!< Element type of the adapted matrix.
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   typedef ValueType_<ET>  RepresentedType;  //!< Type of the represented matrix element.
-   typedef Reference_<ET>  RawReference;     //!< Raw reference to the represented element.
+   using RepresentedType = ValueType_<ET>;  //!< Type of the represented matrix element.
+   using RawReference    = Reference_<ET>;  //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

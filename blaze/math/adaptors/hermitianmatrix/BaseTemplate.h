@@ -221,7 +221,7 @@ namespace blaze {
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Default constructed, row-major 3x3 Hermitian compressed matrix
    HermitianMatrix< CompressedMatrix<cplx,rowMajor> > A( 3 );
@@ -288,7 +288,7 @@ namespace blaze {
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Setup of the Hermitian matrix
    //
@@ -319,7 +319,7 @@ namespace blaze {
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomHermitian;
+   using CustomHermitian = HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 Hermitian custom matrix from a properly initialized array
    double array[9] = { 1.0, 2.0, 4.0,
@@ -340,7 +340,7 @@ namespace blaze {
    using blaze::DynamicMatrix;
    using blaze::HermtianMatrix;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Setup of the Hermitian matrix
    //
@@ -447,7 +447,7 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-	typedef complex<float>  cplx;
+	using cplx = complex<float>;
 
    DynamicMatrix<cplx,rowMajor> A( 3, 3 );
    CompressedMatrix<cplx,rowMajor> B( 3, 3 );
@@ -561,7 +561,7 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef HermitianMatrix< DynamicMatrix<double,columnMajor> >  DynamicHermitian;
+   using DynamicHermitian = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
 
    DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
    Row<DynamicHermitian> row5 = row( A, 5UL );

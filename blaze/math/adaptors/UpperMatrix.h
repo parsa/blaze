@@ -353,8 +353,8 @@ inline void lu( const UpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   typedef ElementType_<MT2>  ET2;
-   typedef ElementType_<MT4>  ET4;
+   using ET2 = ElementType_<MT2>;
+   using ET4 = ElementType_<MT4>;
 
    const size_t n( (~A).rows() );
 
@@ -499,7 +499,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    const RhsIterator last( (~rhs).end() );
    RhsIterator element( (~rhs).lowerBound( ( column < row )?( 0UL ):( column - row + 1UL ) ) );
@@ -546,7 +546,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename VT::ConstIterator  RhsIterator;
+   using RhsIterator = typename VT::ConstIterator;
 
    if( row <= column )
       return true;
@@ -709,7 +709,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -768,7 +768,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   using RhsIterator = typename MT2::ConstIterator;
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
