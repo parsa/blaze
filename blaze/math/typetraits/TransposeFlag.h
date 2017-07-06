@@ -65,8 +65,8 @@ namespace blaze {
 // vector type a compilation error is created.
 
    \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>     RowVector;
-   typedef blaze::DynamicVector<int,blaze::columnVector>  ColumnVector;
+   using RowVector    = blaze::DynamicVector<int,blaze::rowVector>;
+   using ColumnVector = blaze::DynamicVector<int,blaze::columnVector>;
 
    blaze::TransposeFlag<RowVector>::value     // Evaluates to blaze::rowVector
    blaze::TransposeFlag<ColumnVector>::value  // Evaluates to blaze::columnVector

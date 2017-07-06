@@ -66,8 +66,8 @@ namespace blaze {
    using blaze::Column;
    using blaze::Row;
 
-   typedef blaze::DynamicMatrix<int,columnMajor>  DenseColumnMajor;
-   typedef blaze::CompressedMatrix<int,rowMajor>  SparseRowMajor;
+   using DenseColumnMajor = blaze::DynamicMatrix<int,columnMajor>;
+   using SparseRowMajor   = blaze::CompressedMatrix<int,rowMajor>;
 
    blaze::IsOpposedView< Row<DenseColumnMajor> >::value          // Evaluates to 1
    blaze::IsOpposedView< Column<SparseRowMajor> >::Type          // Results in TrueType

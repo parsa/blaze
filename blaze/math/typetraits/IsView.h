@@ -68,12 +68,12 @@ namespace blaze {
    \code
    using blaze::columnVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::Subvector<VectorType>               SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,columnVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
-   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>                 RowType;
-   typedef blaze::Column<MatrixType>              ColumnType;
+   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
+   using RowType    = blaze::Row<MatrixType>;
+   using ColumnType = blaze::Column<MatrixType>;
 
    blaze::IsView< SubvectorType >::value    // Evaluates to 1
    blaze::IsView< const RowType >::Type     // Results in TrueType

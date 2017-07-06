@@ -70,8 +70,8 @@ namespace blaze {
    using blaze::columnVector;
    using blaze::rowMajor;
 
-   typedef StaticVector<int,columnVector>  StaticVectorType;
-   typedef StaticMatrix<double,rowMajor>   StaticMatrixType;
+   using StaticVectorType = StaticVector<int,columnVector>;
+   using StaticMatrixType = StaticMatrix<double,rowMajor>;
 
    blaze::IsStatic< StaticVectorType >::value                        // Evaluates to 1
    blaze::IsStatic< const StaticVectorType >::Type                   // Results in TrueType

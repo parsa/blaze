@@ -65,13 +65,13 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,rowMajor>   StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>   DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>  CompressedMatrixType;
+   using StaticMatrixType     = blaze::StaticMatrix<double,rowMajor>;
+   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
+   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
 
-   typedef blaze::HermitianMatrix<StaticMatrixType>      HermitianStaticType;
-   typedef blaze::HermitianMatrix<DynamicMatrixType>     HermitianDynamicType;
-   typedef blaze::HermitianMatrix<CompressedMatrixType>  HermitianCompressedType;
+   using HermitianStaticType     = blaze::HermitianMatrix<StaticMatrixType>;
+   using HermitianDynamicType    = blaze::HermitianMatrix<DynamicMatrixType>;
+   using HermitianCompressedType = blaze::HermitianMatrix<CompressedMatrixType>;
 
    blaze::IsHermitian< HermitianStaticType >::value        // Evaluates to 1
    blaze::IsHermitian< const HermitianDynamicType >::Type  // Results in TrueType

@@ -66,13 +66,13 @@ namespace blaze {
 // \a FalseType, and the class derives from \a FalseType.
 
    \code
-   typedef DynamicVector<int>               Type1;
-   typedef StaticVector<float,3UL>          Type2;
-   typedef HybridVector< complex<double> >  Type3;
+   using Type1 = DynamicVector<int>;
+   using Type2 = StaticVector<float,3UL>;
+   using Type3 = HybridVector< complex<double> >;
 
-   typedef double                               Type4;
-   typedef DynamicMatrix<int>                   Type5;
-   typedef DynamicVector< DynamicVector<int> >  Type6;
+   using Type4 = double;
+   using Type5 = DynamicMatrix<int>;
+   using Type6 = DynamicVector< DynamicVector<int> >;
 
    blaze::IsNumericVector< Type1 >::value  // Evaluates to 1
    blaze::IsNumericVector< Type2 >::Type   // Results in TrueType

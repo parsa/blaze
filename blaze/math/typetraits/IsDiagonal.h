@@ -67,16 +67,16 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
+   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
+   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
 
-   typedef blaze::DiagonalMatrix<StaticMatrixType>      DiagonalStaticType;
-   typedef blaze::DiagonalMatrix<DynamicMatrixType>     DiagonalDynamicType;
-   typedef blaze::DiagonalMatrix<CompressedMatrixType>  DiagonalCompressedType;
+   using DiagonalStaticType     = blaze::DiagonalMatrix<StaticMatrixType>;
+   using DiagonalDynamicType    = blaze::DiagonalMatrix<DynamicMatrixType>;
+   using DiagonalCompressedType = blaze::DiagonalMatrix<CompressedMatrixType>;
 
-   typedef blaze::LowerMatrix<StaticMatrixType>   LowerStaticType;
-   typedef blaze::UpperMatrix<DynamicMatrixType>  UpperDynamicType;
+   using LowerStaticType  = blaze::LowerMatrix<StaticMatrixType>;
+   using UpperDynamicType = blaze::UpperMatrix<DynamicMatrixType>;
 
    blaze::IsDiagonal< DiagonalStaticType >::value           // Evaluates to 1
    blaze::IsDiagonal< const DiagonalDynamicType >::Type     // Results in TrueType

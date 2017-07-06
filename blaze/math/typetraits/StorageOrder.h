@@ -65,8 +65,8 @@ namespace blaze {
 // given type is not a matrix type a compilation error is created.
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>     RowMajorMatrix;
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  ColumnMajorMatrix;
+   using RowMajorMatrix    = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using ColumnMajorMatrix = blaze::DynamicMatrix<int,blaze::columnMajor>;
 
    blaze::StorageOrder<RowMajorMatrix>::value     // Evaluates to blaze::rowMajor
    blaze::StorageOrder<ColumnMajorMatrix>::value  // Evaluates to blaze::columnMajor

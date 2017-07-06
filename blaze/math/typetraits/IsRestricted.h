@@ -64,11 +64,11 @@ namespace blaze {
 // \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 
    \code
-   typedef blaze::StaticVector<int,3UL>  VectorType;
-   typedef blaze::DynamicMatrix<double>  MatrixType;
+   using VectorType = blaze::StaticVector<int,3UL>;
+   using MatrixType = blaze::DynamicMatrix<double>;
 
-   typedef blaze::LowerMatrix< blaze::DynamicMatrix<double> >  Lower;
-   typedef blaze::LowerMatrix< blaze::CompressedMatrix<int> >  Upper;
+   using Lower = blaze::LowerMatrix< blaze::DynamicMatrix<double> >;
+   using Upper = blaze::LowerMatrix< blaze::CompressedMatrix<int> >;
 
    blaze::IsRestricted< Lower >::value            // Evaluates to 1
    blaze::IsRestricted< const Upper >::Type       // Results in TrueType

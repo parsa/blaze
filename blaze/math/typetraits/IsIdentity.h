@@ -67,16 +67,16 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
+   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
+   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
 
-   typedef blaze::IdentityMatrix<StaticMatrixType>      IdentityStaticType;
-   typedef blaze::IdentityMatrix<DynamicMatrixType>     IdentityDynamicType;
-   typedef blaze::IdentityMatrix<CompressedMatrixType>  IdentityCompressedType;
+   using IdentityStaticType     = blaze::IdentityMatrix<StaticMatrixType>;
+   using IdentityDynamicType    = blaze::IdentityMatrix<DynamicMatrixType>;
+   using IdentityCompressedType = blaze::IdentityMatrix<CompressedMatrixType>;
 
-   typedef blaze::LowerMatrix<StaticMatrixType>   LowerStaticType;
-   typedef blaze::UpperMatrix<DynamicMatrixType>  UpperDynamicType;
+   using LowerStaticType  = blaze::LowerMatrix<StaticMatrixType>;
+   using UpperDynamicType = blaze::UpperMatrix<DynamicMatrixType>;
 
    blaze::IsIdentity< IdentityStaticType >::value           // Evaluates to 1
    blaze::IsIdentity< const IdentityDynamicType >::Type     // Results in TrueType

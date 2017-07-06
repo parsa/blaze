@@ -62,10 +62,10 @@ namespace blaze {
 // element type at the heart of a given data type. Examples:
 
    \code
-   typedef double                                    Type1;  // Built-in data type
-   typedef complex<float>                            Type2;  // Complex data type
-   typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
-   typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
+   using Type1 = double;                                    // Built-in data type
+   using Type2 = complex<float>;                            // Complex data type
+   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    blaze::UnderlyingNumeric< Type1 >::Type  // corresponds to double
    blaze::UnderlyingNumeric< Type2 >::Type  // corresponds to complex<float>
@@ -84,24 +84,24 @@ struct UnderlyingNumeric
    //**struct BuiltinOrComplex*********************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T2 >
-   struct BuiltinOrComplex { typedef T2  Type; };
+   struct BuiltinOrComplex { using Type = T2; };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct Other********************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T2 >
-   struct Other { typedef typename UnderlyingNumeric<typename T2::ElementType>::Type  Type; };
+   struct Other { using Type = typename UnderlyingNumeric<typename T2::ElementType>::Type; };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If_< Or< IsBuiltin<T>, IsComplex<T> >
-                       , BuiltinOrComplex<T>
-                       , Other<T>
-                       >::Type  Type;
+   using Type = typename If_< Or< IsBuiltin<T>, IsComplex<T> >
+                            , BuiltinOrComplex<T>
+                            , Other<T>
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

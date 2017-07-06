@@ -70,13 +70,13 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
+   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
+   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
 
-   typedef blaze::SymmetricMatrix<StaticMatrixType>   SymmetricStaticType;
-   typedef blaze::HermitianMatrix<DynamicMatrixType>  HermitianDynamicType;
-   typedef blaze::LowerMatrix<CompressedMatrixType>   LowerCompressedType;
+   using SymmetricStaticType  = blaze::SymmetricMatrix<StaticMatrixType>;
+   using HermitianDynamicType = blaze::HermitianMatrix<DynamicMatrixType>;
+   using LowerCompressedType  = blaze::LowerMatrix<CompressedMatrixType>;
 
    blaze::IsGeneral< StaticMatrixType >::value           // Evaluates to 1
    blaze::IsGeneral< const DynamicMatrixType >::Type     // Results in TrueType

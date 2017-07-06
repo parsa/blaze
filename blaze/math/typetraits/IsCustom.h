@@ -72,8 +72,8 @@ namespace blaze {
    using blaze::columnVector;
    using blaze::rowMajor;
 
-   typedef CustomVector<int,aligned,unpadded,columnVector>  CustomVectorType;
-   typedef CustomMatrix<double,aligned,unpadded,rowMajor>   CustomMatrixType;
+   using CustomVectorType = CustomVector<int,aligned,unpadded,columnVector>;
+   using CustomMatrixType = CustomMatrix<double,aligned,unpadded,rowMajor>;
 
    blaze::IsCustom< CustomVectorType >::value                        // Evaluates to 1
    blaze::IsCustom< const CustomVectorType >::Type                   // Results in TrueType

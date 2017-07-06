@@ -60,9 +60,9 @@ namespace blaze {
    using blaze::LowerMatrix;
    using blaze::UpperMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >   SymmetricDynamic;
-   typedef LowerMatrix< CompressedMatrix<float> >  LowerCompressed;
-   typedef UpperMatrix< DynamicMatrix<double> >    UpperDynamic;
+   using SymmetricDynamic = SymmetricMatrix< DynamicMatrix<int> >;
+   using LowerCompressed  = LowerMatrix< CompressedMatrix<float> >;
+   using UpperDynamic     = UpperMatrix< DynamicMatrix<double> >;
 
    blaze::RemoveAdaptor< SymmetricDynamic >::Type             // Results in 'DynamicMatrix<int>'
    blaze::RemoveAdaptor< const LowerCompressed >::Type        // Results in 'const CompressedMatrix<float>'
@@ -78,7 +78,7 @@ struct RemoveAdaptor
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef T  Type;
+   using Type = T;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -95,7 +95,7 @@ struct RemoveAdaptor< const T >
 {
  public:
    //**********************************************************************************************
-   typedef const typename RemoveAdaptor<T>::Type  Type;
+   using Type = const typename RemoveAdaptor<T>::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -112,7 +112,7 @@ struct RemoveAdaptor< volatile T >
 {
  public:
    //**********************************************************************************************
-   typedef volatile typename RemoveAdaptor<T>::Type  Type;
+   using Type = volatile typename RemoveAdaptor<T>::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -129,7 +129,7 @@ struct RemoveAdaptor< const volatile T >
 {
  public:
    //**********************************************************************************************
-   typedef const volatile typename RemoveAdaptor<T>::Type  Type;
+   using Type = const volatile typename RemoveAdaptor<T>::Type;
    //**********************************************************************************************
 };
 /*! \endcond */

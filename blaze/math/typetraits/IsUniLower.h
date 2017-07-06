@@ -66,13 +66,13 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
+   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
+   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
 
-   typedef blaze::UniLowerMatrix<StaticMatrixType>      UniLowerStaticType;
-   typedef blaze::UniLowerMatrix<DynamicMatrixType>     UniLowerDynamicType;
-   typedef blaze::UniLowerMatrix<CompressedMatrixType>  UniLowerCompressedType;
+   using UniLowerStaticType     = blaze::UniLowerMatrix<StaticMatrixType>;
+   using UniLowerDynamicType    = blaze::UniLowerMatrix<DynamicMatrixType>;
+   using UniLowerCompressedType = blaze::UniLowerMatrix<CompressedMatrixType>;
 
    blaze::IsUniLower< UniLowerStaticType >::value        // Evaluates to 1
    blaze::IsUniLower< const UniLowerDynamicType >::Type  // Results in TrueType

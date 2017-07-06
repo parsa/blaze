@@ -64,14 +64,14 @@ namespace blaze {
 // derives from \a FalseType.
 
    \code
-   typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
-   typedef blaze::Column<DenseMatrixType1>           DenseColumnType1;
+   using DenseMatrixType1 = blaze::DynamicMatrix<double,columnMajor>;
+   using DenseColumnType1 = blaze::Column<DenseMatrixType1>;
 
-   typedef blaze::StaticMatrix<float,3UL,4UL,rowMajor>  DenseMatrixType2;
-   typedef blaze::Column<DenseMatrixType2>              DenseColumnType2;
+   using DenseMatrixType2 = blaze::StaticMatrix<float,3UL,4UL,rowMajor>;
+   using DenseColumnType2 = blaze::Column<DenseMatrixType2>;
 
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrixType;
-   typedef blaze::Column<SparseMatrixType>           SparseColumnType;
+   using SparseMatrixType = blaze::CompressedMatrix<int,columnMajor>;
+   using SparseColumnType = blaze::Column<SparseMatrixType>;
 
    blaze::IsColumn< SparseColumnType >::value       // Evaluates to 1
    blaze::IsColumn< const DenseColumnType1 >::Type  // Results in TrueType

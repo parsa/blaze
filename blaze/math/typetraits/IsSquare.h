@@ -67,14 +67,14 @@ namespace blaze {
    using blaze::rowMajor;
 
    // Type definitions of square matrix types
-   typedef blaze::StaticMatrix<double,2UL,2UL,rowMajor>  Mat2x2;
-   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  Mat3x3;
-   typedef blaze::StaticMatrix<double,4UL,4UL,rowMajor>  Mat4x4;
+   using Mat2x2 = blaze::StaticMatrix<double,2UL,2UL,rowMajor>;
+   using Mat3x3 = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
+   using Mat4x4 = blaze::StaticMatrix<double,4UL,4UL,rowMajor>;
 
    // Type definitions of non-square matrix types
-   typedef blaze::StaticMatrix<double,2UL,3UL,rowMajor>  Mat2x3;
-   typedef blaze::DynamicMatrix<double,rowMajor>         DynamicMatrixType;
-   typedef blaze::HybridMatrix<double,3UL,3UL,rowMajor>  HybridMatrixType;
+   using Mat2x3            = blaze::StaticMatrix<double,2UL,3UL,rowMajor>;
+   using DynamicMatrixType = blaze::DynamicMatrix<double,rowMajor>;
+   using HybridMatrixType  = blaze::HybridMatrix<double,3UL,3UL,rowMajor>;
 
    blaze::IsSquare< Mat2x2 >::value              // Evaluates to 1
    blaze::IsSquare< const Mat3x3 >::Type         // Results in TrueType

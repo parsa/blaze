@@ -64,14 +64,14 @@ namespace blaze {
 // derives from \a FalseType.
 
    \code
-   typedef blaze::DynamicMatrix<double,columnMajor>  DenseMatrixType1;
-   typedef blaze::Submatrix<DenseMatrixType1>        DenseSubmatrixType1;
+   using DenseMatrixType1    = blaze::DynamicMatrix<double,columnMajor>;
+   using DenseSubmatrixType1 = blaze::Submatrix<DenseMatrixType1>;
 
-   typedef blaze::StaticMatrix<float,3UL,4UL,rowMajor>  DenseMatrixType2;
-   typedef blaze::Submatrix<DenseMatrixType2>           DenseSubmatrixType2;
+   using DenseMatrixType2    = blaze::StaticMatrix<float,3UL,4UL,rowMajor>;
+   using DenseSubmatrixType2 = blaze::Submatrix<DenseMatrixType2>;
 
-   typedef blaze::CompressedMatrix<int,columnMajor>  SparseMatrixType;
-   typedef blaze::Submatrix<SparseMatrixType>        SparseSubmatrixType;
+   using SparseMatrixType    = blaze::CompressedMatrix<int,columnMajor>;
+   using SparseSubmatrixType = blaze::Submatrix<SparseMatrixType>;
 
    blaze::IsSubmatrix< SparseSubmatrixType >::value       // Evaluates to 1
    blaze::IsSubmatrix< const DenseSubmatrixType1 >::Type  // Results in TrueType

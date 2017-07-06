@@ -125,7 +125,7 @@ namespace blaze {
    template< typename T1, typename T2 >
    struct HighType< DynamicVector<T1,false>, DynamicVector<T2,false> >
    {
-      typedef DynamicVector< typename HighType<T1,T2>::Type, false >  Type;
+      using Type = DynamicVector< typename HighType<T1,T2>::Type, false >;
    };
    \endcode
 */

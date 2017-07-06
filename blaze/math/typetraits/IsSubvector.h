@@ -64,14 +64,14 @@ namespace blaze {
 // derives from \a FalseType.
 
    \code
-   typedef blaze::DynamicVector<double,columnVector>  DenseVectorType1;
-   typedef blaze::Subvector<DenseVectorType1>         DenseSubvectorType1;
+   using DenseVectorType1    = blaze::DynamicVector<double,columnVector>;
+   using DenseSubvectorType1 = blaze::Subvector<DenseVectorType1>;
 
-   typedef blaze::StaticVector<float,3UL,rowVector>   DenseVectorType2;
-   typedef blaze::Subvector<DenseVectorType2>         DenseSubvectorType2;
+   using DenseVectorType2    = blaze::StaticVector<float,3UL,rowVector>;
+   using DenseSubvectorType2 = blaze::Subvector<DenseVectorType2>;
 
-   typedef blaze::CompressedVector<int,columnVector>  SparseVectorType;
-   typedef blaze::Subvector<SparseVectorType>         SparseSubvectorType;
+   using SparseVectorType    = blaze::CompressedVector<int,columnVector>;
+   using SparseSubvectorType = blaze::Subvector<SparseVectorType>;
 
    blaze::IsSubvector< SparseSubvectorType >::value       // Evaluates to 1
    blaze::IsSubvector< const DenseSubvectorType1 >::Type  // Results in TrueType
