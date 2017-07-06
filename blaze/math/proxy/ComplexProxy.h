@@ -69,8 +69,8 @@ class ComplexProxy
 {
  public:
    //**Type definitions****************************************************************************
-   typedef typename CT::value_type  value_type;  //!< Value type of the represented complex element.
-   typedef value_type               ValueType;   //!< Value type of the represented complex element.
+   using value_type = typename CT::value_type;  //!< Value type of the represented complex element.
+   using ValueType  = value_type;               //!< Value type of the represented complex element.
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

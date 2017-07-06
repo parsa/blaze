@@ -77,15 +77,15 @@ class SparseVectorProxy
 {
  public:
    //**Type definitions****************************************************************************
-   typedef ResultType_<VT>      ResultType;      //!< Result type for expression template evaluations.
-   typedef TransposeType_<VT>   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<VT>     ElementType;     //!< Type of the sparse vector elements.
-   typedef ReturnType_<VT>      ReturnType;      //!< Return type for expression template evaluations.
-   typedef CompositeType_<VT>   CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<VT>       Reference;       //!< Reference to a non-constant vector value.
-   typedef ConstReference_<VT>  ConstReference;  //!< Reference to a constant vector value.
-   typedef Iterator_<VT>        Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<VT>   ConstIterator;   //!< Iterator over constant elements.
+   using ResultType     = ResultType_<VT>;      //!< Result type for expression template evaluations.
+   using TransposeType  = TransposeType_<VT>;   //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<VT>;     //!< Type of the sparse vector elements.
+   using ReturnType     = ReturnType_<VT>;      //!< Return type for expression template evaluations.
+   using CompositeType  = CompositeType_<VT>;   //!< Data type for composite expression templates.
+   using Reference      = Reference_<VT>;       //!< Reference to a non-constant vector value.
+   using ConstReference = ConstReference_<VT>;  //!< Reference to a constant vector value.
+   using Iterator       = Iterator_<VT>;        //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<VT>;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

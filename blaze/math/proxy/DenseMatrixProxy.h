@@ -79,18 +79,18 @@ class DenseMatrixProxy
 {
  public:
    //**Type definitions****************************************************************************
-   typedef ResultType_<MT>      ResultType;      //!< Result type for expression template evaluations.
-   typedef OppositeType_<MT>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef TransposeType_<MT>   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ElementType_<MT>     ElementType;     //!< Type of the matrix elements.
-   typedef ReturnType_<MT>      ReturnType;      //!< Return type for expression template evaluations.
-   typedef CompositeType_<MT>   CompositeType;   //!< Data type for composite expression templates.
-   typedef Reference_<MT>       Reference;       //!< Reference to a non-constant matrix value.
-   typedef ConstReference_<MT>  ConstReference;  //!< Reference to a constant matrix value.
-   typedef Pointer_<MT>         Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef ConstPointer_<MT>    ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef Iterator_<MT>        Iterator;        //!< Iterator over non-constant elements.
-   typedef ConstIterator_<MT>   ConstIterator;   //!< Iterator over constant elements.
+   using ResultType     = ResultType_<MT>;      //!< Result type for expression template evaluations.
+   using OppositeType   = OppositeType_<MT>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = TransposeType_<MT>;   //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<MT>;     //!< Type of the matrix elements.
+   using ReturnType     = ReturnType_<MT>;      //!< Return type for expression template evaluations.
+   using CompositeType  = CompositeType_<MT>;   //!< Data type for composite expression templates.
+   using Reference      = Reference_<MT>;       //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;  //!< Reference to a constant matrix value.
+   using Pointer        = Pointer_<MT>;         //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = ConstPointer_<MT>;    //!< Pointer to a constant matrix value.
+   using Iterator       = Iterator_<MT>;        //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<MT>;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

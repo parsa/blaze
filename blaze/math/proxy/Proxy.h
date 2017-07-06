@@ -120,7 +120,7 @@ namespace blaze {
    class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, typename VT::ElementType >
    {
       // ...
-      typedef typename VT::ElementType  RepresentedType;
+      using RepresentedType = typename VT::ElementType;
       inline RepresentedType& get() const;
       // ...
    };
