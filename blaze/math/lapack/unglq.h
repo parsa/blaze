@@ -91,7 +91,7 @@ inline void unglq( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
    using blaze::DynamicMatrix;
    using blaze::columnMajor;
 
-   typedef complex<double>  cplx;
+   using cplx = complex<double>;
 
    DynamicMatrix<cplx,columnMajor> A;
    DynamicVector<cplx> tau;
