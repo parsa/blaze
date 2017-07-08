@@ -113,7 +113,7 @@ template< typename MT  // Type of the dense matrix
 class DMatDeclHermExpr
    : public DenseMatrix< DMatDeclHermExpr<MT,SO>, SO >
    , private DeclHermExpr
-   , private Declaration<MT>
+   , public Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************

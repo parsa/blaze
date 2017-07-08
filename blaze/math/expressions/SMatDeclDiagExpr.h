@@ -107,7 +107,7 @@ template< typename MT  // Type of the sparse matrix
 class SMatDeclDiagExpr
    : public SparseMatrix< SMatDeclDiagExpr<MT,SO>, SO >
    , private DeclDiagExpr
-   , private Declaration<MT>
+   , public Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************

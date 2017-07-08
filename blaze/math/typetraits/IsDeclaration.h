@@ -42,7 +42,8 @@
 
 #include <utility>
 #include <blaze/math/expressions/Declaration.h>
-#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -64,18 +65,15 @@ struct IsDeclarationHelper
 {
  private:
    //**********************************************************************************************
-   typedef char (&Yes)[1];
-   typedef char (&No) [2];
-
    template< typename U >
-   static Yes test( const Declaration<U>& );
+   static TrueType test( const Declaration<U>& );
 
-   static No test( ... );
+   static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   enum : bool { value = ( sizeof( test( std::declval< RemoveCV_<T> >() ) ) == sizeof( Yes ) ) };
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -88,15 +86,14 @@ struct IsDeclarationHelper
 //
 // This type trait class tests whether the given type \a Type is a declaration expression
 // template. In order to qualify as a valid declaration expression template, the given type
-// has to derive (publicly or privately) from the Declaration base class. In case the given
-// type is a valid declaration expression template, the \a value member constant is set to
-// \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
-// class derives from \a FalseType.
+// has to derive publicly from the Declaration base class. In case the given type is a valid
+// declaration expression template, the \a value member constant is set to \a true, the nested
+// type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
 struct IsDeclaration
-   : public BoolConstant< IsDeclarationHelper<T>::value >
+   : public IsDeclarationHelper<T>::Type
 {};
 //*************************************************************************************************
 

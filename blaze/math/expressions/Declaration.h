@@ -62,9 +62,9 @@ namespace blaze {
 //
 // The Declaration class serves as a tag for all declaration expression templates. All classes
 // that represent a declaration and that are used within the expression template environment of
-// the Blaze library have to derive from this class in order to qualify as declaration expression
-// template. Only in case a class is derived from the Declaration base class, the IsDeclaration
-// type trait recognizes the class as valid declaration expression template.
+// the Blaze library have to derive publicly from this class in order to qualify as declaration
+// expression template. Only in case a class is derived publicly from the Declaration base class,
+// the IsDeclaration type trait recognizes the class as valid declaration expression template.
 */
 template< typename T >
 struct Declaration

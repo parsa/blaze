@@ -112,7 +112,7 @@ template< typename MT  // Type of the dense matrix
 class DMatDeclLowExpr
    : public DenseMatrix< DMatDeclLowExpr<MT,SO>, SO >
    , private DeclLowExpr
-   , private Declaration<MT>
+   , public Declaration<MT>
 {
  private:
    //**Serial evaluation strategy******************************************************************
