@@ -1694,7 +1694,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1776,7 +1776,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1822,7 +1822,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += declupp( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1859,7 +1859,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= declupp( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1905,7 +1905,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= declupp( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );

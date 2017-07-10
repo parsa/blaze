@@ -1029,7 +1029,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = declupp( ~rhs );
 
    if( !IsUniUpper<MT2>::value )
       resetLower();
@@ -1117,7 +1117,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += declupp( ~rhs );
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
@@ -1166,7 +1166,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += declupp( tmp );
    }
 
    if( !IsStrictlyUpper<MT2>::value )
@@ -1206,7 +1206,7 @@ inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= declupp( ~rhs );
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
@@ -1255,7 +1255,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= declupp( tmp );
    }
 
    if( !IsStrictlyUpper<MT2>::value )
