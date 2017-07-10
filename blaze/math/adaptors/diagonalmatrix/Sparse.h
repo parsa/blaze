@@ -1117,7 +1117,7 @@ inline DiagonalMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ %= decldiag( ~rhs );
+   matrix_ %= ~rhs;
 
    if( !IsDiagonal<MT2>::value )
       resetNonDiagonal();

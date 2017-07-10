@@ -1122,7 +1122,7 @@ inline LowerMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ %= decllow( ~rhs );
+   matrix_ %= ~rhs;
 
    if( !IsLower<MT2>::value )
       resetUpper();

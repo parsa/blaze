@@ -1917,7 +1917,7 @@ inline DiagonalMatrix<MT,SO,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ %= decldiag( ~rhs );
+   matrix_ %= ~rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );

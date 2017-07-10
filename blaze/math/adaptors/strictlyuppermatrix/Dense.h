@@ -1942,7 +1942,7 @@ inline StrictlyUpperMatrix<MT,SO,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
    }
 
-   matrix_ %= declupp( ~rhs );
+   matrix_ %= ~rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );

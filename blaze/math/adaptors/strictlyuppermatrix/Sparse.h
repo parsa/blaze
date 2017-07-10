@@ -1137,7 +1137,7 @@ inline StrictlyUpperMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
    }
 
-   matrix_ %= declupp( ~rhs );
+   matrix_ %= ~rhs;
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();

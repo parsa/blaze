@@ -1942,7 +1942,7 @@ inline StrictlyLowerMatrix<MT,SO,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ %= decllow( ~rhs );
+   matrix_ %= ~rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );

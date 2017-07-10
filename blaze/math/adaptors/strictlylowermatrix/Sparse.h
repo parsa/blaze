@@ -1139,7 +1139,7 @@ inline StrictlyLowerMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ %= decllow( ~rhs );
+   matrix_ %= ~rhs;
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();

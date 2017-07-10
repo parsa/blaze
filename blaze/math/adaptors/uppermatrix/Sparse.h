@@ -1122,7 +1122,7 @@ inline UpperMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ %= declupp( ~rhs );
+   matrix_ %= ~rhs;
 
    if( !IsUpper<MT2>::value )
       resetLower();
