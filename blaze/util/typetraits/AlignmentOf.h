@@ -69,7 +69,7 @@ struct AlignmentOfHelper
 
  public:
    //**********************************************************************************************
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    static constexpr size_t value = ( IsVectorizable<T>::value )?( 64UL ):( defaultAlignment );
 #elif BLAZE_AVX2_MODE
    static constexpr size_t value = ( IsVectorizable<T>::value )?( 32UL ):( defaultAlignment );
@@ -94,7 +94,7 @@ struct AlignmentOfHelper<float>
 {
  public:
    //**********************************************************************************************
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    static constexpr size_t value = 64UL;
 #elif BLAZE_AVX_MODE
    static constexpr size_t value = 32UL;
@@ -119,7 +119,7 @@ struct AlignmentOfHelper<double>
 {
  public:
    //**********************************************************************************************
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    static constexpr size_t value = 64UL;
 #elif BLAZE_AVX_MODE
    static constexpr size_t value = 32UL;
@@ -144,7 +144,7 @@ struct AlignmentOfHelper< complex<float> >
 {
  public:
    //**********************************************************************************************
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    static constexpr size_t value = 64UL;
 #elif BLAZE_AVX_MODE
    static constexpr size_t value = 32UL;
@@ -169,7 +169,7 @@ struct AlignmentOfHelper< complex<double> >
 {
  public:
    //**********************************************************************************************
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    static constexpr size_t value = 64UL;
 #elif BLAZE_AVX_MODE
    static constexpr size_t value = 32UL;

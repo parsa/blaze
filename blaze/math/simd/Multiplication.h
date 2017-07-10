@@ -66,7 +66,11 @@ namespace blaze {
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -94,7 +98,11 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint16
    operator*( const SIMDi16<T1>& a, const SIMDi16<T2>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -120,7 +128,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
 */
 BLAZE_ALWAYS_INLINE const SIMDcint16
    operator*( const SIMDcint16& a, const SIMDint16& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -146,7 +158,11 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
 */
 BLAZE_ALWAYS_INLINE const SIMDcuint16
    operator*( const SIMDcuint16& a, const SIMDuint16& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -172,7 +188,11 @@ BLAZE_ALWAYS_INLINE const SIMDcuint16
 */
 BLAZE_ALWAYS_INLINE const SIMDcint16
    operator*( const SIMDint16& a, const SIMDcint16& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -198,7 +218,11 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
 */
 BLAZE_ALWAYS_INLINE const SIMDcuint16
    operator*( const SIMDuint16& a, const SIMDcuint16& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_mullo_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_mullo_epi16( (~a).value, (~b).value );
 }
@@ -225,7 +249,24 @@ BLAZE_ALWAYS_INLINE const SIMDcuint16
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   __m512i a_ii = _mm512_shufflelo_epi16( (~a).value, 0b11'11'01'01 );
+   a_ii = _mm512_shufflehi_epi16( a_ii, 0b11'11'01'01 );
+   
+   __m512i b_ri = _mm512_shufflelo_epi16( (~b).value, 0b10'11'00'01 );
+   b_ri = _mm512_shufflehi_epi16( b_ri, 0b10'11'00'01 );
+
+   __m512i a_rr = _mm512_shufflelo_epi16( (~a).value, 0b10'10'00'00 );
+   a_rr = _mm512_shufflehi_epi16( a_rr, 0b10'10'00'00 );
+
+   const __m512i a_rr_b = _mm512_mullo_epi16( a_rr, (~b).value );
+   const __m512i a_ii_b_ri = _mm512_mullo_epi16( a_ii, b_ri );
+   const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi16( a_ii_b_ri, 0x55555555,
+                                                           _mm512_setzero_si512(), a_ii_b_ri );
+   return _mm512_add_epi16( a_rr_b, a_ii_b_ri_signed );
+}
+#elif BLAZE_AVX2_MODE
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -284,7 +325,7 @@ BLAZE_ALWAYS_INLINE const T
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -316,7 +357,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint32
    operator*( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -346,7 +387,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 */
 BLAZE_ALWAYS_INLINE const SIMDcint32
    operator*( const SIMDcint32& a, const SIMDint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -376,7 +417,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 */
 BLAZE_ALWAYS_INLINE const SIMDcuint32
    operator*( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -408,7 +449,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDcint32
    operator*( const SIMDint32& a, const SIMDcint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -440,7 +481,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDcuint32
    operator*( const SIMDuint32& a, const SIMDcuint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mullo_epi32( (~a).value, (~b).value );
 }
@@ -471,7 +512,19 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512F_MODE
+{
+   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, 0b11'11'01'01 );
+   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, 0b10'11'00'01 );
+   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, 0b10'10'00'00 );
+
+   const __m512i a_rr_b = _mm512_mullo_epi32( a_rr, (~b).value );
+   const __m512i a_ii_b_ri = _mm512_mullo_epi32( a_ii, b_ri );
+   const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi32( a_ii_b_ri, 0b0101010101010101,
+                                                           _mm512_setzero_si512(), a_ii_b_ri );
+   return _mm512_add_epi32( a_rr_b, a_ii_b_ri_signed );
+}
+#elif BLAZE_AVX2_MODE
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -496,6 +549,184 @@ BLAZE_ALWAYS_INLINE const T
    y = _mm_mullo_epi32( x, y );
    y = _mm_mullo_epi32( y, neg );
    return _mm_add_epi32( z, y );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  64-BIT INTEGRAL SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Multiplication of two vectors of 64-bit integral SIMD values of the same type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator*( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication of two vectors of 64-bit integral SIMD values of different type.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDuint64
+   operator*( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit signed integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+//
+// This operation is only available for AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcint64
+   operator*( const SIMDcint64& a, const SIMDint64& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the scaling operation.
+//
+// This operation is only available for AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcuint64
+   operator*( const SIMDcuint64& a, const SIMDuint64& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit signed integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDcint64
+   operator*( const SIMDint64& a, const SIMDcint64& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side scalars.
+// \param b The right-hand side complex values to be scaled.
+// \return The result of the scaling operation.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDcuint64
+   operator*( const SIMDuint64& a, const SIMDcuint64& b ) noexcept
+#if BLAZE_AVX512DQ_MODE || BLAZE_MIC_MODE
+{
+   return _mm512_mullo_epi64( (~a).value, (~b).value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication of two vectors of 64-bit integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the multiplication.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of both operands
+BLAZE_ALWAYS_INLINE const T
+   operator*( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
+#if BLAZE_AVX512DQ_MODE
+{
+   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, 0b11'10'11'10 );
+   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, 0b01'00'11'10 );
+   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, 0b01'00'01'00 );
+
+   const __m512i a_rr_b = _mm512_mullo_epi64( a_rr, (~b).value );
+   const __m512i a_ii_b_ri = _mm512_mullo_epi64( a_ii, b_ri );
+   const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi64( a_ii_b_ri, 0b01010101,
+                                                           _mm512_setzero_si512(), a_ii_b_ri );
+   return _mm512_add_epi64( a_rr_b, a_ii_b_ri_signed );
 }
 #else
 = delete;
@@ -546,7 +777,7 @@ struct SIMDf32MultExpr
    // \return The resulting packed 32-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    {
       return _mm512_mul_ps( a_.eval().value, b_.eval().value );
    }
@@ -603,7 +834,7 @@ BLAZE_ALWAYS_INLINE const SIMDf32MultExpr<T1,T2>
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator*( const SIMDcfloat& a, const SIMDfloat& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mul_ps( a.value, b.value );
 }
@@ -633,7 +864,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator*( const SIMDfloat& a, const SIMDcfloat& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mul_ps( a.value, b.value );
 }
@@ -663,7 +894,14 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator*( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
-#if BLAZE_AVX_MODE
+#if BLAZE_AVX512F_MODE
+{
+   const __m512 a_ii = _mm512_permute_ps( a.value, 0b11'11'01'01 );
+   const __m512 b_ri = _mm512_permute_ps( b.value, 0b10'11'00'01 );
+   const __m512 a_rr = _mm512_permute_ps( a.value, 0b10'10'00'00 );
+   return _mm512_fmaddsub_ps( a_rr, b.value, _mm512_mul_ps( a_ii, b_ri ) );
+}
+#elif BLAZE_AVX_MODE
 {
    __m256 x, y, z;
 
@@ -734,7 +972,7 @@ struct SIMDf64MultExpr
    // \return The resulting packed 64-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    {
       return _mm512_mul_pd( a_.eval().value, b_.eval().value );
    }
@@ -791,7 +1029,7 @@ BLAZE_ALWAYS_INLINE const SIMDf64MultExpr<T1,T2>
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator*( const SIMDcdouble& a, const SIMDdouble& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mul_pd( a.value, b.value );
 }
@@ -821,7 +1059,7 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator*( const SIMDdouble& a, const SIMDcdouble& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_mul_pd( a.value, b.value );
 }
@@ -851,7 +1089,14 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator*( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
-#if BLAZE_AVX_MODE
+#if BLAZE_AVX512F_MODE
+{
+   const __m512d a_ii = _mm512_permute_pd( a.value, 0b1'1'1'1'1'1'1'1 );
+   const __m512d b_ri = _mm512_permute_pd( b.value, 0b0'1'0'1'0'1'0'1 );
+   const __m512d a_rr = _mm512_permute_pd( a.value, 0 );
+   return _mm512_fmaddsub_pd( a_rr, b.value, _mm512_mul_pd( a_ii, b_ri ) );
+}
+#elif BLAZE_AVX_MODE
 {
    __m256d x, y, z;
 

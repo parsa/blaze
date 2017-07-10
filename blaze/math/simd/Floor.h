@@ -65,7 +65,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
 {
    return _mm512_floor_ps( (~a).eval().value );
 }
@@ -103,7 +103,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble floor( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
 {
    return _mm512_floor_pd( (~a).eval().value );
 }

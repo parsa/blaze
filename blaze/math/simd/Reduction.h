@@ -57,12 +57,17 @@ namespace blaze {
 /*!\brief Returns the sum of all elements in the 8-bit integral complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<int8_t> sum( const SIMDcint8& a ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return complex<int8_t>( a[ 0] + a[ 1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] +
+                           a[ 8] + a[ 9] + a[10] + a[11] + a[12] + a[13] + a[14] + a[15] +
+                           a[16] + a[17] + a[18] + a[19] + a[20] + a[21] + a[22] + a[23] +
+                           a[24] + a[25] + a[26] + a[27] + a[28] + a[29] + a[30] + a[31] );
+#elif BLAZE_AVX2_MODE
    return complex<int8_t>( a[0] + a[1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] +
                            a[8] + a[9] + a[10] + a[11] + a[12] + a[13] + a[14] + a[15] );
 #elif BLAZE_SSE2_MODE
@@ -86,12 +91,22 @@ BLAZE_ALWAYS_INLINE const complex<int8_t> sum( const SIMDcint8& a ) noexcept
 /*!\brief Returns the sum of all elements in the 16-bit integral SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE int16_t sum( const SIMDint16& a ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   const __m256i low( _mm512_castsi512_si256( a.value ) );
+   const __m256i high( _mm512_extracti64x4_epi64( a.value, 1 ) );
+   const __m256i hadd_low_high( _mm256_hadd_epi16( low, high ) );
+   const __m256i b( _mm256_hadd_epi16( hadd_low_high, hadd_low_high ) );
+   const __m256i c( _mm256_hadd_epi16( b, b ) );
+   const __m256i d( _mm256_hadd_epi16( c, c ) );
+   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d, 1 )
+                                  , _mm256_castsi256_si128( d ) );
+   return _mm_extract_epi16( e, 0 );
+#elif BLAZE_AVX2_MODE
    const __m256i b( _mm256_hadd_epi16( a.value, a.value ) );
    const __m256i c( _mm256_hadd_epi16( b, b ) );
    const __m256i d( _mm256_hadd_epi16( c, c ) );
@@ -116,13 +131,16 @@ BLAZE_ALWAYS_INLINE int16_t sum( const SIMDint16& a ) noexcept
 /*!\brief Returns the sum of all elements in the 16-bit integral complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<int16_t> sum( const SIMDcint16& a ) noexcept
 {
-#if BLAZE_AVX2_MODE
-   return complex<int16_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
+#if BLAZE_AVX512BW_MODE
+   return complex<int16_t>( a[0] + a[1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] +
+                            a[8] + a[9] + a[10] + a[11] + a[12] + a[13] + a[14] + a[15] );
+#elif BLAZE_AVX2_MODE
+   return complex<int16_t>( a[0] + a[1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] );
 #elif BLAZE_SSE2_MODE
    return complex<int16_t>( a[0] + a[1] + a[2] + a[3] );
 #else
@@ -144,13 +162,23 @@ BLAZE_ALWAYS_INLINE const complex<int16_t> sum( const SIMDcint16& a ) noexcept
 /*!\brief Returns the sum of all elements in the 32-bit integral SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE int32_t sum( const SIMDint32& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
+#elif BLAZE_AVX512F_MODE
+   const __m256i low( _mm512_castsi512_si256( a.value ) );
+   const __m256i high( _mm512_extracti64x4_epi64( a.value, 1 ) );
+   const __m256i hadd_low_high( _mm256_hadd_epi32( low, high ) );
+   const __m256i b( _mm256_hadd_epi32( hadd_low_high, hadd_low_high ) );
+   
+   const __m256i c( _mm256_hadd_epi32( b, b ) );
+   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c, 1 )
+                                  , _mm256_castsi256_si128( c ) );
+   return _mm_extract_epi32( d, 0 );
 #elif BLAZE_AVX2_MODE
    const __m256i b( _mm256_hadd_epi32( a.value, a.value ) );
    const __m256i c( _mm256_hadd_epi32( b, b ) );
@@ -174,12 +202,12 @@ BLAZE_ALWAYS_INLINE int32_t sum( const SIMDint32& a ) noexcept
 /*!\brief Returns the sum of all elements in the 32-bit integral complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<int32_t> sum( const SIMDcint32& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<int32_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
 #elif BLAZE_AVX2_MODE
    return complex<int32_t>( a[0] + a[1] + a[2] + a[3] );
@@ -204,13 +232,13 @@ BLAZE_ALWAYS_INLINE const complex<int32_t> sum( const SIMDcint32& a ) noexcept
 /*!\brief Returns the sum of all elements in the 64-bit integral SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE int64_t sum( const SIMDint64& a ) noexcept
 {
-#if BLAZE_MIC_MODE
-   return _mm512_reduce_add_epi64( a.value );
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+   return a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7];
 #elif BLAZE_AVX2_MODE
    return a[0] + a[1] + a[2] + a[3];
 #elif BLAZE_SSE2_MODE
@@ -226,12 +254,12 @@ BLAZE_ALWAYS_INLINE int64_t sum( const SIMDint64& a ) noexcept
 /*!\brief Returns the sum of all elements in the 64-bit integral complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<int64_t> sum( const SIMDcint64& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<int64_t>( a[0] + a[1] + a[2] + a[3] );
 #elif BLAZE_AVX2_MODE
    return complex<int64_t>( a[0] + a[1] );
@@ -256,13 +284,23 @@ BLAZE_ALWAYS_INLINE const complex<int64_t> sum( const SIMDcint64& a ) noexcept
 /*!\brief Returns the sum of all elements in the single precision floating point SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
+#elif BLAZE_AVX512F_MODE
+   __m512 zmm0 = _mm512_shuffle_f32x4( a.value, a.value, 0b11'10'11'10 );
+   const __m512 zmm3 = _mm512_add_ps( zmm0, a.value );
+   const __m512 zmm2 = _mm512_shuffle_f32x4( zmm3, zmm3, 0b01'01'01'01 );
+   const __m512 zmm4 = _mm512_add_ps( zmm2, zmm3 );
+   const __m512 zmm5 = _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( zmm4 ), 0b01'00'11'10 ) );
+   const __m512 zmm6 = _mm512_add_ps( zmm4, zmm5 );
+   const __m512 zmm7 = _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( zmm6 ), 0b10'11'00'01 ) );
+   zmm0 = _mm512_add_ps( zmm6, zmm7 );
+   return _mm_cvtss_f32( _mm512_castps512_ps128( zmm0 ) );
 #elif BLAZE_AVX_MODE
    const __m256 b( _mm256_hadd_ps( a.value, a.value ) );
    const __m256 c( _mm256_hadd_ps( b, b ) );
@@ -285,12 +323,12 @@ BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
 /*!\brief Returns the sum of all elements in the single precision complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<float> sum( const SIMDcfloat& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<float>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
 #elif BLAZE_AVX_MODE
    return complex<float>( a[0] + a[1] + a[2] + a[3] );
@@ -315,13 +353,21 @@ BLAZE_ALWAYS_INLINE const complex<float> sum( const SIMDcfloat& a ) noexcept
 /*!\brief Returns the sum of all elements in the double precision floating point SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE double sum( const SIMDdouble& a ) noexcept
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );
+#elif BLAZE_AVX512F_MODE
+   __m512d zmm0 = _mm512_shuffle_f64x2( a.value, a.value, 0b11'10'11'10 );
+   const __m512d zmm2 = _mm512_add_pd( a.value, zmm0 );
+   const __m512d zmm3 = _mm512_permutex_pd( zmm2, 0b01'00'11'10 );
+   const __m512d zmm4 = _mm512_add_pd( zmm2 , zmm3 );
+   const __m512d zmm5 = _mm512_permutex_pd( zmm4, 0b10'11'00'01 );
+   zmm0 = _mm512_add_pd( zmm4, zmm5 );
+   return _mm_cvtsd_f64( _mm512_castpd512_pd128( zmm0 ) );
 #elif BLAZE_AVX_MODE
    const __m256d b( _mm256_hadd_pd( a.value, a.value ) );
    const __m128d c = _mm_add_pd( _mm256_extractf128_pd( b, 1 ), _mm256_castpd256_pd128( b ) );
@@ -342,12 +388,12 @@ BLAZE_ALWAYS_INLINE double sum( const SIMDdouble& a ) noexcept
 /*!\brief Returns the sum of all elements in the double precision complex SIMD vector.
 // \ingroup simd
 //
-// \param a The vector to be sumed up.
+// \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
 BLAZE_ALWAYS_INLINE const complex<double> sum( const SIMDcdouble& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<double>( a[0] + a[1] + a[2] + a[3] );
 #elif BLAZE_AVX_MODE
    return complex<double>( a[0] + a[1] );

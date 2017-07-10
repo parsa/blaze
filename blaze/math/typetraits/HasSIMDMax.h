@@ -81,8 +81,8 @@ struct HasSIMDMaxHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1
 {
    enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && IsUnsigned<T>::value ) ||
                          ( bool( BLAZE_SSE4_MODE ) && IsSigned<T>::value   ) ||
-                         ( bool( BLAZE_AVX2_MODE ) ) ||
-                         ( bool( BLAZE_MIC_MODE  ) ) };
+                         bool( BLAZE_AVX2_MODE     ) ||
+                         bool( BLAZE_AVX512BW_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -95,8 +95,8 @@ struct HasSIMDMaxHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2
 {
    enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && IsSigned<T>::value   ) ||
                          ( bool( BLAZE_SSE4_MODE ) && IsUnsigned<T>::value ) ||
-                         ( bool( BLAZE_AVX2_MODE ) ) ||
-                         ( bool( BLAZE_MIC_MODE  ) ) };
+                         bool( BLAZE_AVX2_MODE     ) ||
+                         bool( BLAZE_AVX512BW_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -107,9 +107,10 @@ struct HasSIMDMaxHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2
 template< typename T >
 struct HasSIMDMaxHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
 {
-   enum : bool { value = ( bool( BLAZE_SSE4_MODE ) ) ||
-                         ( bool( BLAZE_AVX2_MODE ) ) ||
-                         ( bool( BLAZE_MIC_MODE  ) ) };
+   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
+                         bool( BLAZE_AVX2_MODE    ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -120,9 +121,10 @@ struct HasSIMDMaxHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4
 template<>
 struct HasSIMDMaxHelper< float, float >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
+   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -133,9 +135,10 @@ struct HasSIMDMaxHelper< float, float >
 template<>
 struct HasSIMDMaxHelper< double, double >
 {
-   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
-                         bool( BLAZE_AVX_MODE  ) ||
-                         bool( BLAZE_MIC_MODE  ) };
+   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************

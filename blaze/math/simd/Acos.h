@@ -64,7 +64,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat acos( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && (BLAZE_MIC_MODE || BLAZE_AVX512F_MODE)
 {
    return _mm512_acos_ps( (~a).eval().value );
 }
@@ -101,7 +101,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat acos( const SIMDf32<T>& a ) noexcept
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble acos( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && BLAZE_MIC_MODE
+#if BLAZE_SVML_MODE && (BLAZE_MIC_MODE || BLAZE_AVX512F_MODE)
 {
    return _mm512_acos_pd( (~a).eval().value );
 }

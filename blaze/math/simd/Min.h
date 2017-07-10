@@ -64,7 +64,7 @@ namespace blaze {
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint8 min( const SIMDint8& a, const SIMDint8& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512BW_MODE
 {
    return _mm512_min_epi8( (~a).value, (~b).value );
 }
@@ -93,7 +93,7 @@ BLAZE_ALWAYS_INLINE const SIMDint8 min( const SIMDint8& a, const SIMDint8& b ) n
 // This operation is only available for SSE2, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint8 min( const SIMDuint8& a, const SIMDuint8& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512BW_MODE
 {
    return _mm512_min_epu8( (~a).value, (~b).value );
 }
@@ -130,7 +130,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint8 min( const SIMDuint8& a, const SIMDuint8& b 
 // This operation is only available for SSE2, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint16 min( const SIMDint16& a, const SIMDint16& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512BW_MODE
 {
    return _mm512_min_epi16( (~a).value, (~b).value );
 }
@@ -159,7 +159,7 @@ BLAZE_ALWAYS_INLINE const SIMDint16 min( const SIMDint16& a, const SIMDint16& b 
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint16 min( const SIMDuint16& a, const SIMDuint16& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512BW_MODE
 {
    return _mm512_min_epu16( (~a).value, (~b).value );
 }
@@ -196,7 +196,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 min( const SIMDuint16& a, const SIMDuint16&
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint32 min( const SIMDint32& a, const SIMDint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_min_epi32( (~a).value, (~b).value );
 }
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE const SIMDint32 min( const SIMDint32& a, const SIMDint32& b 
 // This operation is only available for SSE4, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint32 min( const SIMDuint32& a, const SIMDuint32& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_min_epu32( (~a).value, (~b).value );
 }
@@ -265,7 +265,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDfloat
    min( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_min_ps( (~a).eval().value, (~b).eval().value );
 }
@@ -305,7 +305,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDdouble
    min( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_min_pd( (~a).eval().value, (~b).eval().value );
 }

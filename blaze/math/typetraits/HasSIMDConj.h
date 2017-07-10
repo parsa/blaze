@@ -42,6 +42,7 @@
 
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -74,8 +75,11 @@ struct HasSIMDConjHelper
 template< typename T >
 struct HasSIMDConjHelper< complex<T> >
 {
-   enum : bool { value = IsNumeric<T>::value && IsSigned<T>::value && HasSIMDMult<T,T>::value &&
-                         ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) };
+   enum : bool { value = IsNumeric<T>::value && IsSigned<T>::value &&
+                         ( ( !bool( BLAZE_AVX512F_MODE  ) && HasSIMDMult<T,T>::value && ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) ) || 
+                           (  bool( BLAZE_AVX512F_MODE  ) && IsFloatingPoint<T>::value ) ||
+                           (  bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                           (  bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) };
 };
 /*! \endcond */
 //*************************************************************************************************

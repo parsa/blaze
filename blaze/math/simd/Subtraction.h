@@ -66,7 +66,11 @@ namespace blaze {
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi8( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi8( (~a).value, (~b).value );
 }
@@ -94,7 +98,11 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint8
    operator-( const SIMDi8<T1>& a, const SIMDi8<T2>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi8( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi8( (~a).value, (~b).value );
 }
@@ -121,7 +129,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint8
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi8( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi8( (~a).value, (~b).value );
 }
@@ -156,7 +168,11 @@ BLAZE_ALWAYS_INLINE const T
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi16( (~a).value, (~b).value );
 }
@@ -184,7 +200,11 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint16
    operator-( const SIMDi16<T1>& a, const SIMDi16<T2>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi16( (~a).value, (~b).value );
 }
@@ -211,7 +231,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_sub_epi16( (~a).value, (~b).value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_sub_epi16( (~a).value, (~b).value );
 }
@@ -246,7 +270,7 @@ BLAZE_ALWAYS_INLINE const T
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi32( (~a).value, (~b).value );
 }
@@ -278,7 +302,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint32
    operator-( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi32( (~a).value, (~b).value );
 }
@@ -309,7 +333,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi32( (~a).value, (~b).value );
 }
@@ -348,7 +372,7 @@ BLAZE_ALWAYS_INLINE const T
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi64( (~a).value, (~b).value );
 }
@@ -380,7 +404,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDuint64
    operator-( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi64( (~a).value, (~b).value );
 }
@@ -411,7 +435,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
    operator-( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_epi64( (~a).value, (~b).value );
 }
@@ -451,7 +475,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDfloat
    operator-( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_ps( (~a).eval().value, (~b).eval().value );
 }
@@ -481,7 +505,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator-( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_ps( a.value, b.value );
 }
@@ -521,7 +545,7 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDdouble
    operator-( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_pd( (~a).eval().value, (~b).eval().value );
 }
@@ -551,7 +575,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator-( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_sub_pd( a.value, b.value );
 }

@@ -50,6 +50,8 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/IsDouble.h>
+#include <blaze/util/typetraits/IsFloat.h>
 
 
 namespace blaze {
@@ -77,9 +79,17 @@ struct HasSIMDAbsHelper
 template< typename T >
 struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
-   enum : bool { value = ( bool( BLAZE_SSSE3_MODE ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_AVX2_MODE  ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_MIC_MODE   ) && sizeof(T) >= 4UL ) };
+   enum : bool { value = ( bool( BLAZE_SSSE3_MODE    ) && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX2_MODE     ) && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ||
+                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) };
+};
+
+template< typename T >
+struct HasSIMDAbsHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
+{
+   enum : bool { value =  bool( BLAZE_AVX512F_MODE ) || bool( BLAZE_MIC_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
