@@ -107,8 +107,7 @@ template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
 class DVecScalarDivExpr
-   : public DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF >
-   , private VecScalarDivExpr
+   : public VecScalarDivExpr< DenseVector< DVecScalarDivExpr<VT,ST,TF>, TF > >
    , private Computation
 {
  private:

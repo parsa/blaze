@@ -107,8 +107,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatTransExpr
-   : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
-   , private MatTransExpr
+   : public MatTransExpr< SparseMatrix< SMatTransExpr<MT,SO>, SO > >
    , private If< IsComputation<MT>, Computation, Transformation >::Type
 {
  private:

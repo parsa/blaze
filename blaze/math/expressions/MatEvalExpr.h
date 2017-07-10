@@ -58,12 +58,13 @@ namespace blaze {
 // The MatEvalExpr class serves as a tag for all expression templates that implement a matrix
 // evaluation operation. All classes, that represent a matrix evaluation operation and that
 // are used within the expression template environment of the Blaze library have to derive
-// from this class in order to qualify as matrix evaluation expression template. Only in case
-// a class is derived from the MatEvalExpr base class, the IsMatEvalExpr type trait recognizes
-// the class as valid matrix evaluation expression template.
+// publicly from this class in order to qualify as matrix evaluation expression template. Only
+// in case a class is derived publicly from the MatEvalExpr base class, the IsMatEvalExpr type
+// trait recognizes the class as valid matrix evaluation expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatEvalExpr
-   : private EvalExpr
+   : public EvalExpr<MT>
 {};
 //*************************************************************************************************
 

@@ -84,8 +84,7 @@ namespace blaze {
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecSerialExpr
-   : public SparseVector< SVecSerialExpr<VT,TF>, TF >
-   , private VecSerialExpr
+   : public VecSerialExpr< SparseVector< SVecSerialExpr<VT,TF>, TF > >
    , private Computation
 {
  public:

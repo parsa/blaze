@@ -99,8 +99,7 @@ template< typename VT  // Type of the sparse vector
         , bool AF      // Alignment flag
         , bool TF >    // Transpose flag
 class Subvector<VT,AF,TF,false>
-   : public SparseVector< Subvector<VT,AF,TF,false>, TF >
-   , private View
+   : public View< SparseVector< Subvector<VT,AF,TF,false>, TF > >
 {
  private:
    //**Type definitions****************************************************************************

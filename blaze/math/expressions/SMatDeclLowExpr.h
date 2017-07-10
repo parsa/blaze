@@ -107,8 +107,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatDeclLowExpr
-   : public SparseMatrix< SMatDeclLowExpr<MT,SO>, SO >
-   , private DeclLowExpr
+   : public DeclLowExpr< SparseMatrix< SMatDeclLowExpr<MT,SO>, SO > >
    , public Declaration<MT>
 {
  private:

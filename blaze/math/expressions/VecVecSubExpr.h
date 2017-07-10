@@ -56,14 +56,15 @@ namespace blaze {
 // \ingroup math
 //
 // The VecVecSubExpr class serves as a tag for all expression templates that implement a
-// vector/vector subtraction. All classes, that represent a vector subtraction and that are
-// used within the expression template environment of the Blaze library have to derive from
-// this class in order to qualify as vector subtraction expression template. Only in case a
-// class is derived from the VecVecSubExpr base class, the IsVecVecSubExpr type trait
-// recognizes the class as valid vector subtraction expression template.
+// vector/vector subtraction. All classes, that represent a vector subtraction and that
+// are used within the expression template environment of the Blaze library have to derive
+// publicly from this class in order to qualify as vector subtraction expression template. Only
+// in case a class is derived publicly from the VecVecSubExpr base class, the IsVecVecSubExpr
+// type trait recognizes the class as valid vector subtraction expression template.
 */
+template< typename VT >  // Vector base type of the expression
 struct VecVecSubExpr
-   : private SubExpr
+   : public SubExpr<VT>
 {};
 //*************************************************************************************************
 

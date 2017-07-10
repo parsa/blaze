@@ -98,8 +98,7 @@ template< typename VT  // Type of the dense vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
 class DVecMapExpr
-   : public DenseVector< DVecMapExpr<VT,OP,TF>, TF >
-   , private VecMapExpr
+   : public VecMapExpr< DenseVector< DVecMapExpr<VT,OP,TF>, TF > >
    , private Computation
 {
  private:

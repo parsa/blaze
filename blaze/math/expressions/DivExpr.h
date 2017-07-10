@@ -56,14 +56,16 @@ namespace blaze {
 // \ingroup math
 //
 // The DivExpr class serves as a tag for all expression templates that implement mathematical
-// divisions. All classes, that represent a mathematical division (vector/scalar divisions and
-// matrix/scalar division) and that are used within the expression template environment of the
-// Blaze library have to derive from this class in order to qualify as division expression
-// template. Only in case a class is derived from the DivExpr base class, the IsDivExpr type
-// trait recognizes the class as valid division expression template.
+// divisions. All classes, that represent a mathematical division (vector/vector divisions,
+// vector/scalar divisions and matrix/scalar divisions) and that are used within the expression
+// template environment of the Blaze library have to derive publicly from this class in order
+// to qualify as division expression template. Only in case a class is derived publicly from
+// the DivExpr base class, the IsDivExpr type trait recognizes the class as valid division
+// expression template.
 */
+template< typename T >  // Base type of the expression
 struct DivExpr
-   : private Expression
+   : public Expression<T>
 {};
 //*************************************************************************************************
 

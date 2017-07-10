@@ -58,13 +58,14 @@ namespace blaze {
 // The TVecMatMultExpr class serves as a tag for all expression templates that implement a
 // vector/matrix multiplication. All classes, that represent a vector/matrix multiplication
 // and that are used within the expression template environment of the Blaze library have
-// to derive from this class in order to qualify as vector/matrix multiplication expression
-// template. Only in case a class is derived from the TVecMatMultExpr base class, the
-// IsTVecMatMultExpr type trait recognizes the class as valid vector/matrix multiplication
-// expression template.
+// to derive publicly from this class in order to qualify as vector/matrix multiplication
+// expression template. Only in case a class is derived publicly from the TVecMatMultExpr
+// base class, the IsTVecMatMultExpr type trait recognizes the class as valid vector/matrix
+// multiplication expression template.
 */
+template< typename VT >  // Vector base type of the expression
 struct TVecMatMultExpr
-   : private MultExpr
+   : public MultExpr<VT>
 {};
 //*************************************************************************************************
 

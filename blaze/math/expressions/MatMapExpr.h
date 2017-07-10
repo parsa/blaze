@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The MatMapExpr class serves as a tag for all expression templates that represent a unary map
 // operation on a matrix. All classes, that represent a unary matrix map operation and that are
-// used within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as unary matrix map expression template. Only in case a class is
-// derived from the MatMapExpr base class, the IsMatMapExpr type trait recognizes the class as
-// valid unary matrix map expression template.
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as unary matrix map expression template. Only in case a
+// class is derived publicly from the MatMapExpr base class, the IsMatMapExpr type trait
+// recognizes the class as valid unary matrix map expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatMapExpr
-   : private UnaryMapExpr
+   : public UnaryMapExpr<MT>
 {};
 //*************************************************************************************************
 

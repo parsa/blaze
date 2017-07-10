@@ -95,8 +95,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatSerialExpr
-   : public SparseMatrix< SMatSerialExpr<MT,SO>, SO >
-   , private MatSerialExpr
+   : public MatSerialExpr< SparseMatrix< SMatSerialExpr<MT,SO>, SO > >
    , private Computation
 {
  public:

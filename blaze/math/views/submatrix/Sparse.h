@@ -114,8 +114,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
 class Submatrix<MT,AF,false,false>
-   : public SparseMatrix< Submatrix<MT,AF,false,false>, false >
-   , private View
+   : public View< SparseMatrix< Submatrix<MT,AF,false,false>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -2689,8 +2688,7 @@ inline void Submatrix<MT,AF,false,false>::schurAssign( const Matrix<MT2,SO>& rhs
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
 class Submatrix<MT,AF,true,false>
-   : public SparseMatrix< Submatrix<MT,AF,true,false>, true >
-   , private View
+   : public View< SparseMatrix< Submatrix<MT,AF,true,false>, true > >
 {
  private:
    //**Type definitions****************************************************************************

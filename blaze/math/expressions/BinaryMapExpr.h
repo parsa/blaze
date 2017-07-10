@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The BinaryMapExpr class serves as a tag for all expression templates that represent a binary
 // map operation. All classes, that represent a binary map operation and that are used within
-// the expression template environment of the Blaze library have to derive from this class in
-// order to qualify as binary map expression template. Only in case a class is derived from the
-// BinaryMapExpr base class, the IsBinaryMapExpr type trait recognizes the class as valid binary
-// map expression template.
+// the expression template environment of the Blaze library have to derive publicly from this
+// class in order to qualify as binary map expression template. Only in case a class is derived
+// publicly from the BinaryMapExpr base class, the IsBinaryMapExpr type trait recognizes the
+// class as valid binary map expression template.
 */
+template< typename T >  // Base type of the expression
 struct BinaryMapExpr
-   : private Expression
+   : public Expression<T>
 {};
 //*************************************************************************************************
 

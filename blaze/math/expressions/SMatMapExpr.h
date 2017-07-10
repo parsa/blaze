@@ -107,8 +107,7 @@ template< typename MT  // Type of the sparse matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
 class SMatMapExpr
-   : public SparseMatrix< SMatMapExpr<MT,OP,SO>, SO >
-   , private MatMapExpr
+   : public MatMapExpr< SparseMatrix< SMatMapExpr<MT,OP,SO>, SO > >
    , private Computation
 {
  private:

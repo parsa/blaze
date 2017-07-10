@@ -58,12 +58,13 @@ namespace blaze {
 // The DeclUppExpr class serves as a tag for all expression templates that represent an explicit
 // upper declaration (declupp) operation. All classes, that represent a declupp operation and
 // that are used within the expression template environment of the Blaze library have to derive
-// from this class in order to qualify as declupp expression template. Only in case a class is
-// derived from the DeclUppExpr base class, the IsDeclUppExpr type trait recognizes the class
-// as valid declupp expression template.
+// publicly from this class in order to qualify as declupp expression template. Only in case
+// class is derived publicly from the DeclUppExpr base class, the IsDeclUppExpr type trait a
+// recognizes the class as valid declupp expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct DeclUppExpr
-   : private DeclExpr
+   : public DeclExpr<MT>
 {};
 //*************************************************************************************************
 

@@ -85,8 +85,7 @@ namespace blaze {
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecSerialExpr
-   : public DenseVector< DVecSerialExpr<VT,TF>, TF >
-   , private VecSerialExpr
+   : public VecSerialExpr< DenseVector< DVecSerialExpr<VT,TF>, TF > >
    , private Computation
 {
  public:

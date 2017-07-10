@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The SerialExpr class serves as a tag for all expression templates that enforce a serial
 // evaluation. All classes, that represent a serialization operation and that are used within
-// the expression template environment of the Blaze library have to derive from this class in
-// order to qualify as serial evaluation expression template. Only in case a class is derived
-// from the SerialExpr base class, the IsSerialExpr type trait recognizes the class as valid
-// serial evaluation expression template.
+// the expression template environment of the Blaze library have to derive publicly from this
+// class in order to qualify as serial evaluation expression template. Only in case a class is
+// derived publicly from the SerialExpr base class, the IsSerialExpr type trait recognizes the
+// class as valid serial evaluation expression template.
 */
+template< typename T >  // Base type of the expression
 struct SerialExpr
-   : private Expression
+   : public Expression<T>
 {};
 //*************************************************************************************************
 

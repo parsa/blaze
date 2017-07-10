@@ -95,8 +95,7 @@ template< typename VT  // Type of the sparse vector
         , typename OP  // Type of the custom operation
         , bool TF >    // Transpose flag
 class SVecMapExpr
-   : public SparseVector< SVecMapExpr<VT,OP,TF>, TF >
-   , private VecMapExpr
+   : public VecMapExpr< SparseVector< SVecMapExpr<VT,OP,TF>, TF > >
    , private Computation
 {
  private:

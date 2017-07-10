@@ -119,8 +119,7 @@ namespace blaze {
 template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
 class Column<MT,true,true,SF>
-   : public DenseVector< Column<MT,true,true,SF>, false >
-   , private View
+   : public View< DenseVector< Column<MT,true,true,SF>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -2212,8 +2211,7 @@ inline EnableIf_< typename Column<MT,true,true,SF>::template VectorizedDivAssign
 */
 template< typename MT >  // Type of the dense matrix
 class Column<MT,false,true,false>
-   : public DenseVector< Column<MT,false,true,false>, false >
-   , private View
+   : public View< DenseVector< Column<MT,false,true,false>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -4062,8 +4060,7 @@ inline void Column<MT,false,true,false>::divAssign( const DenseVector<VT,false>&
 */
 template< typename MT >  // Type of the dense matrix
 class Column<MT,false,true,true>
-   : public DenseVector< Column<MT,false,true,true>, false >
-   , private View
+   : public View< DenseVector< Column<MT,false,true,true>, false > >
 {
  private:
    //**Type definitions****************************************************************************

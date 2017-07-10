@@ -107,8 +107,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order
 class DMatDMatAddExpr
-   : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
-   , private MatMatAddExpr
+   : public MatMatAddExpr< DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO > >
    , private Computation
 {
  private:

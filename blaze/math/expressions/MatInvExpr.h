@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The MatInvExpr class serves as a tag for all expression templates that implement a matrix
 // inversion operation. All classes, that represent a matrix inversion operation and that are
-// used within the expression template environment of the Blaze library have to derive from
-// this class in order to qualify as matrix inversion expression template. Only in case a
-// class is derived from the MatInvExpr base class, the IsMatInvExpr type trait recognizes
-// the class as valid matrix inversion expression template.
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as matrix inversion expression template. Only in case
+// a class is derived publicly from the MatInvExpr base class, the IsMatInvExpr type trait
+// recognizes the class as valid matrix inversion expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatInvExpr
-   : private Expression
+   : public Expression<MT>
 {};
 //*************************************************************************************************
 

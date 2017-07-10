@@ -58,12 +58,13 @@ namespace blaze {
 // The MatTransExpr class serves as a tag for all expression templates that implement a matrix
 // transposition operation. All classes, that represent a matrix transposition operation and
 // that are used within the expression template environment of the Blaze library have to derive
-// from this class in order to qualify as matrix transposition expression template. Only in case
-// a class is derived from the MatTransExpr base class, the IsMatTransExpr type trait recognizes
-// the class as valid matrix transposition expression template.
+// publicly from this class in order to qualify as matrix transposition expression template. Only
+// in case a class is derived publicly from the MatTransExpr base class, the IsMatTransExpr type
+// trait recognizes the class as valid matrix transposition expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatTransExpr
-   : private TransExpr
+   : public TransExpr<MT>
 {};
 //*************************************************************************************************
 

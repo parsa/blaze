@@ -113,8 +113,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 class Row<MT,true,false,SF>
-   : public SparseVector< Row<MT,true,false,SF>, true >
-   , private View
+   : public View< SparseVector< Row<MT,true,false,SF>, true > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -2014,8 +2013,7 @@ inline void Row<MT,true,false,SF>::subAssign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 class Row<MT,false,false,false>
-   : public SparseVector< Row<MT,false,false,false>, true >
-   , private View
+   : public View< SparseVector< Row<MT,false,false,false>, true > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -3948,8 +3946,7 @@ inline void Row<MT,false,false,false>::subAssign( const Vector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 class Row<MT,false,false,true>
-   : public SparseVector< Row<MT,false,false,true>, true >
-   , private View
+   : public View< SparseVector< Row<MT,false,false,true>, true > >
 {
  private:
    //**Type definitions****************************************************************************

@@ -110,8 +110,7 @@ namespace blaze {
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatDeclUppExpr
-   : public DenseMatrix< DMatDeclUppExpr<MT,SO>, SO >
-   , private DeclUppExpr
+   : public DeclUppExpr< DenseMatrix< DMatDeclUppExpr<MT,SO>, SO > >
    , public Declaration<MT>
 {
  private:

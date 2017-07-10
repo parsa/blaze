@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The VecVecMapExpr class serves as a tag for all expression templates that implement a binary
 // vector map operation. All classes, that represent a binary vector map operation and that are
-// used within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as binary vector map expression template. Only in case a class is
-// derived from the VecVecMapExpr base class, the IsVecVecMapExpr type trait recognizes the class
-// as valid binary vector map expression template.
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as binary vector map expression template. Only in case a
+// class is derived publicly from the VecVecMapExpr base class, the IsVecVecMapExpr type trait
+// recognizes the class as valid binary vector map expression template.
 */
+template< typename VT >  // Vector base type of the expression
 struct VecVecMapExpr
-   : private BinaryMapExpr
+   : public BinaryMapExpr<VT>
 {};
 //*************************************************************************************************
 

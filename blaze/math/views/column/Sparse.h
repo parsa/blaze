@@ -112,8 +112,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , bool SF >    // Symmetry flag
 class Column<MT,true,false,SF>
-   : public SparseVector< Column<MT,true,false,SF>, false >
-   , private View
+   : public View< SparseVector< Column<MT,true,false,SF>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -2019,8 +2018,7 @@ inline void Column<MT,true,false,SF>::subAssign( const SparseVector<VT,false>& r
 */
 template< typename MT >  // Type of the sparse matrix
 class Column<MT,false,false,false>
-   : public SparseVector< Column<MT,false,false,false>, false >
-   , private View
+   : public View< SparseVector< Column<MT,false,false,false>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -3966,8 +3964,7 @@ inline void Column<MT,false,false,false>::subAssign( const Vector<VT,false>& rhs
 */
 template< typename MT >  // Type of the sparse matrix
 class Column<MT,false,false,true>
-   : public SparseVector< Column<MT,false,false,true>, false >
-   , private View
+   : public View< SparseVector< Column<MT,false,false,true>, false > >
 {
  private:
    //**Type definitions****************************************************************************

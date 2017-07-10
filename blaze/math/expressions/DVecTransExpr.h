@@ -95,8 +95,7 @@ namespace blaze {
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransExpr
-   : public DenseVector< DVecTransExpr<VT,TF>, TF >
-   , private VecTransExpr
+   : public VecTransExpr< DenseVector< DVecTransExpr<VT,TF>, TF > >
    , private If< IsComputation<VT>, Computation, Transformation >::Type
 {
  private:

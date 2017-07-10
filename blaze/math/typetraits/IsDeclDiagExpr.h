@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DeclDiagExpr.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -56,20 +56,44 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsDeclDiagExpr type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclDiagExprHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT >
+   static TrueType test( const DeclDiagExpr<MT>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a decldiag expression template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is a decldiag expression
-// template. In order to qualify as a valid decldiag expression template, the given type has
-// to derive (publicly or privately) from the DeclDiagExpr base class. In case the given type
-// is a valid decldiag expression template, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// template. In order to qualify as a valid decldiag expression template, the given type has to
+// derive publicly from the DeclDiagExpr base class. In case the given type is a valid decldiag
+// expression template, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
+// \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
 struct IsDeclDiagExpr
-   : public BoolConstant< And< IsBaseOf<DeclDiagExpr,T>, Not< IsBaseOf<T,DeclDiagExpr> > >::value >
+   : public IsDeclDiagExprHelper<T>::Type
 {};
 //*************************************************************************************************
 

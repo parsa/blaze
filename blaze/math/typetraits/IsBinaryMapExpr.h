@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/BinaryMapExpr.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -56,20 +56,44 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsBinaryMapExpr type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsBinaryMapExprHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename U >
+   static TrueType test( const BinaryMapExpr<U>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a binary map expression template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is a binary map expression
 // template. In order to qualify as a valid binary map expression template, the given type has
-// to derive (publicly or privately) from the BinaryMapExpr base class. In case the given type
-// is a valid binary map expression template, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// to derive publicly from the BinaryMapExpr base class. In case the given type is a valid binary
+// map expression template, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
 struct IsBinaryMapExpr
-   : public BoolConstant< And< IsBaseOf<BinaryMapExpr,T>, Not< IsBaseOf<T,BinaryMapExpr> > >::value >
+   : public IsBinaryMapExprHelper<T>::Type
 {};
 //*************************************************************************************************
 

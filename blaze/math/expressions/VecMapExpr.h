@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The VecMapExpr class serves as a tag for all expression templates that represent a unary map
 // operation on a vector. All classes, that represent a unary vector map operation and that are
-// used within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as unary vector map expression template. Only in case a class is
-// derived from the VecMapExpr base class, the IsVecMapExpr type trait recognizes the class as
-// valid unary vector map expression template.
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as unary vector map expression template. Only in case a
+// class is derived publicly from the VecMapExpr base class, the IsVecMapExpr type trait
+// recognizes the class as valid unary vector map expression template.
 */
+template< typename VT >  // Vector base type of the expression
 struct VecMapExpr
-   : private UnaryMapExpr
+   : public UnaryMapExpr<VT>
 {};
 //*************************************************************************************************
 

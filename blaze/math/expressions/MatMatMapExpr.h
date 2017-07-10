@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The MatMatMapExpr class serves as a tag for all expression templates that implement a binary
 // matrix map operation. All classes, that represent a binary matrix map operation and that are
-// used within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as binary matrix map expression template. Only in case a class is
-// derived from the MatMatMapExpr base class, the IsMatMatMapExpr type trait recognizes the class
-// as valid binary matrix map expression template.
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as binary matrix map expression template. Only in case a
+// class is derived publicly from the MatMatMapExpr base class, the IsMatMatMapExpr type trait
+// recognizes the class as valid binary matrix map expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatMatMapExpr
-   : private BinaryMapExpr
+   : public BinaryMapExpr<MT>
 {};
 //*************************************************************************************************
 

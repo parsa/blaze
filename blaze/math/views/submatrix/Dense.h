@@ -129,8 +129,7 @@ namespace blaze {
 */
 template< typename MT >  // Type of the dense matrix
 class Submatrix<MT,unaligned,false,true>
-   : public DenseMatrix< Submatrix<MT,unaligned,false,true>, false >
-   , private View
+   : public View< DenseMatrix< Submatrix<MT,unaligned,false,true>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -3483,8 +3482,7 @@ inline void Submatrix<MT,unaligned,false,true>::schurAssign( const SparseMatrix<
 */
 template< typename MT >  // Type of the dense matrix
 class Submatrix<MT,unaligned,true,true>
-   : public DenseMatrix< Submatrix<MT,unaligned,true,true>, true >
-   , private View
+   : public View< DenseMatrix< Submatrix<MT,unaligned,true,true>, true > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -6795,8 +6793,7 @@ inline void Submatrix<MT,unaligned,true,true>::schurAssign( const SparseMatrix<M
 */
 template< typename MT >  // Type of the dense matrix
 class Submatrix<MT,aligned,false,true>
-   : public DenseMatrix< Submatrix<MT,aligned,false,true>, false >
-   , private View
+   : public View< DenseMatrix< Submatrix<MT,aligned,false,true>, false > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -9738,8 +9735,7 @@ inline void Submatrix<MT,aligned,false,true>::schurAssign( const SparseMatrix<MT
 */
 template< typename MT >  // Type of the dense matrix
 class Submatrix<MT,aligned,true,true>
-   : public DenseMatrix< Submatrix<MT,aligned,true,true>, true >
-   , private View
+   : public View< DenseMatrix< Submatrix<MT,aligned,true,true>, true > >
 {
  private:
    //**Type definitions****************************************************************************

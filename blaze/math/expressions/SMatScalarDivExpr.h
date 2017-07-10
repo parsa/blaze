@@ -111,8 +111,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
 class SMatScalarDivExpr
-   : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
-   , private MatScalarDivExpr
+   : public MatScalarDivExpr< SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO > >
    , private Computation
 {
  private:

@@ -97,8 +97,7 @@ namespace blaze {
 template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side sparse vector
 class TSMatSVecMultExpr
-   : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
-   , private MatVecMultExpr
+   : public MatVecMultExpr< SparseVector< TSMatSVecMultExpr<MT,VT>, false > >
    , private Computation
 {
  private:

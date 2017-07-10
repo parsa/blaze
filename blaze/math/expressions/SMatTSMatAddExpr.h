@@ -105,8 +105,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class SMatTSMatAddExpr
-   : public SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false >
-   , private MatMatAddExpr
+   : public MatMatAddExpr< SparseMatrix< SMatTSMatAddExpr<MT1,MT2>, false > >
    , private Computation
 {
  private:

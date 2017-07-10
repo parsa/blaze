@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The VecVecDivExpr class serves as a tag for all expression templates that implement a
 // vector/vector division. All classes, that represent a vector division and that are used
-// within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as vector division expression template. Only in case a class
-// is derived from the VecVecDivExpr base class, the IsVecVecDivExpr type trait recognizes
-// the class as valid vector division expression template.
+// within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as vector division expression template. Only in case
+// a class is derived publicly from the VecVecDivExpr base class, the IsVecVecDivExpr type
+// trait recognizes the class as valid vector division expression template.
 */
+template< typename VT >  // Vector base type of the expression
 struct VecVecDivExpr
-   : private DivExpr
+   : public DivExpr<VT>
 {};
 //*************************************************************************************************
 

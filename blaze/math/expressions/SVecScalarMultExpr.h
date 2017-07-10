@@ -106,8 +106,7 @@ template< typename VT  // Type of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
 class SVecScalarMultExpr
-   : public SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF >
-   , private VecScalarMultExpr
+   : public VecScalarMultExpr< SparseVector< SVecScalarMultExpr<VT,ST,TF>, TF > >
    , private Computation
 {
  private:

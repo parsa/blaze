@@ -90,8 +90,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
 class DVecSVecMultExpr
-   : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
-   , private VecVecMultExpr
+   : public VecVecMultExpr< SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF > >
    , private Computation
 {
  private:

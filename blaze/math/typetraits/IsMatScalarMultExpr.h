@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -56,22 +56,47 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsMatScalarMultExpr type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatScalarMultExprHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT >
+   static TrueType test( const MatScalarMultExpr<MT>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a matrix/scalar multiplication expression
 //        template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is a matrix/scalar
 // multiplication expression template. In order to qualify as a valid matrix/scalar
-// multiplication expression template, the given type has to derive (publicly or privately)
-// from the MatScalarMultExpr base class. In case the given type is a valid matrix/scalar
-// multiplication expression template, the \a value member constant is set to \a true, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives
-// from \a FalseType.
+// multiplication expression template, the given type has to derive publicly from the
+// MatScalarMultExpr base class. In case the given type is a valid matrix/scalar multiplication
+// expression template, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 */
 template< typename T >
 struct IsMatScalarMultExpr
-   : public BoolConstant< And< IsBaseOf<MatScalarMultExpr,T>, Not< IsBaseOf<T,MatScalarMultExpr> > >::value >
+   : public IsMatScalarMultExprHelper<T>::Type
 {};
 //*************************************************************************************************
 

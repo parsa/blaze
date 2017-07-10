@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The DeclExpr class serves as a tag for all expression templates that represent an explicit
 // declaration operation. All classes, that represent a declaration operation and that are used
-// within the expression template environment of the Blaze library have to derive from this class
-// in order to qualify as declaration expression template. Only in case a class is derived from
-// the DeclExpr base class, the IsDeclExpr type trait recognizes the class as valid declaration
-// expression template.
+// within the expression template environment of the Blaze library have to derive publicly from
+// this class in order to qualify as declaration expression template. Only in case a class is
+// derived publicly from the DeclExpr base class, the IsDeclExpr type trait recognizes the class
+// as valid declaration expression template.
 */
+template< typename T >  // Base type of the expression
 struct DeclExpr
-   : private Expression
+   : public Expression<T>
 {};
 //*************************************************************************************************
 

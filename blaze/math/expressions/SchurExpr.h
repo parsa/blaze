@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The SchurExpr class serves as a tag for all expression templates that implement mathematical
 // Schur products. All classes, that represent a mathematical Schur product and that are used
-// within the expression template environment of the Blaze library have to derive from this
-// class in order to qualify as Schur product expression template. Only in case a class is
-// derived from the SchurExpr base class, the IsSchurExpr type trait recognizes the class as
-// valid Schur product expression template.
+// within the expression template environment of the Blaze library have to derive publicly from
+// this class in order to qualify as Schur product expression template. Only in case a class is
+// derived publicly from the SchurExpr base class, the IsSchurExpr type trait recognizes the
+// class as valid Schur product expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct SchurExpr
-   : private Expression
+   : public Expression<MT>
 {};
 //*************************************************************************************************
 

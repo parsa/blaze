@@ -115,8 +115,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
 class DMatScalarDivExpr
-   : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
-   , private MatScalarDivExpr
+   : public MatScalarDivExpr< DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO > >
    , private Computation
 {
  private:

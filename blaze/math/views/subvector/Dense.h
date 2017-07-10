@@ -106,8 +106,7 @@ namespace blaze {
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class Subvector<VT,unaligned,TF,true>
-   : public DenseVector< Subvector<VT,unaligned,TF,true>, TF >
-   , private View
+   : public View< DenseVector< Subvector<VT,unaligned,TF,true>, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -2660,8 +2659,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true>::template VectorizedD
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class Subvector<VT,aligned,TF,true>
-   : public DenseVector< Subvector<VT,aligned,TF,true>, TF >
-   , private View
+   : public View< DenseVector< Subvector<VT,aligned,TF,true>, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -4788,8 +4786,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
 class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
-   : public DenseVector< Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF >
-   , private View
+   : public View< DenseVector< Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -4959,8 +4956,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
 class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
-   : public DenseVector< Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF >
-   , private View
+   : public View< DenseVector< Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -5130,8 +5126,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
 class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
-   : public DenseVector< Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF >
-   , private View
+   : public View< DenseVector< Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -5301,8 +5296,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
 class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
-   : public DenseVector< Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF >
-   , private View
+   : public View< DenseVector< Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >, TF > >
 {
  private:
    //**Type definitions****************************************************************************

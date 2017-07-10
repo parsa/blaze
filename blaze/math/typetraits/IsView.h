@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/View.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -54,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsView type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsViewHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename U >
+   static TrueType test( const View<U>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for views.
@@ -85,7 +110,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsView
-   : public BoolConstant< And< IsBaseOf<View,T>, Not< IsBaseOf<T,View> > >::value >
+   : public IsViewHelper<T>::Type
 {};
 //*************************************************************************************************
 

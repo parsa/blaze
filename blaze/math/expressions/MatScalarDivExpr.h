@@ -52,18 +52,19 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base class for all matrix/scalar divsion expression templates.
+/*!\brief Base class for all matrix/scalar division expression templates.
 // \ingroup math
 //
 // The MatScalarDivExpr class serves as a tag for all expression templates that implement a
-// matrix/scalar divsion. All classes, that represent a matrix/scalar divsion and that are
-// used within the expression template environment of the Blaze library have to derive from
-// this class in order to qualify as matrix/scalar divsion expression template. Only in case
-// a class is derived from the MatScalarDivExpr base class, the IsMatScalarDivExpr type trait
-// recognizes the class as valid matrix/scalar divsion expression template.
+// matrix/scalar division. All classes, that represent a matrix/scalar division and that are
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as matrix/scalar division expression template. Only in
+// case a class is derived publicly from the MatScalarDivExpr base class, the IsMatScalarDivExpr
+// type trait recognizes the class as valid matrix/scalar division expression template.
 */
+template< typename MT >  // Matrix base type of the expression
 struct MatScalarDivExpr
-   : private DivExpr
+   : public DivExpr<MT>
 {};
 //*************************************************************************************************
 

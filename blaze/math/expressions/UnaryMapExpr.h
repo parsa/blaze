@@ -57,13 +57,14 @@ namespace blaze {
 //
 // The UnaryMapExpr class serves as a tag for all expression templates that represent a unary
 // map operation. All classes, that represent a unary map operation and that are used within
-// the expression template environment of the Blaze library have to derive from this class in
-// order to qualify as unary map expression template. Only in case a class is derived from the
-// UnaryMapExpr base class, the IsUnaryMapExpr type trait recognizes the class as valid unary
-// map expression template.
+// the expression template environment of the Blaze library have to derive publicly from this
+// class in order to qualify as unary map expression template. Only in case a class is derived
+// publicly from the UnaryMapExpr base class, the IsUnaryMapExpr type trait recognizes the
+// class as valid unary map expression template.
 */
+template< typename T >  // Base type of the expression
 struct UnaryMapExpr
-   : private Expression
+   : public Expression<T>
 {};
 //*************************************************************************************************
 

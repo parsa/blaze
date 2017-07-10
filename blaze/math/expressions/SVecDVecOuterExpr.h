@@ -103,8 +103,7 @@ namespace blaze {
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 class SVecDVecOuterExpr
-   : public SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true >
-   , private VecTVecMultExpr
+   : public VecTVecMultExpr< SparseMatrix< SVecDVecOuterExpr<VT1,VT2>, true > >
    , private Computation
 {
  private:

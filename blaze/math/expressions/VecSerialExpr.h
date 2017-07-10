@@ -56,14 +56,16 @@ namespace blaze {
 // \ingroup math
 //
 // The VecSerialExpr class serves as a tag for all expression templates that enforce a serial
-// evaluation of a vector. All classes, that represent a vector serialization operation and that
-// are used within the expression template environment of the Blaze library have to derive from
-// this class in order to qualify as vector serial evaluation expression template. Only in case
-// a class is derived from the VecSerialExpr base class, the IsVecSerialExpr type trait recognizes
-// the class as valid vector serial evaluation expression template.
+// evaluation of a vector. All classes, that represent a vector serialization operation and
+// that are used within the expression template environment of the Blaze library have to
+// derive publicly from this class in order to qualify as vector serial evaluation expression
+// template. Only in case a class is derived publicly from the VecSerialExpr base class, the
+// IsVecSerialExpr type trait recognizes the class as valid vector serial evaluation expression
+// template.
 */
+template< typename VT >  // Vector base type of the expression
 struct VecSerialExpr
-   : private SerialExpr
+   : public SerialExpr<VT>
 {};
 //*************************************************************************************************
 

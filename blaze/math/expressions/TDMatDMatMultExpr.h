@@ -167,8 +167,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool LF       // Lower flag
         , bool UF >     // Upper flag
 class TDMatDMatMultExpr
-   : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, true >
-   , private MatMatMultExpr
+   : public MatMatMultExpr< DenseMatrix< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, true > >
    , private Computation
 {
  private:
@@ -5595,8 +5594,7 @@ template< typename MT1   // Type of the left-hand side dense matrix
         , bool UF        // Upper flag
         , typename ST >  // Type of the right-hand side scalar value
 class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
-   : public DenseMatrix< DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >, true >
-   , private MatScalarMultExpr
+   : public MatScalarMultExpr< DenseMatrix< DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >, true > >
    , private Computation
 {
  private:

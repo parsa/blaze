@@ -144,8 +144,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool LF       // Lower flag
         , bool UF >     // Upper flag
 class DMatSMatMultExpr
-   : public DenseMatrix< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>, false >
-   , private MatMatMultExpr
+   : public MatMatMultExpr< DenseMatrix< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>, false > >
    , private Computation
 {
  private:

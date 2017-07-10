@@ -111,8 +111,7 @@ template< typename MT  // Type of the dense matrix
         , typename OP  // Type of the custom operation
         , bool SO >    // Storage order
 class DMatMapExpr
-   : public DenseMatrix< DMatMapExpr<MT,OP,SO>, SO >
-   , private MatMapExpr
+   : public MatMapExpr< DenseMatrix< DMatMapExpr<MT,OP,SO>, SO > >
    , private Computation
 {
  private:

@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatInvExpr.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -56,20 +56,45 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsMatInvExpr type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatInvExprHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT >
+   static TrueType test( const MatInvExpr<MT>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time check whether the given type is a matrix inversion expression template.
 // \ingroup math_type_traits
 //
 // This type trait class tests whether or not the given type \a Type is a matrix inversion
 // expression template. In order to qualify as a valid matrix inversion expression template,
-// the given type has to derive (publicly or privately) from the MatInvExpr base class. In
-// case the given type is a valid matrix inversion expression template, the \a value member
-// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the
-// class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
-// \a FalseType, and the class derives from \a FalseType.
+// the given type has to derive publicly from the MatInvExpr base class. In case the given
+// type is a valid matrix inversion expression template, the \a value member constant is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 */
 template< typename T >
 struct IsMatInvExpr
-   : public BoolConstant< And< IsBaseOf<MatInvExpr,T>, Not< IsBaseOf<T,MatInvExpr> > >::value >
+   : public IsMatInvExprHelper<T>::Type
 {};
 //*************************************************************************************************
 
