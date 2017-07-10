@@ -1694,7 +1694,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = decllow( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1776,7 +1776,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += decllow( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1822,7 +1822,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += decllow( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
@@ -1859,7 +1859,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= decllow( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1905,7 +1905,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= decllow( tmp );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );

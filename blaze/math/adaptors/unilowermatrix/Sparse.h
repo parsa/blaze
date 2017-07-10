@@ -1029,7 +1029,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = decllow( ~rhs );
 
    if( !IsUniLower<MT2>::value )
       resetUpper();
@@ -1117,7 +1117,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += decllow( ~rhs );
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
@@ -1166,7 +1166,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
       }
 
-      matrix_ += tmp;
+      matrix_ += decllow( tmp );
    }
 
    if( !IsStrictlyLower<MT2>::value )
@@ -1206,7 +1206,7 @@ inline DisableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= decllow( ~rhs );
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
@@ -1255,7 +1255,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
       }
 
-      matrix_ -= tmp;
+      matrix_ -= decllow( tmp );
    }
 
    if( !IsStrictlyLower<MT2>::value )
