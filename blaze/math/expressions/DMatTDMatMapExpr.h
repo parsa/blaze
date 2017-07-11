@@ -82,6 +82,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 
 

@@ -36,15 +36,6 @@
 #define _BLAZE_MATH_SHIMS_CLAMP_H_
 
 
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/system/Inline.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-
-
 namespace blaze {
 
 //=================================================================================================
@@ -77,7 +68,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-const T& clamp( const T& a, const T& min, const T& max ) noexcept
+inline const T& clamp( const T& a, const T& min, const T& max ) noexcept
 {
    if( a < min )
       return min;

@@ -44,10 +44,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Integral.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/All.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
