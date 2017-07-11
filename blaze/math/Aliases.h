@@ -205,6 +205,26 @@ using LeftOperand_ = typename T::LeftOperand;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c MatrixType type definitions.
+// \ingroup aliases
+//
+// The MatrixType_ alias declaration provides a convenient shortcut to access the nested
+// \a MatrixType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::MatrixType;
+   using Type2 = MatrixType_<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using MatrixType_ = typename T::MatrixType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c Operand type definitions.
 // \ingroup aliases
 //
@@ -421,6 +441,26 @@ using TransposeType_ = typename T::TransposeType;
 */
 template< typename T >
 using ValueType_ = typename T::ValueType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Alias declaration for nested \c VectorType type definitions.
+// \ingroup aliases
+//
+// The VectorType_ alias declaration provides a convenient shortcut to access the nested
+// \a VectorType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::VectorType;
+   using Type2 = VectorType_<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using VectorType_ = typename T::VectorType;
 //*************************************************************************************************
 
 } // namespace blaze
