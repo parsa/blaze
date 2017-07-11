@@ -151,6 +151,8 @@
 #include <blaze/math/traits/SMatTSMatSchurExprTrait.h>
 #include <blaze/math/traits/SMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>

@@ -59,7 +59,6 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -1103,21 +1102,6 @@ struct DMatTDMatSubExprTrait< TDMatSMatAddExpr<MT1,MT2>, MT3 >
                    , TDMatSMatAddExprTrait_< TDMatTDMatSubExprTrait_<MT1,MT3>, MT2 >
                    , INVALID_TYPE >;
    /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool AF >
-struct SubmatrixExprTrait< TDMatSMatAddExpr<MT1,MT2>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = AddExprTrait_< SubmatrixExprTrait_<const MT1,AF>
-                             , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

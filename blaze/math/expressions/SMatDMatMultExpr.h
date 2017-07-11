@@ -75,7 +75,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatDVecMultExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
@@ -2557,21 +2556,6 @@ struct DMatDeclDiagExprTrait< SMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
                         , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2> >
                    , SMatDMatMultExpr<MT1,MT2,SF,HF,true,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF, bool AF >
-struct SubmatrixExprTrait< SMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT1,AF>
-                              , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

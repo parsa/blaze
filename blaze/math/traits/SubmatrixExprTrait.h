@@ -40,21 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDeclExpr.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -88,27 +78,20 @@ struct SubmatrixExprTrait
 
    //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename T >
-   struct Result { using Type = Submatrix< T, AF, IsColumnMajorMatrix<T>::value, IsDenseMatrix<T>::value >; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Tmp = RemoveReference_<MT>;
+   struct Result { using Type = decltype( submatrix<AF>( std::declval<MT>()
+                                                       , std::declval<size_t>()
+                                                       , std::declval<size_t>()
+                                                       , std::declval<size_t>()
+                                                       , std::declval<size_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp>, IsDeclExpr<Tmp> >
-                            , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                 , SubmatrixExprTrait< RemoveCV_<Tmp>, AF >
-                                 , Failure >
-                            , If_< IsMatrix<Tmp>
-                                 , Result<Tmp>
-                                 , Failure >
+   using Type = typename If_< IsMatrix< RemoveReference_<MT> >
+                            , Result
+                            , Failure
                             >::Type;
    /*! \endcond */
    //**********************************************************************************************

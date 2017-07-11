@@ -58,7 +58,6 @@
 #include <blaze/math/traits/DMatTransExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1156,20 +1155,6 @@ struct TDMatTransExprTrait< DMatScalarMultExpr<MT,ST,true> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
                    , MultExprTrait_< TransExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool AF >
-struct SubmatrixExprTrait< DMatTransExpr<MT,SO>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = TransExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

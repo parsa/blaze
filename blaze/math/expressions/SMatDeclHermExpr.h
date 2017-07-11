@@ -58,7 +58,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatDeclHermExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TSMatDeclHermExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1238,20 +1237,6 @@ struct TSMatDeclHermExprTrait< SMatScalarMultExpr<MT,ST,true> >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
                    , MultExprTrait_< DeclHermExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool AF >
-struct SubmatrixExprTrait< SMatDeclHermExpr<MT,SO>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SubmatrixExprTrait_<const MT,AF>;
    //**********************************************************************************************
 };
 /*! \endcond */

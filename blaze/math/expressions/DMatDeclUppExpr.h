@@ -60,7 +60,6 @@
 #include <blaze/math/traits/DMatDeclUppExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatDeclUppExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1282,20 +1281,6 @@ struct TDMatDeclUppExprTrait< DMatScalarMultExpr<MT,ST,true> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
                    , MultExprTrait_< DeclUppExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool AF >
-struct SubmatrixExprTrait< DMatDeclUppExpr<MT,SO>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SubmatrixExprTrait_<const MT,AF>;
    //**********************************************************************************************
 };
 /*! \endcond */

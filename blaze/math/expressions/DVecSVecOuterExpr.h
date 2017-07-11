@@ -64,8 +64,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -1503,21 +1501,6 @@ struct Columns< DVecSVecOuterExpr<VT1,VT2> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool AF >
-struct SubmatrixExprTrait< DVecSVecOuterExpr<VT1,VT2>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< SubvectorExprTrait_<const VT1,AF>
-                              , SubvectorExprTrait_<const VT2,AF> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

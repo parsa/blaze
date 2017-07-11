@@ -58,7 +58,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1400,28 +1399,6 @@ struct TDMatScalarMultExprTrait< DMatScalarDivExpr<MT,ST1,true>, ST2 >
                         , DMatScalarMultExprTrait_<MT,ScalarType>
                         , DMatScalarMultExpr< DMatScalarDivExpr<MT,ST1,true>, ST2, true > >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO, bool AF >
-struct SubmatrixExprTrait< DMatScalarDivExpr<MT,ST,SO>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = DivExprTrait_< SubmatrixExprTrait_<const MT,AF>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */

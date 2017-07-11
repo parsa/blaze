@@ -51,7 +51,6 @@
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/ThreadMapping.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -104,8 +103,6 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
-   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -139,19 +136,19 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
@@ -186,8 +183,6 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
-
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
@@ -209,7 +204,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
@@ -339,8 +334,6 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
-   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -374,19 +367,19 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
@@ -421,8 +414,6 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
-
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
@@ -444,7 +435,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
@@ -574,8 +565,6 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
-   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -609,19 +598,19 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
@@ -657,8 +646,6 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
-
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
@@ -680,7 +667,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }
@@ -811,8 +798,6 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
 
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
-   using AlignedTarget   = SubmatrixExprTrait_<MT1,aligned>;
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
 
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
@@ -846,19 +831,19 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
       }
       else {
-         UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
    }
@@ -894,8 +879,6 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubmatrixExprTrait_<MT1,unaligned>;
-
    const size_t threads( omp_get_num_threads() );
    const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
 
@@ -917,7 +900,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      UnalignedTarget target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
    }
 }

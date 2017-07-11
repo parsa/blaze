@@ -60,7 +60,6 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1465,22 +1464,6 @@ struct IsStrictlyUpper< DMatTDMatMapExpr<MT1,MT2,Max> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename OP, bool AF >
-struct SubmatrixExprTrait< DMatTDMatMapExpr<MT1,MT2,OP>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = BinaryMapExprTrait_< SubmatrixExprTrait_<const MT1,AF>
-                                   , SubmatrixExprTrait_<const MT2,AF>
-                                   , OP >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

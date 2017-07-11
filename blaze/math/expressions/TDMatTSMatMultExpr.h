@@ -68,7 +68,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatDeclDiagExprTrait.h>
 #include <blaze/math/traits/TDMatDeclHermExprTrait.h>
 #include <blaze/math/traits/TDMatDeclLowExprTrait.h>
@@ -2556,21 +2555,6 @@ struct TDMatDeclDiagExprTrait< TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
                         , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
                    , TDMatTSMatMultExpr<MT1,MT2,SF,HF,true,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF, bool AF >
-struct SubmatrixExprTrait< TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< SubmatrixExprTrait_<const MT1,AF>
-                              , SubmatrixExprTrait_<const MT2,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

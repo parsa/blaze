@@ -44,7 +44,22 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/expressions/DeclExpr.h>
+#include <blaze/math/expressions/MatEvalExpr.h>
+#include <blaze/math/expressions/MatMapExpr.h>
+#include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatMapExpr.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/MatScalarDivExpr.h>
+#include <blaze/math/expressions/MatScalarMultExpr.h>
+#include <blaze/math/expressions/MatSerialExpr.h>
+#include <blaze/math/expressions/MatTransExpr.h>
+#include <blaze/math/expressions/MatVecMultExpr.h>
+#include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/expressions/TVecMatMultExpr.h>
+#include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -53,34 +68,16 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDeclExpr.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatEvalExpr.h>
-#include <blaze/math/typetraits/IsMatMapExpr.h>
-#include <blaze/math/typetraits/IsMatMatAddExpr.h>
-#include <blaze/math/typetraits/IsMatMatMapExpr.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
-#include <blaze/math/typetraits/IsMatMatSubExpr.h>
-#include <blaze/math/typetraits/IsMatScalarDivExpr.h>
-#include <blaze/math/typetraits/IsMatScalarMultExpr.h>
-#include <blaze/math/typetraits/IsMatSerialExpr.h>
-#include <blaze/math/typetraits/IsMatTransExpr.h>
-#include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsSchurExpr.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/Dense.h>
 #include <blaze/math/views/submatrix/Sparse.h>
@@ -88,10 +85,8 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -101,7 +96,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTION
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -166,7 +161,7 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline SubmatrixExprTrait_<MT,unaligned>
+inline decltype(auto)
    submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -236,7 +231,7 @@ inline SubmatrixExprTrait_<MT,unaligned>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const SubmatrixExprTrait_<const MT,unaligned>
+inline decltype(auto)
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -266,7 +261,7 @@ inline const SubmatrixExprTrait_<const MT,unaligned>
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline SubmatrixExprTrait_<MT,unaligned>
+inline decltype(auto)
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
@@ -353,13 +348,12 @@ inline SubmatrixExprTrait_<MT,unaligned>
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                 , SubmatrixExprTrait_<MT,AF> >
+inline Submatrix<MT,AF>
    submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubmatrixExprTrait_<MT,AF>( ~matrix, row, column, m, n );
+   return Submatrix<MT,AF>( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -439,13 +433,12 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                       , SubmatrixExprTrait_<const MT,AF> >
+inline const Submatrix<const MT,AF>
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubmatrixExprTrait_<const MT,AF>( ~matrix, row, column, m, n );
+   return Submatrix<const MT,AF>( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -472,13 +465,12 @@ inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> 
 template< bool AF      // Alignment flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                     , SubmatrixExprTrait_<MT,AF> >
+inline Submatrix<MT,AF>
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubmatrixExprTrait_<MT,AF>( ~matrix, row, column, m, n );
+   return Submatrix<MT,AF>( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -487,7 +479,7 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
@@ -588,11 +580,10 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, size_t index
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix addition.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatAddExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatMatAddExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -618,11 +609,10 @@ inline const EnableIf_< IsMatMatAddExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix subtraction.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatSubExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatMatSubExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -648,11 +638,10 @@ inline const EnableIf_< IsMatMatSubExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given Schur
 // product.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsSchurExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const SchurExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -678,19 +667,18 @@ inline const EnableIf_< IsSchurExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatMatMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT1 = RemoveReference_< LeftOperand_<MT> >;
-   using MT2 = RemoveReference_< RightOperand_<MT> >;
+   using MT1 = RemoveReference_< LeftOperand_< MatrixType_<MT> > >;
+   using MT2 = RemoveReference_< RightOperand_< MatrixType_<MT> > >;
 
-   LeftOperand_<MT>  left ( (~matrix).leftOperand()  );
-   RightOperand_<MT> right( (~matrix).rightOperand() );
+   decltype(auto) left ( (~matrix).leftOperand()  );
+   decltype(auto) right( (~matrix).rightOperand() );
 
    const size_t begin( max( ( IsUpper<MT1>::value )
                             ?( ( !AF && IsStrictlyUpper<MT1>::value )?( row + 1UL ):( row ) )
@@ -729,11 +717,10 @@ inline const EnableIf_< IsMatMatMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsVecTVecMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const VecTVecMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -759,11 +746,10 @@ inline const EnableIf_< IsVecTVecMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatScalarMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatScalarMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -788,11 +774,10 @@ inline const EnableIf_< IsMatScalarMultExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar division.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatScalarDivExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -817,11 +802,10 @@ inline const EnableIf_< IsMatScalarDivExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given unary
 // matrix map operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatMapExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -846,11 +830,10 @@ inline const EnableIf_< IsMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given binary
 // matrix map operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatMatMapExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -877,11 +860,10 @@ inline const EnableIf_< IsMatMatMapExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given matrix
 // evaluation operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatEvalExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatEvalExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -906,11 +888,10 @@ inline const EnableIf_< IsMatEvalExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given matrix
 // serialization operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatSerialExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -935,11 +916,10 @@ inline const EnableIf_< IsMatSerialExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given matrix
 // declaration operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsDeclExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const DeclExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -964,11 +944,10 @@ inline const EnableIf_< IsDeclExpr<MT>, SubmatrixExprTrait_<MT,AF> >
 // This function returns an expression representing the specified submatrix of the given matrix
 // transpose operation.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatTransExpr<MT>, SubmatrixExprTrait_<MT,AF> >
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+template< bool AF        // Alignment flag
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto)
+   submatrix( const MatTransExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2301,58 +2280,6 @@ template< typename MT, bool AF, bool SO, bool DF >
 struct SubmatrixTrait< Submatrix<MT,AF,SO,DF> >
 {
    using Type = SubmatrixTrait_< ResultType_< Submatrix<MT,AF,SO,DF> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool DF, bool AF2 >
-struct SubmatrixExprTrait< Submatrix<MT,AF1,SO,DF>, AF2 >
-{
-   using Type = Submatrix<MT,AF2,SO,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool DF, bool AF2 >
-struct SubmatrixExprTrait< const Submatrix<MT,AF1,SO,DF>, AF2 >
-{
-   using Type = Submatrix<MT,AF2,SO,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool DF, bool AF2 >
-struct SubmatrixExprTrait< volatile Submatrix<MT,AF1,SO,DF>, AF2 >
-{
-   using Type = Submatrix<MT,AF2,SO,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF1, bool SO, bool DF, bool AF2 >
-struct SubmatrixExprTrait< const volatile Submatrix<MT,AF1,SO,DF>, AF2 >
-{
-   using Type = Submatrix<MT,AF2,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************

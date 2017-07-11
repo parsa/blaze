@@ -52,7 +52,6 @@
 #include <blaze/math/traits/DMatSerialExprTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatSerialExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1096,20 +1095,6 @@ struct TDMatSerialExprTrait< DMatSerialExpr<MT,true> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatSerialExpr<MT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool AF >
-struct SubmatrixExprTrait< DMatSerialExpr<MT,SO>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SerialExprTrait_< SubmatrixExprTrait_<const MT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -58,7 +58,6 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -1086,21 +1085,6 @@ struct IsStrictlyUpper< SMatTSMatSubExpr<MT1,MT2> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool AF >
-struct SubmatrixExprTrait< SMatTSMatSubExpr<MT1,MT2>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SubExprTrait_< SubmatrixExprTrait_<const MT1,AF>
-                             , SubmatrixExprTrait_<const MT2,AF> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
