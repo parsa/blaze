@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecSerialExprTrait.h>
 #include <blaze/math/traits/TSVecSerialExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -744,20 +743,6 @@ struct TSVecSerialExprTrait< SVecSerialExpr<VT,true> >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
               , SVecSerialExpr<VT,true>
               , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< SVecSerialExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SerialExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

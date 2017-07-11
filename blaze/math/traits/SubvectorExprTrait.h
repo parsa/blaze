@@ -40,20 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
+#include <utility>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -87,27 +78,18 @@ struct SubvectorExprTrait
 
    //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename T >
-   struct Result { using Type = Subvector< T, AF, IsRowVector<T>::value, IsDenseVector<T>::value >; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Tmp = RemoveReference_<VT>;
+   struct Result { using Type = decltype( subvector<AF>( std::declval<VT>()
+                                                       , std::declval<size_t>()
+                                                       , std::declval<size_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsComputation<Tmp>, IsTransExpr<Tmp> >
-                            , If_< Or< IsConst<Tmp>, IsVolatile<Tmp> >
-                                 , SubvectorExprTrait< RemoveCV_<Tmp>, AF >
-                                 , Failure >
-                            , If_< IsVector<Tmp>
-                                 , Result<Tmp>
-                                 , Failure >
+   using Type = typename If_< IsVector< RemoveReference_<VT> >
+                            , Result
+                            , Failure
                             >::Type;
    /*! \endcond */
    //**********************************************************************************************

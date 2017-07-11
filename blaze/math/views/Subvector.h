@@ -43,7 +43,19 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/expressions/CrossExpr.h>
+#include <blaze/math/expressions/VecEvalExpr.h>
+#include <blaze/math/expressions/VecMapExpr.h>
+#include <blaze/math/expressions/VecScalarDivExpr.h>
+#include <blaze/math/expressions/VecScalarMultExpr.h>
+#include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/expressions/Vector.h>
+#include <blaze/math/expressions/VecTransExpr.h>
+#include <blaze/math/expressions/VecVecAddExpr.h>
+#include <blaze/math/expressions/VecVecDivExpr.h>
+#include <blaze/math/expressions/VecVecMapExpr.h>
+#include <blaze/math/expressions/VecVecMultExpr.h>
+#include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -51,30 +63,13 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsCrossExpr.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsVecEvalExpr.h>
-#include <blaze/math/typetraits/IsVecMapExpr.h>
-#include <blaze/math/typetraits/IsVecScalarDivExpr.h>
-#include <blaze/math/typetraits/IsVecScalarMultExpr.h>
-#include <blaze/math/typetraits/IsVecSerialExpr.h>
-#include <blaze/math/typetraits/IsVecTransExpr.h>
-#include <blaze/math/typetraits/IsVecVecAddExpr.h>
-#include <blaze/math/typetraits/IsVecVecDivExpr.h>
-#include <blaze/math/typetraits/IsVecVecMapExpr.h>
-#include <blaze/math/typetraits/IsVecVecMultExpr.h>
-#include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
@@ -87,7 +82,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTION
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -149,8 +144,7 @@ namespace blaze {
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline SubvectorExprTrait_<VT,unaligned>
-   subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -217,8 +211,7 @@ inline SubvectorExprTrait_<VT,unaligned>
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline const SubvectorExprTrait_<const VT,unaligned>
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -244,8 +237,7 @@ inline const SubvectorExprTrait_<const VT,unaligned>
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-inline SubvectorExprTrait_<VT,unaligned>
-   subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
+inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -328,12 +320,11 @@ inline SubvectorExprTrait_<VT,unaligned>
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<VT,AF> >
-   subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+inline Subvector<VT,AF> subvector( Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubvectorExprTrait_<VT,AF>( ~vector, index, size );
+   return Subvector<VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -410,12 +401,12 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<const VT,AF> >
+inline const Subvector<const VT,AF>
    subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubvectorExprTrait_<const VT,AF>( ~vector, index, size );
+   return Subvector<const VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -440,12 +431,11 @@ inline const DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExpr
 template< bool AF      // Alignment flag
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_<VT,AF> >
-   subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
+inline Subvector<VT,AF> subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubvectorExprTrait_<VT,AF>( ~vector, index, size );
+   return Subvector<VT,AF>( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -454,7 +444,7 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
@@ -471,11 +461,9 @@ inline DisableIf_< Or< IsComputation<VT>, IsTransExpr<VT> >, SubvectorExprTrait_
 // This function returns an expression representing the specified subvector of the given
 // vector/vector addition.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecVecAddExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -499,11 +487,9 @@ inline const EnableIf_< IsVecVecAddExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/vector subtraction.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecVecSubExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -527,11 +513,9 @@ inline const EnableIf_< IsVecVecSubExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/vector multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -555,11 +539,9 @@ inline const EnableIf_< IsVecVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/vector division.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecVecDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -583,15 +565,13 @@ inline const EnableIf_< IsVecVecDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/vector cross product.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsCrossExpr<VT>, SubvectorExprTrait_<VT,unaligned> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const CrossExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SubvectorExprTrait_<VT,unaligned>( ~vector, index, size );
+   return Subvector< VectorType_<VT>, AF >( ~vector, index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -610,11 +590,9 @@ inline const EnableIf_< IsCrossExpr<VT>, SubvectorExprTrait_<VT,unaligned> >
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecScalarMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -637,11 +615,9 @@ inline const EnableIf_< IsVecScalarMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar division.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -664,11 +640,9 @@ inline const EnableIf_< IsVecScalarDivExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given unary
 // vector map operation.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecMapExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -691,11 +665,9 @@ inline const EnableIf_< IsVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given binary
 // vector map operation.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -720,11 +692,9 @@ inline const EnableIf_< IsVecVecMapExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given vector
 // evaluation operation.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecEvalExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -747,11 +717,9 @@ inline const EnableIf_< IsVecEvalExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given vector
 // serialization operation.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecSerialExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -774,11 +742,9 @@ inline const EnableIf_< IsVecSerialExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given vector
 // transpose operation.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsVecTransExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const VecTransExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1501,133 +1467,6 @@ template< typename T, typename VT, bool AF, bool TF, bool DF >
 struct CrossTrait< T, Subvector<VT,AF,TF,DF> >
 {
    using Type = CrossTrait_< T, SubvectorTrait_<VT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, bool TF, bool DF >
-struct SubvectorTrait< Subvector<VT,AF,TF,DF> >
-{
-   using Type = SubvectorTrait_< ResultType_< Subvector<VT,AF,TF,DF> > >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTOREXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF1, bool TF, bool DF, bool AF2 >
-struct SubvectorExprTrait< Subvector<VT,AF1,TF,DF>, AF2 >
-{
-   using Type = Subvector<VT,AF2,TF,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF1, bool TF, bool DF, bool AF2 >
-struct SubvectorExprTrait< const Subvector<VT,AF1,TF,DF>, AF2 >
-{
-   using Type = Subvector<VT,AF2,TF,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF1, bool TF, bool DF, bool AF2 >
-struct SubvectorExprTrait< volatile Subvector<VT,AF1,TF,DF>, AF2 >
-{
-   using Type = Subvector<VT,AF2,TF,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF1, bool TF, bool DF, bool AF2 >
-struct SubvectorExprTrait< const volatile Subvector<VT,AF1,TF,DF>, AF2 >
-{
-   using Type = Subvector<VT,AF2,TF,DF>;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF, bool AF >
-struct SubvectorExprTrait< DVecDVecCrossExpr<VT1,VT2,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF, bool AF >
-struct SubvectorExprTrait< DVecSVecCrossExpr<VT1,VT2,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF, bool AF >
-struct SubvectorExprTrait< SVecDVecCrossExpr<VT1,VT2,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF, bool AF >
-struct SubvectorExprTrait< SVecSVecCrossExpr<VT1,VT2,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >;
-   //**********************************************************************************************
 };
 /*! \endcond */
 //*************************************************************************************************

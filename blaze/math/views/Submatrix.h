@@ -55,7 +55,6 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -505,18 +504,16 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 // This function returns an expression representing the specified subvector of the given
 // matrix/vector multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_< LeftOperand_<VT> >;
+   using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
 
-   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
-   RightOperand_<VT> right( (~vector).rightOperand() );
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
 
    const size_t column( ( IsUpper<MT>::value )
                         ?( ( !AF && IsStrictlyUpper<MT>::value )?( index + 1UL ):( index ) )
@@ -548,18 +545,16 @@ inline const EnableIf_< IsMatVecMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
 // This function returns an expression representing the specified subvector of the given
 // vector/matrix multiplication.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsTVecMatMultExpr<VT>, SubvectorExprTrait_<VT,AF> >
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< bool AF        // Alignment flag
+        , typename VT >  // Vector base type of the expression
+inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_< RightOperand_<VT> >;
+   using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
 
-   LeftOperand_<VT>  left ( (~vector).leftOperand()  );
-   RightOperand_<VT> right( (~vector).rightOperand() );
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
 
    const size_t row( ( IsLower<MT>::value )
                      ?( ( !AF && IsStrictlyLower<MT>::value )?( index + 1UL ):( index ) )

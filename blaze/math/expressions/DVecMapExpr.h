@@ -56,7 +56,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DVecMapExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
@@ -2696,20 +2695,6 @@ struct TDVecMapExprTrait< DVecMapExpr<VT,Real,true>, Real >
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecMapExpr<VT,Real,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename OP, bool TF, bool AF >
-struct SubvectorExprTrait< DVecMapExpr<VT,OP,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = UnaryMapExprTrait_< SubvectorExprTrait_<const VT,AF>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

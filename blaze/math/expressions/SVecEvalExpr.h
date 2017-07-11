@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/EvalExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecEvalExprTrait.h>
 #include <blaze/math/traits/TSVecEvalExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -724,20 +723,6 @@ struct TSVecEvalExprTrait< SVecEvalExpr<VT,true> >
    using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
                    , SVecEvalExpr<VT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< SVecEvalExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = EvalExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -48,7 +48,6 @@
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -101,8 +100,6 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
    using ET1 = ElementType_<VT1>;
    using ET2 = ElementType_<VT2>;
-   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -127,19 +124,19 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          assign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          assign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          assign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          assign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
@@ -174,8 +171,6 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
-
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
@@ -189,7 +184,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      auto target( subvector<unaligned>( ~lhs, index, size ) );
       assign( target, subvector<unaligned>( ~rhs, index, size ) );
    }
 }
@@ -317,8 +312,6 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    using ET1 = ElementType_<VT1>;
    using ET2 = ElementType_<VT2>;
-   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -343,19 +336,19 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          addAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          addAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
@@ -390,8 +383,6 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
-
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
@@ -405,7 +396,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      auto target( subvector<unaligned>( ~lhs, index, size ) );
       addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
    }
 }
@@ -533,8 +524,6 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    using ET1 = ElementType_<VT1>;
    using ET2 = ElementType_<VT2>;
-   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -559,19 +548,19 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          subAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          subAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
@@ -606,8 +595,6 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
-
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
@@ -621,7 +608,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      auto target( subvector<unaligned>( ~lhs, index, size ) );
       subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
    }
 }
@@ -750,8 +737,6 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
    using ET1 = ElementType_<VT1>;
    using ET2 = ElementType_<VT2>;
-   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -776,19 +761,19 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          multAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          multAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }
@@ -824,8 +809,6 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
-
    const int    threads      ( omp_get_num_threads() );
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
@@ -839,7 +822,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+      auto target( subvector<unaligned>( ~lhs, index, size ) );
       multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
    }
 }
@@ -967,8 +950,6 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
    using ET1 = ElementType_<VT1>;
    using ET2 = ElementType_<VT2>;
-   using AlignedTarget   = SubvectorExprTrait_<VT1,aligned>;
-   using UnalignedTarget = SubvectorExprTrait_<VT1,unaligned>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
@@ -993,19 +974,19 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          divAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && lhsAligned ) {
-         AlignedTarget target( subvector<aligned>( ~lhs, index, size ) );
+         auto target( subvector<aligned>( ~lhs, index, size ) );
          divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
       else if( simdEnabled && rhsAligned ) {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          divAssign( target, subvector<aligned>( ~rhs, index, size ) );
       }
       else {
-         UnalignedTarget target( subvector<unaligned>( ~lhs, index, size ) );
+         auto target( subvector<unaligned>( ~lhs, index, size ) );
          divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
    }

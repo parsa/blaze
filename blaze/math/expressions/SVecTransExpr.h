@@ -52,7 +52,6 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/TSVecTransExprTrait.h>
@@ -777,20 +776,6 @@ struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
    using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
                    , Operand_< SVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< SVecTransExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = TransExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

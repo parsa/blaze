@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/traits/DVecEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecEvalExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -842,20 +841,6 @@ struct TDVecEvalExprTrait< DVecEvalExpr<VT,true> >
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecEvalExpr<VT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< DVecEvalExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = EvalExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/traits/DVecSerialExprTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecSerialExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -864,20 +863,6 @@ struct TDVecSerialExprTrait< DVecSerialExpr<VT,true> >
    using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
                    , DVecSerialExpr<VT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< DVecSerialExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = SerialExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */

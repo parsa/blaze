@@ -36,6 +36,15 @@
 #define _BLAZE_MATH_VIEWS_FORWARD_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/math/expressions/Forward.h>
+#include <blaze/math/views/subvector/BaseTemplate.h>
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -47,7 +56,15 @@ namespace blaze {
 template< typename, bool, bool, bool > class Column;
 template< typename, bool, bool, bool > class Row;
 template< typename, bool, bool, bool > class Submatrix;
-template< typename, bool, bool, bool > class Subvector;
+
+template< bool AF, typename VT, bool TF >
+inline Subvector<VT,AF> subvector( Vector<VT,TF>& vector, size_t index, size_t size );
+
+template< bool AF, typename VT, bool TF >
+inline const Subvector<const VT,AF> subvector( const Vector<VT,TF>& vector, size_t index, size_t size );
+
+template< bool AF, typename VT, bool TF >
+inline Subvector<VT,AF> subvector( Vector<VT,TF>&& vector, size_t index, size_t size );
 
 } // namespace blaze
 

@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DVecTransExprTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -876,20 +875,6 @@ struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
    using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
                    , Operand_< DVecTransExpr<VT,true> >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool AF >
-struct SubvectorExprTrait< DVecTransExpr<VT,TF>, AF >
-{
- public:
-   //**********************************************************************************************
-   using Type = TransExprTrait_< SubvectorExprTrait_<const VT,AF> >;
    //**********************************************************************************************
 };
 /*! \endcond */
