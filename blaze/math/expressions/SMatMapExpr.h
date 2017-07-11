@@ -56,7 +56,6 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatMapExprTrait.h>
 #include <blaze/math/traits/TSMatMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapExprTrait.h>
@@ -3138,20 +3137,6 @@ struct TSMatMapExprTrait< SMatMapExpr<MT,Real,true>, Real >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , SMatMapExpr<MT,Real,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct RowExprTrait< SMatMapExpr<MT,OP,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = UnaryMapExprTrait_< RowExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

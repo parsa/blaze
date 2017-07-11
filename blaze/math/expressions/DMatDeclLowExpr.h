@@ -59,7 +59,6 @@
 #include <blaze/math/traits/DeclLowExprTrait.h>
 #include <blaze/math/traits/DMatDeclLowExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/TDMatDeclLowExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1281,20 +1280,6 @@ struct TDMatDeclLowExprTrait< DMatScalarMultExpr<MT,ST,true> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
                    , MultExprTrait_< DeclLowExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct RowExprTrait< DMatDeclLowExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = RowExprTrait_<const MT>;
    //**********************************************************************************************
 };
 /*! \endcond */

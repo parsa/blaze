@@ -1093,20 +1093,6 @@ struct TSMatTransExprTrait< SMatScalarMultExpr<MT,ST,true> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct RowExprTrait< SMatTransExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = TransExprTrait_< ColumnExprTrait_<const MT> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
 struct ColumnExprTrait< SMatTransExpr<MT,SO> >
 {
  public:

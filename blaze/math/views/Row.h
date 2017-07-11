@@ -40,41 +40,36 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/expressions/DeclExpr.h>
+#include <blaze/math/expressions/MatEvalExpr.h>
+#include <blaze/math/expressions/MatMapExpr.h>
+#include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatMapExpr.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/MatScalarDivExpr.h>
+#include <blaze/math/expressions/MatScalarMultExpr.h>
+#include <blaze/math/expressions/MatSerialExpr.h>
+#include <blaze/math/expressions/MatTransExpr.h>
+#include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDeclExpr.h>
-#include <blaze/math/typetraits/IsMatEvalExpr.h>
-#include <blaze/math/typetraits/IsMatMapExpr.h>
-#include <blaze/math/typetraits/IsMatMatAddExpr.h>
-#include <blaze/math/typetraits/IsMatMatMapExpr.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
-#include <blaze/math/typetraits/IsMatMatSubExpr.h>
-#include <blaze/math/typetraits/IsMatScalarDivExpr.h>
-#include <blaze/math/typetraits/IsMatScalarMultExpr.h>
-#include <blaze/math/typetraits/IsMatSerialExpr.h>
-#include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSchurExpr.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsTransExpr.h>
-#include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
 #include <blaze/math/views/row/Sparse.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
@@ -87,7 +82,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTION
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
@@ -125,13 +120,11 @@ namespace blaze {
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                 , RowExprTrait_<MT> >
-   row( Matrix<MT,SO>& matrix, size_t index )
+inline Row<MT> row( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return RowExprTrait_<MT>( ~matrix, index );
+   return Row<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -170,13 +163,11 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                       , RowExprTrait_<const MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+inline const Row<const MT> row( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return RowExprTrait_<const MT>( ~matrix, index );
+   return Row<const MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -197,13 +188,11 @@ inline const DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
-                 , RowExprTrait_<MT> >
-   row( Matrix<MT,SO>&& matrix, size_t index )
+inline Row<MT> row( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return RowExprTrait_<MT>( ~matrix, index );
+   return Row<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -212,7 +201,7 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
 
@@ -228,10 +217,8 @@ inline DisableIf_< Or< IsComputation<MT>, IsTransExpr<MT>, IsDeclExpr<MT> >
 // This function returns an expression representing the specified row of the given matrix/matrix
 // addition.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatAddExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -253,10 +240,8 @@ inline const EnableIf_< IsMatMatAddExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix/matrix
 // subtraction.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatSubExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -277,10 +262,8 @@ inline const EnableIf_< IsMatMatSubExpr<MT>, RowExprTrait_<MT> >
 //
 // This function returns an expression representing the specified row of the given Schur product.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsSchurExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const SchurExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -302,10 +285,8 @@ inline const EnableIf_< IsSchurExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix/matrix
 // multiplication.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatMultExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -326,10 +307,8 @@ inline const EnableIf_< IsMatMatMultExpr<MT>, RowExprTrait_<MT> >
 //
 // This function returns an expression representing the specified row of the given outer product.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsVecTVecMultExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -351,10 +330,8 @@ inline const EnableIf_< IsVecTVecMultExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix/scalar
 // multiplication.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatScalarMultExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -376,10 +353,8 @@ inline const EnableIf_< IsMatScalarMultExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix/scalar
 // division.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatScalarDivExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -401,10 +376,8 @@ inline const EnableIf_< IsMatScalarDivExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given unary matrix
 // map operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMapExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMapExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -426,10 +399,8 @@ inline const EnableIf_< IsMatMapExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given binary matrix
 // map operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatMatMapExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -453,10 +424,8 @@ inline const EnableIf_< IsMatMatMapExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix
 // evaluation operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatEvalExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatEvalExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -478,10 +447,8 @@ inline const EnableIf_< IsMatEvalExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix
 // serialization operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatSerialExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatSerialExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -503,10 +470,8 @@ inline const EnableIf_< IsMatSerialExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix
 // declaration operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsDeclExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const DeclExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -528,10 +493,8 @@ inline const EnableIf_< IsDeclExpr<MT>, RowExprTrait_<MT> >
 // This function returns an expression representing the specified row of the given matrix
 // transpose operation.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline const EnableIf_< IsMatTransExpr<MT>, RowExprTrait_<MT> >
-   row( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatTransExpr<MT>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 

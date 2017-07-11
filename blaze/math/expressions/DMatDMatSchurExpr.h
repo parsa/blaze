@@ -54,7 +54,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SchurExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1304,21 +1303,6 @@ struct IsStrictlyUpper< DMatDMatSchurExpr<MT1,MT2,SO> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct RowExprTrait< DMatDMatSchurExpr<MT1,MT2,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< RowExprTrait_<const MT1>
-                              , RowExprTrait_<const MT2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

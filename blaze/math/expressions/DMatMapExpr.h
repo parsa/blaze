@@ -57,7 +57,6 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DMatMapExprTrait.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/TDMatMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
@@ -3630,20 +3629,6 @@ struct TDMatMapExprTrait< DMatMapExpr<MT,Real,true>, Real >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatMapExpr<MT,Real,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct RowExprTrait< DMatMapExpr<MT,OP,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = UnaryMapExprTrait_< RowExprTrait_<const MT>, OP >;
    //**********************************************************************************************
 };
 /*! \endcond */

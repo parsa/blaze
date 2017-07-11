@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/util/Types.h>
@@ -55,31 +56,33 @@ namespace blaze {
 //=================================================================================================
 
 template< typename, bool, bool, bool > class Column;
-template< typename, bool, bool, bool > class Row;
 
 template< bool AF, typename VT, bool TF >
-inline Subvector<VT,AF>
-   subvector( Vector<VT,TF>& vector, size_t index, size_t size );
+Subvector<VT,AF> subvector( Vector<VT,TF>& vector, size_t index, size_t size );
 
 template< bool AF, typename VT, bool TF >
-inline const Subvector<const VT,AF>
-   subvector( const Vector<VT,TF>& vector, size_t index, size_t size );
+const Subvector<const VT,AF> subvector( const Vector<VT,TF>& vector, size_t index, size_t size );
 
 template< bool AF, typename VT, bool TF >
-inline Subvector<VT,AF>
-   subvector( Vector<VT,TF>&& vector, size_t index, size_t size );
+Subvector<VT,AF> subvector( Vector<VT,TF>&& vector, size_t index, size_t size );
 
 template< bool AF, typename MT, bool SO >
-inline Submatrix<MT,AF>
-   submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n );
+Submatrix<MT,AF> submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n );
 
 template< bool AF, typename MT, bool SO >
-inline const Submatrix<const MT,AF>
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n );
+const Submatrix<const MT,AF> submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n );
 
 template< bool AF, typename MT, bool SO >
-inline Submatrix<MT,AF>
-   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n );
+Submatrix<MT,AF> submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n );
+
+template< typename MT, bool SO >
+Row<MT> row( Matrix<MT,SO>& matrix, size_t index );
+
+template< typename MT, bool SO >
+const Row<const MT> row( const Matrix<MT,SO>& matrix, size_t index );
+
+template< typename MT, bool SO >
+Row<MT> row( Matrix<MT,SO>&& matrix, size_t index );
 
 } // namespace blaze
 
