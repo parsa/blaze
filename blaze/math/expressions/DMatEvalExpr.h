@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DMatEvalExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/TDMatEvalExprTrait.h>
@@ -1072,20 +1071,6 @@ struct TDMatEvalExprTrait< DMatEvalExpr<MT,true> >
    using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , DMatEvalExpr<MT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct ColumnExprTrait< DMatEvalExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = EvalExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

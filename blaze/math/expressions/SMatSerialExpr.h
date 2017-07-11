@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/SMatSerialExprTrait.h>
 #include <blaze/math/traits/TSMatSerialExprTrait.h>
@@ -1083,20 +1082,6 @@ struct TSMatSerialExprTrait< SMatSerialExpr<MT,true> >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , SMatSerialExpr<MT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct ColumnExprTrait< SMatSerialExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = SerialExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

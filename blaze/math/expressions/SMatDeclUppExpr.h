@@ -53,7 +53,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/Forward.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DeclUppExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SMatDeclUppExprTrait.h>
@@ -1235,20 +1234,6 @@ struct TSMatDeclUppExprTrait< SMatScalarMultExpr<MT,ST,true> >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
                    , MultExprTrait_< DeclUppExprTrait_<MT>, ST >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct ColumnExprTrait< SMatDeclUppExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = ColumnExprTrait_<const MT>;
    //**********************************************************************************************
 };
 /*! \endcond */

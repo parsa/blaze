@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -929,28 +928,6 @@ template< typename VT1, typename VT2 >
 struct Columns< SVecSVecOuterExpr<VT1,VT2> >
    : public Size<VT2>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct ColumnExprTrait< SVecSVecOuterExpr<VT1,VT2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< VT1, ReturnType_<VT2> >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

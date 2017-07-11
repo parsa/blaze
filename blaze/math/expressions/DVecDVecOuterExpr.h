@@ -59,7 +59,6 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -2018,28 +2017,6 @@ template< typename VT1, typename VT2 >
 struct IsPadded< DVecDVecOuterExpr<VT1,VT2> >
    : public BoolConstant< IsPadded<VT2>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2 >
-struct ColumnExprTrait< DVecDVecOuterExpr<VT1,VT2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< VT1, ReturnType_<VT2> >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

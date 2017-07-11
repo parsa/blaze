@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SMatEvalExprTrait.h>
 #include <blaze/math/traits/TSMatEvalExprTrait.h>
@@ -1063,20 +1062,6 @@ struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
    using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
                    , SMatEvalExpr<MT,true>
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct ColumnExprTrait< SMatEvalExpr<MT,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = EvalExprTrait_< ColumnExprTrait_<const MT> >;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -55,7 +55,6 @@
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1051,21 +1050,6 @@ struct DMatTDMatSubExprTrait< TDMatSMatSubExpr<MT1,MT2>, MT3 >
                    , TDMatSMatSubExprTrait_< TDMatTDMatSubExprTrait_<MT1,MT3>, MT2 >
                    , INVALID_TYPE >;
    /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct ColumnExprTrait< TDMatSMatSubExpr<MT1,MT2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = SubExprTrait_< ColumnExprTrait_<const MT1>
-                             , ColumnExprTrait_<const MT2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

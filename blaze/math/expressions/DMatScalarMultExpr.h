@@ -53,7 +53,6 @@
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -2943,28 +2942,6 @@ struct TSMatTDMatMultExprTrait< SMatScalarMultExpr<MT1,ST1,true>, DMatScalarMult
                         , IsNumeric<ST1>, IsNumeric<ST2> >
                    , TDMatScalarMultExprTrait_< TSMatTDMatMultExprTrait_<MT1,MT2>, MultTrait_<ST1,ST2> >
                    , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct ColumnExprTrait< DMatScalarMultExpr<MT,ST,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = MultExprTrait_< ColumnExprTrait_<const MT>, ST >;
    //**********************************************************************************************
 };
 /*! \endcond */

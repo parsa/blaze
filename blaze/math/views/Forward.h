@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
@@ -54,8 +55,6 @@ namespace blaze {
 //  ::blaze NAMESPACE FORWARD DECLARATIONS
 //
 //=================================================================================================
-
-template< typename, bool, bool, bool > class Column;
 
 template< bool AF, typename VT, bool TF >
 Subvector<VT,AF> subvector( Vector<VT,TF>& vector, size_t index, size_t size );
@@ -83,6 +82,15 @@ const Row<const MT> row( const Matrix<MT,SO>& matrix, size_t index );
 
 template< typename MT, bool SO >
 Row<MT> row( Matrix<MT,SO>&& matrix, size_t index );
+
+template< typename MT, bool SO >
+Column<MT> column( Matrix<MT,SO>& matrix, size_t index );
+
+template< typename MT, bool SO >
+const Column<const MT> column( const Matrix<MT,SO>& matrix, size_t index );
+
+template< typename MT, bool SO >
+Column<MT> column( Matrix<MT,SO>&& matrix, size_t index );
 
 } // namespace blaze
 

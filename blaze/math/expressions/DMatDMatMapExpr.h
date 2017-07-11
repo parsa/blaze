@@ -57,7 +57,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BinaryMapExprTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1460,30 +1459,6 @@ template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
    : public BoolConstant< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename OP, bool SO >
-struct ColumnExprTrait< DMatDMatMapExpr<MT1,MT2,OP,SO> >
-{
- public:
-   //**********************************************************************************************
-   using Type = BinaryMapExprTrait_< ColumnExprTrait_<const MT1>
-                                   , ColumnExprTrait_<const MT2>
-                                   , OP >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
