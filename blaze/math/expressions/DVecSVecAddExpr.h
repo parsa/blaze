@@ -55,9 +55,11 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DVecDVecAddExprTrait.h>
+#include <blaze/math/traits/DVecDVecSubExprTrait.h>
 #include <blaze/math/traits/DVecSVecAddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecSubExprTrait.h>
 #include <blaze/math/traits/TDVecTSVecAddExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -813,8 +815,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename VT2    // Type of the sparse vector of the left-hand side expression
         , bool TF         // Transpose flag of the left-hand side expression
         , typename VT3 >  // Type of the right-hand side dense vector
-inline const SubExprTrait_< DVecSVecAddExpr<VT1,VT2,TF>, VT3 >
-   operator-( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+inline auto operator-( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

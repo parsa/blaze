@@ -54,9 +54,13 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/DVecDVecAddExprTrait.h>
+#include <blaze/math/traits/DVecDVecSubExprTrait.h>
+#include <blaze/math/traits/DVecSVecSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecSubExprTrait.h>
+#include <blaze/math/traits/TDVecTSVecSubExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -702,8 +706,8 @@ class DVecSVecSubExpr
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
-inline const DVecSVecSubExpr<VT1,VT2,TF>
-   operator-( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+inline auto operator-( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+   -> const DVecSVecSubExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -769,8 +773,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename VT2    // Type of the sparse vector of the left-hand side expression
         , bool TF         // Transpose flag of the left-hand side expression
         , typename VT3 >  // Type of the right-hand side dense vector
-inline const SubExprTrait_< DVecSVecSubExpr<VT1,VT2,TF>, VT3 >
-   operator-( const DVecSVecSubExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+inline auto operator-( const DVecSVecSubExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() - (~rhs) ) - lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

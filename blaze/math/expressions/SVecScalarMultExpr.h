@@ -799,8 +799,8 @@ class SVecScalarMultExpr
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
-   operator-( const SparseVector<VT,TF>& sv )
+inline auto operator-( const SparseVector<VT,TF>& sv )
+   -> const SVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -952,8 +952,8 @@ inline const SVecScalarMultExpr<VT,ElementType_<VT>,TF>
 template< typename VT  // Type of the sparse vector
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline const SVecScalarMultExpr<VT,ST,TF>
-   operator-( const SVecScalarMultExpr<VT,ST,TF>& sv )
+inline auto operator-( const SVecScalarMultExpr<VT,ST,TF>& sv )
+   -> const SVecScalarMultExpr<VT,ST,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
