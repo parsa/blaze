@@ -54,16 +54,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/AddExprTrait.h>
-#include <blaze/math/traits/DMatDMatAddExprTrait.h>
-#include <blaze/math/traits/DMatDMatSubExprTrait.h>
-#include <blaze/math/traits/DMatTDMatAddExprTrait.h>
-#include <blaze/math/traits/DMatTDMatSubExprTrait.h>
-#include <blaze/math/traits/DMatTSMatAddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/TDMatDMatSubExprTrait.h>
-#include <blaze/math/traits/TSMatDMatSubExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -959,94 +951,6 @@ template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< TSMatDMatSubExpr<MT1,MT2> >
    : public BoolConstant< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename MT3 >
-struct DMatDMatAddExprTrait< TSMatDMatSubExpr<MT1,MT2>, MT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-                   , DMatTSMatAddExprTrait_< DMatDMatSubExprTrait_<MT3,MT2>, MT1 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename MT3 >
-struct DMatTDMatAddExprTrait< TSMatDMatSubExpr<MT1,MT2>, MT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-                   , DMatTSMatAddExprTrait_< TDMatDMatSubExprTrait_<MT3,MT2>, MT1 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename MT3 >
-struct DMatDMatSubExprTrait< TSMatDMatSubExpr<MT1,MT2>, MT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                        , IsDenseMatrix<MT3>, IsRowMajorMatrix<MT3> >
-                   , TSMatDMatSubExprTrait_< MT1, DMatDMatAddExprTrait_<MT2,MT3> >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename MT3 >
-struct DMatTDMatSubExprTrait< TSMatDMatSubExpr<MT1,MT2>, MT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsDenseMatrix<MT2>, IsRowMajorMatrix<MT2>
-                        , IsDenseMatrix<MT3>, IsColumnMajorMatrix<MT3> >
-                   , TSMatDMatSubExprTrait_< MT1, DMatTDMatAddExprTrait_<MT2,MT3> >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
