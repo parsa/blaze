@@ -502,8 +502,8 @@ class DVecSVecCrossExpr
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
-inline const DVecSVecCrossExpr<VT1,VT2,TF>
-   operator%( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+inline auto operator%( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+   -> const DVecSVecCrossExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -545,8 +545,7 @@ inline const DVecSVecCrossExpr<VT1,VT2,TF>
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
-inline const DVecSVecCrossExpr<VT1,VT2,TF>
-   cross( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+inline decltype(auto) cross( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    return lhs % rhs;
 }
