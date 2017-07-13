@@ -40,45 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatDMatSubExprTrait.h>
-#include <blaze/math/traits/DMatSMatSubExprTrait.h>
-#include <blaze/math/traits/DMatTDMatSubExprTrait.h>
-#include <blaze/math/traits/DMatTSMatSubExprTrait.h>
-#include <blaze/math/traits/DVecDVecSubExprTrait.h>
-#include <blaze/math/traits/DVecSVecSubExprTrait.h>
-#include <blaze/math/traits/SMatDMatSubExprTrait.h>
-#include <blaze/math/traits/SMatSMatSubExprTrait.h>
-#include <blaze/math/traits/SMatTDMatSubExprTrait.h>
-#include <blaze/math/traits/SMatTSMatSubExprTrait.h>
-#include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/SVecDVecSubExprTrait.h>
-#include <blaze/math/traits/SVecSVecSubExprTrait.h>
-#include <blaze/math/traits/TDMatDMatSubExprTrait.h>
-#include <blaze/math/traits/TDMatSMatSubExprTrait.h>
-#include <blaze/math/traits/TDMatTDMatSubExprTrait.h>
-#include <blaze/math/traits/TDMatTSMatSubExprTrait.h>
-#include <blaze/math/traits/TDVecTDVecSubExprTrait.h>
-#include <blaze/math/traits/TDVecTSVecSubExprTrait.h>
-#include <blaze/math/traits/TSMatDMatSubExprTrait.h>
-#include <blaze/math/traits/TSMatSMatSubExprTrait.h>
-#include <blaze/math/traits/TSMatTDMatSubExprTrait.h>
-#include <blaze/math/traits/TSMatTSMatSubExprTrait.h>
-#include <blaze/math/traits/TSVecTDVecSubExprTrait.h>
-#include <blaze/math/traits/TSVecTSVecSubExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsVector.h>
+#include <utility>
+#include <blaze/math/typetraits/HasSub.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -110,92 +76,18 @@ struct SubExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
- public:
-   //**********************************************************************************************
+   //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T1>
-                  , If_< IsMatrix<T2>
-                       , If_< IsDenseMatrix<T1>
-                            , If_< IsDenseMatrix<T2>
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , DMatDMatSubExprTrait<T1,T2>
-                                           , DMatTDMatSubExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TDMatDMatSubExprTrait<T1,T2>
-                                           , TDMatTDMatSubExprTrait<T1,T2> > >
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , DMatSMatSubExprTrait<T1,T2>
-                                           , DMatTSMatSubExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TDMatSMatSubExprTrait<T1,T2>
-                                           , TDMatTSMatSubExprTrait<T1,T2> > > >
-                            , If_< IsDenseMatrix<T2>
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , SMatDMatSubExprTrait<T1,T2>
-                                           , SMatTDMatSubExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TSMatDMatSubExprTrait<T1,T2>
-                                           , TSMatTDMatSubExprTrait<T1,T2> > >
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , SMatSMatSubExprTrait<T1,T2>
-                                           , SMatTSMatSubExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TSMatSMatSubExprTrait<T1,T2>
-                                           , TSMatTSMatSubExprTrait<T1,T2> > > > >
-                       , Failure >
-                  , If_< IsVector<T1>
-                       , If_< IsVector<T2>
-                            , If_< IsDenseVector<T1>
-                                 , If_< IsDenseVector<T2>
-                                      , If_< IsRowVector<T1>
-                                           , If_< IsRowVector<T2>
-                                                , TDVecTDVecSubExprTrait<T1,T2>
-                                                , Failure >
-                                           , If_< IsRowVector<T2>
-                                                , Failure
-                                                , DVecDVecSubExprTrait<T1,T2> > >
-                                      , If_< IsRowVector<T1>
-                                           , If_< IsRowVector<T2>
-                                                , TDVecTSVecSubExprTrait<T1,T2>
-                                                , Failure >
-                                           , If_< IsRowVector<T2>
-                                                , Failure
-                                                , DVecSVecSubExprTrait<T1,T2> > > >
-                                 , If_< IsDenseVector<T2>
-                                      , If_< IsRowVector<T1>
-                                           , If_< IsRowVector<T2>
-                                                , TSVecTDVecSubExprTrait<T1,T2>
-                                                , Failure >
-                                           , If_< IsRowVector<T2>
-                                                , Failure
-                                                , SVecDVecSubExprTrait<T1,T2> > >
-                                      , If_< IsRowVector<T1>
-                                           , If_< IsRowVector<T2>
-                                                , TSVecTSVecSubExprTrait<T1,T2>
-                                                , Failure >
-                                           , If_< IsRowVector<T2>
-                                                , Failure
-                                                , SVecSVecSubExprTrait<T1,T2> > > > >
-                            , Failure >
-                       , If_< IsNumeric<T1>
-                            , If_< IsNumeric<T2>
-                                 , SubTrait<T1,T2>
-                                 , Failure >
-                            , Failure > > >;
+   struct Result { using Type = decltype( std::declval<T1>() - std::declval<T2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , SubExprTrait< Decay_<T1>, Decay_<T2> >
-                            , Tmp >::Type;
+   using Type = typename If_< HasSub< RemoveReference_<T1>, RemoveReference_<T2> >
+                            , Result
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
