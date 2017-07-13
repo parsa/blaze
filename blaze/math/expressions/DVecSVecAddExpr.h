@@ -54,13 +54,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/DVecDVecAddExprTrait.h>
-#include <blaze/math/traits/DVecDVecSubExprTrait.h>
-#include <blaze/math/traits/DVecSVecAddExprTrait.h>
-#include <blaze/math/traits/SubExprTrait.h>
-#include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
-#include <blaze/math/traits/TDVecTDVecSubExprTrait.h>
-#include <blaze/math/traits/TDVecTSVecAddExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -840,94 +833,6 @@ template< typename VT1, typename VT2, bool TF >
 struct Size< DVecSVecAddExpr<VT1,VT2,TF> >
    : public Maximum< Size<VT1>, Size<VT2> >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, typename VT3 >
-struct DVecDVecAddExprTrait< DVecSVecAddExpr<VT1,VT2,false>, VT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
-                        , IsSparseVector<VT2>, IsColumnVector<VT2>
-                        , IsDenseVector<VT3>, IsColumnVector<VT3> >
-                   , DVecSVecAddExprTrait_< DVecDVecAddExprTrait_<VT1,VT3>, VT2 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, typename VT3 >
-struct TDVecTDVecAddExprTrait< DVecSVecAddExpr<VT1,VT2,true>, VT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsDenseVector<VT1>, IsRowVector<VT1>
-                        , IsSparseVector<VT2>, IsRowVector<VT2>
-                        , IsDenseVector<VT3>, IsRowVector<VT3> >
-                   , TDVecTSVecAddExprTrait_< TDVecTDVecAddExprTrait_<VT1,VT3>, VT2 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, typename VT3 >
-struct DVecDVecSubExprTrait< DVecSVecAddExpr<VT1,VT2,false>, VT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsDenseVector<VT1>, IsColumnVector<VT1>
-                        , IsSparseVector<VT2>, IsColumnVector<VT2>
-                        , IsDenseVector<VT3>, IsColumnVector<VT3> >
-                   , DVecSVecAddExprTrait_< DVecDVecSubExprTrait_<VT1,VT3>, VT2 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, typename VT3 >
-struct TDVecTDVecSubExprTrait< DVecSVecAddExpr<VT1,VT2,true>, VT3 >
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = If_< And< IsDenseVector<VT1>, IsRowVector<VT1>
-                        , IsSparseVector<VT2>, IsRowVector<VT2>
-                        , IsDenseVector<VT3>, IsRowVector<VT3> >
-                   , TDVecTSVecAddExprTrait_< TDVecTDVecSubExprTrait_<VT1,VT3>, VT2 >
-                   , INVALID_TYPE >;
-   /*! \endcond */
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
