@@ -1033,8 +1033,8 @@ class DMatScalarMultExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
-   operator-( const DenseMatrix<MT,SO>& dm )
+inline auto operator-( const DenseMatrix<MT,SO>& dm )
+   -> const DMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1143,8 +1143,8 @@ inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,MT> >
 template< typename MT  // Type of the dense matrix
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline const DMatScalarMultExpr<MT,ST,TF>
-   operator-( const DMatScalarMultExpr<MT,ST,TF>& dm )
+inline auto operator-( const DMatScalarMultExpr<MT,ST,TF>& dm )
+   -> const DMatScalarMultExpr<MT,ST,TF>
 {
    BLAZE_FUNCTION_TRACE;
 

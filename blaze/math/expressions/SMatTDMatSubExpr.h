@@ -56,13 +56,18 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatDMatSubExprTrait.h>
 #include <blaze/math/traits/DMatSMatAddExprTrait.h>
 #include <blaze/math/traits/DMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatSubExprTrait.h>
+#include <blaze/math/traits/SMatDMatSubExprTrait.h>
+#include <blaze/math/traits/SMatTDMatSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TDMatDMatAddExprTrait.h>
 #include <blaze/math/traits/TDMatSMatAddExprTrait.h>
 #include <blaze/math/traits/TDMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatSubExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -705,8 +710,8 @@ class SMatTDMatSubExpr
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline const SMatTDMatSubExpr<MT1,MT2>
-   operator-( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+inline auto operator-( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> const SMatTDMatSubExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -772,8 +777,8 @@ template< typename MT1  // Type of the sparse matrix of the left-hand side expre
         , typename MT2  // Type of the dense matrix of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< SMatTDMatSubExpr<MT1,MT2>, MT3 >
-   operator-( const SMatTDMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+inline auto operator-( const SMatTDMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+   -> decltype( lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) ) )
 {
    BLAZE_FUNCTION_TRACE;
 

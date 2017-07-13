@@ -55,11 +55,15 @@
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatDMatSubExprTrait.h>
 #include <blaze/math/traits/DMatSMatAddExprTrait.h>
 #include <blaze/math/traits/DMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatSubExprTrait.h>
 #include <blaze/math/traits/DMatTSMatAddExprTrait.h>
 #include <blaze/math/traits/TDMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatDMatSubExprTrait.h>
 #include <blaze/math/traits/TDMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatSubExprTrait.h>
 #include <blaze/math/traits/TDMatTSMatAddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -818,8 +822,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , bool SO1      // Storage order of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< DMatSMatAddExpr<MT1,MT2,SO1>, MT3 >
-   operator-( const DMatSMatAddExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
+inline auto operator-( const DMatSMatAddExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
+   -> decltype( ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

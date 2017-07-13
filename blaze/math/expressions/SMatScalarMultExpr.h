@@ -865,8 +865,8 @@ class SMatScalarMultExpr
 */
 template< typename MT  // Data type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
-   operator-( const SparseMatrix<MT,SO>& sm )
+inline auto operator-( const SparseMatrix<MT,SO>& sm )
+   -> const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -975,8 +975,8 @@ inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,MT> >
 template< typename MT  // Type of the sparse matrix
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline const SMatScalarMultExpr<MT,ST,TF>
-   operator-( const SMatScalarMultExpr<MT,ST,TF>& sm )
+inline auto operator-( const SMatScalarMultExpr<MT,ST,TF>& sm )
+   -> const SMatScalarMultExpr<MT,ST,TF>
 {
    BLAZE_FUNCTION_TRACE;
 

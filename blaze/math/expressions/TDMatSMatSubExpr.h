@@ -56,11 +56,17 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatDMatSubExprTrait.h>
+#include <blaze/math/traits/DMatSMatSubExprTrait.h>
 #include <blaze/math/traits/DMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatSubExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TDMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatDMatSubExprTrait.h>
+#include <blaze/math/traits/TDMatSMatSubExprTrait.h>
 #include <blaze/math/traits/TDMatTDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatSubExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -714,8 +720,8 @@ class TDMatSMatSubExpr
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline const TDMatSMatSubExpr<MT1,MT2>
-   operator-( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+inline auto operator-( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const TDMatSMatSubExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -781,8 +787,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , typename MT2  // Type of the sparse matrix of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline const SubExprTrait_< TDMatSMatSubExpr<MT1,MT2>, MT3 >
-   operator-( const TDMatSMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+inline auto operator-( const TDMatSMatSubExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+   -> decltype( ( lhs.leftOperand() - (~rhs) ) - lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
