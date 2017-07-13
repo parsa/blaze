@@ -40,32 +40,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatDMatSchurExprTrait.h>
-#include <blaze/math/traits/DMatSMatSchurExprTrait.h>
-#include <blaze/math/traits/DMatTDMatSchurExprTrait.h>
-#include <blaze/math/traits/DMatTSMatSchurExprTrait.h>
-#include <blaze/math/traits/SMatDMatSchurExprTrait.h>
-#include <blaze/math/traits/SMatSMatSchurExprTrait.h>
-#include <blaze/math/traits/SMatTDMatSchurExprTrait.h>
-#include <blaze/math/traits/SMatTSMatSchurExprTrait.h>
-#include <blaze/math/traits/TDMatDMatSchurExprTrait.h>
-#include <blaze/math/traits/TDMatSMatSchurExprTrait.h>
-#include <blaze/math/traits/TDMatTDMatSchurExprTrait.h>
-#include <blaze/math/traits/TDMatTSMatSchurExprTrait.h>
-#include <blaze/math/traits/TSMatDMatSchurExprTrait.h>
-#include <blaze/math/traits/TSMatSMatSchurExprTrait.h>
-#include <blaze/math/traits/TSMatTDMatSchurExprTrait.h>
-#include <blaze/math/traits/TSMatTSMatSchurExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -97,53 +77,19 @@ struct SchurExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T1>
-                  , If_< IsMatrix<T2>
-                       , If_< IsDenseMatrix<T1>
-                            , If_< IsDenseMatrix<T2>
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , DMatDMatSchurExprTrait<T1,T2>
-                                           , DMatTDMatSchurExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TDMatDMatSchurExprTrait<T1,T2>
-                                           , TDMatTDMatSchurExprTrait<T1,T2> > >
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , DMatSMatSchurExprTrait<T1,T2>
-                                           , DMatTSMatSchurExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TDMatSMatSchurExprTrait<T1,T2>
-                                           , TDMatTSMatSchurExprTrait<T1,T2> > > >
-                            , If_< IsDenseMatrix<T2>
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , SMatDMatSchurExprTrait<T1,T2>
-                                           , SMatTDMatSchurExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TSMatDMatSchurExprTrait<T1,T2>
-                                           , TSMatTDMatSchurExprTrait<T1,T2> > >
-                                 , If_< IsRowMajorMatrix<T1>
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , SMatSMatSchurExprTrait<T1,T2>
-                                           , SMatTSMatSchurExprTrait<T1,T2> >
-                                      , If_< IsRowMajorMatrix<T2>
-                                           , TSMatSMatSchurExprTrait<T1,T2>
-                                           , TSMatTSMatSchurExprTrait<T1,T2> > > > >
-                       , Failure >
-                  , Failure >;
+   struct Result { using Type = decltype( std::declval<T1>() % std::declval<T2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , SchurExprTrait< Decay_<T1>, Decay_<T2> >
-                            , Tmp >::Type;
+   using Type = typename If_< And< IsMatrix< RemoveReference_<T1> >, IsMatrix< RemoveReference_<T2> > >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
