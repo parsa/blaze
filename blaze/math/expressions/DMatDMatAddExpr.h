@@ -1061,8 +1061,8 @@ class DMatDMatAddExpr
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order
-inline const DMatDMatAddExpr<MT1,MT2,SO>
-   operator+( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+inline auto operator+( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+   -> const DMatDMatAddExpr<MT1,MT2,SO>
 {
    BLAZE_FUNCTION_TRACE;
 

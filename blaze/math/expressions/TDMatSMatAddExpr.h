@@ -56,7 +56,13 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DMatDMatAddExprTrait.h>
+#include <blaze/math/traits/DMatSMatAddExprTrait.h>
+#include <blaze/math/traits/DMatTDMatAddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/TDMatDMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatSMatAddExprTrait.h>
+#include <blaze/math/traits/TDMatTDMatAddExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -711,8 +717,8 @@ class TDMatSMatAddExpr
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-const TDMatSMatAddExpr<MT1,MT2>
-   operator+( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+inline auto operator+( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const TDMatSMatAddExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -758,8 +764,8 @@ const TDMatSMatAddExpr<MT1,MT2>
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-const TDMatSMatAddExpr<MT1,MT2>
-   operator+( const SparseMatrix<MT2,false>& lhs, const DenseMatrix<MT1,true>& rhs )
+inline auto operator+( const SparseMatrix<MT2,false>& lhs, const DenseMatrix<MT1,true>& rhs )
+   -> const TDMatSMatAddExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -797,8 +803,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , typename MT2  // Type of the sparse matrix of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline const AddExprTrait_< TDMatSMatAddExpr<MT1,MT2>, MT3 >
-   operator+( const TDMatSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+inline auto operator+( const TDMatSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
+   -> decltype( ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
