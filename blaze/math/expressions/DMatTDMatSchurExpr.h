@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultExprTrait.h>
-#include <blaze/math/traits/SchurExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -950,14 +949,14 @@ class DMatTDMatSchurExpr
 // In case the current number of rows and columns of the two given  matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<MT1> >
-                     , Not< IsSymmetric<MT2> >
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const DMatTDMatSchurExpr<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >
+                                   , Not< IsSymmetric<MT2> >
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> const DMatTDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -999,14 +998,14 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 // In case the current number of rows and columns of the two given  matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<MT1> >
-                     , Not< IsSymmetric<MT2> >
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const DMatTDMatSchurExpr<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >
+                                   , Not< IsSymmetric<MT2> >
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> const DMatTDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1041,14 +1040,14 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 // This operator implements a performance optimized treatment of the Schur product of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< IsSymmetric<MT1>
-                     , Not< IsSymmetric<MT2> >
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const SchurExprTrait_<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< IsSymmetric<MT1>
+                                   , Not< IsSymmetric<MT2> >
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> decltype( trans( ~lhs ) % ~rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1076,13 +1075,13 @@ inline EnableIf_< And< IsSymmetric<MT1>
 // This operator implements a performance optimized treatment of the Schur product of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< IsSymmetric<MT2>
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const SchurExprTrait_<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< IsSymmetric<MT2>
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> decltype( (~lhs) % trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1110,14 +1109,14 @@ inline EnableIf_< And< IsSymmetric<MT2>
 // This operator implements a performance optimized treatment of the Schur product of a
 // column-major dense matrix and a symmetric row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< Not< IsSymmetric<MT1> >
-                     , IsSymmetric<MT2>
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const SchurExprTrait_<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >
+                                   , IsSymmetric<MT2>
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> decltype( (~lhs) % trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1145,13 +1144,13 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >
 // This operator implements a performance optimized treatment of the Schur product of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< And< IsSymmetric<MT1>
-                     , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
-                     , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > >
-                , const SchurExprTrait_<MT1,MT2> >
-   operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< And< IsSymmetric<MT1>
+                                   , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
+                                   , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
+inline auto operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> decltype( trans( ~lhs ) % (~rhs) )
 {
    BLAZE_FUNCTION_TRACE;
 

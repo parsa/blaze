@@ -1315,11 +1315,11 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 template< typename MT1  // Data type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
-                , const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 > >
-   operator%( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+        , bool SO2      // Storage order of the right-hand side matrix
+        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto operator%( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 >
 {
    BLAZE_FUNCTION_TRACE;
 

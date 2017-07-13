@@ -1062,11 +1062,11 @@ class DMatDMatSchurExpr
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order
-inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
-                 , const DMatDMatSchurExpr<MT1,MT2,SO> >
-   operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+        , bool SO       // Storage order
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+   -> const DMatDMatSchurExpr<MT1,MT2,SO>
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -927,12 +927,12 @@ class TSMatDMatSchurExpr
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
-                 , const TSMatDMatSchurExpr<MT1,MT2> >
-   operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> const TSMatDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -974,12 +974,12 @@ inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
-                 , const TSMatDMatSchurExpr<MT1,MT2> >
-   operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> const TSMatDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -934,12 +934,12 @@ class SMatSMatSchurExpr
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-inline DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                     , And< IsUniUpper<MT1>, IsUniLower<MT2> > >
-                 , const SMatSMatSchurExpr<MT1,MT2> >
-   operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const SMatSMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
