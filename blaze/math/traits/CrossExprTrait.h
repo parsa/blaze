@@ -40,26 +40,14 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DVecDVecCrossExprTrait.h>
-#include <blaze/math/traits/DVecSVecCrossExprTrait.h>
-#include <blaze/math/traits/SVecDVecCrossExprTrait.h>
-#include <blaze/math/traits/SVecSVecCrossExprTrait.h>
-#include <blaze/math/traits/TDVecTDVecCrossExprTrait.h>
-#include <blaze/math/traits/TDVecTSVecCrossExprTrait.h>
-#include <blaze/math/traits/TSVecTDVecCrossExprTrait.h>
-#include <blaze/math/traits/TSVecTSVecCrossExprTrait.h>
+#include <utility>
 #include <blaze/math/typetraits/IsColumnVector.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -91,41 +79,21 @@ struct CrossExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsVector<T1>
-                  , If_< IsVector<T2>
-                       , If_< IsColumnVector<T1>
-                            , If_< IsColumnVector<T2>
-                                 , If_< IsDenseVector<T1>
-                                      , If_< IsDenseVector<T2>
-                                           , DVecDVecCrossExprTrait<T1,T2>
-                                           , DVecSVecCrossExprTrait<T1,T2> >
-                                      , If_< IsDenseVector<T2>
-                                           , SVecDVecCrossExprTrait<T1,T2>
-                                           , SVecSVecCrossExprTrait<T1,T2> > >
-                                 , Failure >
-                            , If_< IsRowVector<T2>
-                                 , If_< IsDenseVector<T1>
-                                      , If_< IsDenseVector<T2>
-                                           , TDVecTDVecCrossExprTrait<T1,T2>
-                                           , TDVecTSVecCrossExprTrait<T1,T2> >
-                                      , If_< IsDenseVector<T2>
-                                           , TSVecTDVecCrossExprTrait<T1,T2>
-                                           , TSVecTSVecCrossExprTrait<T1,T2> > >
-                                 , Failure > >
-                       , Failure >
-                  , Failure >;
+   struct Result { using Type = decltype( std::declval<T1>() % std::declval<T2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , CrossExprTrait< Decay_<T1>, Decay_<T2> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< And< IsColumnVector< RemoveReference_<T1> >
+                                     , IsColumnVector< RemoveReference_<T2> > >
+                                , And< IsRowVector< RemoveReference_<T1> >
+                                     , IsRowVector< RemoveReference_<T2> > > >
+                            , Result
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
