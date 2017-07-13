@@ -177,40 +177,46 @@ template< typename, typename > class TSVecTSMatMultExpr;
 template< typename, bool > struct Vector;
 
 template< typename VT, bool TF >
-inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& );
+const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
-inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& );
+const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
-inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& );
+const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-inline const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& );
+const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& );
 
 template< typename VT, bool TF >
-inline const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
+const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
-inline const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& );
+const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
-inline const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
+const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-inline const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
+const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
 
 template< typename VT, bool TF, typename OP >
-inline const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );
+const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );
 
 template< typename VT, bool TF, typename OP >
-inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>&, OP );
+const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>&, OP );
 
 template< typename MT, bool SO, typename OP >
-inline const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>&, OP );
+const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>&, OP );
 
 template< typename MT, bool SO, typename OP >
-inline const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>&, OP );
+const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>&, OP );
+
+template< typename VT1, typename VT2, bool TF, typename OP >
+const DVecDVecMapExpr<VT1,VT2,OP,TF> map( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>&, OP op );
+
+template< typename MT1, typename MT2, bool SO, typename OP >
+const DMatDMatMapExpr<MT1,MT2,OP,SO> map( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>&, OP op );
 
 } // namespace blaze
 
