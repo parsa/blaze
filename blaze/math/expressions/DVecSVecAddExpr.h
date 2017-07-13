@@ -54,7 +54,11 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DVecDVecAddExprTrait.h>
+#include <blaze/math/traits/DVecSVecAddExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecAddExprTrait.h>
+#include <blaze/math/traits/TDVecTSVecAddExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -699,8 +703,8 @@ class DVecSVecAddExpr
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
-inline const DVecSVecAddExpr<VT1,VT2,TF>
-   operator+( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+inline auto operator+( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+   -> const DVecSVecAddExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -742,8 +746,8 @@ inline const DVecSVecAddExpr<VT1,VT2,TF>
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-inline const DVecSVecAddExpr<VT2,VT1,TF>
-   operator+( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+inline auto operator+( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+   -> const DVecSVecAddExpr<VT2,VT1,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -781,8 +785,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename VT2    // Type of the sparse vector of the left-hand side expression
         , bool TF         // Transpose flag of the left-hand side expression
         , typename VT3 >  // Type of the right-hand side dense vector
-inline const AddExprTrait_< DVecSVecAddExpr<VT1,VT2,TF>, VT3 >
-   operator+( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+inline auto operator+( const DVecSVecAddExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
