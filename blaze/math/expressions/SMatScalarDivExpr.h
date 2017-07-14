@@ -56,6 +56,8 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SMatScalarMultExprTrait.h>
+#include <blaze/math/traits/TSMatScalarMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -910,13 +912,13 @@ inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<MT,ST> >
 // This operator implements a performance optimized treatment of the multiplication of a
 // sparse matrix-scalar division expression and a scalar value.
 */
-template< typename MT     // Type of the sparse matrix of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool SO         // Storage order of the sparse matrix
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , MultExprTrait_< SMatScalarDivExpr<MT,ST1,SO>, ST2 > >
-   operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
+template< typename MT   // Type of the sparse matrix of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool SO       // Storage order of the sparse matrix
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
+   -> decltype( mat.leftOperand() * ( scalar / mat.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -942,10 +944,10 @@ inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible
 template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO >     // Storage order of the sparse matrix
-inline const EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , MultExprTrait_< ST1, SMatScalarDivExpr<MT,ST2,SO> > >
-   operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
+        , bool SO       // Storage order of the sparse matrix
+        , typename = EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
+   -> decltype( mat.leftOperand() * ( scalar / mat.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
