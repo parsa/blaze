@@ -5340,10 +5340,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline const DisableIf_< IsMatMatMultExpr<MT>, DMatDVecMultExpr<MT,VT> >
-   operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side dense vector
+        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
+   -> const DMatDVecMultExpr<MT,VT>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -5377,11 +5378,12 @@ inline const DisableIf_< IsMatMatMultExpr<MT>, DMatDVecMultExpr<MT,VT> >
 // matrix-matrix multiplication expression and a dense vector. It restructures the expression
 // \f$ \vec{x}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , bool SO        // Storage order of the left-hand side dense matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<MT,VT> >
-   operator*( const DenseMatrix<MT,SO>& mat, const DenseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side dense vector
+        , typename = EnableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const DenseMatrix<MT,SO>& mat, const DenseVector<VT,false>& vec )
+   -> decltype( (~mat).leftOperand() * ( (~mat).rightOperand() * vec ) )
 {
    BLAZE_FUNCTION_TRACE;
 

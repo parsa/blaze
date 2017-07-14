@@ -1361,11 +1361,12 @@ inline auto operator%( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 // the vector \a vec doesn't match the current number of columns of the matrix \a mat, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T     // Data type of the left-hand side identity matrix
-        , bool SO        // Storage order of the left-hand side identity matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
-   operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
+template< typename T   // Data type of the left-hand side identity matrix
+        , bool SO      // Storage order of the left-hand side identity matrix
+        , typename VT  // Type of the right-hand side dense vector
+        , typename = EnableIf_< IsSame< T, ElementType_<VT> > > >
+inline auto operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
+   -> const VT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1409,9 +1410,10 @@ inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename T   // Data type of the right-hand side identity matrix
-        , bool SO >    // Storage order of the right-hand side identity matrix
-inline EnableIf_< IsSame< ElementType_<VT>, T >, const VT& >
-   operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
+        , bool SO      // Storage order of the right-hand side identity matrix
+        , typename = EnableIf_< IsSame< ElementType_<VT>, T > > >
+inline auto operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
+   -> const VT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1453,11 +1455,12 @@ inline EnableIf_< IsSame< ElementType_<VT>, T >, const VT& >
 // the vector \a vec doesn't match the current number of columns of the matrix \a mat, a
 // \a std::invalid_argument is thrown.
 */
-template< typename T     // Data type of the left-hand side identity matrix
-        , bool SO        // Storage order of the left-hand side identity matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
-   operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
+template< typename T   // Data type of the left-hand side identity matrix
+        , bool SO      // Storage order of the left-hand side identity matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , typename = EnableIf_< IsSame< T, ElementType_<VT> > > >
+inline auto operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
+   -> const VT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1501,9 +1504,10 @@ inline EnableIf_< IsSame< T, ElementType_<VT> >, const VT& >
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename T   // Data type of the right-hand side identity matrix
-        , bool SO >    // Storage order of the right-hand side identity matrix
-inline EnableIf_< IsSame< ElementType_<VT>, T >, const VT& >
-   operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
+        , bool SO      // Storage order of the right-hand side identity matrix
+        , typename = EnableIf_< IsSame< ElementType_<VT>, T > > >
+inline auto operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
+   -> const VT&
 {
    BLAZE_FUNCTION_TRACE;
 

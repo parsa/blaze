@@ -5361,10 +5361,11 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename VT    // Type of the left-hand side dense vector
-        , typename MT >  // Type of the right-hand side dense matrix
-inline const DisableIf_< IsMatMatMultExpr<MT>, TDVecTDMatMultExpr<VT,MT> >
-   operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+template< typename VT  // Type of the left-hand side dense vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+   -> const TDVecTDMatMultExpr<VT,MT>
 {
    BLAZE_FUNCTION_TRACE;
 

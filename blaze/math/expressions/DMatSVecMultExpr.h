@@ -878,11 +878,11 @@ class DMatSVecMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >
-                       , DMatSVecMultExpr<MT,VT> >
-   operator*( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , typename = DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> > > >
+inline auto operator*( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+   -> const DMatSVecMultExpr<MT,VT>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -918,10 +918,11 @@ inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >
 // symmetric row-major dense matrix and a sparse vector. It restructures the expression
 // \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline const EnableIf_< IsSymmetric<MT>, MultExprTrait_<MT,VT> >
-   operator*( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , typename = EnableIf_< IsSymmetric<MT> > >
+inline auto operator*( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+   -> decltype( trans( ~mat ) * (~vec) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -951,11 +952,12 @@ inline const EnableIf_< IsSymmetric<MT>, MultExprTrait_<MT,VT> >
 // matrix-matrix multiplication expression and a sparse vector. It restructures the expression
 // \f$ \vec{y}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , bool SO        // Storage order of the left-hand side dense matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<MT,VT> >
-   operator*( const DenseMatrix<MT,SO>& mat, const SparseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , typename = EnableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const DenseMatrix<MT,SO>& mat, const SparseVector<VT,false>& vec )
+   -> decltype( (~mat).leftOperand() * ( (~mat).rightOperand() * vec ) )
 {
    BLAZE_FUNCTION_TRACE;
 

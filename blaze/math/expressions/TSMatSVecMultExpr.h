@@ -836,10 +836,11 @@ class TSMatSVecMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT    // Type of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline const DisableIf_< IsMatMatMultExpr<MT>, TSMatSVecMultExpr<MT,VT> >
-   operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
+   -> const TSMatSVecMultExpr<MT,VT>
 {
    BLAZE_FUNCTION_TRACE;
 

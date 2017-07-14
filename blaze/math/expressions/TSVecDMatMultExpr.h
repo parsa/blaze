@@ -1724,9 +1724,11 @@ class TSVecDMatMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename VT, typename MT >
-inline const DisableIf_< IsMatMatMultExpr<MT>, TSVecDMatMultExpr<VT,MT> >
-   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat )
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat )
+   -> const TSVecDMatMultExpr<VT,MT>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1762,9 +1764,10 @@ inline const DisableIf_< IsMatMatMultExpr<MT>, TSVecDMatMultExpr<VT,MT> >
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline const EnableIf_< IsMatMatMultExpr<MT>, MultExprTrait_<VT,MT> >
-   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,SO>& mat )
+        , bool SO      // Storage order of the right-hand side dense matrix
+        , typename = EnableIf_< IsMatMatMultExpr<MT> > >
+inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,SO>& mat )
+   -> decltype( ( vec * (~mat).leftOperand() ) * (~mat).rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

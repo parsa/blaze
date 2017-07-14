@@ -860,9 +860,11 @@ class TSVecTDMatMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename VT, typename MT >
-inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >, TSVecTDMatMultExpr<VT,MT> >
-   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> > > >
+inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+   -> const TSVecTDMatMultExpr<VT,MT>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -898,10 +900,11 @@ inline const DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> >, TSVecTDMat
 // transpose sparse vector and a symmetric column-major dense matrix. It restructures the
 // expression \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
 */
-template< typename VT    // Type of the left-hand side sparse vector
-        , typename MT >  // Type of the right-hand side dense matrix
-inline const EnableIf_< IsSymmetric<MT>, MultExprTrait_<VT,MT> >
-   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< IsSymmetric<MT> > >
+inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+   -> decltype( (~vec) * trans( ~mat ) )
 {
    BLAZE_FUNCTION_TRACE;
 
