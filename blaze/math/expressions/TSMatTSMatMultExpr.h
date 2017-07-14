@@ -59,10 +59,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/TSMatDVecMultExprTrait.h>
-#include <blaze/math/traits/TSMatSVecMultExprTrait.h>
-#include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
-#include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -1381,86 +1377,6 @@ struct IsStrictlyUpper< TSMatTSMatMultExpr<MT1,MT2> >
    : public BoolConstant< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
                             , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename VT >
-struct TSMatDVecMultExprTrait< TSMatTSMatMultExpr<MT1,MT2>, VT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                        , IsDenseVector<VT>, IsColumnVector<VT> >
-                   , TSMatDVecMultExprTrait_< MT1, TSMatDVecMultExprTrait_<MT2,VT> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename VT >
-struct TSMatSVecMultExprTrait< TSMatTSMatMultExpr<MT1,MT2>, VT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2>
-                        , IsSparseVector<VT>, IsColumnVector<VT> >
-                   , TSMatDVecMultExprTrait_< MT1, TSMatDVecMultExprTrait_<MT2,VT> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2 >
-struct TDVecTSMatMultExprTrait< VT, TSMatTSMatMultExpr<MT1,MT2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                   , TDVecTSMatMultExprTrait_< TDVecTSMatMultExprTrait_<VT,MT1>, MT2 >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT1, typename MT2 >
-struct TSVecTSMatMultExprTrait< VT, TSMatTSMatMultExpr<MT1,MT2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                        , IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
-                        , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                   , TSVecTSMatMultExprTrait_< TSVecTSMatMultExprTrait_<VT,MT1>, MT2 >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -60,25 +60,17 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
-#include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatSMatMultExprTrait.h>
-#include <blaze/math/traits/SMatSVecMultExprTrait.h>
 #include <blaze/math/traits/SMatTDMatMultExprTrait.h>
 #include <blaze/math/traits/SMatTSMatMultExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TDMatSMatMultExprTrait.h>
 #include <blaze/math/traits/TDMatTSMatMultExprTrait.h>
-#include <blaze/math/traits/TDVecSMatMultExprTrait.h>
-#include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatDMatMultExprTrait.h>
-#include <blaze/math/traits/TSMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatSMatMultExprTrait.h>
-#include <blaze/math/traits/TSMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatTSMatMultExprTrait.h>
-#include <blaze/math/traits/TSVecSMatMultExprTrait.h>
-#include <blaze/math/traits/TSVecTSMatMultExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -2626,142 +2618,6 @@ struct ColumnTrait< IdentityMatrix<T1,SO> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct SMatDVecMultExprTrait< IdentityMatrix<T,false>, VT
-                            , EnableIf_< IsSame< T, ElementType_<VT> > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TSMatDVecMultExprTrait< IdentityMatrix<T,true>, VT
-                             , EnableIf_< IsSame< T, ElementType_<VT> > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TDVecSMatMultExprTrait< VT, IdentityMatrix<T,false>
-                             , EnableIf_< IsSame< ElementType_<VT>, T > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TDVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>
-                              , EnableIf_< IsSame< ElementType_<VT>, T > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct SMatSVecMultExprTrait< IdentityMatrix<T,false>, VT
-                            , EnableIf_< IsSame< T, ElementType_<VT> > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TSMatSVecMultExprTrait< IdentityMatrix<T,true>, VT
-                             , EnableIf_< IsSame< T, ElementType_<VT> > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TSVecSMatMultExprTrait< VT, IdentityMatrix<T,false>
-                             , EnableIf_< IsSame< ElementType_<VT>, T > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, typename VT >
-struct TSVecTSMatMultExprTrait< VT, IdentityMatrix<T,true>
-                              , EnableIf_< IsSame< ElementType_<VT>, T > > >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , const VT&
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

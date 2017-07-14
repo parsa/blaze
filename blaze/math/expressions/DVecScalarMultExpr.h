@@ -57,24 +57,16 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatScalarMultExprTrait.h>
 #include <blaze/math/traits/DVecScalarDivExprTrait.h>
 #include <blaze/math/traits/DVecScalarMultExprTrait.h>
-#include <blaze/math/traits/SMatDVecMultExprTrait.h>
 #include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TDMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TDMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecScalarDivExprTrait.h>
 #include <blaze/math/traits/TDVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecSMatMultExprTrait.h>
-#include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
-#include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
-#include <blaze/math/traits/TSMatDVecMultExprTrait.h>
 #include <blaze/math/traits/TSMatScalarMultExprTrait.h>
 #include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -2009,214 +2001,6 @@ struct TDVecScalarDivExprTrait< DVecScalarMultExpr<VT,ST1,true>, ST2 >
                    , If_< IsInvertible<ScalarType>
                         , TDVecScalarMultExprTrait_<VT,ScalarType>
                         , TDVecScalarDivExprTrait_<VT,ScalarType> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DMATDVECMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT, typename ST >
-struct DMatDVecMultExprTrait< MT, DVecScalarMultExpr<VT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>
-                        , IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST> >
-                   , DVecScalarMultExprTrait_< DMatDVecMultExprTrait_<MT,VT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDMATDVECMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT, typename ST >
-struct TDMatDVecMultExprTrait< MT, DVecScalarMultExpr<VT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>
-                        , IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST> >
-                   , DVecScalarMultExprTrait_< TDMatDVecMultExprTrait_<MT,VT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECDMATMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT, typename ST >
-struct TDVecDMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsDenseMatrix<MT>, IsRowMajorMatrix<MT>
-                        , IsNumeric<ST> >
-                   , TDVecScalarMultExprTrait_< TDVecDMatMultExprTrait_<VT,MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECTDMATMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT, typename ST >
-struct TDVecTDMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>
-                        , IsNumeric<ST> >
-                   , TDVecScalarMultExprTrait_< TDVecTDMatMultExprTrait_<VT,MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SMATDVECMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT, typename ST >
-struct SMatDVecMultExprTrait< MT, DVecScalarMultExpr<VT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
-                        , IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST> >
-                   , DVecScalarMultExprTrait_< SMatDVecMultExprTrait_<MT,VT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TSMATDVECMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT, typename ST >
-struct TSMatDVecMultExprTrait< MT, DVecScalarMultExpr<VT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
-                        , IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST> >
-                   , DVecScalarMultExprTrait_< TSMatDVecMultExprTrait_<MT,VT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECSMATMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT, typename ST >
-struct TDVecSMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
-                        , IsNumeric<ST> >
-                   , TDVecScalarMultExprTrait_< TDVecSMatMultExprTrait_<VT,MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECTSMATMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT, typename ST >
-struct TDVecTSMatMultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
-                        , IsNumeric<ST> >
-                   , TDVecScalarMultExprTrait_< TDVecTSMatMultExprTrait_<VT,MT>, ST >
                    , INVALID_TYPE >;
    //**********************************************************************************************
 };
