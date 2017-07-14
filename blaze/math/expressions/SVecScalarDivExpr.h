@@ -56,6 +56,8 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SVecScalarMultExprTrait.h>
+#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -844,13 +846,13 @@ inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<VT,ST> >
 // This operator implements a performance optimized treatment of the multiplication of a
 // sparse vector-scalar division expression and a scalar value.
 */
-template< typename VT     // Type of the sparse vector of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the sparse vector
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , MultExprTrait_< SVecScalarDivExpr<VT,ST1,TF>, ST2 > >
-   operator*( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
+template< typename VT   // Type of the sparse vector of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool TF       // Transpose flag of the sparse vector
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator*( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
+   -> decltype( vec.leftOperand() * ( scalar / vec.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -876,10 +878,10 @@ inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible
 template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the sparse vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool TF >     // Transpose flag of the sparse vector
-inline const EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , MultExprTrait_< ST1, SVecScalarDivExpr<VT,ST2,TF> > >
-   operator*( ST1 scalar, const SVecScalarDivExpr<VT,ST2,TF>& vec )
+        , bool TF       // Transpose flag of the sparse vector
+        , typename = EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator*( ST1 scalar, const SVecScalarDivExpr<VT,ST2,TF>& vec )
+   -> decltype( vec.leftOperand() * ( scalar / vec.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -57,8 +57,35 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/DMatDVecMultExprTrait.h>
+#include <blaze/math/traits/DMatScalarMultExprTrait.h>
+#include <blaze/math/traits/DVecDVecMultExprTrait.h>
+#include <blaze/math/traits/DVecDVecOuterExprTrait.h>
+#include <blaze/math/traits/DVecScalarDivExprTrait.h>
+#include <blaze/math/traits/DVecScalarMultExprTrait.h>
+#include <blaze/math/traits/DVecSVecMultExprTrait.h>
+#include <blaze/math/traits/DVecSVecOuterExprTrait.h>
+#include <blaze/math/traits/SMatDVecMultExprTrait.h>
+#include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SVecDVecMultExprTrait.h>
+#include <blaze/math/traits/SVecDVecOuterExprTrait.h>
+#include <blaze/math/traits/SVecScalarMultExprTrait.h>
+#include <blaze/math/traits/TDMatDVecMultExprTrait.h>
+#include <blaze/math/traits/TDMatScalarMultExprTrait.h>
+#include <blaze/math/traits/TDVecDMatMultExprTrait.h>
+#include <blaze/math/traits/TDVecScalarDivExprTrait.h>
+#include <blaze/math/traits/TDVecScalarMultExprTrait.h>
+#include <blaze/math/traits/TDVecSMatMultExprTrait.h>
+#include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
+#include <blaze/math/traits/TDVecTDVecMultExprTrait.h>
+#include <blaze/math/traits/TDVecTSMatMultExprTrait.h>
+#include <blaze/math/traits/TDVecTSVecMultExprTrait.h>
+#include <blaze/math/traits/TSMatDVecMultExprTrait.h>
+#include <blaze/math/traits/TSMatScalarMultExprTrait.h>
+#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
+#include <blaze/math/traits/TSVecTDVecMultExprTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1085,13 +1112,14 @@ inline auto operator-( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<VT,ST> >
-   operator*( const DenseVector<VT,TF>& vec, ST scalar )
+        , bool TF      // Transpose flag
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline auto operator*( const DenseVector<VT,TF>& vec, ST scalar )
+   -> const DVecScalarMultExpr<VT,ST,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<VT,ST>( ~vec, scalar );
+   return DVecScalarMultExpr<VT,ST,TF>( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1120,13 +1148,14 @@ inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<VT,ST> >
 */
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
-        , bool TF >    // Transpose flag
-inline const EnableIf_< IsNumeric<ST>, MultExprTrait_<ST,VT> >
-   operator*( ST scalar, const DenseVector<VT,TF>& vec )
+        , bool TF      // Transpose flag
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline auto operator*( ST scalar, const DenseVector<VT,TF>& vec )
+   -> const DVecScalarMultExpr<VT,ST,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return MultExprTrait_<ST,VT>( ~vec, scalar );
+   return DVecScalarMultExpr<VT,ST,TF>( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1229,12 +1258,13 @@ inline auto operator-( const DVecScalarMultExpr<VT,ST,TF>& dv )
 // This operator implements a performance optimized treatment of the multiplication of a
 // dense vector-scalar multiplication expression and a scalar value.
 */
-template< typename VT     // Type of the dense vector of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the dense vector
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<ST2>, MultExprTrait_< DVecScalarMultExpr<VT,ST1,TF>, ST2 > >
-   operator*( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
+template< typename VT   // Type of the dense vector of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool TF       // Transpose flag of the dense vector
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< IsNumeric<ST2> > >
+inline auto operator*( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
+   -> decltype( vec.leftOperand() * ( vec.rightOperand() * scalar ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1260,9 +1290,10 @@ inline const EnableIf_< IsNumeric<ST2>, MultExprTrait_< DVecScalarMultExpr<VT,ST
 template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the dense vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool TF >     // Transpose flag of the dense vector
-inline const EnableIf_< IsNumeric<ST1>, MultExprTrait_< ST1, DVecScalarMultExpr<VT,ST2,TF> > >
-   operator*( ST1 scalar, const DVecScalarMultExpr<VT,ST2,TF>& vec )
+        , bool TF       // Transpose flag of the dense vector
+        , typename = EnableIf_< IsNumeric<ST1> > >
+inline auto operator*( ST1 scalar, const DVecScalarMultExpr<VT,ST2,TF>& vec )
+   -> decltype( vec.leftOperand() * ( scalar * vec.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1319,8 +1350,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename ST     // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the dense vectors
         , typename VT2 >  // Type of the right-hand side dense vector
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,TF>, VT2 >
-   operator*( const DVecScalarMultExpr<VT1,ST,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1348,8 +1379,8 @@ template< typename VT1   // Type of the left-hand side dense vector
         , bool TF        // Transpose flag of the dense vectors
         , typename VT2   // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< VT1, DVecScalarMultExpr<VT2,ST,TF> >
-   operator*( const DenseVector<VT1,TF>& lhs, const DVecScalarMultExpr<VT2,ST,TF>& rhs )
+inline auto operator*( const DenseVector<VT1,TF>& lhs, const DVecScalarMultExpr<VT2,ST,TF>& rhs )
+   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1378,8 +1409,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , bool TF         // Transpose flag of the dense vectors
         , typename VT2    // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST1,TF>, DVecScalarMultExpr<VT2,ST2,TF> >
-   operator*( const DVecScalarMultExpr<VT1,ST1,TF>& lhs, const DVecScalarMultExpr<VT2,ST2,TF>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST1,TF>& lhs, const DVecScalarMultExpr<VT2,ST2,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1406,8 +1437,8 @@ inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST1,TF>, DVecScalarMultExpr<
 template< typename VT1    // Type of the dense vector of the left-hand side expression
         , typename ST     // Type of the scalar of the left-hand side expression
         , typename VT2 >  // Type of the right-hand side dense vector
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,false>, VT2 >
-   operator*( const DVecScalarMultExpr<VT1,ST,false>& lhs, const DenseVector<VT2,true>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST,false>& lhs, const DenseVector<VT2,true>& rhs )
+   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1434,8 +1465,8 @@ inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 template< typename VT1   // Type of the left-hand side dense vector
         , typename VT2   // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< VT1, DVecScalarMultExpr<VT2,ST,true> >
-   operator*( const DenseVector<VT1,false>& lhs, const DVecScalarMultExpr<VT2,ST,true>& rhs )
+inline auto operator*( const DenseVector<VT1,false>& lhs, const DVecScalarMultExpr<VT2,ST,true>& rhs )
+   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1463,8 +1494,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , typename VT2    // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST1,false>, DVecScalarMultExpr<VT2,ST2,true> >
-   operator*( const DVecScalarMultExpr<VT1,ST1,false>& lhs, const DVecScalarMultExpr<VT2,ST2,true>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST1,false>& lhs, const DVecScalarMultExpr<VT2,ST2,true>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1492,8 +1523,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename ST     // Type of the scalar of the left-hand side expression
         , bool TF         // Transpose flag of the vectors
         , typename VT2 >  // Type of the right-hand side sparse vector
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,TF>, VT2 >
-   operator*( const DVecScalarMultExpr<VT1,ST,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1521,8 +1552,8 @@ template< typename VT1   // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag of the vectors
         , typename VT2   // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< VT1, DVecScalarMultExpr<VT2,ST,TF> >
-   operator*( const SparseVector<VT1,TF>& lhs, const DVecScalarMultExpr<VT2,ST,TF>& rhs )
+inline auto operator*( const SparseVector<VT1,TF>& lhs, const DVecScalarMultExpr<VT2,ST,TF>& rhs )
+   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1552,8 +1583,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , bool TF         // Transpose flag of the vectors
         , typename VT2    // Type of the sparse vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar o the right-hand side expression
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST1,TF>, SVecScalarMultExpr<VT2,ST2,TF> >
-   operator*( const DVecScalarMultExpr<VT1,ST1,TF>& lhs, const SVecScalarMultExpr<VT2,ST2,TF>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST1,TF>& lhs, const SVecScalarMultExpr<VT2,ST2,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1583,8 +1614,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
         , bool TF         // Transpose flag of the vectors
         , typename VT2    // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar o the right-hand side expression
-inline const MultExprTrait_< SVecScalarMultExpr<VT1,ST1,TF>, DVecScalarMultExpr<VT2,ST2,TF> >
-   operator*( const SVecScalarMultExpr<VT1,ST1,TF>& lhs, const DVecScalarMultExpr<VT2,ST2,TF>& rhs )
+inline auto operator*( const SVecScalarMultExpr<VT1,ST1,TF>& lhs, const DVecScalarMultExpr<VT2,ST2,TF>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1611,8 +1642,8 @@ inline const MultExprTrait_< SVecScalarMultExpr<VT1,ST1,TF>, DVecScalarMultExpr<
 template< typename VT1    // Type of the dense vector of the left-hand side expression
         , typename ST     // Type of the scalar of the left-hand side expression
         , typename VT2 >  // Type of the right-hand side sparse vector
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,false>, VT2 >
-   operator*( const DVecScalarMultExpr<VT1,ST,false>& lhs, const SparseVector<VT2,true>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST,false>& lhs, const SparseVector<VT2,true>& rhs )
+   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1639,8 +1670,8 @@ inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST,false>, VT2 >
 template< typename VT1   // Type of the left-hand side sparse vector
         , typename VT2   // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< VT1, DVecScalarMultExpr<VT2,ST,true> >
-   operator*( const SparseVector<VT1,false>& lhs, const DVecScalarMultExpr<VT2,ST,true>& rhs )
+inline auto operator*( const SparseVector<VT1,false>& lhs, const DVecScalarMultExpr<VT2,ST,true>& rhs )
+   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1669,8 +1700,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename ST1    // Type of the scalar of the left-hand side expression
         , typename VT2    // Type of the sparse vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar o the right-hand side expression
-inline const MultExprTrait_< DVecScalarMultExpr<VT1,ST1,false>, SVecScalarMultExpr<VT2,ST2,true> >
-   operator*( const DVecScalarMultExpr<VT1,ST1,false>& lhs, const SVecScalarMultExpr<VT2,ST2,true>& rhs )
+inline auto operator*( const DVecScalarMultExpr<VT1,ST1,false>& lhs, const SVecScalarMultExpr<VT2,ST2,true>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1699,8 +1730,8 @@ template< typename VT1    // Type of the sparse vector of the left-hand side exp
         , typename ST1    // Type of the scalar of the left-hand side expression
         , typename VT2    // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar o the right-hand side expression
-inline const MultExprTrait_< SVecScalarMultExpr<VT1,ST1,false>, DVecScalarMultExpr<VT2,ST2,true> >
-   operator*( const SVecScalarMultExpr<VT1,ST1,false>& lhs, const DVecScalarMultExpr<VT2,ST2,true>& rhs )
+inline auto operator*( const SVecScalarMultExpr<VT1,ST1,false>& lhs, const DVecScalarMultExpr<VT2,ST2,true>& rhs )
+   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1728,8 +1759,8 @@ template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix
         , typename VT    // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< MT, DVecScalarMultExpr<VT,ST,false> >
-   operator*( const DenseMatrix<MT,SO>& mat, const DVecScalarMultExpr<VT,ST,false>& vec )
+inline auto operator*( const DenseMatrix<MT,SO>& mat, const DVecScalarMultExpr<VT,ST,false>& vec )
+   -> decltype( ( (~mat) * vec.leftOperand() ) * vec.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1757,8 +1788,8 @@ template< typename VT  // Type of the dense vector of the left-hand side express
         , typename ST  // Type of the scalar of the left-hand side expression
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order of the right-hand side dense matrix
-inline const MultExprTrait_< DVecScalarMultExpr<VT,ST,true>, MT >
-   operator*( const DVecScalarMultExpr<VT,ST,true>& vec, const DenseMatrix<MT,SO>& mat )
+inline auto operator*( const DVecScalarMultExpr<VT,ST,true>& vec, const DenseMatrix<MT,SO>& mat )
+   -> decltype( ( vec.leftOperand() * (~mat) ) * vec.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1786,8 +1817,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename VT    // Type of the dense vector of the right-hand side expression
         , typename ST >  // Type of the scalar of the right-hand side expression
-inline const MultExprTrait_< MT, DVecScalarMultExpr<VT,ST,false> >
-   operator*( const SparseMatrix<MT,SO>& mat, const DVecScalarMultExpr<VT,ST,false>& vec )
+inline auto operator*( const SparseMatrix<MT,SO>& mat, const DVecScalarMultExpr<VT,ST,false>& vec )
+   -> decltype( ( (~mat) * vec.leftOperand() ) * vec.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1815,8 +1846,8 @@ template< typename VT  // Type of the dense vector of the left-hand side express
         , typename ST  // Type of the scalar of the left-hand side expression
         , typename MT  // Type of the right-hand side sparse matrix
         , bool SO >    // Storage order of the right-hand side sparse matrix
-inline const MultExprTrait_< DVecScalarMultExpr<VT,ST,true>, MT >
-   operator*( const DVecScalarMultExpr<VT,ST,true>& vec, const SparseMatrix<MT,SO>& mat )
+inline auto operator*( const DVecScalarMultExpr<VT,ST,true>& vec, const SparseMatrix<MT,SO>& mat )
+   -> decltype( ( vec.leftOperand() * (~mat) ) * vec.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
