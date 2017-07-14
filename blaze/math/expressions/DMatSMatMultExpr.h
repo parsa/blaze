@@ -1640,8 +1640,8 @@ class DMatSMatMultExpr
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline const DMatSMatMultExpr<MT1,MT2,false,false,false,false>
-   operator*( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+inline auto operator*( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const DMatSMatMultExpr<MT1,MT2,false,false,false,false>
 {
    BLAZE_FUNCTION_TRACE;
 

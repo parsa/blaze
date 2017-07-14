@@ -80,6 +80,7 @@
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
+#include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -8195,8 +8196,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline const DMatTDMatMultExpr<MT1,MT2,false,false,false,false>
-   operator*( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+inline auto operator*( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> const DMatTDMatMultExpr<MT1,MT2,false,false,false,false>
 {
    BLAZE_FUNCTION_TRACE;
 

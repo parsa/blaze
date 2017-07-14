@@ -1225,8 +1225,8 @@ class TSMatTSMatMultExpr
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline const TSMatTSMatMultExpr<MT1,MT2>
-   operator*( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
+inline auto operator*( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
+   -> const TSMatTSMatMultExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
