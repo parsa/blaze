@@ -95,8 +95,8 @@ namespace blaze {
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
-inline const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
-   operator*( const DenseVector<VT1,true>& lhs, const SparseVector<VT2,false>& rhs )
+inline auto operator*( const DenseVector<VT1,true>& lhs, const SparseVector<VT2,false>& rhs )
+   -> const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
 {
    BLAZE_FUNCTION_TRACE;
 

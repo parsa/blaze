@@ -104,48 +104,32 @@ struct DVecDVecInnerExprHelper
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Default multiplication operator for the scalar product (inner product) of two dense
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default backend implementation of the scalar product (inner product) of two dense
 //        vectors (\f$ s=\vec{a}*\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the inner product.
 // \param rhs The right-hand side dense vector for the inner product.
 // \return The scalar product.
-// \exception std::invalid_argument Vector sizes do not match.
 //
-// This operator represents the scalar product (inner product) of two dense vectors:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   blaze::double res;
-   // ... Resizing and initialization
-   res = trans(a) * b;
-   \endcode
-
-// The operator returns a scalar value of the higher-order element type of the two involved
-// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
-// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
-// have to be supported by the MultTrait class template.\n
-// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
-// is thrown.
+// This function implements the performance optimized scalar product of two dense vectors.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case vectorization cannot be applied.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
                  , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
-   operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
    using Lhs      = CompositeType_<VT1>;
    using Rhs      = CompositeType_<VT2>;
    using ET1      = ElementType_<VT1>;
    using ET2      = ElementType_<VT2>;
    using MultType = MultTrait_<ET1,ET2>;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    if( (~lhs).size() == 0UL ) return MultType();
 
@@ -171,54 +155,37 @@ inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 
    return sp;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief SIMD optimized multiplication operator for the scalar product (inner product) of two
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized backend implementation of the scalar product (inner product) of two
 //        dense vectors (\f$ s=\vec{a}*\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the inner product.
 // \param rhs The right-hand side dense vector for the inner product.
 // \return The scalar product.
-// \exception std::invalid_argument Vector sizes do not match.
 //
-// This operator represents the scalar product (inner product) of two dense vectors:
-
-   \code
-   using blaze::columnVector;
-
-   blaze::DynamicVector<double,columnVector> a, b;
-   blaze::double res;
-   // ... Resizing and initialization
-   res = trans(a) * b;
-   \endcode
-
-// The operator returns a scalar value of the higher-order element type of the two involved
-// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
-// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
-// have to be supported by the MultTrait class template.\n
-// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
-// is thrown.
+// This function implements the performance optimized scalar product of two dense vectors.
+// Due to the explicit application of the SFINAE principle, this function can only be selected
+// by the compiler in case vectorization can be applied.
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
-               , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
-   operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+                , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
+   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
    using Lhs      = CompositeType_<VT1>;
    using Rhs      = CompositeType_<VT2>;
    using ET1      = ElementType_<VT1>;
    using ET2      = ElementType_<VT2>;
    using MultType = MultTrait_<ET1,ET2>;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
    enum : size_t { SIMDSIZE = SIMDTrait<MultType>::size };
 
@@ -253,6 +220,49 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
    }
 
    return sp;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication operator for the scalar product (inner product) of two dense vectors
+//        (\f$ s=\vec{a}*\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the inner product.
+// \param rhs The right-hand side dense vector for the inner product.
+// \return The scalar product.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the scalar product (inner product) of two dense vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   blaze::double res;
+   // ... Resizing and initialization
+   res = trans(a) * b;
+   \endcode
+
+// The operator returns a scalar value of the higher-order element type of the two involved
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+inline auto operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   -> const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   return dvecdvecinner( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

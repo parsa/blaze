@@ -1443,8 +1443,8 @@ class SVecDVecOuterExpr
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline const SVecDVecOuterExpr<VT1,VT2>
-   operator*( const SparseVector<VT1,false>& lhs, const DenseVector<VT2,true>& rhs )
+inline auto operator*( const SparseVector<VT1,false>& lhs, const DenseVector<VT2,true>& rhs )
+   -> const SVecDVecOuterExpr<VT1,VT2>
 {
    BLAZE_FUNCTION_TRACE;
 

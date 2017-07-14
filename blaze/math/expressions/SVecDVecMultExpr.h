@@ -714,8 +714,8 @@ class SVecDVecMultExpr
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-inline const SVecDVecMultExpr<VT1,VT2,TF>
-   operator*( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+inline auto operator*( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+   -> const SVecDVecMultExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
