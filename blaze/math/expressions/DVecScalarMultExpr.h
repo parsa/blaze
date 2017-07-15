@@ -1299,13 +1299,13 @@ inline auto operator*( ST1 scalar, const DVecScalarMultExpr<VT,ST2,TF>& vec )
 // This operator implements a performance optimized treatment of the division of a
 // dense vector-scalar multiplication expression by a scalar value.
 */
-template< typename VT     // Type of the dense vector of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the dense vector
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , DivExprTrait_< DVecScalarMultExpr<VT,ST1,TF>, ST2 > >
-   operator/( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
+template< typename VT   // Type of the dense vector of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool TF       // Transpose flag of the dense vector
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator/( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
+   -> decltype( vec.leftOperand() * ( vec.rightOperand() / scalar ) )
 {
    BLAZE_FUNCTION_TRACE;
 
