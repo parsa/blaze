@@ -1077,13 +1077,13 @@ inline auto operator*( ST1 scalar, const SMatScalarMultExpr<MT,ST2,SO>& mat )
 // This operator implements a performance optimized treatment of the division of a
 // sparse matrix-scalar multiplication expression by a scalar value.
 */
-template< typename MT     // Type of the sparse matrix
-        , typename ST1    // Type of the first scalar
-        , bool SO         // Storage order of the sparse matrix
-        , typename ST2 >  // Type of the second scalar
-inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , DivExprTrait_< SMatScalarMultExpr<MT,ST1,SO>, ST2 > >
-   operator/( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
+template< typename MT   // Type of the sparse matrix
+        , typename ST1  // Type of the first scalar
+        , bool SO       // Storage order of the sparse matrix
+        , typename ST2  // Type of the second scalar
+        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator/( const SMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
+   -> decltype( mat.leftOperand() * ( mat.rightOperand() / scalar ) )
 {
    BLAZE_FUNCTION_TRACE;
 

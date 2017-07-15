@@ -1241,13 +1241,13 @@ inline auto operator*( ST1 scalar, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 // This operator implements a performance optimized treatment of the division of a
 // dense matrix-scalar multiplication expression by a scalar value.
 */
-template< typename MT     // Type of the dense matrix of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool SO         // Storage order of the dense matrix
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > >
-                      , DivExprTrait_< DMatScalarMultExpr<MT,ST1,SO>, ST2 > >
-   operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
+template< typename MT   // Type of the dense matrix of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool SO       // Storage order of the dense matrix
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+inline auto operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
+   -> decltype( mat.leftOperand() * ( mat.rightOperand() / scalar ) )
 {
    BLAZE_FUNCTION_TRACE;
 

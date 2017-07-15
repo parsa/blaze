@@ -1013,6 +1013,38 @@ class DMatScalarDivExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the dense matrix/scalar division operator.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , bool SO >    // Storage order
+struct DMatScalarDivExprHelper
+{
+ private:
+   //**********************************************************************************************
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<MT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<MT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<MT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<MT>, ST > >
+                         , ST >;
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = If_< IsInvertible<ScalarType>
+                   , DMatScalarMultExpr<MT,ScalarType,SO>
+                   , DMatScalarDivExpr<MT,ScalarType,SO> >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Division operator for the division of a dense matrix by a scalar value (\f$ A=B/s \f$).
 // \ingroup dense_matrix
 //
@@ -1034,17 +1066,18 @@ class DMatScalarDivExpr
 //
 // \note A division by zero is only checked by an user assert.
 */
-template< typename MT    // Type of the left-hand side dense matrix
-        , bool SO        // Storage order of the left-hand side dense matrix
-        , typename ST >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<ST>, DivExprTrait_<MT,ST> >
-   operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline auto operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
+   -> typename DMatScalarDivExprHelper<MT,ST,SO>::Type
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   using ReturnType = DivExprTrait_<MT,ST>;
+   using ReturnType = typename DMatScalarDivExprHelper<MT,ST,SO>::Type;
    using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
@@ -1136,20 +1169,20 @@ inline auto operator*( ST1 scalar, const DMatScalarDivExpr<MT,ST2,SO>& mat )
 // This operator implements a performance optimized treatment of the division of a dense
 // matrix-scalar division expression and a scalar value.
 */
-template< typename MT     // Type of the dense matrix of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool SO         // Storage order of the dense matrix
-        , typename ST2 >  // Type of the right-hand side scalar
-inline const EnableIf_< IsNumeric<ST2>
-                      , DivExprTrait_< MT, MultTrait_<ST1,ST2> > >
-   operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
+template< typename MT   // Type of the dense matrix of the left-hand side expression
+        , typename ST1  // Type of the scalar of the left-hand side expression
+        , bool SO       // Storage order of the dense matrix
+        , typename ST2  // Type of the right-hand side scalar
+        , typename = EnableIf_< IsNumeric<ST2> > >
+inline auto operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
+   -> typename DMatScalarDivExprHelper<MT,MultTrait_<ST1,ST2>,SO>::Type
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
    using MultType   = MultTrait_<ST1,ST2>;
-   using ReturnType = DivExprTrait_<MT,MultType>;
+   using ReturnType = typename DMatScalarDivExprHelper<MT,MultType,SO>::Type;
    using ScalarType = RightOperand_<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
