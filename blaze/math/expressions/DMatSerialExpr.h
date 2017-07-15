@@ -48,9 +48,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
-#include <blaze/math/traits/DMatSerialExprTrait.h>
-#include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/TDMatSerialExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1055,46 +1052,6 @@ template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatSerialExpr<MT,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct DMatSerialExprTrait< DMatSerialExpr<MT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , DMatSerialExpr<MT,false>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct TDMatSerialExprTrait< DMatSerialExpr<MT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , DMatSerialExpr<MT,true>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

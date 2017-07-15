@@ -48,9 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/SVecSerialExprTrait.h>
-#include <blaze/math/traits/TSVecSerialExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -705,46 +702,6 @@ template< typename VT, bool TF >
 struct Size< SVecSerialExpr<VT,TF> >
    : public Size<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct SVecSerialExprTrait< SVecSerialExpr<VT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-              , SVecSerialExpr<VT,false>
-              , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct TSVecSerialExprTrait< SVecSerialExpr<VT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-              , SVecSerialExpr<VT,true>
-              , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

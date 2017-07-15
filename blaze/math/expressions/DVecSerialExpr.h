@@ -48,9 +48,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
-#include <blaze/math/traits/DVecSerialExprTrait.h>
-#include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/TDVecSerialExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -825,46 +822,6 @@ template< typename VT, bool TF >
 struct IsAligned< DVecSerialExpr<VT,TF> >
    : public BoolConstant< IsAligned<VT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct DVecSerialExprTrait< DVecSerialExpr<VT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , DVecSerialExpr<VT,false>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct TDVecSerialExprTrait< DVecSerialExpr<VT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , DVecSerialExpr<VT,true>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
