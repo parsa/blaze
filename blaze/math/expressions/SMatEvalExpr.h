@@ -48,9 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/traits/EvalExprTrait.h>
-#include <blaze/math/traits/SMatEvalExprTrait.h>
-#include <blaze/math/traits/TSMatEvalExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1024,46 +1021,6 @@ template< typename MT, bool SO >
 struct IsStrictlyUpper< SMatEvalExpr<MT,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct SMatEvalExprTrait< SMatEvalExpr<MT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , SMatEvalExpr<MT,false>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct TSMatEvalExprTrait< SMatEvalExpr<MT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , SMatEvalExpr<MT,true>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
