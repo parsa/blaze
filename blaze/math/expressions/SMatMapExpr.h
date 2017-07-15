@@ -1221,7 +1221,7 @@ inline const SMatMapExpr<MT,Conj,SO> conj( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const CTransExprTrait_<MT> ctrans( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) ctrans( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

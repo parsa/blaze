@@ -1340,7 +1340,7 @@ inline const DVecMapExpr<VT,Conj,TF> conj( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const CTransExprTrait_<VT> ctrans( const DenseVector<VT,TF>& dv )
+inline decltype(auto) ctrans( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 

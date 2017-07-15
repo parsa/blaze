@@ -1097,7 +1097,7 @@ inline const SVecMapExpr<VT,Conj,TF> conj( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const CTransExprTrait_<VT> ctrans( const SparseVector<VT,TF>& sv )
+inline decltype(auto) ctrans( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
