@@ -54,7 +54,6 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
-#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/SMatMapExprTrait.h>
 #include <blaze/math/traits/TSMatMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapExprTrait.h>
