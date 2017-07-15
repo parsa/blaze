@@ -40,20 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatDeclSymExprTrait.h>
-#include <blaze/math/traits/SMatDeclSymExprTrait.h>
-#include <blaze/math/traits/TDMatDeclSymExprTrait.h>
-#include <blaze/math/traits/TSMatDeclSymExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -84,26 +75,19 @@ struct DeclSymExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T>
-                  , If_< IsDenseMatrix<T>
-                       , If_< IsRowMajorMatrix<T>
-                            , DMatDeclSymExprTrait<T>
-                            , TDMatDeclSymExprTrait<T> >
-                       , If_< IsRowMajorMatrix<T>
-                            , SMatDeclSymExprTrait<T>
-                            , TSMatDeclSymExprTrait<T> > >
-                  , Failure >;
+   struct Result { using Type = decltype( declsym( std::declval<T>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , DeclSymExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< IsMatrix< RemoveReference_<T> >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
