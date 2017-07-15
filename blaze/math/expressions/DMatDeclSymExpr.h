@@ -945,9 +945,10 @@ class DMatDeclSymExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> >, const DMatDeclSymExpr<MT,SO> >
-   declsym( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> > > >
+inline auto declsym( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclSymExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -971,9 +972,10 @@ inline DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> >, const DMatDeclSym
 // symmetric. The function returns a reference to the already symmetric matrix expression.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsSymmetric<MT>, const MT& >
-   declsym( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsSymmetric<MT> > >
+inline auto declsym( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -995,9 +997,10 @@ inline EnableIf_< IsSymmetric<MT>, const MT& >
 // symmetric. The function returns an identity matrix.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
-   declsym( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUniTriangular<MT> > >
+inline auto declsym( const DenseMatrix<MT,SO>& dm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1032,9 +1035,10 @@ inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline const DisableIf_< IsSymmetric<MT>, MultExprTrait_< DeclSymExprTrait_<MT>, ST > >
-   declsym( const DMatScalarMultExpr<MT,ST,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsSymmetric<MT> > >
+inline auto declsym( const DMatScalarMultExpr<MT,ST,SO>& dm )
+   -> decltype( declsym( dm.leftOperand() ) * dm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
