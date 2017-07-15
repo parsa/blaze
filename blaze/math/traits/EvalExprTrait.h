@@ -40,27 +40,14 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatEvalExprTrait.h>
-#include <blaze/math/traits/DVecEvalExprTrait.h>
-#include <blaze/math/traits/SMatEvalExprTrait.h>
-#include <blaze/math/traits/SVecEvalExprTrait.h>
-#include <blaze/math/traits/TDMatEvalExprTrait.h>
-#include <blaze/math/traits/TDVecEvalExprTrait.h>
-#include <blaze/math/traits/TSMatEvalExprTrait.h>
-#include <blaze/math/traits/TSVecEvalExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/shims/Eval.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -91,34 +78,19 @@ struct EvalExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T>
-                  , If_< IsDenseMatrix<T>
-                       , If_< IsRowMajorMatrix<T>
-                            , DMatEvalExprTrait<T>
-                            , TDMatEvalExprTrait<T> >
-                       , If_< IsRowMajorMatrix<T>
-                            , SMatEvalExprTrait<T>
-                            , TSMatEvalExprTrait<T> > >
-                  , If_< IsVector<T>
-                       , If_< IsDenseVector<T>
-                            , If_< IsRowVector<T>
-                                 , TDVecEvalExprTrait<T>
-                                 , DVecEvalExprTrait<T> >
-                            , If_< IsRowVector<T>
-                                 , TSVecEvalExprTrait<T>
-                                 , SVecEvalExprTrait<T> > >
-                       , Failure > >;
+   struct Result { using Type = decltype( eval( std::declval<T>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , EvalExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
