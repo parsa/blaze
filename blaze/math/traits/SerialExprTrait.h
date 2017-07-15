@@ -40,27 +40,14 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatSerialExprTrait.h>
-#include <blaze/math/traits/DVecSerialExprTrait.h>
-#include <blaze/math/traits/SMatSerialExprTrait.h>
-#include <blaze/math/traits/SVecSerialExprTrait.h>
-#include <blaze/math/traits/TDMatSerialExprTrait.h>
-#include <blaze/math/traits/TDVecSerialExprTrait.h>
-#include <blaze/math/traits/TSMatSerialExprTrait.h>
-#include <blaze/math/traits/TSVecSerialExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -91,34 +78,19 @@ struct SerialExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T>
-                  , If_< IsDenseMatrix<T>
-                       , If_< IsRowMajorMatrix<T>
-                            , DMatSerialExprTrait<T>
-                            , TDMatSerialExprTrait<T> >
-                       , If_< IsRowMajorMatrix<T>
-                            , SMatSerialExprTrait<T>
-                            , TSMatSerialExprTrait<T> > >
-                  , If_< IsVector<T>
-                       , If_< IsDenseVector<T>
-                            , If_< IsRowVector<T>
-                                 , TDVecSerialExprTrait<T>
-                                 , DVecSerialExprTrait<T> >
-                            , If_< IsRowVector<T>
-                                 , TSVecSerialExprTrait<T>
-                                 , SVecSerialExprTrait<T> > >
-                       , Failure > >;
+   struct Result { using Type = decltype( serial( std::declval<T>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , SerialExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
