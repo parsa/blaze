@@ -54,8 +54,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/DVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
@@ -1260,70 +1258,6 @@ template< typename VT, typename ST, bool TF >
 struct IsPadded< DVecScalarDivExpr<VT,ST,TF> >
    : public BoolConstant< IsPadded<VT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct DVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,false>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST2,ST1>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , DVecScalarMultExprTrait_<VT,ScalarType>
-                        , DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,false>, ST2, false > >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TDVecScalarMultExprTrait< DVecScalarDivExpr<VT,ST1,true>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST2,ST1>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , DVecScalarMultExprTrait_<VT,ScalarType>
-                        , DVecScalarMultExpr< DVecScalarDivExpr<VT,ST1,true>, ST2, true > >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

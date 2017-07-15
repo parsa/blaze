@@ -56,8 +56,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -68,6 +66,8 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -79,6 +79,9 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -978,70 +981,6 @@ template< typename VT, typename ST, bool TF >
 struct Size< SVecScalarDivExpr<VT,ST,TF> >
    : public Size<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct SVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,false>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST2,ST1>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , SVecScalarMultExprTrait_<VT,ScalarType>
-                        , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,false>, ST2, false > >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TSVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TSVecScalarMultExprTrait< SVecScalarDivExpr<VT,ST1,true>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST2,ST1>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , SVecScalarMultExprTrait_<VT,ScalarType>
-                        , SVecScalarMultExpr< SVecScalarDivExpr<VT,ST1,true>, ST2, true > >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -55,17 +55,13 @@
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatScalarMultExprTrait.h>
-#include <blaze/math/traits/DVecScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SMatScalarDivExprTrait.h>
 #include <blaze/math/traits/SMatScalarMultExprTrait.h>
-#include <blaze/math/traits/SVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TDMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecScalarMultExprTrait.h>
 #include <blaze/math/traits/TSMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TSMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>

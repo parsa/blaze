@@ -54,16 +54,8 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/DVecScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SMatScalarMultExprTrait.h>
-#include <blaze/math/traits/SVecScalarDivExprTrait.h>
-#include <blaze/math/traits/SVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TSMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TSVecScalarDivExprTrait.h>
-#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -1485,120 +1477,6 @@ template< typename VT, typename ST, bool TF >
 struct Size< SVecScalarMultExpr<VT,ST,TF> >
    : public Size<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct SVecScalarMultExprTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , SVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TSVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TSVecScalarMultExprTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , TSVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SVECSCALARDIVEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct SVecScalarDivExprTrait< SVecScalarMultExpr<VT,ST1,false>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST1,ST2>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , SVecScalarMultExprTrait_<VT,ScalarType>
-                        , SVecScalarDivExprTrait_<VT,ScalarType> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TSVECSCALARDIVEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TSVecScalarDivExprTrait< SVecScalarMultExpr<VT,ST1,true>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST1,ST2>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , TSVecScalarMultExprTrait_<VT,ScalarType>
-                        , TSVecScalarDivExprTrait_<VT,ScalarType> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

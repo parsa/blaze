@@ -57,18 +57,8 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/DMatScalarMultExprTrait.h>
-#include <blaze/math/traits/DVecScalarDivExprTrait.h>
-#include <blaze/math/traits/DVecScalarMultExprTrait.h>
-#include <blaze/math/traits/SMatScalarMultExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TDMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TDVecScalarDivExprTrait.h>
-#include <blaze/math/traits/TDVecScalarMultExprTrait.h>
-#include <blaze/math/traits/TSMatScalarMultExprTrait.h>
-#include <blaze/math/traits/TSVecScalarMultExprTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1890,120 +1880,6 @@ template< typename VT, typename ST, bool TF >
 struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
    : public BoolConstant< IsPadded<VT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct DVecScalarMultExprTrait< DVecScalarMultExpr<VT,ST1,false>, ST2 >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , DVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECSCALARMULTEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TDVecScalarMultExprTrait< DVecScalarMultExpr<VT,ST1,true>, ST2 >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , TDVecScalarMultExprTrait_< VT, MultTrait_<ST1,ST2> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DVECSCALARDIVEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct DVecScalarDivExprTrait< DVecScalarMultExpr<VT,ST1,false>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST1,ST2>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , DVecScalarMultExprTrait_<VT,ScalarType>
-                        , DVecScalarDivExprTrait_<VT,ScalarType> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  TDVECSCALARDIVEXPRTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST1, typename ST2 >
-struct TDVecScalarDivExprTrait< DVecScalarMultExpr<VT,ST1,true>, ST2 >
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = DivTrait_<ST1,ST2>;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT>
-                        , IsNumeric<ST1>, IsNumeric<ST2> >
-                   , If_< IsInvertible<ScalarType>
-                        , TDVecScalarMultExprTrait_<VT,ScalarType>
-                        , TDVecScalarDivExprTrait_<VT,ScalarType> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
