@@ -55,10 +55,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/sparse/Forward.h>
-#include <blaze/math/traits/DeclLowExprTrait.h>
-#include <blaze/math/traits/DMatDeclLowExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
-#include <blaze/math/traits/TDMatDeclLowExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -1245,46 +1242,6 @@ template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatDeclLowExpr<MT,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST >
-struct DMatDeclLowExprTrait< DMatScalarMultExpr<MT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >
-                   , MultExprTrait_< DeclLowExprTrait_<MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST >
-struct TDMatDeclLowExprTrait< DMatScalarMultExpr<MT,ST,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
-                   , MultExprTrait_< DeclLowExprTrait_<MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
