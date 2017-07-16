@@ -40,20 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatDeclHermExprTrait.h>
-#include <blaze/math/traits/SMatDeclHermExprTrait.h>
-#include <blaze/math/traits/TDMatDeclHermExprTrait.h>
-#include <blaze/math/traits/TSMatDeclHermExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -84,26 +75,19 @@ struct DeclHermExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T>
-                  , If_< IsDenseMatrix<T>
-                       , If_< IsRowMajorMatrix<T>
-                            , DMatDeclHermExprTrait<T>
-                            , TDMatDeclHermExprTrait<T> >
-                       , If_< IsRowMajorMatrix<T>
-                            , SMatDeclHermExprTrait<T>
-                            , TSMatDeclHermExprTrait<T> > >
-                  , Failure >;
+   struct Result { using Type = decltype( declherm( std::declval<T>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , DeclHermExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< IsMatrix< RemoveReference_<T> >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
