@@ -53,10 +53,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/Forward.h>
-#include <blaze/math/traits/DeclHermExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
-#include <blaze/math/traits/SMatDeclHermExprTrait.h>
-#include <blaze/math/traits/TSMatDeclHermExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1201,46 +1198,6 @@ template< typename MT, bool SO >
 struct IsStrictlyUpper< SMatDeclHermExpr<MT,SO> >
    : public BoolConstant< IsStrictlyUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST >
-struct SMatDeclHermExprTrait< SMatScalarMultExpr<MT,ST,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>, IsNumeric<ST> >
-                   , MultExprTrait_< DeclHermExprTrait_<MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST >
-struct TSMatDeclHermExprTrait< SMatScalarMultExpr<MT,ST,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>, IsNumeric<ST> >
-                   , MultExprTrait_< DeclHermExprTrait_<MT>, ST >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
