@@ -917,9 +917,10 @@ class SMatDeclUppExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> >, const SMatDeclUppExpr<MT,SO> >
-   declupp( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
+inline auto declupp( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclUppExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -943,9 +944,10 @@ inline DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> >, const SMatDeclUppExpr<MT,S
 // The function returns a reference to the already upper matrix expression.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsUpper<MT>, const MT& >
-   declupp( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUpper<MT> > >
+inline auto declupp( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -967,9 +969,10 @@ inline EnableIf_< IsUpper<MT>, const MT& >
 // upper. The function returns an identity matrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsUniLower<MT>, IdentityMatrix< ElementType_<MT>, SO > >
-   declupp( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUniLower<MT> > >
+inline auto declupp( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1004,9 +1007,10 @@ inline EnableIf_< IsUniLower<MT>, IdentityMatrix< ElementType_<MT>, SO > >
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline const DisableIf_< IsUpper<MT>, MultExprTrait_< DeclUppExprTrait_<MT>, ST > >
-   declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsUpper<MT> > >
+inline auto declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
+   -> decltype( declupp( sm.leftOperand() ) * sm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
