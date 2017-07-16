@@ -800,7 +800,8 @@ inline const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline typename SMatTransExpr<MT,SO>::Operand trans( const SMatTransExpr<MT,SO>& sm )
+inline auto trans( const SMatTransExpr<MT,SO>& sm )
+   -> decltype( sm.operand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -825,8 +826,8 @@ inline typename SMatTransExpr<MT,SO>::Operand trans( const SMatTransExpr<MT,SO>&
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-inline const MultExprTrait_< TransExprTrait_<MT>, ST >
-   trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
+inline auto trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
+   -> decltype( trans( sm.leftOperand() ) * sm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -714,11 +714,38 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename SVecTransExpr<VT,TF>::Operand trans( const SVecTransExpr<VT,TF>& sv )
+inline auto trans( const SVecTransExpr<VT,TF>& sv )
+   -> decltype( sv.operand() )
 {
    BLAZE_FUNCTION_TRACE;
 
    return sv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given sparse vector-scalar multiplication.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a sparse
+// vector-scalar multiplication. It restructures the expression \f$ a=trans(b*s1) \f$ to the
+// expression \f$ a=trans(b)*s1 \f$.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar value
+        , bool TF >    // Transpose flag
+inline auto trans( const SVecScalarMultExpr<VT,ST,TF>& sv )
+   -> decltype( trans( sv.leftOperand() ) * sv.rightOperand() )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( sv.leftOperand() ) * sv.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

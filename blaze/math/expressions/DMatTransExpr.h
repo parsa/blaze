@@ -835,7 +835,8 @@ inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline typename DMatTransExpr<MT,SO>::Operand trans( const DMatTransExpr<MT,SO>& dm )
+inline auto trans( const DMatTransExpr<MT,SO>& dm )
+   -> decltype( dm.operand() )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -860,8 +861,8 @@ inline typename DMatTransExpr<MT,SO>::Operand trans( const DMatTransExpr<MT,SO>&
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO >    // Storage order
-inline const MultExprTrait_< TransExprTrait_<MT>, ST >
-   trans( const DMatScalarMultExpr<MT,ST,SO>& dm )
+inline auto trans( const DMatScalarMultExpr<MT,ST,SO>& dm )
+   -> decltype( trans( dm.leftOperand() ) * dm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

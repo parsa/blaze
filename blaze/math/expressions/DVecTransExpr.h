@@ -777,11 +777,38 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DVecTransExpr<VT,TF>::Operand trans( const DVecTransExpr<VT,TF>& dv )
+inline auto trans( const DVecTransExpr<VT,TF>& dv )
+   -> decltype( dv.operand() )
 {
    BLAZE_FUNCTION_TRACE;
 
    return dv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given dense vector-scalar multiplication.
+// \ingroup dense_vector
+//
+// \param dv The dense vector-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a dense
+// vector-scalar multiplication. It restructures the expression \f$ a=trans(b*s1) \f$ to the
+// expression \f$ a=trans(b)*s1 \f$.
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar value
+        , bool TF >    // Transpose flag
+inline auto trans( const DVecScalarMultExpr<VT,ST,TF>& dv )
+   -> decltype( trans( dv.leftOperand() ) * dv.rightOperand() )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( dv.leftOperand() ) * dv.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
