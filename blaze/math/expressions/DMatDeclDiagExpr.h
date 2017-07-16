@@ -942,9 +942,10 @@ class DMatDeclDiagExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline DisableIf_< IsDiagonal<MT>, const DMatDeclDiagExpr<MT,SO> >
-   decldiag( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsDiagonal<MT> > >
+inline auto decldiag( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclDiagExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -968,9 +969,10 @@ inline DisableIf_< IsDiagonal<MT>, const DMatDeclDiagExpr<MT,SO> >
 // diagonal. The function returns a reference to the already diagonal matrix expression.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsDiagonal<MT>, const MT& >
-   decldiag( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsDiagonal<MT> > >
+inline auto decldiag( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1003,9 +1005,10 @@ inline EnableIf_< IsDiagonal<MT>, const MT& >
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline const DisableIf_< IsDiagonal<MT>, MultExprTrait_< DeclDiagExprTrait_<MT>, ST > >
-   decldiag( const DMatScalarMultExpr<MT,ST,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsDiagonal<MT> > >
+inline auto decldiag( const DMatScalarMultExpr<MT,ST,SO>& dm )
+   -> decltype( decldiag( dm.leftOperand() ) * dm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
