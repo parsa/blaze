@@ -917,9 +917,10 @@ class SMatDeclLowExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> >, const SMatDeclLowExpr<MT,SO> >
-   decllow( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
+inline auto decllow( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclLowExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -943,9 +944,10 @@ inline DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> >, const SMatDeclLowExpr<MT,S
 // The function returns a reference to the already lower matrix expression.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsLower<MT>, const MT& >
-   decllow( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsLower<MT> > >
+inline auto decllow( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -967,9 +969,10 @@ inline EnableIf_< IsLower<MT>, const MT& >
 // lower. The function returns an identity matrix.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsUniUpper<MT>, IdentityMatrix< ElementType_<MT>, SO > >
-   decllow( const SparseMatrix<MT,SO>& sm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUniUpper<MT> > >
+inline auto decllow( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1004,9 +1007,10 @@ inline EnableIf_< IsUniUpper<MT>, IdentityMatrix< ElementType_<MT>, SO > >
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline const DisableIf_< IsLower<MT>, MultExprTrait_< DeclLowExprTrait_<MT>, ST > >
-   decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsLower<MT> > >
+inline auto decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
+   -> decltype( decllow( sm.leftOperand() ) * sm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 

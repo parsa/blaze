@@ -2221,8 +2221,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool HF       // Hermitian flag
         , bool LF       // Lower flag
         , bool UF >     // Upper flag
-inline const TDMatSMatMultExpr<MT1,MT2,SF,HF,true,UF>
-   decllow( const TDMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm )
+inline decltype(auto) decllow( const TDMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
