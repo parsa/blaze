@@ -40,28 +40,13 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatTransExprTrait.h>
-#include <blaze/math/traits/DVecTransExprTrait.h>
-#include <blaze/math/traits/SMatTransExprTrait.h>
-#include <blaze/math/traits/SVecTransExprTrait.h>
-#include <blaze/math/traits/TDMatTransExprTrait.h>
-#include <blaze/math/traits/TDVecTransExprTrait.h>
-#include <blaze/math/traits/TSMatTransExprTrait.h>
-#include <blaze/math/traits/TSVecTransExprTrait.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
+#include <utility>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -92,34 +77,19 @@ struct TransExprTrait
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< IsMatrix<T>
-                  , If_< IsDenseMatrix<T>
-                       , If_< IsRowMajorMatrix<T>
-                            , DMatTransExprTrait<T>
-                            , TDMatTransExprTrait<T> >
-                       , If_< IsRowMajorMatrix<T>
-                            , SMatTransExprTrait<T>
-                            , TSMatTransExprTrait<T> > >
-                  , If_< IsVector<T>
-                       , If_< IsDenseVector<T>
-                            , If_< IsRowVector<T>
-                                 , TDVecTransExprTrait<T>
-                                 , DVecTransExprTrait<T> >
-                            , If_< IsRowVector<T>
-                                 , TSVecTransExprTrait<T>
-                                 , SVecTransExprTrait<T> > >
-                       , Failure > >;
+   struct Result { using Type = decltype( trans( std::declval<T>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , TransExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
