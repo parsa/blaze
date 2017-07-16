@@ -945,9 +945,10 @@ class DMatDeclHermExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> >, const DMatDeclHermExpr<MT,SO> >
-   declherm( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
+inline auto declherm( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclHermExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -971,9 +972,10 @@ inline DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> >, const DMatDeclHer
 // Hermitian. The function returns a reference to the already Hermitian matrix expression.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsHermitian<MT>, const MT& >
-   declherm( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsHermitian<MT> > >
+inline auto declherm( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -995,9 +997,10 @@ inline EnableIf_< IsHermitian<MT>, const MT& >
 // Hermitian. The function returns an identity matrix.
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
-   declherm( const DenseMatrix<MT,SO>& dm )
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUniTriangular<MT> > >
+inline auto declherm( const DenseMatrix<MT,SO>& dm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1032,9 +1035,10 @@ inline EnableIf_< IsUniTriangular<MT>, IdentityMatrix< ElementType_<MT>, SO > >
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
-        , bool SO >    // Storage order
-inline const DisableIf_< IsHermitian<MT>, MultExprTrait_< DeclHermExprTrait_<MT>, ST > >
-   declherm( const DMatScalarMultExpr<MT,ST,SO>& dm )
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsHermitian<MT> > >
+inline auto declherm( const DMatScalarMultExpr<MT,ST,SO>& dm )
+   -> decltype( declherm( dm.leftOperand() ) * dm.rightOperand() )
 {
    BLAZE_FUNCTION_TRACE;
 
