@@ -52,9 +52,6 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
-#include <blaze/math/traits/SVecTransExprTrait.h>
-#include <blaze/math/traits/TransExprTrait.h>
-#include <blaze/math/traits/TSVecTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
@@ -765,46 +762,6 @@ template< typename VT, bool TF >
 struct Size< SVecTransExpr<VT,TF> >
    : public Size<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct SVecTransExprTrait< SVecTransExpr<VT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsRowVector<VT> >
-                   , Operand_< SVecTransExpr<VT,false> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsSparseVector<VT>, IsColumnVector<VT> >
-                   , Operand_< SVecTransExpr<VT,true> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 

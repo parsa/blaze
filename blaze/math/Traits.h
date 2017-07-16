@@ -58,8 +58,6 @@
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatInvExprTrait.h>
-#include <blaze/math/traits/DMatTransExprTrait.h>
-#include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
@@ -71,20 +69,14 @@
 #include <blaze/math/traits/SchurExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
-#include <blaze/math/traits/SMatTransExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/traits/SVecTransExprTrait.h>
 #include <blaze/math/traits/TDMatInvExprTrait.h>
-#include <blaze/math/traits/TDMatTransExprTrait.h>
-#include <blaze/math/traits/TDVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
-#include <blaze/math/traits/TSMatTransExprTrait.h>
-#include <blaze/math/traits/TSVecTransExprTrait.h>
 #include <blaze/math/traits/UnaryMapExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 

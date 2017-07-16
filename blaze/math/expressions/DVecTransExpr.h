@@ -53,9 +53,6 @@
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/DVecTransExprTrait.h>
-#include <blaze/math/traits/TDVecTransExprTrait.h>
-#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -864,46 +861,6 @@ template< typename VT, bool TF >
 struct IsPadded< DVecTransExpr<VT,TF> >
    : public BoolConstant< IsPadded<VT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct DVecTransExprTrait< DVecTransExpr<VT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsRowVector<VT> >
-                   , Operand_< DVecTransExpr<VT,false> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseVector<VT>, IsColumnVector<VT> >
-                   , Operand_< DVecTransExpr<VT,true> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
