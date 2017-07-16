@@ -50,8 +50,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatInvExpr.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/DMatInvExprTrait.h>
-#include <blaze/math/traits/TDMatInvExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -623,46 +621,6 @@ template< typename MT, bool SO >
 struct IsUniUpper< DMatInvExpr<MT,SO> >
    : public BoolConstant< IsUniUpper<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPRESSION TRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct DMatInvExprTrait< DMatInvExpr<MT,false> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
-                   , Operand_< DMatInvExpr<MT,false> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct TDMatInvExprTrait< DMatInvExpr<MT,true> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT>, IsColumnMajorMatrix<MT> >
-                   , Operand_< DMatInvExpr<MT,true> >
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
 /*! \endcond */
 //*************************************************************************************************
 
