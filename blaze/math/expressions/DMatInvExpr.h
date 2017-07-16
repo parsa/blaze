@@ -472,7 +472,8 @@ inline const DMatInvExpr<MT,SO> inv( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline typename DMatInvExpr<MT,SO>::Operand inv( const DMatInvExpr<MT,SO>& dm )
+inline auto inv( const DMatInvExpr<MT,SO>& dm )
+   -> decltype( dm.operand() )
 {
    BLAZE_FUNCTION_TRACE;
 
