@@ -40,22 +40,16 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/DMatInvExprTrait.h>
-#include <blaze/math/traits/TDMatInvExprTrait.h>
-#include <blaze/math/typetraits/IsBLASCompatible.h>
+#include <utility>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -80,37 +74,33 @@ template< typename T >  // Type of the inversion operand
 struct InvExprTrait
 {
  private:
-   //**struct Scalar*******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Scalar { using Type = T; };
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
+   //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< And< IsDenseMatrix<T>, IsBLASCompatible< UnderlyingElement_<T> > >
-                  , If_< IsRowMajorMatrix<T>
-                       , DMatInvExprTrait<T>
-                       , TDMatInvExprTrait<T> >
-                  , If_< Or< IsFloatingPoint<T>
-                           , And< IsComplex<T>, IsFloatingPoint< UnderlyingElement_<T> > > >
-                       , Scalar
-                       , Failure > >;
+   struct Result { using Type = decltype( inv( std::declval<T>() ) ); };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**struct Result*******************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   using Tmp = RemoveReference_<T>;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , InvExprTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsDenseMatrix<Tmp>
+                                , IsFloatingPoint<Tmp>
+                                , And< IsComplex<Tmp>, IsFloatingPoint< UnderlyingElement_<Tmp> > > >
+                            , Result
+                            , Failure
+                            >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
