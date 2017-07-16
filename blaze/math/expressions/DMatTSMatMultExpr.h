@@ -63,7 +63,6 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/DMatDeclDiagExprTrait.h>
-#include <blaze/math/traits/DMatDeclUppExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -2401,23 +2400,6 @@ struct IsStrictlyUpper< DMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct DMatDeclUppExprTrait< DMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-{
- public:
-   //**********************************************************************************************
-   using Type = If_< And< IsDenseMatrix<MT1>, IsRowMajorMatrix<MT1>
-                        , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
-                   , DMatTSMatMultExpr<MT1,MT2,SF,HF,LF,true>
-                   , INVALID_TYPE >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
