@@ -59,12 +59,17 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -159,11 +164,16 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testDeclSymOperation  ();
-                          void testDeclHermOperation ();
-                          void testDeclLowOperation  ();
-                          void testDeclUppOperation  ();
-                          void testDeclDiagOperation ();
+                          void testDeclSymOperation  ( blaze::TrueType  );
+                          void testDeclSymOperation  ( blaze::FalseType );
+                          void testDeclHermOperation ( blaze::TrueType  );
+                          void testDeclHermOperation ( blaze::FalseType );
+                          void testDeclLowOperation  ( blaze::TrueType  );
+                          void testDeclLowOperation  ( blaze::FalseType );
+                          void testDeclUppOperation  ( blaze::TrueType  );
+                          void testDeclUppOperation  ( blaze::FalseType );
+                          void testDeclDiagOperation ( blaze::TrueType  );
+                          void testDeclDiagOperation ( blaze::FalseType );
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
@@ -325,11 +335,11 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation();
-   testDeclHermOperation();
-   testDeclLowOperation();
-   testDeclUppOperation();
-   testDeclDiagOperation();
+   testDeclSymOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclHermOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclLowOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclUppOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclDiagOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
@@ -2105,7 +2115,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testDeclSymOperation()
+void OperationTest<VT1,VT2>::testDeclSymOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 1 )
@@ -2319,6 +2329,21 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the symmetric sparse vector/dense vector outer product.
+//
+// \return void
+//
+// This function is called in case the symmetric vector/vector outer product operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclSymOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the Hermitian sparse vector/dense vector outer product.
 //
 // \return void
@@ -2331,7 +2356,7 @@ void OperationTest<VT1,VT2>::testDeclSymOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testDeclHermOperation()
+void OperationTest<VT1,VT2>::testDeclHermOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 1 )
@@ -2545,6 +2570,21 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the Hermitian sparse vector/dense vector outer product.
+//
+// \return void
+//
+// This function is called in case the Hermitian vector/vector outer product operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclHermOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the lower sparse vector/dense vector outer product.
 //
 // \return void
@@ -2557,7 +2597,7 @@ void OperationTest<VT1,VT2>::testDeclHermOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testDeclLowOperation()
+void OperationTest<VT1,VT2>::testDeclLowOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 1 )
@@ -2761,6 +2801,21 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the lower sparse vector/dense vector outer product.
+//
+// \return void
+//
+// This function is called in case the lower vector/vector outer product operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclLowOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the upper sparse vector/dense vector outer product.
 //
 // \return void
@@ -2773,7 +2828,7 @@ void OperationTest<VT1,VT2>::testDeclLowOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testDeclUppOperation()
+void OperationTest<VT1,VT2>::testDeclUppOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION > 1 )
@@ -2977,6 +3032,21 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the upper sparse vector/dense vector outer product.
+//
+// \return void
+//
+// This function is called in case the upper vector/vector outer product operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclUppOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the diagonal sparse vector/dense vector outer product.
 //
 // \return void
@@ -2989,7 +3059,7 @@ void OperationTest<VT1,VT2>::testDeclUppOperation()
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testDeclDiagOperation()
+void OperationTest<VT1,VT2>::testDeclDiagOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
    if( BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION > 1 )
@@ -3199,6 +3269,21 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the diagonal sparse vector/dense vector outer product.
+//
+// \return void
+//
+// This function is called in case the diagonal vector/vector outer product operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testDeclDiagOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
