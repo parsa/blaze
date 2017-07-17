@@ -52,11 +52,8 @@
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsVolatile.h>
-#include <blaze/util/typetraits/MakeSigned.h>
 
 
 namespace blaze {
@@ -152,13 +149,7 @@ struct SubTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct NativeType { using Type = decltype( std::declval<Type1>() - std::declval<Type2>() ); };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct SignedType { using Type = MakeSigned_< typename NativeType::Type >; };
+   struct SubType { using Type = decltype( std::declval<Type1>() - std::declval<Type2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -168,9 +159,7 @@ struct SubTrait
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
                             , SubTrait<Type1,Type2>
-                            , If_< And< All< IsIntegral, T1, T2 >, Any< IsSigned, T1, T2 > >
-                                 , SignedType
-                                 , NativeType > >::Type;
+                            , SubType >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
