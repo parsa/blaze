@@ -43,8 +43,6 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>

@@ -48,11 +48,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>

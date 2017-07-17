@@ -52,10 +52,7 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
-#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>

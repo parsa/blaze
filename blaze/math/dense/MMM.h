@@ -64,7 +64,6 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Blocking.h>
