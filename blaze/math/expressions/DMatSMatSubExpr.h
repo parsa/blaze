@@ -737,8 +737,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , bool SO1      // Storage order of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline auto operator+( const DMatSMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
-   -> decltype( ( lhs.leftOperand() + (~rhs) ) - lhs.rightOperand() )
+inline decltype(auto)
+   operator+( const DMatSMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

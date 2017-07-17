@@ -705,8 +705,8 @@ class DMatTSMatAddExpr
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline auto operator+( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const DMatTSMatAddExpr<MT1,MT2>
+inline decltype(auto)
+   operator+( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -751,8 +751,8 @@ inline auto operator+( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-inline auto operator+( const SparseMatrix<MT2,true>& lhs, const DenseMatrix<MT1,false>& rhs )
-   -> const DMatTSMatAddExpr<MT1,MT2>
+inline decltype(auto)
+   operator+( const SparseMatrix<MT2,true>& lhs, const DenseMatrix<MT1,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -790,8 +790,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , typename MT2  // Type of the sparse matrix of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
-inline auto operator+( const DMatTSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
-   -> decltype( ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand() )
+inline decltype(auto)
+   operator+( const DMatTSMatAddExpr<MT1,MT2>& lhs, const DenseMatrix<MT3,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
