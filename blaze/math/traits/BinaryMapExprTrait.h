@@ -94,8 +94,7 @@ struct BinaryMapExprTrait
    using Type = typename If_< Or< And< IsVector< RemoveReference_<T1> >, IsVector< RemoveReference_<T2> > >
                                 , And< IsMatrix< RemoveReference_<T1> >, IsMatrix< RemoveReference_<T2> > > >
                             , Result
-                            , Failure
-                            >::Type;
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

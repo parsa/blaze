@@ -88,8 +88,7 @@ struct TransExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
                             , Result
-                            , Failure
-                            >::Type;
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

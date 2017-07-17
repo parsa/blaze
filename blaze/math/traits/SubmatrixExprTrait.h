@@ -91,8 +91,7 @@ struct SubmatrixExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
                             , Result
-                            , Failure
-                            >::Type;
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

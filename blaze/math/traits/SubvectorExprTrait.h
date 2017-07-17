@@ -89,8 +89,7 @@ struct SubvectorExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsVector< RemoveReference_<VT> >
                             , Result
-                            , Failure
-                            >::Type;
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

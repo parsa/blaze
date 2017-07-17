@@ -99,8 +99,7 @@ struct InvExprTrait
                                 , IsFloatingPoint<Tmp>
                                 , And< IsComplex<Tmp>, IsFloatingPoint< UnderlyingElement_<Tmp> > > >
                             , Result
-                            , Failure
-                            >::Type;
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
