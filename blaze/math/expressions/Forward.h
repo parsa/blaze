@@ -176,6 +176,9 @@ template< typename, typename > class TSVecTDMatMultExpr;
 template< typename, typename > class TSVecTSMatMultExpr;
 template< typename, bool > struct Vector;
 
+
+
+
 template< typename VT1, typename VT2, bool TF >
 decltype(auto) operator+( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
 
@@ -227,6 +230,51 @@ decltype(auto) operator+( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<
 template< typename MT1, typename MT2 >
 decltype(auto) operator+( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
 
+
+
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator-( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator-( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator-( const SparseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
+
+
+
+
 template< typename VT, bool TF >
 const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& );
 
@@ -239,6 +287,9 @@ const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& );
 template< typename MT, bool SO >
 const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& );
 
+
+
+
 template< typename VT, bool TF >
 const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
 
@@ -250,6 +301,9 @@ const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
+
+
+
 
 template< typename VT, bool TF, typename OP >
 const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );

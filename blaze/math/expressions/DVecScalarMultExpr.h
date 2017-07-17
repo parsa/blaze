@@ -1032,8 +1032,7 @@ class DVecScalarMultExpr
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline auto operator-( const DenseVector<VT,TF>& dv )
-   -> const DVecScalarMultExpr<VT,UnderlyingBuiltin_<VT>,TF>
+inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1189,8 +1188,7 @@ inline const DVecScalarMultExpr<VT,ElementType_<VT>,TF>
 template< typename VT  // Type of the dense vector
         , typename ST  // Type of the scalar
         , bool TF >    // Transpose flag
-inline auto operator-( const DVecScalarMultExpr<VT,ST,TF>& dv )
-   -> const DVecScalarMultExpr<VT,ST,TF>
+inline decltype(auto) operator-( const DVecScalarMultExpr<VT,ST,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 

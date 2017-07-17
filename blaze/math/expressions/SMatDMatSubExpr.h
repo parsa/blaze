@@ -687,8 +687,8 @@ class SMatDMatSubExpr
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order
-inline auto operator-( const SparseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
-   -> const SMatDMatSubExpr<MT1,MT2,SO>
+inline decltype(auto)
+   operator-( const SparseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -756,8 +756,8 @@ template< typename MT1  // Type of the sparse matrix of the left-hand side expre
         , bool SO1      // Storage order of the left-hand side expression
         , typename MT3  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline auto operator-( const SMatDMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
-   -> decltype( lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) ) )
+inline decltype(auto)
+   operator-( const SMatDMatSubExpr<MT1,MT2,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

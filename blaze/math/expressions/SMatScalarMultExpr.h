@@ -855,8 +855,7 @@ class SMatScalarMultExpr
 */
 template< typename MT  // Data type of the sparse matrix
         , bool SO >    // Storage order
-inline auto operator-( const SparseMatrix<MT,SO>& sm )
-   -> const SMatScalarMultExpr<MT,UnderlyingBuiltin_<MT>,SO>
+inline decltype(auto) operator-( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -966,13 +965,12 @@ inline auto operator*( ST scalar, const SparseMatrix<MT,SO>& mat )
 */
 template< typename MT  // Type of the sparse matrix
         , typename ST  // Type of the scalar
-        , bool TF >    // Transpose flag
-inline auto operator-( const SMatScalarMultExpr<MT,ST,TF>& sm )
-   -> const SMatScalarMultExpr<MT,ST,TF>
+        , bool SO >    // Storage order
+inline decltype(auto) operator-( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatScalarMultExpr<MT,ST,TF>( sm.leftOperand(), -sm.rightOperand() );
+   return SMatScalarMultExpr<MT,ST,SO>( sm.leftOperand(), -sm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************

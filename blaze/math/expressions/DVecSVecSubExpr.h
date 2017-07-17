@@ -695,8 +695,8 @@ class DVecSVecSubExpr
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF >     // Transpose flag
-inline auto operator-( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
-   -> const DVecSVecSubExpr<VT1,VT2,TF>
+inline decltype(auto)
+   operator-( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -762,8 +762,8 @@ template< typename VT1    // Type of the dense vector of the left-hand side expr
         , typename VT2    // Type of the sparse vector of the left-hand side expression
         , bool TF         // Transpose flag of the left-hand side expression
         , typename VT3 >  // Type of the right-hand side dense vector
-inline auto operator-( const DVecSVecSubExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
-   -> decltype( ( lhs.leftOperand() - (~rhs) ) - lhs.rightOperand() )
+inline decltype(auto)
+   operator-( const DVecSVecSubExpr<VT1,VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
