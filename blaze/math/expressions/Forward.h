@@ -410,6 +410,15 @@ decltype(auto) operator*( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<
 
 
 
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator/( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator/( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+
+
+
 template< typename VT, bool TF >
 const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& );
 

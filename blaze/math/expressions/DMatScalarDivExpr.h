@@ -1070,8 +1070,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
-   -> typename DMatScalarDivExprHelper<MT,ST,SO>::Type
+inline decltype(auto) operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1172,8 +1171,7 @@ template< typename MT   // Type of the dense matrix of the left-hand side expres
         , bool SO       // Storage order of the dense matrix
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST2> > >
-inline auto operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
-   -> typename DMatScalarDivExprHelper<MT,MultTrait_<ST1,ST2>,SO>::Type
+inline decltype(auto) operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 

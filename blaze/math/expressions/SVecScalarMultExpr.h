@@ -1033,8 +1033,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
-inline auto operator/( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
-   -> decltype( vec.leftOperand() * ( vec.rightOperand() / scalar ) )
+inline decltype(auto) operator/( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -1224,8 +1224,7 @@ template< typename MT   // Type of the dense matrix of the left-hand side expres
         , bool SO       // Storage order of the dense matrix
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
-inline auto operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
-   -> decltype( mat.leftOperand() * ( mat.rightOperand() / scalar ) )
+inline decltype(auto) operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 

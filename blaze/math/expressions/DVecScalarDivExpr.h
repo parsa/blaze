@@ -1078,8 +1078,7 @@ template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator/( const DenseVector<VT,TF>& vec, ST scalar )
-   -> typename DVecScalarDivExprHelper<VT,ST,TF>::Type
+inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1180,8 +1179,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST2> > >
-inline auto operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
-   -> typename DVecScalarDivExprHelper<VT,MultTrait_<ST1,ST2>,TF>::Type
+inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 

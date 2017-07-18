@@ -1071,8 +1071,8 @@ class DVecDVecDivExpr
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-inline auto operator/( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
-   -> const DVecDVecDivExpr<VT1,VT2,TF>
+inline decltype(auto)
+   operator/( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

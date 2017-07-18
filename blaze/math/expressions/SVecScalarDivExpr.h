@@ -837,8 +837,7 @@ template< typename VT  // Type of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator/( const SparseVector<VT,TF>& vec, ST scalar )
-   -> typename SVecScalarDivExprHelper<VT,ST,TF>::Type
+inline decltype(auto) operator/( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -939,8 +938,7 @@ template< typename VT   // Type of the sparse vector of the left-hand side expre
         , bool TF       // Transpose flag of the sparse vector
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST2> > >
-inline auto operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
-   -> typename SVecScalarDivExprHelper<VT,MultTrait_<ST1,ST2>,TF>::Type
+inline decltype(auto) operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 

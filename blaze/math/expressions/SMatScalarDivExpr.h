@@ -904,8 +904,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO      // Storage order of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
-   -> typename SMatScalarDivExprHelper<MT,ST,SO>::Type
+inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1006,8 +1005,7 @@ template< typename MT   // Type of the sparse matrix of the left-hand side expre
         , bool SO       // Storage order of the sparse matrix
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST2> > >
-inline auto operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
-   -> typename SMatScalarDivExprHelper<MT,MultTrait_<ST1,ST2>,SO>::Type
+inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
