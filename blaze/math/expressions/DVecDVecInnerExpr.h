@@ -253,8 +253,8 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline auto operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
-   -> const MultTrait_< ElementType_<VT1>, ElementType_<VT2> >
+inline decltype(auto)
+   operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -46,14 +46,15 @@
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
-#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/shims/Reset.h>
@@ -70,7 +71,6 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -5339,13 +5339,14 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT  // Type of the left-hand side dense matrix
-        , typename VT  // Type of the right-hand side dense vector
-        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
-   -> const DMatDVecMultExpr<MT,VT>
+template< typename MT    // Type of the left-hand side dense matrix
+        , typename VT >  // Type of the right-hand side dense vector
+inline decltype(auto)
+   operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~mat).columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
@@ -5365,31 +5366,29 @@ inline auto operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,fa
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the multiplication of a dense matrix-matrix
-//        multiplication expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a matrix-matrix multiplication
+//        expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
 // \ingroup dense_vector
 //
 // \param mat The left-hand side dense matrix-matrix multiplication.
 // \param vec The right-hand side dense vector for the multiplication.
 // \return The resulting vector.
 //
-// This operator implements a performance optimized treatment of the multiplication of a dense
+// This operator implements a performance optimized treatment of the multiplication of a
 // matrix-matrix multiplication expression and a dense vector. It restructures the expression
 // \f$ \vec{x}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
 */
-template< typename MT  // Type of the left-hand side dense matrix
-        , bool SO      // Storage order of the left-hand side dense matrix
-        , typename VT  // Type of the right-hand side dense vector
-        , typename = EnableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const DenseMatrix<MT,SO>& mat, const DenseVector<VT,false>& vec )
-   -> decltype( (~mat).leftOperand() * ( (~mat).rightOperand() * vec ) )
+template< typename MT    // Matrix base type of the left-hand side expression
+        , typename VT >  // Type of the right-hand side dense vector
+inline decltype(auto)
+   operator*( const MatMatMultExpr<MT>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -62,7 +63,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -76,7 +76,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -829,6 +828,64 @@ class TSVecTDMatMultExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a transpose sparse vector and
+//        a column-major dense matrix (\f$ \vec{a}=B*\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side transpose sparse vector for the multiplication.
+// \param mat The right-hand side column-major dense matrix for the multiplication.
+// \return The resulting transpose vector.
+// \exception std::invalid_argument Vector and matrix sizes do not match.
+//
+// This operator implements the performance optimized treatment of the multiplication of a
+// transpose sparse vector and a column-major dense matrix. It restructures the expression
+// \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = DisableIf_< IsSymmetric<MT> > >
+inline auto tsvectdmatmult( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+   -> const TSVecTDMatMultExpr<VT,MT>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return TSVecTDMatMultExpr<VT,MT>( ~vec, ~mat );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a transpose sparse vector and a
+//        symmetric column-major dense matrix (\f$ \vec{a}=B*\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side transpose sparse vector for the multiplication.
+// \param mat The right-hand side column-major dense matrix for the multiplication.
+// \return The resulting transpose vector.
+// \exception std::invalid_argument Vector and matrix sizes do not match.
+//
+// This operator implements the performance optimized treatment of the multiplication of a
+// transpose sparse vector and a symmetric column-major dense matrix. It restructures the
+// expression \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side dense matrix
+        , typename = EnableIf_< IsSymmetric<MT> > >
+inline auto tsvectdmatmult( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
+   -> decltype( (~vec) * trans( ~mat ) )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~vec) * trans( ~mat );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Multiplication operator for the multiplication of a transpose sparse vector and a
 //        column-major dense matrix (\f$ \vec{y}^T=\vec{x}^T*A \f$).
 // \ingroup dense_vector
@@ -859,51 +916,10 @@ class TSVecTDMatMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename VT  // Type of the left-hand side sparse vector
-        , typename MT  // Type of the right-hand side dense matrix
-        , typename = DisableIf_< Or< IsSymmetric<MT>, IsMatMatMultExpr<MT> > > >
-inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
-   -> const TSVecTDMatMultExpr<VT,MT>
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~vec).size() != (~mat).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
-   }
-
-   return TSVecTDMatMultExpr<VT,MT>( ~vec, ~mat );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a transpose sparse vector and a
-//        symmetric column-major dense matrix (\f$ \vec{a}=B*\vec{c} \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side transpose sparse vector for the multiplication.
-// \param mat The right-hand side column-major dense matrix for the multiplication.
-// \return The resulting transpose vector.
-// \exception std::invalid_argument Vector and matrix sizes do not match.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// transpose sparse vector and a symmetric column-major dense matrix. It restructures the
-// expression \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
-*/
-template< typename VT  // Type of the left-hand side sparse vector
-        , typename MT  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< IsSymmetric<MT> > >
-inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
-   -> decltype( (~vec) * trans( ~mat ) )
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -913,9 +929,8 @@ inline auto operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,tr
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
-   return (~vec) * trans( ~mat );
+   return tsvectdmatmult( ~vec, ~mat );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 

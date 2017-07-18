@@ -950,8 +950,7 @@ template< typename MT   // Type of the sparse matrix of the left-hand side expre
         , bool SO       // Storage order of the sparse matrix
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
-inline auto operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
-   -> decltype( mat.leftOperand() * ( scalar / mat.rightOperand() ) )
+inline decltype(auto) operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -979,8 +978,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO       // Storage order of the sparse matrix
         , typename = EnableIf_< And< IsNumeric<ST1>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
-inline auto operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
-   -> decltype( mat.leftOperand() * ( scalar / mat.rightOperand() ) )
+inline decltype(auto) operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 

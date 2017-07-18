@@ -43,11 +43,11 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
-#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -832,56 +831,20 @@ class SMatDVecMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename VT  // Type of the right-hand side dense vector
-        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const SparseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
-   -> const SMatDVecMultExpr<MT,VT>
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side dense vector
+inline decltype(auto)
+   operator*( const SparseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~mat).columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
    return SMatDVecMultExpr<MT,VT>( ~mat, ~vec );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the multiplication of a sparse matrix-matrix
-//        multiplication expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side sparse matrix-matrix multiplication.
-// \param vec The right-hand side dense vector for the multiplication.
-// \return The resulting vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a sparse
-// matrix-matrix multiplication expression and a dense vector. It restructures the expression
-// \f$ \vec{y}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , bool SO      // Storage order of the left-hand side sparse matrix
-        , typename VT  // Type of the right-hand side dense vector
-        , typename = EnableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const SparseMatrix<MT,SO>& mat, const DenseVector<VT,false>& vec )
-   -> decltype( (~mat).leftOperand() * ( (~mat).rightOperand() * vec ) )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-   return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
 //*************************************************************************************************
 

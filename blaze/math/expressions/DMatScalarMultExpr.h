@@ -1066,8 +1066,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
-   -> const DMatScalarMultExpr<MT,ST,SO>
+inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1101,8 +1100,7 @@ template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO      // Storage order of the right-hand side dense matrix
         , typename = EnableIf_< IsNumeric<ST> > >
-inline auto operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
-   -> const DMatScalarMultExpr<MT,ST,SO>
+inline decltype(auto) operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1170,8 +1168,7 @@ template< typename MT   // Type of the dense matrix of the left-hand side expres
         , bool SO       // Storage order of the dense matrix
         , typename ST2  // Type of the right-hand side scalar
         , typename = EnableIf_< IsNumeric<ST2> > >
-inline auto operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
-   -> decltype( mat.leftOperand() * ( mat.rightOperand() * scalar ) )
+inline decltype(auto) operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1199,8 +1196,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO       // Storage order of the dense matrix
         , typename = EnableIf_< IsNumeric<ST1> > >
-inline auto operator*( ST1 scalar, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-   -> decltype( mat.leftOperand() * ( scalar * mat.rightOperand() ) )
+inline decltype(auto) operator*( ST1 scalar, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1257,8 +1253,8 @@ template< typename MT    // Type of the dense matrix of the left-hand side expre
         , typename ST    // Type of the scalar of the left-hand side expression
         , bool SO        // Storage order of the left-hand side expression
         , typename VT >  // Type of the right-hand side dense vector
-inline auto operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const DenseVector<VT,false>& vec )
-   -> decltype( ( mat.leftOperand() * (~vec) ) * mat.rightOperand() )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1286,8 +1282,8 @@ template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the dense matrix of the right-hand side expression
         , typename ST  // Type of the scalar of the right-hand side expression
         , bool SO >    // Storage order of the right-hand side expression
-inline auto operator*( const DenseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
-   -> decltype( ( (~vec) * mat.leftOperand() ) * mat.rightOperand() )
+inline decltype(auto)
+   operator*( const DenseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1318,8 +1314,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , bool SO         // Storage order of the left-hand side expression
         , typename VT     // Type of the dense vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline auto operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const DVecScalarMultExpr<VT,ST2,false>& vec )
-   -> decltype( ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() ) )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const DVecScalarMultExpr<VT,ST2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1350,8 +1346,8 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename MT   // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the right-hand side expression
-inline auto operator*( const DVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-   -> decltype( ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() ) )
+inline decltype(auto)
+   operator*( const DVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1379,8 +1375,8 @@ template< typename MT    // Type of the dense matrix of the left-hand side expre
         , typename ST    // Type of the scalar of the left-hand side expression
         , bool SO        // Storage order of the left-hand side expression
         , typename VT >  // Type of the right-hand side sparse vector
-inline auto operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const SparseVector<VT,false>& vec )
-   -> decltype( ( mat.leftOperand() * (~vec) ) * mat.rightOperand() )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1408,8 +1404,8 @@ template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the dense matrix of the right-hand side expression
         , typename ST  // Type of the scalar of the right-hand side expression
         , bool SO >    // Storage order of the right-hand side expression
-inline auto operator*( const SparseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
-   -> decltype( ( (~vec) * mat.leftOperand() ) * mat.rightOperand() )
+inline decltype(auto)
+   operator*( const SparseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1440,8 +1436,8 @@ template< typename MT     // Type of the dense matrix of the left-hand side expr
         , bool SO         // Storage order of the left-hand side expression
         , typename VT     // Type of the sparse vector of the right-hand side expression
         , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline auto operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const SVecScalarMultExpr<VT,ST2,false>& vec )
-   -> decltype( ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() ) )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const SVecScalarMultExpr<VT,ST2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1472,8 +1468,8 @@ template< typename VT   // Type of the sparse vector of the left-hand side expre
         , typename MT   // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO >     // Storage order of the right-hand side expression
-inline auto operator*( const SVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-   -> decltype( ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() ) )
+inline decltype(auto)
+   operator*( const SVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1502,8 +1498,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , bool SO1      // Storage order of the left-hand side expression
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline auto operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
-   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1532,8 +1528,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the dense matrix of the right-hand side expression
         , typename ST   // Type of the scalar of the right-hand side expression
         , bool SO2 >    // Storage order of the right-hand side expression
-inline auto operator*( const DenseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
-   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
+inline decltype(auto)
+   operator*( const DenseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1563,8 +1559,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , typename MT2  // Type of the right-hand side dense matrix
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO2 >    // Storage order of the right-hand side expression
-inline auto operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST2,SO2>& rhs )
-   -> decltype( ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() ) )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1593,8 +1589,8 @@ template< typename MT1    // Type of the dense matrix of the left-hand side expr
         , bool SO1        // Storage order of the left-hand side expression
         , typename MT2    // Type of the right-hand side sparse matrix
         , bool SO2 >      // Storage order of the right-hand side sparse matrix
-inline auto operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
-   -> decltype( ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand() )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1623,8 +1619,8 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2    // Type of the dense matrix of the right-hand side expression
         , typename ST     // Type of the scalar of the right-hand side expression
         , bool SO2 >      // Storage order of the right-hand side expression
-inline auto operator*( const SparseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
-   -> decltype( ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand() )
+inline decltype(auto)
+   operator*( const SparseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1655,8 +1651,8 @@ template< typename MT1  // Type of the dense matrix of the left-hand side expres
         , typename MT2  // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO2 >    // Storage order of the right-hand side expression
-inline auto operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& mat, const SMatScalarMultExpr<MT2,ST2,SO2>& vec )
-   -> decltype( ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() ) )
+inline decltype(auto)
+   operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& mat, const SMatScalarMultExpr<MT2,ST2,SO2>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1687,8 +1683,8 @@ template< typename MT1  // Type of the sparse matrix of the left-hand side expre
         , typename MT2  // Type of the dense matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO2 >    // Storage order of the right-hand side expression
-inline auto operator*( const SMatScalarMultExpr<MT1,ST1,SO1>& mat, const DMatScalarMultExpr<MT2,ST2,SO2>& vec )
-   -> decltype( ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() ) )
+inline decltype(auto)
+   operator*( const SMatScalarMultExpr<MT1,ST1,SO1>& mat, const DMatScalarMultExpr<MT2,ST2,SO2>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 

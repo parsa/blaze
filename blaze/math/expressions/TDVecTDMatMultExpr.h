@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
@@ -70,7 +71,6 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -5361,13 +5361,14 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
 // In case the current size of the vector \a vec doesn't match the current number of rows of
 // the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename VT  // Type of the left-hand side dense vector
-        , typename MT  // Type of the right-hand side dense matrix
-        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
-   -> const TDVecTDMatMultExpr<VT,MT>
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~vec).size() != (~mat).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );

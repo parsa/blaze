@@ -10635,8 +10635,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline auto operator*( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> const TDMatDMatMultExpr<MT1,MT2,false,false,false,false>
+inline decltype(auto)
+   operator*( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

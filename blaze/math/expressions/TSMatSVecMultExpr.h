@@ -43,6 +43,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -61,7 +62,6 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -836,13 +836,14 @@ class TSMatSVecMultExpr
 // In case the current size of the vector \a vec doesn't match the current number of columns
 // of the matrix \a mat, a \a std::invalid_argument is thrown.
 */
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename VT  // Type of the right-hand side sparse vector
-        , typename = DisableIf_< IsMatMatMultExpr<MT> > >
-inline auto operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
-   -> const TSMatSVecMultExpr<MT,VT>
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side sparse vector
+inline decltype(auto)
+   operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
    if( (~mat).columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );

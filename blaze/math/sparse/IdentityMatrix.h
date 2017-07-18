@@ -1337,8 +1337,8 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side dense vector
         , typename = EnableIf_< IsSame< T, ElementType_<VT> > > >
-inline auto operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
-   -> const VT&
+inline decltype(auto)
+   operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1384,8 +1384,8 @@ template< typename VT  // Type of the left-hand side dense vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
         , typename = EnableIf_< IsSame< ElementType_<VT>, T > > >
-inline auto operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
-   -> const VT&
+inline decltype(auto)
+   operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1431,8 +1431,8 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side sparse vector
         , typename = EnableIf_< IsSame< T, ElementType_<VT> > > >
-inline auto operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
-   -> const VT&
+inline decltype(auto)
+   operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1478,8 +1478,8 @@ template< typename VT  // Type of the left-hand side sparse vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
         , typename = EnableIf_< IsSame< ElementType_<VT>, T > > >
-inline auto operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
-   -> const VT&
+inline decltype(auto)
+   operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1523,8 +1523,8 @@ template< typename T   // Data type of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO2     // Storage order of the right-hand side dense matrix
         , typename = EnableIf_< IsSame< T, ElementType_<MT> > > >
-inline auto operator*( const IdentityMatrix<T,SO1>& lhs, const DenseMatrix<MT,SO2>& rhs )
-   -> const MT&
+inline decltype(auto)
+   operator*( const IdentityMatrix<T,SO1>& lhs, const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1568,8 +1568,8 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
         , typename = EnableIf_< IsSame< ElementType_<MT>, T > > >
-inline auto operator*( const DenseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
-   -> const MT&
+inline decltype(auto)
+   operator*( const DenseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1613,8 +1613,8 @@ template< typename T   // Data type of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side sparse matrix
         , bool SO2     // Storage order of the right-hand side sparse matrix
         , typename = EnableIf_< IsSame< T, ElementType_<MT> > > >
-inline auto operator*( const IdentityMatrix<T,SO1>& lhs, const SparseMatrix<MT,SO2>& rhs )
-   -> const MT&
+inline decltype(auto)
+   operator*( const IdentityMatrix<T,SO1>& lhs, const SparseMatrix<MT,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1658,8 +1658,8 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
         , typename = EnableIf_< IsSame< ElementType_<MT>, T > > >
-inline auto operator*( const SparseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
-   -> const MT&
+inline decltype(auto)
+   operator*( const SparseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1700,8 +1700,8 @@ template< typename T1  // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename T2  // Data type of the right-hand side dense matrix
         , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline auto operator*( const IdentityMatrix<T1,SO1>& lhs, const IdentityMatrix<T2,SO2>& rhs )
-   -> const IdentityMatrix< MultTrait_<T1,T2>, SO1 >
+inline decltype(auto)
+   operator*( const IdentityMatrix<T1,SO1>& lhs, const IdentityMatrix<T2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
