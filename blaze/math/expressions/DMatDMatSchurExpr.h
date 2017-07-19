@@ -1046,7 +1046,7 @@ class DMatDMatSchurExpr
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product of two
+// This function implements a performance optimized treatment of the Schur product of two
 // dense matrices with identical storage order.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1058,6 +1058,9 @@ inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2
    -> const DMatDMatSchurExpr<MT1,MT2,SO>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return DMatDMatSchurExpr<MT1,MT2,SO>( ~lhs, ~rhs );
 }
@@ -1075,7 +1078,7 @@ inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between two
+// This function implements a performance optimized treatment of the Schur product between two
 // unitriangular dense matrices with identical storage order.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1087,6 +1090,9 @@ inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >( (~lhs).rows() );
 }

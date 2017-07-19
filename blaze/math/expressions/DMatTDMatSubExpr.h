@@ -866,16 +866,15 @@ class DMatTDMatSubExpr
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a row-major and a colum-major dense matrix
+/*!\brief Backend implementation of the subtraction of a row-major and a colum-major dense matrix
 //        (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a symmetric
+// This function implements a performance optimized treatment of the subtraction of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -886,6 +885,9 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return DMatTDMatSubExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 /*! \endcond */
@@ -894,16 +896,15 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a symmetric row-major and a colum-major dense
-//        matrix (\f$ A=B-C \f$).
+/*!\brief Backend implementation of the subtraction of a symmetric row-major and a colum-major
+//        dense matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a symmetric
+// This function implements a performance optimized treatment of the subtraction of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -914,6 +915,9 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return trans( ~lhs ) - ~rhs;
 }
 /*! \endcond */
@@ -922,16 +926,15 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a row-major and a symmetric column-major
+/*!\brief Backend implementation of the subtraction of a row-major and a symmetric column-major
 //        dense matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a (potentially
+// This function implements a performance optimized treatment of the subtraction of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -941,6 +944,9 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
    -> decltype( (~lhs) - trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~lhs) - trans( ~rhs );
 }
@@ -995,25 +1001,27 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a column-major and a row-major dense
+/*!\brief Backend implementation of the subtraction of a column-major and a row-major dense
 //        matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a column-major
+// This function implements a performance optimized treatment of the subtraction of a column-major
 // dense matrix and a row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
-inline auto dmattdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> const DMatTDMatSubExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return DMatTDMatSubExpr<MT1,MT2>( ~lhs, ~rhs );
 }
@@ -1023,25 +1031,27 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a column-major and a symmetric row-major
+/*!\brief Backend implementation of the subtraction of a column-major and a symmetric row-major
 //        dense matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a column-major
+// This function implements a performance optimized treatment of the subtraction of a column-major
 // dense matrix and a symmetric row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
-inline auto dmattdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> decltype( (~lhs) - trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~lhs) - trans( ~rhs );
 }
@@ -1051,25 +1061,27 @@ inline auto dmattdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a symmetric column-major and a row-major
+/*!\brief Backend implementation of the subtraction of a symmetric column-major and a row-major
 //        dense matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
 // \param rhs The right-hand side dense matrix to be subtracted from the left-hand side matrix.
 // \return The difference of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the subtraction of a symmetric
+// This function implements a performance optimized treatment of the subtraction of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< IsSymmetric<MT1> > >
-inline auto dmattdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> decltype( trans( ~lhs ) - (~rhs) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return trans( ~lhs ) - (~rhs);
 }
@@ -1117,7 +1129,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return dmattdmatsub( ~lhs, ~rhs );
+   return tdmatdmatsub( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

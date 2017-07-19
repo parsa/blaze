@@ -1053,7 +1053,7 @@ class TSMatSMatSchurExpr
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // column-major sparse matrix and a row-major sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
@@ -1064,6 +1064,9 @@ inline auto tsmatsmatschur( const SparseMatrix<MT1,true>& lhs, const SparseMatri
    -> const TSMatSMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return TSMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
@@ -1081,7 +1084,7 @@ inline auto tsmatsmatschur( const SparseMatrix<MT1,true>& lhs, const SparseMatri
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // unitriangular column-major sparse matrix and a unitriangular row-major sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
@@ -1092,6 +1095,9 @@ inline auto tsmatsmatschur( const SparseMatrix<MT1,true>& lhs, const SparseMatri
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >( (~lhs).rows() );
 }

@@ -870,16 +870,15 @@ class DMatTDMatAddExpr
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a row-major and a colum-major dense matrix
+/*!\brief Backend implementation of the addition of a row-major and a colum-major dense matrix
 //        (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a row-major
+// This function implements a performance optimized treatment of the addition of a row-major
 // dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -890,6 +889,9 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return DMatTDMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
 }
 /*! \endcond */
@@ -898,16 +900,15 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a symmetric row-major and a colum-major dense
-//        matrix (\f$ A=B+C \f$).
+/*!\brief Backend implementation of the addition of a symmetric row-major and a colum-major
+//        dense matrix (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a symmetric
+// This function implements a performance optimized treatment of the addition of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -918,6 +919,9 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return trans( ~lhs ) + ~rhs;
 }
 /*! \endcond */
@@ -926,16 +930,15 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a row-major and a symmetric column-major dense
-//        matrix (\f$ A=B+C \f$).
+/*!\brief Backend implementation of the addition of a row-major and a symmetric column-major
+//        dense matrix (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a (potentially
+// This function implements a performance optimized treatment of the addition of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -945,6 +948,9 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
    -> decltype( (~lhs) + trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~lhs) + trans( ~rhs );
 }
@@ -999,25 +1005,27 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a column-major and a row-major dense matrix
+/*!\brief Backend implementation of the addition of a column-major and a row-major dense matrix
 //        (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a column-major
+// This function implements a performance optimized treatment of the addition of a column-major
 // dense matrix and a row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> const DMatTDMatAddExpr<MT2,MT1>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return DMatTDMatAddExpr<MT2,MT1>( ~rhs, ~lhs );
 }
@@ -1027,25 +1035,27 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a column-major and a symmetric row-major dense
-//        matrix (\f$ A=B+C \f$).
+/*!\brief Backend implementation of the addition of a column-major and a symmetric row-major
+//        dense matrix (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a column-major
+// This function implements a performance optimized treatment of the addition of a column-major
 // dense matrix and a symmetric row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> decltype( trans( ~rhs ) + (~lhs) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return trans( ~rhs ) + (~lhs);
 }
@@ -1055,25 +1065,27 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition operator for the addition of a symmetric column-major and a row-major dense
-//        matrix (\f$ A=B+C \f$).
+/*!\brief Backend implementation of the addition of a symmetric column-major and a row-major
+//        dense matrix (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
 // \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
 // \return The sum of the two matrices.
-// \exception std::invalid_argument Matrix sizes do not match
 //
-// This operator implements a performance optimized treatment of the addition of a symmetric
+// This function implements a performance optimized treatment of the addition of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< IsSymmetric<MT1> > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> decltype( (~rhs) + trans( ~lhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~rhs) + trans( ~lhs );
 }
@@ -1121,7 +1133,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatTDMatAddExpr<MT2,MT1>( ~rhs, ~lhs );
+   return tdmatdmatadd( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 

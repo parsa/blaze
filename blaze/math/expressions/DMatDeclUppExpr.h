@@ -192,7 +192,9 @@ class DMatDeclUppExpr
    */
    explicit inline DMatDeclUppExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the declupp expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -936,6 +938,8 @@ inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return DMatDeclUppExpr<MT,SO>( ~dm );
 }
 /*! \endcond */
@@ -961,6 +965,8 @@ inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
 }
 /*! \endcond */
@@ -985,6 +991,8 @@ inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
    return ~dm;
 }

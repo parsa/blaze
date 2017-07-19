@@ -182,7 +182,9 @@ class SMatDeclSymExpr
    */
    explicit inline SMatDeclSymExpr( const MT& sm ) noexcept
       : sm_( sm )  // Sparse matrix of the declsym expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -910,6 +912,8 @@ inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
+
    return SMatDeclSymExpr<MT,SO>( ~sm );
 }
 /*! \endcond */
@@ -935,6 +939,8 @@ inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
+
    return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
 }
 /*! \endcond */
@@ -959,6 +965,8 @@ inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
 
    return ~sm;
 }

@@ -912,16 +912,15 @@ class SMatSVecMultExpr
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a row-major sparse matrix and
+/*!\brief Backend implementation of the multiplication of a row-major sparse matrix and
 //        a sparse vector (\f$ \vec{a}=B*\vec{c} \f$).
 // \ingroup sparse_vector
 //
 // \param mat The left-hand side sparse matrix for the multiplication.
 // \param vec The right-hand side sparse vector for the multiplication.
 // \return The resulting vector.
-// \exception std::invalid_argument Matrix and vector sizes do not match.
 //
-// This operator implements the performance optimized treatment of the multiplication
+// This function implements the performance optimized treatment of the multiplication
 // of a row-major sparse matrix and a sparse vector. It restructures the expression
 // \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
 */
@@ -933,6 +932,8 @@ inline auto smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
    return SMatSVecMultExpr<MT,VT>( ~mat, ~vec );
 }
 /*! \endcond */
@@ -941,16 +942,15 @@ inline auto smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a symmetric row-major sparse matrix
+/*!\brief Backend implementation of the multiplication of a symmetric row-major sparse matrix
 //        and a sparse vector (\f$ \vec{a}=B*\vec{c} \f$).
 // \ingroup sparse_vector
 //
 // \param mat The left-hand side sparse matrix for the multiplication.
 // \param vec The right-hand side sparse vector for the multiplication.
 // \return The resulting vector.
-// \exception std::invalid_argument Matrix and vector sizes do not match.
 //
-// This operator implements the performance optimized treatment of the multiplication of a
+// This function implements the performance optimized treatment of the multiplication of a
 // symmetric row-major sparse matrix and a sparse vector. It restructures the expression
 // \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
 */
@@ -961,6 +961,8 @@ inline auto smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<
    -> decltype( trans( ~mat ) * (~vec) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return trans( ~mat ) * (~vec);
 }

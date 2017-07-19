@@ -992,6 +992,9 @@ inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
 }
 /*! \endcond */
@@ -1020,6 +1023,9 @@ inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT
    -> decltype( map( trans( ~lhs ), ~rhs, op ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return map( trans( ~lhs ), ~rhs, op );
 }
@@ -1050,6 +1056,9 @@ inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT
    -> decltype( map( ~lhs, trans( ~rhs ), op ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return map( ~lhs, trans( ~rhs ), op );
 }
@@ -1122,6 +1131,9 @@ inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
    return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
 }
 /*! \endcond */
@@ -1150,6 +1162,9 @@ inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2
    -> decltype( map( ~lhs, trans( ~rhs ), op ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return map( ~lhs, trans( ~rhs ), op );
 }
@@ -1180,6 +1195,9 @@ inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2
    -> decltype( map( trans( ~lhs ), ~rhs, op ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return map( trans( ~lhs ), ~rhs, op );
 }

@@ -193,7 +193,9 @@ class DMatDeclHermExpr
    */
    explicit inline DMatDeclHermExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the declherm expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -937,6 +939,8 @@ inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return DMatDeclHermExpr<MT,SO>( ~dm );
 }
 /*! \endcond */
@@ -962,6 +966,8 @@ inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
 }
 /*! \endcond */
@@ -986,6 +992,8 @@ inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
    return ~dm;
 }

@@ -179,7 +179,9 @@ class SMatDeclDiagExpr
    */
    explicit inline SMatDeclDiagExpr( const MT& sm ) noexcept
       : sm_( sm )  // Sparse matrix of the decldiag expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -907,6 +909,8 @@ inline auto decldiag_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
+
    return SMatDeclDiagExpr<MT,SO>( ~sm );
 }
 /*! \endcond */
@@ -931,6 +935,8 @@ inline auto decldiag_backend( const SparseMatrix<MT,SO>& sm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
 
    return ~sm;
 }

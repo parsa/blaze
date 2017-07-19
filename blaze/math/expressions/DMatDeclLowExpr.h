@@ -192,7 +192,9 @@ class DMatDeclLowExpr
    */
    explicit inline DMatDeclLowExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the decllow expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -936,6 +938,8 @@ inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return DMatDeclLowExpr<MT,SO>( ~dm );
 }
 /*! \endcond */
@@ -961,6 +965,8 @@ inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+
    return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
 }
 /*! \endcond */
@@ -985,6 +991,8 @@ inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
    return ~dm;
 }

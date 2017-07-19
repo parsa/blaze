@@ -931,7 +931,7 @@ class DMatTDMatSchurExpr
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // row-major dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -944,6 +944,9 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
    -> const DMatTDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return DMatTDMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
@@ -961,7 +964,7 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product of a symmetric
+// This function implements a performance optimized treatment of the Schur product of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -974,6 +977,9 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
    -> decltype( trans( ~lhs ) % ~rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return trans( ~lhs ) % ~rhs;
 }
@@ -991,7 +997,7 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The sum of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product of a (potentially
+// This function implements a performance optimized treatment of the Schur product of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1003,6 +1009,9 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
    -> decltype( (~lhs) % trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~lhs) % trans( ~rhs );
 }
@@ -1020,7 +1029,7 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // unitriangular row-major dense matrix and a unitriangular column-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1031,6 +1040,9 @@ inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatri
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
 }
@@ -1093,7 +1105,7 @@ inline decltype(auto)
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // column-major dense matrix and a row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1106,6 +1118,9 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
    -> const DMatTDMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return DMatTDMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
@@ -1123,7 +1138,7 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product of a
+// This function implements a performance optimized treatment of the Schur product of a
 // column-major dense matrix and a symmetric row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1136,6 +1151,9 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
    -> decltype( (~lhs) % trans( ~rhs ) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return (~lhs) % trans( ~rhs );
 }
@@ -1153,7 +1171,7 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The sum of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product of a symmetric
+// This function implements a performance optimized treatment of the Schur product of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1165,6 +1183,9 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
    -> decltype( trans( ~lhs ) % (~rhs) )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return trans( ~lhs ) % (~rhs);
 }
@@ -1182,7 +1203,7 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
-// This operator implements a performance optimized treatment of the Schur product between a
+// This function implements a performance optimized treatment of the Schur product between a
 // unitriangular column-major dense matrix and a unitriangular row-major dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
@@ -1193,6 +1214,9 @@ inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
    return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >( (~lhs).rows() );
 }
