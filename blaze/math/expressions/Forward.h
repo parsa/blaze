@@ -537,10 +537,17 @@ decltype(auto) map( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>&,
 
 
 template< typename MT, bool SO >
-inline decltype(auto) declsym( const DenseMatrix<MT,SO>& dm );
+inline decltype(auto) declsym( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-inline decltype(auto) declsym( const SparseMatrix<MT,SO>& sm );
+inline decltype(auto) declsym( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+inline decltype(auto) declherm( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+inline decltype(auto) declherm( const SparseMatrix<MT,SO>& );
 
 } // namespace blaze
 

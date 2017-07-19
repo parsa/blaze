@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclHermExpr.h>
@@ -74,6 +73,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -892,50 +892,65 @@ class SMatDeclHermExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
-// \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
-// The \a declherm function declares the given sparse matrix expression \a sm as Hermitian. The
-// function returns an expression representing the operation. In case the given matrix is not a
-// square matrix, a \a std::invalid_argument exception is thrown.\n
-// The following example demonstrates the use of the \a declherm function:
-
-   \code
-   blaze::CompressedMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = declherm( A );
-   \endcode
+// This function declares the given sparse matrix expression \a sm as Hermitian. The function
+// returns an expression representing the operation.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
-inline auto declherm( const SparseMatrix<MT,SO>& sm )
+inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
    -> const SMatDeclHermExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~sm ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
-   }
-
    return SMatDeclHermExpr<MT,SO>( ~sm );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given unitriangular sparse matrix expression \a sm as Hermitian.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given unitriangular sparse matrix expression \a sm as Hermitian.
+// The function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsHermitian<MT> >, IsUniTriangular<MT> > > >
+inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Redeclares the given Hermitian sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
 //
-// The \a declherm function redeclares the given Hermitian sparse matrix expression \a sm as
-// Hermitian. The function returns a reference to the already Hermitian matrix expression.
+// This function redeclares the given Hermitian sparse matrix expression \a sm as Hermitian.
+// The function returns a reference to the already Hermitian matrix expression.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
@@ -945,34 +960,42 @@ inline auto declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
    return ~sm;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Redeclares the given unitriangular sparse matrix expression \a sm as Hermitian.
+/*!\brief Declares the given sparse matrix expression \a sm as Hermitian.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
 // \return The redeclared sparse matrix.
+// \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
-// The \a declherm function redeclares the given unitriangular sparse matrix expression \a sm as
-// Hermitian. The function returns an identity matrix.
+// The \a declherm function declares the given sparse matrix expression \a sm as Hermitian.
+// In case the given matrix is not a square matrix, a \a std::invalid_argument exception is
+// thrown.\n
+// The following example demonstrates the use of the \a declherm function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = declherm( A );
+   \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniTriangular<MT> > >
-inline auto declherm( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+        , bool SO >    // Storage order
+inline decltype(auto) declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
+   if( !isSquare( ~sm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
+   }
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return declherm_backend( ~sm );
 }
 //*************************************************************************************************
 
@@ -1003,8 +1026,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsHermitian<MT> > >
-inline auto declherm( const SMatScalarMultExpr<MT,ST,SO>& sm )
-   -> decltype( declherm( sm.leftOperand() ) * sm.rightOperand() )
+inline decltype(auto) declherm( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

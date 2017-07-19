@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclHermExpr.h>
@@ -77,6 +76,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -919,6 +919,81 @@ class DMatDeclHermExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given dense matrix expression \a dm as Hermitian.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given dense matrix expression \a dm as Hermitian. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
+inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclHermExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatDeclHermExpr<MT,SO>( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given unitriangular dense matrix expression \a dm as Hermitian.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given unitriangular dense matrix expression \a dm as Hermitian.
+// The function returns an identity matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsHermitian<MT> >, IsUniTriangular<MT> > > >
+inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given Hermitian dense matrix expression \a dm as Hermitian.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function redeclares the given Hermitian dense matrix expression \a dm as Hermitian.
+// The function returns a reference to the already Hermitian matrix expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsHermitian<MT> > >
+inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given dense matrix expression \a dm as Hermitian.
 // \ingroup dense_matrix
 //
@@ -926,9 +1001,9 @@ class DMatDeclHermExpr
 // \return The redeclared dense matrix.
 // \exception std::invalid_argument Invalid Hermitian matrix specification.
 //
-// The \a declherm function declares the given dense matrix expression \a dm as Hermitian. The
-// function returns an expression representing the operation. In case the given matrix is not
-// a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a declherm function declares the given dense matrix expression \a dm as Hermitian.
+// In case the given matrix is not a square matrix, a \a std::invalid_argument exception is
+// thrown.\n
 // The following example demonstrates the use of the \a declherm function:
 
    \code
@@ -938,10 +1013,8 @@ class DMatDeclHermExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
-inline auto declherm( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclHermExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) declherm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -949,57 +1022,7 @@ inline auto declherm( const DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
    }
 
-   return DMatDeclHermExpr<MT,SO>( ~dm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given Hermitian dense matrix expression \a dm as Hermitian.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a declherm function redeclares the given Hermitian dense matrix expression \a dm as
-// Hermitian. The function returns a reference to the already Hermitian matrix expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsHermitian<MT> > >
-inline auto declherm( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   return ~dm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given unitriangular dense matrix expression \a dm as Hermitian.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a declherm function redeclares the given unitriangular dense matrix expression \a dm as
-// Hermitian. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniTriangular<MT> > >
-inline auto declherm( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return declherm_backend( ~dm );
 }
 //*************************************************************************************************
 
@@ -1030,8 +1053,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsHermitian<MT> > >
-inline auto declherm( const DMatScalarMultExpr<MT,ST,SO>& dm )
-   -> decltype( declherm( dm.leftOperand() ) * dm.rightOperand() )
+inline decltype(auto) declherm( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
