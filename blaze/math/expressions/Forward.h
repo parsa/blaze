@@ -507,6 +507,10 @@ template< typename MT, bool SO >
 decltype(auto) serial( const SparseMatrix<MT,SO>& );
 
 
+template< typename MT, bool SO >
+inline decltype(auto) inv( const DenseMatrix<MT,SO>& dm );
+
+
 template< typename VT, bool TF, typename OP >
 const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );
 
