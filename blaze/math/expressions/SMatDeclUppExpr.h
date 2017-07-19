@@ -45,7 +45,6 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniLower.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
@@ -73,6 +72,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -891,6 +891,81 @@ class SMatDeclUppExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given sparse matrix expression \a sm as upper.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given sparse matrix expression \a sm as upper. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
+inline auto declupp_backend( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclUppExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatDeclUppExpr<MT,SO>( ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given unilower sparse matrix expression \a sm as upper.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given unilower sparse matrix expression \a sm as upper. The
+// function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsUpper<MT> >, IsUniLower<MT> > > >
+inline auto declupp_backend( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given upper sparse matrix expression \a sm as upper.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function redeclares the given upper sparse matrix expression \a sm as upper. The
+// function returns a reference to the already upper matrix expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUpper<MT> > >
+inline auto declupp_backend( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given sparse matrix expression \a sm as upper.
 // \ingroup sparse_matrix
 //
@@ -898,9 +973,8 @@ class SMatDeclUppExpr
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid upper matrix specification.
 //
-// The \a declupp function declares the given sparse matrix expression \a sm as upper. The
-// function returns an expression representing the operation. In case the given matrix is
-// not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a declupp function declares the given sparse matrix expression \a sm as upper. In case
+// the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a declupp function:
 
    \code
@@ -910,10 +984,8 @@ class SMatDeclUppExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
-inline auto declupp( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclUppExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) declupp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -921,57 +993,7 @@ inline auto declupp( const SparseMatrix<MT,SO>& sm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
    }
 
-   return SMatDeclUppExpr<MT,SO>( ~sm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given upper sparse matrix expression \a sm as upper.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a declupp function redeclares the given upper sparse matrix expression \a sm as upper.
-// The function returns a reference to the already upper matrix expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUpper<MT> > >
-inline auto declupp( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( MT );
-
-   return ~sm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given unilower sparse matrix expression \a sm as upper.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a declupp function redeclares the given unilower sparse matrix expression \a sm as
-// upper. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniLower<MT> > >
-inline auto declupp( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return declupp_backend( ~sm );
 }
 //*************************************************************************************************
 
@@ -1002,8 +1024,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsUpper<MT> > >
-inline auto declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
-   -> decltype( declupp( sm.leftOperand() ) * sm.rightOperand() )
+inline decltype(auto) declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -556,6 +556,13 @@ inline decltype(auto) decllow( const DenseMatrix<MT,SO>& dm );
 template< typename MT, bool SO >
 inline decltype(auto) decllow( const SparseMatrix<MT,SO>& sm );
 
+
+template< typename MT, bool SO >
+inline decltype(auto) declupp( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+inline decltype(auto) declupp( const SparseMatrix<MT,SO>& sm );
+
 } // namespace blaze
 
 #endif

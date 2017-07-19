@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniLower.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
@@ -76,6 +75,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -918,6 +918,81 @@ class DMatDeclUppExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given dense matrix expression \a dm as upper.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given dense matrix expression \a dm as upper. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
+inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclUppExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatDeclUppExpr<MT,SO>( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given unilower dense matrix expression \a dm as upper.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given unilower dense matrix expression \a dm as upper. The
+// function returns an identity matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsUpper<MT> >, IsUniLower<MT> > > >
+inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given upper dense matrix expression \a dm as upper.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function redeclares the given upper dense matrix expression \a dm as upper. The
+// function returns a reference to the already upper matrix expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUpper<MT> > >
+inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given dense matrix expression \a dm as upper.
 // \ingroup dense_matrix
 //
@@ -925,9 +1000,8 @@ class DMatDeclUppExpr
 // \return The redeclared dense matrix.
 // \exception std::invalid_argument Invalid upper matrix specification.
 //
-// The \a declupp function declares the given dense matrix expression \a dm as upper. The
-// function returns an expression representing the operation. In case the given matrix is
-// not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a declupp function declares the given dense matrix expression \a dm as upper. In case
+// the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a declupp function:
 
    \code
@@ -937,10 +1011,8 @@ class DMatDeclUppExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
-inline auto declupp( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclUppExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) declupp( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -948,57 +1020,7 @@ inline auto declupp( const DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
    }
 
-   return DMatDeclUppExpr<MT,SO>( ~dm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given upper dense matrix expression \a dm as upper.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a declupp function redeclares the given upper dense matrix expression \a dm as upper.
-// The function returns a reference to the already upper matrix expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUpper<MT> > >
-inline auto declupp( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( MT );
-
-   return ~dm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given unilower dense matrix expression \a dm as upper.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a declupp function redeclares the given unilower dense matrix expression \a dm as
-// upper. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniLower<MT> > >
-inline auto declupp( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return declupp_backend( ~dm );
 }
 //*************************************************************************************************
 
