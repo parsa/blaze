@@ -916,50 +916,40 @@ class DMatDeclDiagExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given dense matrix expression \a dm as diagonal.
 // \ingroup dense_matrix
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
-// \exception std::invalid_argument Invalid diagonal matrix specification.
 //
-// The \a decldiag function declares the given dense matrix expression \a dm as diagonal. The
-// function returns an expression representing the operation. In case the given matrix is not
-// a square matrix, a \a std::invalid_argument exception is thrown.\n
-// The following example demonstrates the use of the \a decldiag function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = decldiag( A );
-   \endcode
+// This function declares the given dense matrix expression \a dm as diagonal. The function
+// returns an expression representing the operation.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = DisableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const DenseMatrix<MT,SO>& dm )
+inline auto decldiag_backend( const DenseMatrix<MT,SO>& dm )
    -> const DMatDeclDiagExpr<MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~dm ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
-   }
-
    return DMatDeclDiagExpr<MT,SO>( ~dm );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Redeclares the given diagonal dense matrix expression \a dm as diagonal.
 // \ingroup dense_matrix
 //
 // \param dm The input matrix.
 // \return The redeclared dense matrix.
 //
-// The \a decldiag function redeclares the given diagonal dense matrix expression \a dm as
-// diagonal. The function returns a reference to the already diagonal matrix expression.
+// This function redeclares the given diagonal dense matrix expression \a dm as diagonal.
+// The function returns a reference to the already diagonal matrix expression.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
@@ -970,6 +960,40 @@ inline auto decldiag( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return ~dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Declares the given dense matrix expression \a dm as diagonal.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+// \exception std::invalid_argument Invalid diagonal matrix specification.
+//
+// The \a decldiag function declares the given dense matrix expression \a dm as diagonal. In
+// case the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The following example demonstrates the use of the \a decldiag function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = decldiag( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) decldiag( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
+   }
+
+   return decldiag_backend( ~dm );
 }
 //*************************************************************************************************
 
@@ -1000,8 +1024,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const DMatScalarMultExpr<MT,ST,SO>& dm )
-   -> decltype( decldiag( dm.leftOperand() ) * dm.rightOperand() )
+inline decltype(auto) decldiag( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

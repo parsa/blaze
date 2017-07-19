@@ -889,6 +889,56 @@ class SMatDeclDiagExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given sparse matrix expression \a sm as diagonal.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given sparse matrix expression \a sm as diagonal. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< IsDiagonal<MT> > >
+inline auto decldiag_backend( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclDiagExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatDeclDiagExpr<MT,SO>( ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given diagonal sparse matrix expression \a sm as diagonal.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function redeclares the given diagonal sparse matrix expression \a sm as diagonal.
+// The function returns a reference to the already diagonal matrix expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsDiagonal<MT> > >
+inline auto decldiag_backend( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given sparse matrix expression \a sm as diagonal.
 // \ingroup sparse_matrix
 //
@@ -896,9 +946,8 @@ class SMatDeclDiagExpr
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid diagonal matrix specification.
 //
-// The \a decldiag function declares the given sparse matrix expression \a sm as diagonal. The
-// function returns an expression representing the operation. In case the given matrix is not
-// a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a decldiag function declares the given sparse matrix expression \a sm as diagonal. In
+// case the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decldiag function:
 
    \code
@@ -908,10 +957,8 @@ class SMatDeclDiagExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclDiagExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) decldiag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -919,30 +966,7 @@ inline auto decldiag( const SparseMatrix<MT,SO>& sm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
    }
 
-   return SMatDeclDiagExpr<MT,SO>( ~sm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given diagonal sparse matrix expression \a sm as diagonal.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a decldiag function redeclares the given diagonal sparse matrix expression \a sm as
-// diagonal. The function returns a reference to the already diagonal matrix expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ~sm;
+   return decldiag_backend( ~sm );
 }
 //*************************************************************************************************
 
@@ -973,8 +997,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const SMatScalarMultExpr<MT,ST,SO>& sm )
-   -> decltype( decldiag( sm.leftOperand() ) * sm.rightOperand() )
+inline decltype(auto) decldiag( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
