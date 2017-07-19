@@ -469,16 +469,16 @@ decltype(auto) operator%( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<
 
 
 template< typename VT, bool TF >
-const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& );
+decltype(auto) trans( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
-const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& );
+decltype(auto) trans( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
-const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& );
+decltype(auto) trans( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-const SMatTransExpr<MT,!SO> trans( const SparseMatrix<MT,SO>& );
+decltype(auto) trans( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >

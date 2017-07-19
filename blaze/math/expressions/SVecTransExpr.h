@@ -669,7 +669,7 @@ class SVecTransExpr
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
+inline decltype(auto) trans( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -708,8 +708,7 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline auto trans( const SVecTransExpr<VT,TF>& sv )
-   -> decltype( sv.operand() )
+inline decltype(auto) trans( const SVecTransExpr<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -734,8 +733,7 @@ inline auto trans( const SVecTransExpr<VT,TF>& sv )
 template< typename VT  // Type of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
-inline auto trans( const SVecScalarMultExpr<VT,ST,TF>& sv )
-   -> decltype( trans( sv.leftOperand() ) * sv.rightOperand() )
+inline decltype(auto) trans( const SVecScalarMultExpr<VT,ST,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 

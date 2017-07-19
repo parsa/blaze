@@ -732,7 +732,7 @@ class DVecTransExpr
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
+inline decltype(auto) trans( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -771,8 +771,7 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline auto trans( const DVecTransExpr<VT,TF>& dv )
-   -> decltype( dv.operand() )
+inline decltype(auto) trans( const DVecTransExpr<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -797,8 +796,7 @@ inline auto trans( const DVecTransExpr<VT,TF>& dv )
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar value
         , bool TF >    // Transpose flag
-inline auto trans( const DVecScalarMultExpr<VT,ST,TF>& dv )
-   -> decltype( trans( dv.leftOperand() ) * dv.rightOperand() )
+inline decltype(auto) trans( const DVecScalarMultExpr<VT,ST,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
