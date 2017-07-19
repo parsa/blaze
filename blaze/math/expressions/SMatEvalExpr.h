@@ -804,7 +804,7 @@ class SMatEvalExpr
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatEvalExpr<MT,SO> eval( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) eval( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -834,7 +834,7 @@ inline const SMatEvalExpr<MT,SO> eval( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatEvalExpr<MT,SO> eval( const SMatEvalExpr<MT,SO>& sm )
+inline decltype(auto) eval( const SMatEvalExpr<MT,SO>& sm )
 {
    return sm;
 }

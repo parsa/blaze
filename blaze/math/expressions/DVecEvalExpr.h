@@ -727,7 +727,7 @@ class DVecEvalExpr
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecEvalExpr<VT,TF> eval( const DenseVector<VT,TF>& dv )
+inline decltype(auto) eval( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -757,7 +757,7 @@ inline const DVecEvalExpr<VT,TF> eval( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecEvalExpr<VT,TF> eval( const DVecEvalExpr<VT,TF>& dv )
+inline decltype(auto) eval( const DVecEvalExpr<VT,TF>& dv )
 {
    return dv;
 }

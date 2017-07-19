@@ -795,7 +795,7 @@ class DMatEvalExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatEvalExpr<MT,SO> eval( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) eval( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -825,7 +825,7 @@ inline const DMatEvalExpr<MT,SO> eval( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatEvalExpr<MT,SO> eval( const DMatEvalExpr<MT,SO>& dm )
+inline decltype(auto) eval( const DMatEvalExpr<MT,SO>& dm )
 {
    return dm;
 }

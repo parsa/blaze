@@ -482,6 +482,19 @@ decltype(auto) trans( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >
+decltype(auto) eval( const DenseVector<VT,TF>& );
+
+template< typename VT, bool TF >
+decltype(auto) eval( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+decltype(auto) eval( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) eval( const SparseMatrix<MT,SO>& );
+
+
+template< typename VT, bool TF >
 const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
