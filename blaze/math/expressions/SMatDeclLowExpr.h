@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclLowExpr.h>
@@ -73,6 +72,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -891,6 +891,81 @@ class SMatDeclLowExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given sparse matrix expression \a sm as lower.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given sparse matrix expression \a sm as lower. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
+inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclLowExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatDeclLowExpr<MT,SO>( ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given uniupper sparse matrix expression \a sm as lower.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given uniupper sparse matrix expression \a sm as lower. The
+// function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsUniUpper<MT> > >
+inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given lower sparse matrix expression \a sm as lower.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function redeclares the given lower sparse matrix expression \a sm as lower.
+// The function returns a reference to the already lower matrix expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsLower<MT> > >
+inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given sparse matrix expression \a sm as lower.
 // \ingroup sparse_matrix
 //
@@ -898,9 +973,8 @@ class SMatDeclLowExpr
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid lower matrix specification.
 //
-// The \a decllow function declares the given sparse matrix expression \a sm as lower. The
-// function returns an expression representing the operation. In case the given matrix is
-// not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a decllow function declares the given sparse matrix expression \a sm as lower. In case
+// the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decllow function:
 
    \code
@@ -910,10 +984,8 @@ class SMatDeclLowExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
-inline auto decllow( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclLowExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) decllow( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -921,57 +993,7 @@ inline auto decllow( const SparseMatrix<MT,SO>& sm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
    }
 
-   return SMatDeclLowExpr<MT,SO>( ~sm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given lower sparse matrix expression \a sm as lower.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a decllow function redeclares the given lower sparse matrix expression \a sm as lower.
-// The function returns a reference to the already lower matrix expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsLower<MT> > >
-inline auto decllow( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( MT );
-
-   return ~sm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given uniupper sparse matrix expression \a sm as lower.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a decllow function redeclares the given uniupper sparse matrix expression \a sm as
-// lower. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniUpper<MT> > >
-inline auto decllow( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return decllow_backend( ~sm );
 }
 //*************************************************************************************************
 
@@ -1002,8 +1024,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsLower<MT> > >
-inline auto decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
-   -> decltype( decllow( sm.leftOperand() ) * sm.rightOperand() )
+inline decltype(auto) decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -549,6 +549,13 @@ inline decltype(auto) declherm( const DenseMatrix<MT,SO>& );
 template< typename MT, bool SO >
 inline decltype(auto) declherm( const SparseMatrix<MT,SO>& );
 
+
+template< typename MT, bool SO >
+inline decltype(auto) decllow( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+inline decltype(auto) decllow( const SparseMatrix<MT,SO>& sm );
+
 } // namespace blaze
 
 #endif

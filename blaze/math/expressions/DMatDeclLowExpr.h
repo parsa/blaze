@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
-#include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclLowExpr.h>
@@ -76,6 +75,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -918,6 +918,81 @@ class DMatDeclLowExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given dense matrix expression \a dm as lower.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given dense matrix expression \a dm as lower. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
+inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
+   -> const DMatDeclLowExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatDeclLowExpr<MT,SO>( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given uniupper dense matrix expression \a dm as lower.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function declares the given uniupper dense matrix expression \a dm as lower. The
+// function returns an identity matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsLower<MT> >, IsUniUpper<MT> > > >
+inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given lower dense matrix expression \a dm as lower.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The redeclared dense matrix.
+//
+// This function redeclares the given lower dense matrix expression \a dm as lower. The
+// function returns a reference to the already lower matrix expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsLower<MT> > >
+inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given dense matrix expression \a dm as lower.
 // \ingroup dense_matrix
 //
@@ -925,9 +1000,8 @@ class DMatDeclLowExpr
 // \return The redeclared dense matrix.
 // \exception std::invalid_argument Invalid lower matrix specification.
 //
-// The \a decllow function declares the given dense matrix expression \a dm as lower. The
-// function returns an expression representing the operation. In case the given matrix is
-// not a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a decllow function declares the given dense matrix expression \a dm as lower. In case
+// the given matrix is not a square matrix, a \a std::invalid_argument exception is thrown.\n
 // The following example demonstrates the use of the \a decllow function:
 
    \code
@@ -937,10 +1011,8 @@ class DMatDeclLowExpr
    \endcode
 */
 template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
-inline auto decllow( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclLowExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) decllow( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -948,57 +1020,7 @@ inline auto decllow( const DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
    }
 
-   return DMatDeclLowExpr<MT,SO>( ~dm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given lower dense matrix expression \a dm as lower.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a decllow function redeclares the given lower dense matrix expression \a dm as lower.
-// The function returns a reference to the already lower matrix expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsLower<MT> > >
-inline auto decllow( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( MT );
-
-   return ~dm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given uniupper dense matrix expression \a dm as lower.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix.
-// \return The redeclared dense matrix.
-//
-// The \a decllow function redeclares the given uniupper dense matrix expression \a dm as
-// lower. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniUpper<MT> > >
-inline auto decllow( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return decllow_backend( ~dm );
 }
 //*************************************************************************************************
 
@@ -1029,8 +1051,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsLower<MT> > >
-inline auto decllow( const DMatScalarMultExpr<MT,ST,SO>& dm )
-   -> decltype( decllow( dm.leftOperand() ) * dm.rightOperand() )
+inline decltype(auto) decllow( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
