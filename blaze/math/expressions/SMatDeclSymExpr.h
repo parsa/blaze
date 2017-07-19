@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
-#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
@@ -74,6 +73,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -892,6 +892,81 @@ class SMatDeclSymExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given sparse matrix expression \a sm as symmetric.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given sparse matrix expression \a sm as symmetric. The function
+// returns an expression representing the operation.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> > > >
+inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
+   -> const SMatDeclSymExpr<MT,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatDeclSymExpr<MT,SO>( ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given unitriangular sparse matrix expression \a sm as symmetric.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function declares the given unitriangular sparse matrix expression \a sm as symmetric.
+// The function returns an identity matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< And< Not< IsSymmetric<MT> >, IsUniTriangular<MT> > > >
+inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
+   -> const IdentityMatrix< ElementType_<MT>, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Redeclares the given symmetric sparse matrix expression \a sm as symmetric.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The redeclared sparse matrix.
+//
+// This function redeclares the given symmetric sparse matrix expression \a sm as symmetric.
+// The function returns a reference to the already symmetric matrix expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename = EnableIf_< IsSymmetric<MT> > >
+inline auto declsym_backend( const SparseMatrix<MT,SO>& sm )
+   -> const MT&
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given sparse matrix expression \a sm as symmetric.
 // \ingroup sparse_matrix
 //
@@ -899,9 +974,9 @@ class SMatDeclSymExpr
 // \return The redeclared sparse matrix.
 // \exception std::invalid_argument Invalid symmetric matrix specification.
 //
-// The \a declsym function declares the given sparse matrix expression \a sm as symmetric. The
-// function returns an expression representing the operation. In case the given matrix is not
-// a square matrix, a \a std::invalid_argument exception is thrown.\n
+// The \a declsym function declares the given sparse matrix expression \a sm as symmetric.
+// In case the given matrix is not a square matrix, a \a std::invalid_argument exception is
+// thrown.\n
 // The following example demonstrates the use of the \a declsym function:
 
    \code
@@ -911,10 +986,8 @@ class SMatDeclSymExpr
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> > > >
-inline auto declsym( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclSymExpr<MT,SO>
+        , bool SO >    // Storage order
+inline decltype(auto) declsym( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -922,57 +995,7 @@ inline auto declsym( const SparseMatrix<MT,SO>& sm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
    }
 
-   return SMatDeclSymExpr<MT,SO>( ~sm );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given symmetric sparse matrix expression \a sm as symmetric.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a declsym function redeclares the given symmetric sparse matrix expression \a sm as
-// symmetric. The function returns a reference to the already symmetric matrix expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsSymmetric<MT> > >
-inline auto declsym( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   return ~sm;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Redeclares the given unitriangular sparse matrix expression \a sm as symmetric.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix.
-// \return The redeclared sparse matrix.
-//
-// The \a declsym function redeclares the given unitriangular sparse matrix expression \a sm as
-// symmetric. The function returns an identity matrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , typename = EnableIf_< IsUniTriangular<MT> > >
-inline auto declsym( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return declsym_backend( ~sm );
 }
 //*************************************************************************************************
 
@@ -1003,8 +1026,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsSymmetric<MT> > >
-inline auto declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
-   -> decltype( declsym( sm.leftOperand() ) * sm.rightOperand() )
+inline decltype(auto) declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
