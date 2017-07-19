@@ -178,294 +178,294 @@ template< typename, bool > struct Vector;
 
 
 template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator+( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+decltype(auto) operator+( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
 
 template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator+( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
+decltype(auto) operator+( const DenseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
 
 template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator+( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+decltype(auto) operator+( const SparseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
 
 template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator+( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
+decltype(auto) operator+( const SparseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
 
 template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator+( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator+( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,SO>&, const SparseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator+( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator+( const SparseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT2,false>& lhs, const DenseMatrix<MT1,true>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT2,false>&, const DenseMatrix<MT1,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT2,true>& lhs, const DenseMatrix<MT1,false>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT2,true>&, const DenseMatrix<MT1,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-
-template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator-( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator-( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator-( const SparseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator-( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator*( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const DenseVector<VT1,false>& lhs, const DenseVector<VT2,true>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator*( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const DenseVector<VT1,true>& lhs, const SparseVector<VT2,false>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const DenseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator*( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const SparseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const SparseVector<VT1,false>& lhs, const DenseVector<VT2,true>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator*( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const SparseVector<VT1,true>& lhs, const SparseVector<VT2,false>& rhs );
-
-template< typename VT1, typename VT2 >
-decltype(auto) operator*( const SparseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const DenseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const DenseMatrix<MT,true>& mat, const DenseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const DenseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const SparseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const SparseMatrix<MT,true>& mat, const DenseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec );
-
-template< typename MT, typename VT >
-decltype(auto) operator*( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const DenseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const DenseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const SparseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat );
-
-template< typename VT, typename MT >
-decltype(auto) operator*( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
-
-template< typename MT1, typename MT2 >
-decltype(auto) operator*( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
-
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator/( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator/( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator%( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator%( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator%( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
-
-template< typename VT1, typename VT2, bool TF >
-decltype(auto) operator%( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs );
+decltype(auto) operator+( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
 
 
 template< typename MT1, typename MT2, bool SO >
-decltype(auto) operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs );
+decltype(auto) operator-( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
+decltype(auto) operator-( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
+decltype(auto) operator-( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator-( const DenseMatrix<MT1,SO>&, const SparseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator-( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator-( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator-( const SparseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs );
+decltype(auto) operator-( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
+
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator*( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const DenseVector<VT1,true>&, const DenseVector<VT2,false>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const DenseVector<VT1,false>&, const DenseVector<VT2,true>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator*( const DenseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const DenseVector<VT1,true>&, const SparseVector<VT2,false>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const DenseVector<VT1,false>&, const SparseVector<VT2,true>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator*( const SparseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const SparseVector<VT1,true>&, const DenseVector<VT2,false>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const SparseVector<VT1,false>&, const DenseVector<VT2,true>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator*( const SparseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const SparseVector<VT1,true>&, const SparseVector<VT2,false>& );
+
+template< typename VT1, typename VT2 >
+decltype(auto) operator*( const SparseVector<VT1,false>&, const SparseVector<VT2,true>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const DenseMatrix<MT,false>&, const DenseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const DenseMatrix<MT,true>&, const DenseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const DenseMatrix<MT,false>&, const SparseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const DenseMatrix<MT,true>&, const SparseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const SparseMatrix<MT,false>&, const DenseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const SparseMatrix<MT,true>&, const DenseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const SparseMatrix<MT,false>&, const SparseVector<VT,false>& );
+
+template< typename MT, typename VT >
+decltype(auto) operator*( const SparseMatrix<MT,true>&, const SparseVector<VT,false>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const DenseVector<VT,true>&, const DenseMatrix<MT,false>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const DenseVector<VT,true>&, const DenseMatrix<MT,true>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const DenseVector<VT,true>&, const SparseMatrix<MT,false>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const DenseVector<VT,true>&, const SparseMatrix<MT,true>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const SparseVector<VT,true>&, const DenseMatrix<MT,false>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const SparseVector<VT,true>&, const DenseMatrix<MT,true>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const SparseVector<VT,true>&, const SparseMatrix<MT,false>& );
+
+template< typename VT, typename MT >
+decltype(auto) operator*( const SparseVector<VT,true>&, const SparseMatrix<MT,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator*( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator*( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs );
+decltype(auto) operator*( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator%( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs );
+decltype(auto) operator*( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator*( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
+
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator/( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator/( const SparseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator%( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator%( const DenseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator%( const SparseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) operator%( const SparseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+
+template< typename MT1, typename MT2, bool SO >
+decltype(auto) operator%( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const DenseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) operator%( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
 
 
 template< typename VT, bool TF >
@@ -508,26 +508,32 @@ decltype(auto) serial( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
-inline decltype(auto) inv( const DenseMatrix<MT,SO>& dm );
+inline decltype(auto) inv( const DenseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF, typename OP >
-const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>&, OP );
+decltype(auto) map( const DenseVector<VT,TF>&, OP );
 
 template< typename VT, bool TF, typename OP >
-const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>&, OP );
+decltype(auto) map( const SparseVector<VT,TF>&, OP );
 
 template< typename MT, bool SO, typename OP >
-const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>&, OP );
+decltype(auto) map( const DenseMatrix<MT,SO>&, OP );
 
 template< typename MT, bool SO, typename OP >
-const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>&, OP );
+decltype(auto) map( const SparseMatrix<MT,SO>&, OP );
 
 template< typename VT1, typename VT2, bool TF, typename OP >
-const DVecDVecMapExpr<VT1,VT2,OP,TF> map( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>&, OP op );
+decltype(auto) map( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>&, OP );
 
 template< typename MT1, typename MT2, bool SO, typename OP >
-const DMatDMatMapExpr<MT1,MT2,OP,SO> map( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>&, OP op );
+decltype(auto) map( const DenseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>&, OP );
+
+template< typename MT1, typename MT2, typename OP >
+decltype(auto) map( const DenseMatrix<MT1,false>&, const DenseMatrix<MT2,true>&, OP );
+
+template< typename MT1, typename MT2, typename OP >
+decltype(auto) map( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>&, OP );
 
 } // namespace blaze
 

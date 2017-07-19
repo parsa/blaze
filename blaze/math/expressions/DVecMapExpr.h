@@ -1101,7 +1101,7 @@ class DVecMapExpr
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>& dv, OP op )
+inline decltype(auto) map( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1131,7 +1131,7 @@ inline const DVecMapExpr<VT,OP,TF> map( const DenseVector<VT,TF>& dv, OP op )
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const DVecMapExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP op )
+inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1159,7 +1159,7 @@ inline const DVecMapExpr<VT,OP,TF> forEach( const DenseVector<VT,TF>& dv, OP op 
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
+inline decltype(auto) abs( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1187,7 +1187,7 @@ inline const DVecMapExpr<VT,Abs,TF> abs( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
+inline decltype(auto) floor( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1215,7 +1215,7 @@ inline const DVecMapExpr<VT,Floor,TF> floor( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
+inline decltype(auto) ceil( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1243,7 +1243,7 @@ inline const DVecMapExpr<VT,Ceil,TF> ceil( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
+inline decltype(auto) trunc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1271,7 +1271,7 @@ inline const DVecMapExpr<VT,Trunc,TF> trunc( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
+inline decltype(auto) round( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1299,7 +1299,7 @@ inline const DVecMapExpr<VT,Round,TF> round( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Conj,TF> conj( const DenseVector<VT,TF>& dv )
+inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1364,7 +1364,7 @@ inline decltype(auto) ctrans( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
+inline decltype(auto) real( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1392,7 +1392,7 @@ inline const DVecMapExpr<VT,Real,TF> real( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
+inline decltype(auto) imag( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1423,7 +1423,7 @@ inline const DVecMapExpr<VT,Imag,TF> imag( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
+inline decltype(auto) sqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1454,7 +1454,7 @@ inline const DVecMapExpr<VT,Sqrt,TF> sqrt( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& dv )
+inline decltype(auto) invsqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1485,7 +1485,7 @@ inline const DVecMapExpr<VT,InvSqrt,TF> invsqrt( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
+inline decltype(auto) cbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1516,7 +1516,7 @@ inline const DVecMapExpr<VT,Cbrt,TF> cbrt( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& dv )
+inline decltype(auto) invcbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1547,8 +1547,7 @@ inline const DVecMapExpr<VT,InvCbrt,TF> invcbrt( const DenseVector<VT,TF>& dv )
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const DVecMapExpr<VT,Clamp<DT>,TF>
-   clamp( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
+inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1578,7 +1577,7 @@ inline const DVecMapExpr<VT,Clamp<DT>,TF>
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename ET >  // Type of the exponent
-inline const DVecMapExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, ET exp )
+inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1608,7 +1607,7 @@ inline const DVecMapExpr<VT,Pow<ET>,TF> pow( const DenseVector<VT,TF>& dv, ET ex
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
+inline decltype(auto) exp( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1636,7 +1635,7 @@ inline const DVecMapExpr<VT,Exp,TF> exp( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
+inline decltype(auto) exp2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1664,7 +1663,7 @@ inline const DVecMapExpr<VT,Exp2,TF> exp2( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
+inline decltype(auto) exp10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1695,7 +1694,7 @@ inline const DVecMapExpr<VT,Exp10,TF> exp10( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
+inline decltype(auto) log( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1726,7 +1725,7 @@ inline const DVecMapExpr<VT,Log,TF> log( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
+inline decltype(auto) log2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1757,7 +1756,7 @@ inline const DVecMapExpr<VT,Log2,TF> log2( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
+inline decltype(auto) log10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1785,7 +1784,7 @@ inline const DVecMapExpr<VT,Log10,TF> log10( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
+inline decltype(auto) sin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1816,7 +1815,7 @@ inline const DVecMapExpr<VT,Sin,TF> sin( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
+inline decltype(auto) asin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1844,7 +1843,7 @@ inline const DVecMapExpr<VT,Asin,TF> asin( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) sinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1872,7 +1871,7 @@ inline const DVecMapExpr<VT,Sinh,TF> sinh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Asinh,TF> asinh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) asinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1900,7 +1899,7 @@ inline const DVecMapExpr<VT,Asinh,TF> asinh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
+inline decltype(auto) cos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1931,7 +1930,7 @@ inline const DVecMapExpr<VT,Cos,TF> cos( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Acos,TF> acos( const DenseVector<VT,TF>& dv )
+inline decltype(auto) acos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1959,7 +1958,7 @@ inline const DVecMapExpr<VT,Acos,TF> acos( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) cosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1990,7 +1989,7 @@ inline const DVecMapExpr<VT,Cosh,TF> cosh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Acosh,TF> acosh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) acosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2018,7 +2017,7 @@ inline const DVecMapExpr<VT,Acosh,TF> acosh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
+inline decltype(auto) tan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2046,7 +2045,7 @@ inline const DVecMapExpr<VT,Tan,TF> tan( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
+inline decltype(auto) atan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2077,7 +2076,7 @@ inline const DVecMapExpr<VT,Atan,TF> atan( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) tanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2108,7 +2107,7 @@ inline const DVecMapExpr<VT,Tanh,TF> tanh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
+inline decltype(auto) atanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2136,7 +2135,7 @@ inline const DVecMapExpr<VT,Atanh,TF> atanh( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
+inline decltype(auto) erf( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2164,7 +2163,7 @@ inline const DVecMapExpr<VT,Erf,TF> erf( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
+inline decltype(auto) erfc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2194,7 +2193,7 @@ inline const DVecMapExpr<VT,Erfc,TF> erfc( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Abs,TF>& abs( const DVecMapExpr<VT,Abs,TF>& dv )
+inline decltype(auto) abs( const DVecMapExpr<VT,Abs,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2217,7 +2216,7 @@ inline const DVecMapExpr<VT,Abs,TF>& abs( const DVecMapExpr<VT,Abs,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Floor,TF>& floor( const DVecMapExpr<VT,Floor,TF>& dv )
+inline decltype(auto) floor( const DVecMapExpr<VT,Floor,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2240,7 +2239,7 @@ inline const DVecMapExpr<VT,Floor,TF>& floor( const DVecMapExpr<VT,Floor,TF>& dv
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Ceil,TF>& ceil( const DVecMapExpr<VT,Ceil,TF>& dv )
+inline decltype(auto) ceil( const DVecMapExpr<VT,Ceil,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2263,7 +2262,7 @@ inline const DVecMapExpr<VT,Ceil,TF>& ceil( const DVecMapExpr<VT,Ceil,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Trunc,TF>& trunc( const DVecMapExpr<VT,Trunc,TF>& dv )
+inline decltype(auto) trunc( const DVecMapExpr<VT,Trunc,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2286,7 +2285,7 @@ inline const DVecMapExpr<VT,Trunc,TF>& trunc( const DVecMapExpr<VT,Trunc,TF>& dv
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Round,TF>& round( const DVecMapExpr<VT,Round,TF>& dv )
+inline decltype(auto) round( const DVecMapExpr<VT,Round,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2316,7 +2315,7 @@ inline const DVecMapExpr<VT,Round,TF>& round( const DVecMapExpr<VT,Round,TF>& dv
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DVecMapExpr<VT,Conj,TF>::Operand conj( const DVecMapExpr<VT,Conj,TF>& dv )
+inline decltype(auto) conj( const DVecMapExpr<VT,Conj,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2346,7 +2345,7 @@ inline typename DVecMapExpr<VT,Conj,TF>::Operand conj( const DVecMapExpr<VT,Conj
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecMapExpr<VT,Conj,TF>,!TF>& dv )
+inline decltype(auto) conj( const DVecTransExpr<DVecMapExpr<VT,Conj,TF>,!TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2369,7 +2368,7 @@ inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecMapExpr<VT,Conj
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecMapExpr<VT,Real,TF>& real( const DVecMapExpr<VT,Real,TF>& dv )
+inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -56,7 +56,6 @@
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/BinaryMapExprTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -971,6 +970,94 @@ class DMatTDMatMapExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a row-major dense matrix and a
+//        column-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a row-major dense matrix and a column-major dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+   -> const DMatTDMatMapExpr<MT1,MT2,OP>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a symmetric row-major dense matrix
+//        and a column-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a symmetric row-major dense matrix and a column-major dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > > >
+inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+   -> decltype( map( trans( ~lhs ), ~rhs, op ) )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( trans( ~lhs ), ~rhs, op );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a row-major dense matrix and a
+//        symmetric column-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a (potentially symmetric) row-major dense matrix and a symmetric column-major
+// dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< IsSymmetric<MT2> > >
+inline auto map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+   -> decltype( map( ~lhs, trans( ~rhs ), op ) )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, trans( ~rhs ), op );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Evaluates the given binary operation on each single element of the row-major dense
 //        matrix \a lhs and the column-major dense matrix \a rhs.
 // \ingroup dense_matrix
@@ -998,8 +1085,7 @@ class DMatTDMatMapExpr
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
         , typename OP >  // Type of the custom operation
-inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
-                , const DMatTDMatMapExpr<MT1,MT2,OP> >
+inline decltype(auto)
    map( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1008,8 +1094,96 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
+   return map_backend( ~lhs, ~rhs, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a column-major dense matrix and a
+//        row-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a column-major dense matrix and a row-major dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+   -> const DMatTDMatMapExpr<MT1,MT2,OP>
+{
+   BLAZE_FUNCTION_TRACE;
+
    return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a column-major dense matrix and a
+//        symmetric row-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a column-major dense matrix and a symmetric row-major dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
+inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+   -> decltype( map( ~lhs, trans( ~rhs ), op ) )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, trans( ~rhs ), op );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the map() function for a symmetric column-major dense
+//        matrix and a row-major dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \param op The custom, binary operation.
+// \return The binary operation applied to each single element of \a lhs and \a rhs.
+//
+// This function implements a performance optimized treatment for applying the given binary
+// operation to a symmetric column-major dense matrix and a (potentially symmetric) row-major
+// dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , typename OP   // Type of the custom operation
+        , typename = EnableIf_< IsSymmetric<MT1> > >
+inline auto map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+   -> decltype( map( trans( ~lhs ), ~rhs, op ) )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( trans( ~lhs ), ~rhs, op );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1041,8 +1215,7 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
         , typename OP >  // Type of the custom operation
-inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
-                , const DMatTDMatMapExpr<MT1,MT2,OP> >
+inline decltype(auto)
    map( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1051,152 +1224,8 @@ inline EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > >
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+   return map_backend( ~lhs, ~rhs, op );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluates the given binary operation on each single element of the symmetric row-major
-//        dense matrix \a lhs and the column-major dense matrix \a rhs.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix operand.
-// \param rhs The right-hand side dense matrix operand.
-// \param op The custom, binary operation.
-// \return The binary operation applied to each single element of \a lhs and \a rhs.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This \a map() implements a performance optimized treatment for applying the given binary
-// operation to a symmetric row-major dense matrix and a column-major dense matrix.
-*/
-template< typename MT1   // Type of the left-hand side dense matrix
-        , typename MT2   // Type of the right-hand side dense matrix
-        , typename OP >  // Type of the custom operation
-inline EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > >
-                , const BinaryMapExprTrait_<MT1,MT2,OP> >
-   map( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return map( trans( ~lhs ), ~rhs, op );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluates the given binary operation on each single element of the row-major dense
-//        matrix \a lhs and the symmetric column-major dense matrix \a rhs.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix operand.
-// \param rhs The right-hand side dense matrix operand.
-// \param op The custom, binary operation.
-// \return The binary operation applied to each single element of \a lhs and \a rhs.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This \a map() implements a performance optimized treatment for applying the given binary
-// operation to a (potentially symmetric) row-major dense matrix and a symmetric column-major
-// dense matrix.
-*/
-template< typename MT1   // Type of the left-hand side dense matrix
-        , typename MT2   // Type of the right-hand side dense matrix
-        , typename OP >  // Type of the custom operation
-inline EnableIf_< IsSymmetric<MT2>, const BinaryMapExprTrait_<MT1,MT2,OP> >
-   map( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return map( ~lhs, trans( ~rhs ), op );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluates the given binary operation on each single element of the column-major dense
-//        matrix \a lhs and the symmetric row-major dense matrix \a rhs.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix operand.
-// \param rhs The right-hand side dense matrix operand.
-// \param op The custom, binary operation.
-// \return The binary operation applied to each single element of \a lhs and \a rhs.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This \a map() implements a performance optimized treatment for applying the given binary
-// operation to a column-major dense matrix and a symmetric row-major dense matrix.
-*/
-template< typename MT1   // Type of the left-hand side dense matrix
-        , typename MT2   // Type of the right-hand side dense matrix
-        , typename OP >  // Type of the custom operation
-inline EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> >
-                , const BinaryMapExprTrait_<MT1,MT2,OP> >
-   map( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return map( ~lhs, trans( ~rhs ), op );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluates the given binary operation on each single element of the symmetric
-//        column-major dense matrix \a lhs and the row-major dense matrix \a rhs.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix operand.
-// \param rhs The right-hand side dense matrix operand.
-// \param op The custom, binary operation.
-// \return The binary operation applied to each single element of \a lhs and \a rhs.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This \a map() implements a performance optimized treatment for applying the given binary
-// operation to a symmetric column-major dense matrix and a (potentially symmetric) row-major
-// dense matrix.
-*/
-template< typename MT1   // Type of the left-hand side dense matrix
-        , typename MT2   // Type of the right-hand side dense matrix
-        , typename OP >  // Type of the custom operation
-inline EnableIf_< IsSymmetric<MT1>, const BinaryMapExprTrait_<MT1,MT2,OP> >
-   map( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return map( trans( ~lhs ), ~rhs, op );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 

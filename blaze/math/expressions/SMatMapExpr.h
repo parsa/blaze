@@ -983,7 +983,7 @@ class SMatMapExpr
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>& sm, OP op )
+inline decltype(auto) map( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1013,7 +1013,7 @@ inline const SMatMapExpr<MT,OP,SO> map( const SparseMatrix<MT,SO>& sm, OP op )
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const SMatMapExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, OP op )
+inline decltype(auto) forEach( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1041,7 +1041,7 @@ inline const SMatMapExpr<MT,OP,SO> forEach( const SparseMatrix<MT,SO>& sm, OP op
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) abs( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1069,7 +1069,7 @@ inline const SMatMapExpr<MT,Abs,SO> abs( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) floor( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1097,7 +1097,7 @@ inline const SMatMapExpr<MT,Floor,SO> floor( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) ceil( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1125,7 +1125,7 @@ inline const SMatMapExpr<MT,Ceil,SO> ceil( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) trunc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1153,7 +1153,7 @@ inline const SMatMapExpr<MT,Trunc,SO> trunc( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Round,SO> round( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) round( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1181,7 +1181,7 @@ inline const SMatMapExpr<MT,Round,SO> round( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Conj,SO> conj( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1246,7 +1246,7 @@ inline decltype(auto) ctrans( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) real( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1274,7 +1274,7 @@ inline const SMatMapExpr<MT,Real,SO> real( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) imag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1305,7 +1305,7 @@ inline const SMatMapExpr<MT,Imag,SO> imag( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) sqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1336,7 +1336,7 @@ inline const SMatMapExpr<MT,Sqrt,SO> sqrt( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) invsqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1367,7 +1367,7 @@ inline const SMatMapExpr<MT,InvSqrt,SO> invsqrt( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) cbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1398,7 +1398,7 @@ inline const SMatMapExpr<MT,Cbrt,SO> cbrt( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) invcbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1429,8 +1429,7 @@ inline const SMatMapExpr<MT,InvCbrt,SO> invcbrt( const SparseMatrix<MT,SO>& sm )
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename DT >  // Type of the delimiters
-inline const SMatMapExpr<MT,Clamp<DT>,SO>
-   clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
+inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1460,7 +1459,7 @@ inline const SMatMapExpr<MT,Clamp<DT>,SO>
 template< typename MT    // Type of the sparse matrix
         , bool SO        // Storage order
         , typename ET >  // Type of the exponent
-inline const SMatMapExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, ET exp )
+inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1490,7 +1489,7 @@ inline const SMatMapExpr<MT,Pow<ET>,SO> pow( const SparseMatrix<MT,SO>& sm, ET e
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) exp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1518,7 +1517,7 @@ inline const SMatMapExpr<MT,Exp,SO> exp( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) exp2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1546,7 +1545,7 @@ inline const SMatMapExpr<MT,Exp2,SO> exp2( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Exp10,SO> exp10( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) exp10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1577,7 +1576,7 @@ inline const SMatMapExpr<MT,Exp10,SO> exp10( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) log( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1608,7 +1607,7 @@ inline const SMatMapExpr<MT,Log,SO> log( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Log10,SO> log10( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1639,7 +1638,7 @@ inline const SMatMapExpr<MT,Log10,SO> log10( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Log2,SO> log2( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) log2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1667,7 +1666,7 @@ inline const SMatMapExpr<MT,Log2,SO> log2( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) sin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1698,7 +1697,7 @@ inline const SMatMapExpr<MT,Sin,SO> sin( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Asin,SO> asin( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) asin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1726,7 +1725,7 @@ inline const SMatMapExpr<MT,Asin,SO> asin( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) sinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1754,7 +1753,7 @@ inline const SMatMapExpr<MT,Sinh,SO> sinh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) asinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1782,7 +1781,7 @@ inline const SMatMapExpr<MT,Asinh,SO> asinh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) cos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1813,7 +1812,7 @@ inline const SMatMapExpr<MT,Cos,SO> cos( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Acos,SO> acos( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) acos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1841,7 +1840,7 @@ inline const SMatMapExpr<MT,Acos,SO> acos( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) cosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1872,7 +1871,7 @@ inline const SMatMapExpr<MT,Cosh,SO> cosh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Acosh,SO> acosh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) acosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1900,7 +1899,7 @@ inline const SMatMapExpr<MT,Acosh,SO> acosh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) tan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1928,7 +1927,7 @@ inline const SMatMapExpr<MT,Tan,SO> tan( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) atan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1959,7 +1958,7 @@ inline const SMatMapExpr<MT,Atan,SO> atan( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) tanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1990,7 +1989,7 @@ inline const SMatMapExpr<MT,Tanh,SO> tanh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Atanh,SO> atanh( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) atanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2018,7 +2017,7 @@ inline const SMatMapExpr<MT,Atanh,SO> atanh( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) erf( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2047,7 +2046,7 @@ inline const SMatMapExpr<MT,Erf,SO> erf( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) erfc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2077,7 +2076,7 @@ inline const SMatMapExpr<MT,Erfc,SO> erfc( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Abs,SO>& abs( const SMatMapExpr<MT,Abs,SO>& sm )
+inline decltype(auto) abs( const SMatMapExpr<MT,Abs,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2100,7 +2099,7 @@ inline const SMatMapExpr<MT,Abs,SO>& abs( const SMatMapExpr<MT,Abs,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Floor,SO>& floor( const SMatMapExpr<MT,Floor,SO>& sm )
+inline decltype(auto) floor( const SMatMapExpr<MT,Floor,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2123,7 +2122,7 @@ inline const SMatMapExpr<MT,Floor,SO>& floor( const SMatMapExpr<MT,Floor,SO>& sm
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Ceil,SO>& ceil( const SMatMapExpr<MT,Ceil,SO>& sm )
+inline decltype(auto) ceil( const SMatMapExpr<MT,Ceil,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2146,7 +2145,7 @@ inline const SMatMapExpr<MT,Ceil,SO>& ceil( const SMatMapExpr<MT,Ceil,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Trunc,SO>& trunc( const SMatMapExpr<MT,Trunc,SO>& sm )
+inline decltype(auto) trunc( const SMatMapExpr<MT,Trunc,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2169,7 +2168,7 @@ inline const SMatMapExpr<MT,Trunc,SO>& trunc( const SMatMapExpr<MT,Trunc,SO>& sm
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Round,SO>& round( const SMatMapExpr<MT,Round,SO>& sm )
+inline decltype(auto) round( const SMatMapExpr<MT,Round,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2199,7 +2198,7 @@ inline const SMatMapExpr<MT,Round,SO>& round( const SMatMapExpr<MT,Round,SO>& sm
 */
 template< typename MT  // Type of the sparse matrix
         , bool TF >    // Transpose flag
-inline typename SMatMapExpr<MT,Conj,TF>::Operand conj( const SMatMapExpr<MT,Conj,TF>& sm )
+inline decltype(auto) conj( const SMatMapExpr<MT,Conj,TF>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2229,7 +2228,7 @@ inline typename SMatMapExpr<MT,Conj,TF>::Operand conj( const SMatMapExpr<MT,Conj
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatMapExpr<MT,Conj,SO>,!SO>& sm )
+inline decltype(auto) conj( const SMatTransExpr<SMatMapExpr<MT,Conj,SO>,!SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2252,7 +2251,7 @@ inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatMapExpr<MT,Conj
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Real,SO>& real( const SMatMapExpr<MT,Real,SO>& sm )
+inline decltype(auto) real( const SMatMapExpr<MT,Real,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2275,7 +2274,7 @@ inline const SMatMapExpr<MT,Real,SO>& real( const SMatMapExpr<MT,Real,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatMapExpr<MT,Imag,SO>& imag( const SMatMapExpr<MT,Imag,SO>& sm )
+inline decltype(auto) imag( const SMatMapExpr<MT,Imag,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -1112,7 +1112,7 @@ class DMatMapExpr
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>& dm, OP op )
+inline decltype(auto) map( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1142,7 +1142,7 @@ inline const DMatMapExpr<MT,OP,SO> map( const DenseMatrix<MT,SO>& dm, OP op )
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const DMatMapExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP op )
+inline decltype(auto) forEach( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1170,7 +1170,7 @@ inline const DMatMapExpr<MT,OP,SO> forEach( const DenseMatrix<MT,SO>& dm, OP op 
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Abs,SO> abs( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) abs( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1198,7 +1198,7 @@ inline const DMatMapExpr<MT,Abs,SO> abs( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Floor,SO> floor( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) floor( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1226,7 +1226,7 @@ inline const DMatMapExpr<MT,Floor,SO> floor( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) ceil( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1254,7 +1254,7 @@ inline const DMatMapExpr<MT,Ceil,SO> ceil( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Trunc,SO> trunc( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) trunc( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1282,7 +1282,7 @@ inline const DMatMapExpr<MT,Trunc,SO> trunc( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Round,SO> round( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) round( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1310,7 +1310,7 @@ inline const DMatMapExpr<MT,Round,SO> round( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Conj,SO> conj( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) conj( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1375,7 +1375,7 @@ inline decltype(auto) ctrans( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Real,SO> real( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) real( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1403,7 +1403,7 @@ inline const DMatMapExpr<MT,Real,SO> real( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Imag,SO> imag( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) imag( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1434,7 +1434,7 @@ inline const DMatMapExpr<MT,Imag,SO> imag( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Sqrt,SO> sqrt( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) sqrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1465,7 +1465,7 @@ inline const DMatMapExpr<MT,Sqrt,SO> sqrt( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,InvSqrt,SO> invsqrt( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) invsqrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1496,7 +1496,7 @@ inline const DMatMapExpr<MT,InvSqrt,SO> invsqrt( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Cbrt,SO> cbrt( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) cbrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1527,7 +1527,7 @@ inline const DMatMapExpr<MT,Cbrt,SO> cbrt( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) invcbrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1558,8 +1558,7 @@ inline const DMatMapExpr<MT,InvCbrt,SO> invcbrt( const DenseMatrix<MT,SO>& dm )
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , typename DT >  // Type of the delimiters
-inline const DMatMapExpr<MT,Clamp<DT>,SO>
-   clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const DT& max )
+inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1589,7 +1588,7 @@ inline const DMatMapExpr<MT,Clamp<DT>,SO>
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , typename ET >  // Type of the exponent
-inline const DMatMapExpr<MT,Pow<ET>,SO> pow( const DenseMatrix<MT,SO>& dm, ET exp )
+inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1619,7 +1618,7 @@ inline const DMatMapExpr<MT,Pow<ET>,SO> pow( const DenseMatrix<MT,SO>& dm, ET ex
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Exp,SO> exp( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) exp( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1647,7 +1646,7 @@ inline const DMatMapExpr<MT,Exp,SO> exp( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Exp2,SO> exp2( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) exp2( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1675,7 +1674,7 @@ inline const DMatMapExpr<MT,Exp2,SO> exp2( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Exp10,SO> exp10( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) exp10( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1706,7 +1705,7 @@ inline const DMatMapExpr<MT,Exp10,SO> exp10( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Log,SO> log( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) log( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1737,7 +1736,7 @@ inline const DMatMapExpr<MT,Log,SO> log( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Log2,SO> log2( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) log2( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1768,7 +1767,7 @@ inline const DMatMapExpr<MT,Log2,SO> log2( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Log10,SO> log10( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) log10( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1796,7 +1795,7 @@ inline const DMatMapExpr<MT,Log10,SO> log10( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Sin,SO> sin( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) sin( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1827,7 +1826,7 @@ inline const DMatMapExpr<MT,Sin,SO> sin( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Asin,SO> asin( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) asin( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1855,7 +1854,7 @@ inline const DMatMapExpr<MT,Asin,SO> asin( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Sinh,SO> sinh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) sinh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1883,7 +1882,7 @@ inline const DMatMapExpr<MT,Sinh,SO> sinh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Asinh,SO> asinh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) asinh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1911,7 +1910,7 @@ inline const DMatMapExpr<MT,Asinh,SO> asinh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Cos,SO> cos( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) cos( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1942,7 +1941,7 @@ inline const DMatMapExpr<MT,Cos,SO> cos( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Acos,SO> acos( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) acos( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1970,7 +1969,7 @@ inline const DMatMapExpr<MT,Acos,SO> acos( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Cosh,SO> cosh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) cosh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2001,7 +2000,7 @@ inline const DMatMapExpr<MT,Cosh,SO> cosh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Acosh,SO> acosh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) acosh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2029,7 +2028,7 @@ inline const DMatMapExpr<MT,Acosh,SO> acosh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Tan,SO> tan( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) tan( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2057,7 +2056,7 @@ inline const DMatMapExpr<MT,Tan,SO> tan( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Atan,SO> atan( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) atan( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2088,7 +2087,7 @@ inline const DMatMapExpr<MT,Atan,SO> atan( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Tanh,SO> tanh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) tanh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2119,7 +2118,7 @@ inline const DMatMapExpr<MT,Tanh,SO> tanh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Atanh,SO> atanh( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) atanh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2147,7 +2146,7 @@ inline const DMatMapExpr<MT,Atanh,SO> atanh( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Erf,SO> erf( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) erf( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2175,7 +2174,7 @@ inline const DMatMapExpr<MT,Erf,SO> erf( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Erfc,SO> erfc( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) erfc( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2205,7 +2204,7 @@ inline const DMatMapExpr<MT,Erfc,SO> erfc( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Abs,SO>& abs( const DMatMapExpr<MT,Abs,SO>& dm )
+inline decltype(auto) abs( const DMatMapExpr<MT,Abs,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2228,7 +2227,7 @@ inline const DMatMapExpr<MT,Abs,SO>& abs( const DMatMapExpr<MT,Abs,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Floor,SO>& floor( const DMatMapExpr<MT,Floor,SO>& dm )
+inline decltype(auto) floor( const DMatMapExpr<MT,Floor,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2251,7 +2250,7 @@ inline const DMatMapExpr<MT,Floor,SO>& floor( const DMatMapExpr<MT,Floor,SO>& dm
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Ceil,SO>& ceil( const DMatMapExpr<MT,Ceil,SO>& dm )
+inline decltype(auto) ceil( const DMatMapExpr<MT,Ceil,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2274,7 +2273,7 @@ inline const DMatMapExpr<MT,Ceil,SO>& ceil( const DMatMapExpr<MT,Ceil,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Trunc,SO>& trunc( const DMatMapExpr<MT,Trunc,SO>& dm )
+inline decltype(auto) trunc( const DMatMapExpr<MT,Trunc,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2297,7 +2296,7 @@ inline const DMatMapExpr<MT,Trunc,SO>& trunc( const DMatMapExpr<MT,Trunc,SO>& dm
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Round,SO>& round( const DMatMapExpr<MT,Round,SO>& dm )
+inline decltype(auto) round( const DMatMapExpr<MT,Round,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2327,7 +2326,7 @@ inline const DMatMapExpr<MT,Round,SO>& round( const DMatMapExpr<MT,Round,SO>& dm
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline typename DMatMapExpr<MT,Conj,SO>::Operand conj( const DMatMapExpr<MT,Conj,SO>& dm )
+inline decltype(auto) conj( const DMatMapExpr<MT,Conj,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2357,7 +2356,7 @@ inline typename DMatMapExpr<MT,Conj,SO>::Operand conj( const DMatMapExpr<MT,Conj
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatTransExpr<MT,!SO> conj( const DMatTransExpr<DMatMapExpr<MT,Conj,SO>,!SO>& dm )
+inline decltype(auto) conj( const DMatTransExpr<DMatMapExpr<MT,Conj,SO>,!SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2380,7 +2379,7 @@ inline const DMatTransExpr<MT,!SO> conj( const DMatTransExpr<DMatMapExpr<MT,Conj
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatMapExpr<MT,Real,SO>& real( const DMatMapExpr<MT,Real,SO>& dm )
+inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

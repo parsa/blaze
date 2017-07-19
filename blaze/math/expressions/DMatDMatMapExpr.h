@@ -1128,7 +1128,7 @@ template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
         , bool SO        // Storage order
         , typename OP >  // Type of the custom operation
-inline const DMatDMatMapExpr<MT1,MT2,OP,SO>
+inline decltype(auto)
    map( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs, OP op )
 {
    BLAZE_FUNCTION_TRACE;

@@ -858,7 +858,7 @@ class SVecMapExpr
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>& sv, OP op )
+inline decltype(auto) map( const SparseVector<VT,TF>& sv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -888,7 +888,7 @@ inline const SVecMapExpr<VT,OP,TF> map( const SparseVector<VT,TF>& sv, OP op )
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const SVecMapExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, OP op )
+inline decltype(auto) forEach( const SparseVector<VT,TF>& sv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -916,7 +916,7 @@ inline const SVecMapExpr<VT,OP,TF> forEach( const SparseVector<VT,TF>& sv, OP op
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
+inline decltype(auto) abs( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -944,7 +944,7 @@ inline const SVecMapExpr<VT,Abs,TF> abs( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
+inline decltype(auto) floor( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -972,7 +972,7 @@ inline const SVecMapExpr<VT,Floor,TF> floor( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
+inline decltype(auto) ceil( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1000,7 +1000,7 @@ inline const SVecMapExpr<VT,Ceil,TF> ceil( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
+inline decltype(auto) trunc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1028,7 +1028,7 @@ inline const SVecMapExpr<VT,Trunc,TF> trunc( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
+inline decltype(auto) round( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1056,7 +1056,7 @@ inline const SVecMapExpr<VT,Round,TF> round( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Conj,TF> conj( const SparseVector<VT,TF>& sv )
+inline decltype(auto) conj( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1121,7 +1121,7 @@ inline decltype(auto) ctrans( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
+inline decltype(auto) real( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1149,7 +1149,7 @@ inline const SVecMapExpr<VT,Real,TF> real( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
+inline decltype(auto) imag( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1180,7 +1180,7 @@ inline const SVecMapExpr<VT,Imag,TF> imag( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
+inline decltype(auto) sqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1211,7 +1211,7 @@ inline const SVecMapExpr<VT,Sqrt,TF> sqrt( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& sv )
+inline decltype(auto) invsqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1242,7 +1242,7 @@ inline const SVecMapExpr<VT,InvSqrt,TF> invsqrt( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
+inline decltype(auto) cbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1273,7 +1273,7 @@ inline const SVecMapExpr<VT,Cbrt,TF> cbrt( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& sv )
+inline decltype(auto) invcbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1304,8 +1304,7 @@ inline const SVecMapExpr<VT,InvCbrt,TF> invcbrt( const SparseVector<VT,TF>& sv )
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename DT >  // Type of the delimiters
-inline const SVecMapExpr<VT,Clamp<DT>,TF>
-   clamp( const SparseVector<VT,TF>& sv, const DT& min, const DT& max )
+inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const DT& max )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1335,7 +1334,7 @@ inline const SVecMapExpr<VT,Clamp<DT>,TF>
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
         , typename ET >  // Type of the exponent
-inline const SVecMapExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, ET exp )
+inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1365,7 +1364,7 @@ inline const SVecMapExpr<VT,Pow<ET>,TF> pow( const SparseVector<VT,TF>& sv, ET e
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
+inline decltype(auto) exp( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1393,7 +1392,7 @@ inline const SVecMapExpr<VT,Exp,TF> exp( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
+inline decltype(auto) exp2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1421,7 +1420,7 @@ inline const SVecMapExpr<VT,Exp2,TF> exp2( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
+inline decltype(auto) exp10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1452,7 +1451,7 @@ inline const SVecMapExpr<VT,Exp10,TF> exp10( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
+inline decltype(auto) log( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1483,7 +1482,7 @@ inline const SVecMapExpr<VT,Log,TF> log( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Log2,TF> log2( const SparseVector<VT,TF>& sv )
+inline decltype(auto) log2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1514,7 +1513,7 @@ inline const SVecMapExpr<VT,Log2,TF> log2( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
+inline decltype(auto) log10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1542,7 +1541,7 @@ inline const SVecMapExpr<VT,Log10,TF> log10( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
+inline decltype(auto) sin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1573,7 +1572,7 @@ inline const SVecMapExpr<VT,Sin,TF> sin( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Asin,TF> asin( const SparseVector<VT,TF>& sv )
+inline decltype(auto) asin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1601,7 +1600,7 @@ inline const SVecMapExpr<VT,Asin,TF> asin( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Sinh,TF> sinh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) sinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1629,7 +1628,7 @@ inline const SVecMapExpr<VT,Sinh,TF> sinh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) asinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1657,7 +1656,7 @@ inline const SVecMapExpr<VT,Asinh,TF> asinh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
+inline decltype(auto) cos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1688,7 +1687,7 @@ inline const SVecMapExpr<VT,Cos,TF> cos( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Acos,TF> acos( const SparseVector<VT,TF>& sv )
+inline decltype(auto) acos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1716,7 +1715,7 @@ inline const SVecMapExpr<VT,Acos,TF> acos( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) cosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1747,7 +1746,7 @@ inline const SVecMapExpr<VT,Cosh,TF> cosh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) acosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1775,7 +1774,7 @@ inline const SVecMapExpr<VT,Acosh,TF> acosh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
+inline decltype(auto) tan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1803,7 +1802,7 @@ inline const SVecMapExpr<VT,Tan,TF> tan( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
+inline decltype(auto) atan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1834,7 +1833,7 @@ inline const SVecMapExpr<VT,Atan,TF> atan( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) tanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1865,7 +1864,7 @@ inline const SVecMapExpr<VT,Tanh,TF> tanh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Atanh,TF> atanh( const SparseVector<VT,TF>& sv )
+inline decltype(auto) atanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1893,7 +1892,7 @@ inline const SVecMapExpr<VT,Atanh,TF> atanh( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Erf,TF> erf( const SparseVector<VT,TF>& sv )
+inline decltype(auto) erf( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1921,7 +1920,7 @@ inline const SVecMapExpr<VT,Erf,TF> erf( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
+inline decltype(auto) erfc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1951,7 +1950,7 @@ inline const SVecMapExpr<VT,Erfc,TF> erfc( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Abs,TF>& abs( const SVecMapExpr<VT,Abs,TF>& sv )
+inline decltype(auto) abs( const SVecMapExpr<VT,Abs,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1974,7 +1973,7 @@ inline const SVecMapExpr<VT,Abs,TF>& abs( const SVecMapExpr<VT,Abs,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Floor,TF>& floor( const SVecMapExpr<VT,Floor,TF>& sv )
+inline decltype(auto) floor( const SVecMapExpr<VT,Floor,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1997,7 +1996,7 @@ inline const SVecMapExpr<VT,Floor,TF>& floor( const SVecMapExpr<VT,Floor,TF>& sv
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Ceil,TF>& ceil( const SVecMapExpr<VT,Ceil,TF>& sv )
+inline decltype(auto) ceil( const SVecMapExpr<VT,Ceil,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2020,7 +2019,7 @@ inline const SVecMapExpr<VT,Ceil,TF>& ceil( const SVecMapExpr<VT,Ceil,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Trunc,TF>& trunc( const SVecMapExpr<VT,Trunc,TF>& sv )
+inline decltype(auto) trunc( const SVecMapExpr<VT,Trunc,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2043,7 +2042,7 @@ inline const SVecMapExpr<VT,Trunc,TF>& trunc( const SVecMapExpr<VT,Trunc,TF>& sv
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Round,TF>& round( const SVecMapExpr<VT,Round,TF>& sv )
+inline decltype(auto) round( const SVecMapExpr<VT,Round,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2073,7 +2072,7 @@ inline const SVecMapExpr<VT,Round,TF>& round( const SVecMapExpr<VT,Round,TF>& sv
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename SVecMapExpr<VT,Conj,TF>::Operand conj( const SVecMapExpr<VT,Conj,TF>& sv )
+inline decltype(auto) conj( const SVecMapExpr<VT,Conj,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2103,7 +2102,7 @@ inline typename SVecMapExpr<VT,Conj,TF>::Operand conj( const SVecMapExpr<VT,Conj
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecMapExpr<VT,Conj,TF>,!TF>& sv )
+inline decltype(auto) conj( const SVecTransExpr<SVecMapExpr<VT,Conj,TF>,!TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2126,7 +2125,7 @@ inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecMapExpr<VT,Conj
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecMapExpr<VT,Real,TF>& real( const SVecMapExpr<VT,Real,TF>& sv )
+inline decltype(auto) real( const SVecMapExpr<VT,Real,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 

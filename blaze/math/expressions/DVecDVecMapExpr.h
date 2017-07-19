@@ -1095,7 +1095,7 @@ template< typename VT1   // Type of the left-hand side dense vector
         , typename VT2   // Type of the right-hand side dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the custom operation
-inline const DVecDVecMapExpr<VT1,VT2,OP,TF>
+inline decltype(auto)
    map( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs, OP op )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1130,7 +1130,7 @@ inline const DVecDVecMapExpr<VT1,VT2,OP,TF>
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
+inline decltype(auto)
    min( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1161,7 +1161,7 @@ inline const DVecDVecMapExpr<VT1,VT2,Min,TF>
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF >     // Transpose flag
-inline const DVecDVecMapExpr<VT1,VT2,Max,TF>
+inline decltype(auto)
    max( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
