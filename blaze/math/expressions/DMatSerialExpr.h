@@ -817,7 +817,7 @@ class DMatSerialExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& dm )
+inline decltype(auto) serial( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -847,7 +847,7 @@ inline const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-inline const DMatSerialExpr<MT,SO> serial( const DMatSerialExpr<MT,SO>& dm )
+inline decltype(auto) serial( const DMatSerialExpr<MT,SO>& dm )
 {
    return dm;
 }

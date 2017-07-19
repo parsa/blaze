@@ -647,7 +647,7 @@ class SVecSerialExpr
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& sv )
+inline decltype(auto) serial( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -677,7 +677,7 @@ inline const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline const SVecSerialExpr<VT,TF> serial( const SVecSerialExpr<VT,TF>& sv )
+inline decltype(auto) serial( const SVecSerialExpr<VT,TF>& sv )
 {
    return sv;
 }

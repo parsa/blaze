@@ -495,16 +495,16 @@ decltype(auto) eval( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >
-const DVecSerialExpr<VT,TF> serial( const DenseVector<VT,TF>& );
+decltype(auto) serial( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
-const SVecSerialExpr<VT,TF> serial( const SparseVector<VT,TF>& );
+decltype(auto) serial( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
-const DMatSerialExpr<MT,SO> serial( const DenseMatrix<MT,SO>& );
+decltype(auto) serial( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& );
+decltype(auto) serial( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF, typename OP >

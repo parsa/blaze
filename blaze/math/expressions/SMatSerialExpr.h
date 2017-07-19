@@ -824,7 +824,7 @@ class SMatSerialExpr
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& sm )
+inline decltype(auto) serial( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -854,7 +854,7 @@ inline const SMatSerialExpr<MT,SO> serial( const SparseMatrix<MT,SO>& sm )
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline const SMatSerialExpr<MT,SO> serial( const SMatSerialExpr<MT,SO>& sm )
+inline decltype(auto) serial( const SMatSerialExpr<MT,SO>& sm )
 {
    return sm;
 }
