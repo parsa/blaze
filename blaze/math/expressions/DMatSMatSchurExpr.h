@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MultExprTrait.h>
@@ -895,6 +896,62 @@ class DMatSMatSchurExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a row-major dense matrix and
+//        a row-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// row-major dense matrix and a row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const DMatSMatSchurExpr<MT1,MT2>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a unitriangular row-major dense
+//        matrix and a unitriangular row-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// unitriangular row-major dense matrix and a unitriangular row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Operator for the Schur product of a row-major dense matrix and a row-major sparse
 //        matrix (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
@@ -923,12 +980,10 @@ class DMatSMatSchurExpr
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
-   -> const DMatSMatSchurExpr<MT1,MT2>
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline decltype(auto)
+   operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -936,8 +991,63 @@ inline auto operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
+   return dmatsmatschur( ~lhs, ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a column-major dense matrix and
+//        a row-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// column-major dense matrix and a row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const DMatSMatSchurExpr<MT1,MT2>
+{
+   BLAZE_FUNCTION_TRACE;
+
    return DMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a unitriangular column-major dense
+//        matrix and a unitriangular row-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// unitriangular column-major dense matrix and a unitriangular row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >( (~lhs).rows() );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -971,12 +1081,10 @@ inline auto operator%( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
-   -> const DMatSMatSchurExpr<MT1,MT2>
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline decltype(auto)
+   operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -984,7 +1092,7 @@ inline auto operator%( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+   return tdmatsmatschur( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

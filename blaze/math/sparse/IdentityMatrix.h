@@ -1261,52 +1261,6 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Operator for the Schur product of two unitriangular matrices (\f$ A=BC \f$).
-// \ingroup identity_matrix
-//
-// \param lhs The left-hand side unilower/uniupper matrix for the Schur product.
-// \param rhs The right-hand side uniupper/unilower matrix for the Schur product.
-// \return The resulting matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This operator represents the Schur product of two unitriangular matrices:
-
-   \code
-   using blaze::rowMajor;
-
-   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > A;
-   blaze::UniUpperMatrix< blaze::DynamicMatrix<double,rowMajor> > B;
-   blaze::DynamicMatrix<double,rowMajor> C;
-   // ... Resizing and initialization
-   C = A % B;
-   \endcode
-
-// The operator returns an identity matrix. In case the current sizes of the two given matrices
-// don't match, a \a std::invalid_argument is thrown.
-*/
-template< typename MT1  // Data type of the left-hand side matrix
-        , bool SO1      // Storage order of the left-hand side matrix
-        , typename MT2  // Type of the right-hand side matrix
-        , bool SO2      // Storage order of the right-hand side matrix
-        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto operator%( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 >
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO1 >( (~lhs).rows() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of an identity matrix and a dense vector
 //        (\f$ \vec{y}=A*\vec{x} \f$).
 // \ingroup identity_matrix

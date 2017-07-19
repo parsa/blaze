@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1043,6 +1044,62 @@ class SMatTSMatSchurExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a row-major sparse matrix and a
+//        column-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// row-major sparse matrix and a column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto smattsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+   -> const SMatTSMatSchurExpr<MT1,MT2>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatTSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between a unitriangular row-major sparse
+//        matrix and a unitriangular column-major sparse matrix (\f$ A=B \circ C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the Schur product.
+// \param rhs The right-hand side sparse matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between a
+// unitriangular row-major sparse matrix and a unitriangular column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto smattsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Operator for the Schur product of a row-major and a column-major sparse matrix
 //        (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
@@ -1071,12 +1128,10 @@ class SMatTSMatSchurExpr
 // In case the current number of rows and columns of the two given matrices don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename MT1  // Type of the left-hand side sparse matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const SMatTSMatSchurExpr<MT1,MT2>
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+inline decltype(auto)
+   operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1084,7 +1139,7 @@ inline auto operator%( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return SMatTSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+   return smattsmatschur( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/Columns.h>
@@ -1036,6 +1037,64 @@ class DMatDMatSchurExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between two dense matrices with identical
+//        storage order (\f$ A=B \circ C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product of two
+// dense matrices with identical storage order.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO       // Storage order
+        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+   -> const DMatDMatSchurExpr<MT1,MT2,SO>
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatDMatSchurExpr<MT1,MT2,SO>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between two unitriangular dense matrices
+//        with identical storage order (\f$ A=B \circ C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This operator implements a performance optimized treatment of the Schur product between two
+// unitriangular dense matrices with identical storage order.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO       // Storage order
+        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
+                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Operator for the Schur product of two dense matrices with identical storage order
 //        (\f$ A=B \circ C \f$).
 // \ingroup dense_matrix
@@ -1062,11 +1121,9 @@ class DMatDMatSchurExpr
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO       // Storage order
-        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
-   -> const DMatDMatSchurExpr<MT1,MT2,SO>
+        , bool SO >     // Storage order
+inline decltype(auto)
+   operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1074,7 +1131,7 @@ inline auto operator%( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatDMatSchurExpr<MT1,MT2,SO>( ~lhs, ~rhs );
+   return dmatdmatschur( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
