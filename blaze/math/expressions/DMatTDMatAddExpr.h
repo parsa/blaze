@@ -1133,7 +1133,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return tdmatdmatadd( ~rhs, ~lhs );
+   return tdmatdmatadd( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
