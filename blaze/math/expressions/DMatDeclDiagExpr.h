@@ -957,7 +957,7 @@ inline auto decldiag_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsDiagonal<MT> > >
-inline auto decldiag( const DenseMatrix<MT,SO>& dm )
+inline auto decldiag_backend( const DenseMatrix<MT,SO>& dm )
    -> const MT&
 {
    BLAZE_FUNCTION_TRACE;
