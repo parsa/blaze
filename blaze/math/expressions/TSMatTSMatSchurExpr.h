@@ -80,6 +80,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -975,6 +976,8 @@ inline auto tsmattsmatschur( const SparseMatrix<MT1,true>& lhs, const SparseMatr
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
 {
    BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );

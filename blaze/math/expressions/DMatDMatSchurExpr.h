@@ -85,6 +85,7 @@
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1090,6 +1091,8 @@ inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2
    -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >
 {
    BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
