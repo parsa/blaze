@@ -56,7 +56,7 @@ namespace blaze {
 /*!\brief Compile time integral modulus operation.
 // \ingroup mpl
 //
-// The Modulus class template returns the result of a modulus operation between the two given
+// The Modulus alias declaration returns the result of a modulus operation between the two given
 // template arguments \a T1 and \a T2. In order for Modulus to be able to perform the operation
 // with the given two types, both arguments are required to have a nested member \a value. The
 // result of the modulus operation can be accessed via the nested member \a value, the resulting
@@ -70,10 +70,8 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Modulus
-   : public IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
-                            , ( T1::value % T2::value ) >
-{};
+using Modulus = IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
+                                , ( T1::value % T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
