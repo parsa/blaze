@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/Bool.h>
+#include <blaze/util/mpl/Bools.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -52,37 +54,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*! Auxiliary helper struct for the Or class template.
-// \ingroup mpl
-*/
-template< typename T        // Type of the mandatory argument
-        , typename... Ts >  // Types of the optional operands
-struct OrHelper
-   : public Bool< T::value || OrHelper<Ts...>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*! Specialization of the OrHelper class template for a single template argument.
-// \ingroup mpl
-*/
-template< typename T >  // Type of the mandatory argument
-struct OrHelper<T>
-   : public Bool< T::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time logical or evaluation.
 // \ingroup mpl
 //
-// The Or class template performs at compile time a logical or ('&&') evaluation of at least
+// The Or alias declaration performs at compile time a logical or ('&&') evaluation of at least
 // two compile time conditions:
 
    \code
@@ -98,9 +73,8 @@ struct OrHelper<T>
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-struct Or
-   : public Bool< OrHelper<T1,T2,Ts...>::value >
-{};
+using Or = Bool< !IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
+                        , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >;
 //*************************************************************************************************
 
 } // namespace blaze
