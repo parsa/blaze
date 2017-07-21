@@ -56,9 +56,9 @@ namespace blaze {
 /*!\brief Compile time integral subtraction.
 // \ingroup mpl
 //
-// The Minus class template returns the difference of the two given template arguments \a T1 and
-// \a T2. In order for Minus to be able to subtract the two types, both arguments are required to
-// have a nested member \a value. The result of the subtraction can be accessed via the nested
+// The Minus alias declaration returns the difference of the two given template arguments \a T1
+// and \a T2. In order for Minus to be able to subtract the two types, both arguments are required
+// to have a nested member \a value. The result of the subtraction can be accessed via the nested
 // member \a value, the resulting type is available via the nested type \a ValueType.
 
    \code
@@ -69,10 +69,8 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Minus
-   : public IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
-                            , ( T1::value - T2::value ) >
-{};
+using Minus = IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
+                              , ( T1::value - T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
