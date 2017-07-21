@@ -122,22 +122,14 @@ using IfTrue_ = typename IfTrue<Condition,T1,T2>::Type;
 /*!\brief Compile time type selection.
 // \ingroup mpl
 //
-// The If class template selects one of the two given types \a T2 and \a T3 depending on \a T1.
+// The If alias declaration selects one of the two given types \a T2 and \a T3 depending on \a T1.
 // In case \a T1::value evaluates to \a true, the member type definition \a Type is set to \a T2.
 // In case \a T1::value evaluates to \a false, \a Type is set to \a T3.
 */
 template< typename T1    // Type of the condition
         , typename T2    // Type to be selected if T1::value=true
         , typename T3 >  // Type to be selected if T1::value=false
-struct If
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = typename IfTrue< T1::value, T2, T3 >::Type;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+using If = IfTrue< T1::value, T2, T3 >;
 //*************************************************************************************************
 
 
@@ -146,7 +138,7 @@ struct If
 // \ingroup util
 //
 // The If_ alias declaration provides a convenient shortcut to access the nested \a Type of the
-// If class template. For instance, given the types \a T1, \a T2, and \a T3 the following two
+// If alias declaration. For instance, given the types \a T1, \a T2, and \a T3 the following two
 // type definitions are identical:
 
    \code
