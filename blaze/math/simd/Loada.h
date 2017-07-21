@@ -72,7 +72,7 @@ namespace blaze {
 //
 // This function loads a vector of 1-byte integral values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
@@ -80,8 +80,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -101,7 +102,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 //
 // This function loads a vector of 1-byte integral complex values. The given address must be
 // aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC).
+// alignment in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
@@ -110,8 +111,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -139,7 +141,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 //
 // This function loads a vector of 2-byte integral values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
@@ -147,8 +149,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -168,7 +171,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 //
 // This function loads a vector of 2-byte integral complex values. The given address must be
 // aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC).
+// alignment in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
@@ -177,8 +180,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -206,7 +210,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 //
 // This function loads a vector of 4-byte integral values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
@@ -215,7 +219,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_epi32( address );
 #elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
@@ -237,7 +241,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 //
 // This function loads a vector of 4-byte integral complex values. The given address must be
 // aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC).
+// alignment in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
@@ -247,7 +251,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_epi32( address );
 #elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
@@ -277,7 +281,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 //
 // This function loads a vector of 8-byte integral values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
@@ -286,7 +290,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_epi64( address );
 #elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
@@ -308,7 +312,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 //
 // This function loads a vector of 8-byte integral complex values. The given address must be
 // aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
-// alignment in case of AVX, and 64-byte alignment in case of MIC).
+// alignment in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
@@ -318,7 +322,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_epi64( address );
 #elif BLAZE_AVX2_MODE
    return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
@@ -348,13 +352,13 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 //
 // This function loads a vector of 'float' values. The given address must be aligned according
 // to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC).
+// of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 BLAZE_ALWAYS_INLINE const SIMDfloat loada( const float* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_ps( address );
 #elif BLAZE_AVX_MODE
    return _mm256_load_ps( address );
@@ -376,14 +380,14 @@ BLAZE_ALWAYS_INLINE const SIMDfloat loada( const float* address ) noexcept
 //
 // This function loads a vector of 'complex<float>' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat loada( const complex<float>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_ps( reinterpret_cast<const float*>( address ) );
 #elif BLAZE_AVX_MODE
    return _mm256_load_ps( reinterpret_cast<const float*>( address ) );
@@ -413,13 +417,13 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat loada( const complex<float>* address ) noex
 //
 // This function loads a vector of 'double' values. The given address must be aligned according
 // to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC).
+// of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 BLAZE_ALWAYS_INLINE const SIMDdouble loada( const double* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_pd( address );
 #elif BLAZE_AVX_MODE
    return _mm256_load_pd( address );
@@ -441,14 +445,14 @@ BLAZE_ALWAYS_INLINE const SIMDdouble loada( const double* address ) noexcept
 //
 // This function loads a vector of 'complex<double>' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
-// in case of AVX, and 64-byte alignment in case of MIC).
+// in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble loada( const complex<double>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_load_pd( reinterpret_cast<const double*>( address ) );
 #elif BLAZE_AVX_MODE
    return _mm256_load_pd( reinterpret_cast<const double*>( address ) );

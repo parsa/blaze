@@ -70,9 +70,10 @@ struct HasSIMDSqrtHelper
 template<>
 struct HasSIMDSqrtHelper< float >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
+   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -83,9 +84,10 @@ struct HasSIMDSqrtHelper< float >
 template<>
 struct HasSIMDSqrtHelper< double >
 {
-   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
-                         bool( BLAZE_AVX_MODE  ) ||
-                         bool( BLAZE_MIC_MODE  ) };
+   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************

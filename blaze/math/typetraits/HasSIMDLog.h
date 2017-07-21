@@ -75,9 +75,10 @@ struct HasSIMDLogHelper
 template< typename T >
 struct HasSIMDLogHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
+   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 #endif
 /*! \endcond */

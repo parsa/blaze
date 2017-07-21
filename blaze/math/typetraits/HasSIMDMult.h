@@ -78,18 +78,24 @@ struct HasSIMDMultHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>
                                                 , IsNumeric<T2>, IsIntegral<T2>
                                                 , Bool< sizeof(T1) == sizeof(T2) > > > >
 {
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T1) == 2UL ) ||
-                         ( bool( BLAZE_SSE4_MODE ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
-                         ( bool( BLAZE_AVX2_MODE ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
-                         ( bool( BLAZE_MIC_MODE  ) && sizeof(T1) == 4UL ) };
+   enum : bool { value = ( bool( BLAZE_SSE2_MODE     ) && sizeof(T1) == 2UL ) ||
+                         ( bool( BLAZE_SSE4_MODE     ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
+                         ( bool( BLAZE_AVX2_MODE     ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
+                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) == 2UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) == 4UL ) ||
+                         ( bool( BLAZE_AVX512DQ_MODE ) && sizeof(T1) == 8UL ) ||
+                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) == 4UL ) };
 };
 
 template< typename T >
 struct HasSIMDMultHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
 {
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && sizeof(T) == 2UL ) ||
-                         ( bool( BLAZE_SSE4_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_AVX2_MODE ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) };
+   enum : bool { value = ( bool( BLAZE_SSE2_MODE     ) && sizeof(T) == 2UL ) ||
+                         ( bool( BLAZE_SSE4_MODE     ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX2_MODE     ) && sizeof(T) >= 2UL && sizeof(T) <= 4UL ) ||
+                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) == 2UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) == 4UL ) ||
+                         ( bool( BLAZE_AVX512DQ_MODE ) && sizeof(T) == 8UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -100,16 +106,18 @@ struct HasSIMDMultHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, 
 template<>
 struct HasSIMDMultHelper< float, float >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
+   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 
 template<>
 struct HasSIMDMultHelper< complex<float>, complex<float> >
 {
-   enum : bool { value = ( bool( BLAZE_SSE3_MODE ) && !bool( BLAZE_MIC_MODE ) ) ||
-                         ( bool( BLAZE_AVX_MODE  ) && !bool( BLAZE_MIC_MODE ) ) };
+   enum : bool { value = ( bool( BLAZE_SSE3_MODE    ) && !bool( BLAZE_MIC_MODE ) ) ||
+                         ( bool( BLAZE_AVX_MODE     ) && !bool( BLAZE_MIC_MODE ) ) ||
+                         ( bool( BLAZE_AVX512F_MODE ) && !bool( BLAZE_MIC_MODE ) ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -120,16 +128,18 @@ struct HasSIMDMultHelper< complex<float>, complex<float> >
 template<>
 struct HasSIMDMultHelper< double, double >
 {
-   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
-                         bool( BLAZE_AVX_MODE  ) ||
-                         bool( BLAZE_MIC_MODE  ) };
+   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 
 template<>
 struct HasSIMDMultHelper< complex<double>, complex<double> >
 {
-   enum : bool { value = ( bool( BLAZE_SSE3_MODE ) && !bool( BLAZE_MIC_MODE ) ) ||
-                         ( bool( BLAZE_AVX_MODE  ) && !bool( BLAZE_MIC_MODE ) ) };
+   enum : bool { value = ( bool( BLAZE_SSE3_MODE    ) && !bool( BLAZE_MIC_MODE ) ) ||
+                         ( bool( BLAZE_AVX_MODE     ) && !bool( BLAZE_MIC_MODE ) ) ||
+                         ( bool( BLAZE_AVX512F_MODE ) && !bool( BLAZE_MIC_MODE ) ) };
 };
 /*! \endcond */
 //*************************************************************************************************

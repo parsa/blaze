@@ -79,13 +79,17 @@ struct HasSIMDDivHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>, 
                                                , IsNumeric<T2>, IsIntegral<T2>, IsSigned<T2>
                                                , Bool< sizeof(T1) == sizeof(T2) > > > >
 {
-   enum : bool { value = bool( BLAZE_MIC_MODE ) && sizeof(T1) >= 4UL };
+   enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) ||
+                           bool( BLAZE_AVX512BW_MODE ) };
 };
 
 template< typename T >
 struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
-   enum : bool { value = bool( BLAZE_MIC_MODE ) && sizeof(T) >= 4UL };
+   enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ||
+                           bool( BLAZE_AVX512BW_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -96,9 +100,10 @@ struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral
 template<>
 struct HasSIMDDivHelper< float, float >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE ) ||
-                         bool( BLAZE_AVX_MODE ) ||
-                         bool( BLAZE_MIC_MODE ) };
+   enum : bool { value = bool( BLAZE_SSE_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -109,9 +114,10 @@ struct HasSIMDDivHelper< float, float >
 template<>
 struct HasSIMDDivHelper< double, double >
 {
-   enum : bool { value = bool( BLAZE_SSE2_MODE ) ||
-                         bool( BLAZE_AVX_MODE  ) ||
-                         bool( BLAZE_MIC_MODE  ) };
+   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) ||
+                         bool( BLAZE_MIC_MODE     ) };
 };
 /*! \endcond */
 //*************************************************************************************************

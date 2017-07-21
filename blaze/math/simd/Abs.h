@@ -63,7 +63,11 @@ namespace blaze {
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint8 abs( const SIMDint8& a ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_abs_epi8( a.value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_abs_epi8( a.value );
 }
@@ -95,7 +99,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint8 abs( const SIMDint8& a ) noexcept
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint16 abs( const SIMDint16& a ) noexcept
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+{
+   return _mm512_abs_epi16( a.value );
+}
+#elif BLAZE_AVX2_MODE
 {
    return _mm256_abs_epi16( a.value );
 }
@@ -127,7 +135,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 abs( const SIMDint16& a ) noexcept
 // This operation is only available for SSSE3, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint32 abs( const SIMDint32& a ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_abs_epi32( a.value );
 }
@@ -163,9 +171,67 @@ BLAZE_ALWAYS_INLINE const SIMDuint32 abs( const SIMDint32& a ) noexcept
 // This operation is only available for AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint64 abs( const SIMDint64& a ) noexcept
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_abs_epi64( a.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  32-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Absolute of a vector of single precision floating point values.
+// \ingroup simd
+//
+// \param a The vector of single precision floating point values \f$[-1..1]\f$.
+// \return The resulting vector.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const SIMDfloat abs( const SIMDf32<T>& a ) noexcept
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+{
+   return _mm512_abs_ps( (~a).eval().value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  64-BIT FLOATING POINT SIMD TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Absolute of a vector of double precision floating point values.
+// \ingroup simd
+//
+// \param a The vector of double precision floating point values \f$[-1..1]\f$.
+// \return The resulting vector.
+//
+// This operation is only available for AVX-512.
+*/
+template< typename T >  // Type of the operand
+BLAZE_ALWAYS_INLINE const SIMDdouble abs( const SIMDf64<T>& a ) noexcept
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+{
+   return _mm512_abs_pd( (~a).eval().value );
 }
 #else
 = delete;

@@ -75,7 +75,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
                                    , If_< IsSigned<T>, SIMDint8, SIMDuint8 > >
    set( T value ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_set1_epi8( value );
+#elif BLAZE_AVX2_MODE
    return _mm256_set1_epi8( value );
 #elif BLAZE_SSE2_MODE
    return _mm_set1_epi8( value );
@@ -98,7 +100,11 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
                                    , If_< IsSigned<T>, SIMDcint8, SIMDcuint8 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   __m512i dst = _mm512_maskz_set1_epi8( 0XAAAAAAAA, value.imag() );
+   dst = _mm512_maskz_set1_epi8( 0x55555555, value.real() );
+   return dst;
+#elif BLAZE_AVX2_MODE
    return _mm256_set_epi8( value.imag(), value.real(), value.imag(), value.real(),
                            value.imag(), value.real(), value.imag(), value.real(),
                            value.imag(), value.real(), value.imag(), value.real(),
@@ -140,7 +146,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
                                    , If_< IsSigned<T>, SIMDint16, SIMDuint16 > >
    set( T value ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_set1_epi16( value );
+#elif BLAZE_AVX2_MODE
    return _mm256_set1_epi16( value );
 #elif BLAZE_SSE2_MODE
    return _mm_set1_epi16( value );
@@ -163,7 +171,13 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
                                    , If_< IsSigned<T>, SIMDcint16, SIMDcuint16 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   __m512i dst = _mm512_maskz_set1_epi16( 0XAAAA, value.imag() );
+   dst = _mm512_maskz_set1_epi16( 0x5555, value.real() );
+   return dst;
+#elif BLAZE_AVX512BW_MODE
+   return _mm512_set1_epi8( value );
+#elif BLAZE_AVX2_MODE
    return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
@@ -199,7 +213,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
                                    , If_< IsSigned<T>, SIMDint32, SIMDuint32 > >
    set( T value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set1_epi32( value );
 #elif BLAZE_AVX2_MODE
    return _mm256_set1_epi32( value );
@@ -224,7 +238,11 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
                                    , If_< IsSigned<T>, SIMDcint32, SIMDcuint32 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   __m512i dst = _mm512_maskz_set1_epi32( 0xAA, value.imag() );
+   dst = _mm512_maskz_set1_epi32( 0x55, value.real() );
+   return dst;
+#elif BLAZE_MIC_MODE
    return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
@@ -262,7 +280,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
                                    , If_< IsSigned<T>, SIMDint64, SIMDuint64 > >
    set( T value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set1_epi64( value );
 #elif BLAZE_AVX2_MODE
    return _mm256_set1_epi64x( value );
@@ -287,7 +305,11 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
                                    , If_< IsSigned<T>, SIMDcint64, SIMDcuint64 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   __m512i dst = _mm512_maskz_set1_epi64( 0xA, value.imag() );
+   dst = _mm512_maskz_set1_epi32( 0x5, value.real() );
+   return dst;
+#elif BLAZE_MIC_MODE
    return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_AVX2_MODE
@@ -319,7 +341,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 */
 BLAZE_ALWAYS_INLINE const SIMDfloat set( float value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set1_ps( value );
 #elif BLAZE_AVX_MODE
    return _mm256_set1_ps( value );
@@ -341,7 +363,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat set( float value ) noexcept
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
                          value.imag(), value.real(), value.imag(), value.real(),
                          value.imag(), value.real(), value.imag(), value.real(),
@@ -376,7 +398,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
 */
 BLAZE_ALWAYS_INLINE const SIMDdouble set( double value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set1_pd( value );
 #elif BLAZE_AVX_MODE
    return _mm256_set1_pd( value );
@@ -398,7 +420,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble set( double value ) noexcept
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble set( const complex<double>& value ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),
                          value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_AVX_MODE

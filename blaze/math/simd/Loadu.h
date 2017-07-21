@@ -76,7 +76,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
                                    , If_< IsSigned<T>, SIMDint8, SIMDuint8 > >
    loadu( const T* address ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -103,8 +105,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -138,7 +141,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
                                    , If_< IsSigned<T>, SIMDint16, SIMDuint16 > >
    loadu( const T* address ) noexcept
 {
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -165,8 +170,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
-
-#if BLAZE_AVX2_MODE
+#if BLAZE_AVX512BW_MODE
+   return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_AVX2_MODE
    return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
@@ -200,7 +206,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
                                    , If_< IsSigned<T>, SIMDint32, SIMDuint32 > >
    loadu( const T* address ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_maskz_loadu_epi32( 0xFFFF, reinterpret_cast<const __m512i*>( address ) );
+#elif BLAZE_MIC_MODE
    __m512i v1 = _mm512_setzero_epi32();
    v1 = _mm512_loadunpacklo_epi32( v1, address );
    v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
@@ -233,7 +241,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_maskz_loadu_epi32( 0xFFFF, address );
+#elif BLAZE_MIC_MODE
    __m512i v1 = _mm512_setzero_epi32();
    v1 = _mm512_loadunpacklo_epi32( v1, address );
    v1 = _mm512_loadunpackhi_epi32( v1, address+8UL );
@@ -272,7 +282,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
                                    , If_< IsSigned<T>, SIMDint64, SIMDuint64 > >
    loadu( const T* address ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_maskz_loadu_epi64( 0xFF, address );
+#elif BLAZE_MIC_MODE
    __m512i v1 = _mm512_setzero_epi32();
    v1 = _mm512_loadunpacklo_epi64( v1, address );
    v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
@@ -305,7 +317,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_maskz_loadu_epi64( 0xFF, address );
+#elif BLAZE_MIC_MODE
    __m512i v1 = _mm512_setzero_epi32();
    v1 = _mm512_loadunpacklo_epi64( v1, address );
    v1 = _mm512_loadunpackhi_epi64( v1, address+4UL );
@@ -341,7 +355,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 */
 BLAZE_ALWAYS_INLINE const SIMDfloat loadu( const float* address ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_loadu_ps( address );
+#elif BLAZE_MIC_MODE
    __m512 v1 = _mm512_setzero_ps();
    v1 = _mm512_loadunpacklo_ps( v1, address );
    v1 = _mm512_loadunpackhi_ps( v1, address+16UL );
@@ -371,7 +387,9 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat loadu( const complex<float>* address ) noex
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_loadu_ps( address );
+#elif BLAZE_MIC_MODE
    __m512 v1 = _mm512_setzero_ps();
    v1 = _mm512_loadunpacklo_ps( v1, reinterpret_cast<const float*>( address     ) );
    v1 = _mm512_loadunpackhi_ps( v1, reinterpret_cast<const float*>( address+8UL ) );
@@ -407,7 +425,9 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat loadu( const complex<float>* address ) noex
 */
 BLAZE_ALWAYS_INLINE const SIMDdouble loadu( const double* address ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_loadu_pd( address );
+#elif BLAZE_MIC_MODE
    __m512d v1 = _mm512_setzero_pd();
    v1 = _mm512_loadunpacklo_pd( v1, address );
    v1 = _mm512_loadunpackhi_pd( v1, address+8UL );
@@ -437,7 +457,9 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble loadu( const complex<double>* address ) no
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   return _mm512_loadu_pd( address );
+#elif BLAZE_MIC_MODE
    __m512d v1 = _mm512_setzero_pd();
    v1 = _mm512_loadunpacklo_pd( v1, reinterpret_cast<const double*>( address     ) );
    v1 = _mm512_loadunpackhi_pd( v1, reinterpret_cast<const double*>( address+4UL ) );

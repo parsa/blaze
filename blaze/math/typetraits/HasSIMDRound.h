@@ -70,10 +70,19 @@ struct HasSIMDRoundHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDRoundHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
+struct HasSIMDRoundHelper< T, EnableIf_< IsFloat<T> > >
 {
    enum : bool { value = bool( BLAZE_SSE4_MODE ) ||
+                         bool( BLAZE_MIC_MODE  ) ||
                          bool( BLAZE_AVX_MODE  ) };
+};
+
+template< typename T >
+struct HasSIMDRoundHelper< T, EnableIf_< IsDouble<T> > >
+{
+   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
