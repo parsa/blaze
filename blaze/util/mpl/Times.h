@@ -56,7 +56,7 @@ namespace blaze {
 /*!\brief Compile time integral multiplication.
 // \ingroup mpl
 //
-// The Times class template returns the product of the two given template arguments \a T1 and
+// The Times alias declaration returns the product of the two given template arguments \a T1 and
 // \a T2. In order for Times to be able to multiply the two types, both arguments are required
 // to have a nested member \a value. The result of the multiplication can be accessed via the
 // nested member \a value, the resulting type is available via the nested type \a ValueType.
@@ -69,10 +69,8 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Times
-   : public IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
-                            , ( T1::value * T2::value ) >
-{};
+using Times = IntegralConstant< CommonType_< typename T1::ValueType, typename T2::ValueType >
+                              , ( T1::value * T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
