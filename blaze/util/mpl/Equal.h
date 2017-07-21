@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time type comparison.
 // \ingroup mpl
 //
-// The Equal class template compares the two given types using the equality operator ('==').
+// The Equal alias declaration compares the two given types using the equality operator ('==').
 // In case \a T1::value is equal to \a T2::value, the nested \a value member is set to \a true.
 // Otherwise it is set to \a false.
 
@@ -70,9 +70,7 @@ namespace blaze {
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-struct Equal
-   : public Bool< ( T1::value == T2::value ) >
-{};
+using Equal = Bool< ( T1::value == T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
