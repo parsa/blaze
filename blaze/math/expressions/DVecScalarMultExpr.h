@@ -1036,8 +1036,8 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ElementType = UnderlyingBuiltin_<VT>;
-   return DVecScalarMultExpr<VT,ElementType,TF>( ~dv, ElementType(-1) );
+   using ScalarType = UnderlyingBuiltin_<VT>;
+   return DVecScalarMultExpr<VT,ScalarType,TF>( ~dv, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -1080,7 +1080,8 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecScalarMultExpr<VT,ST,TF>( ~vec, scalar );
+   using ScalarType = MultTrait_< ElementType_<VT>, ST >;
+   return DVecScalarMultExpr<VT,ScalarType,TF>( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1115,7 +1116,8 @@ inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecScalarMultExpr<VT,ST,TF>( ~vec, scalar );
+   using ScalarType = MultTrait_< ST, ElementType_<VT> >;
+   return DVecScalarMultExpr<VT,ScalarType,TF>( ~vec, scalar );
 }
 //*************************************************************************************************
 

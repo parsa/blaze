@@ -1027,8 +1027,8 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ElementType = UnderlyingBuiltin_<MT>;
-   return DMatScalarMultExpr<MT,ElementType,SO>( ~dm, ElementType(-1) );
+   using ScalarType = UnderlyingBuiltin_<MT>;
+   return DMatScalarMultExpr<MT,ScalarType,SO>( ~dm, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -1070,7 +1070,8 @@ inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatScalarMultExpr<MT,ST,SO>( ~mat, scalar );
+   using ScalarType = MultTrait_< ElementType_<MT>, ST >;
+   return DMatScalarMultExpr<MT,ScalarType,SO>( ~mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1104,7 +1105,8 @@ inline decltype(auto) operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatScalarMultExpr<MT,ST,SO>( ~mat, scalar );
+   using ScalarType = MultTrait_< ST, ElementType_<MT> >;
+   return DMatScalarMultExpr<MT,ScalarType,SO>( ~mat, scalar );
 }
 //*************************************************************************************************
 
