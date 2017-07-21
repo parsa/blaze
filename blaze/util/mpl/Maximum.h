@@ -56,7 +56,7 @@ namespace blaze {
 /*!\brief Compile time value evaluation.
 // \ingroup mpl
 //
-// The Maximum class template selects the larger of the two given template arguments \a T1
+// The Maximum alias declaration selects the larger of the two given template arguments \a T1
 // and \a T2. In order for Maximum to be able to determine the larger type, both arguments
 // are required to have a nested member \a value. The result of the minimum operation can
 // be accessed via the nested member \a value, the resulting type is available via the
@@ -70,9 +70,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Maximum
-   : public If_< Less<T1,T2>, T2, T1 >
-{};
+using Maximum = If_< Less<T1,T2>, T2, T1 >;
 //*************************************************************************************************
 
 } // namespace blaze
