@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/Bool.h>
+#include <blaze/util/mpl/Bools.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -52,37 +54,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*! Auxiliary helper struct for the And class template.
-// \ingroup mpl
-*/
-template< typename T        // Type of the mandatory argument
-        , typename... Ts >  // Types of the optional operands
-struct AndHelper
-   : public Bool< T::value && AndHelper<Ts...>::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*! Specialization of the AndHelper class template for a single template argument.
-// \ingroup mpl
-*/
-template< typename T >  // Type of the mandatory argument
-struct AndHelper<T>
-   : public Bool< T::value >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Compile time logical and evaluation.
 // \ingroup mpl
 //
-// The And class template performs at compile time a logical and ('&&') evaluation of at least
+// The And alias declaration performs at compile time a logical and ('&&') evaluation of at least
 // two compile time conditions:
 
    \code
@@ -98,9 +73,8 @@ struct AndHelper<T>
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-struct And
-   : public Bool< AndHelper<T1,T2,Ts...>::value >
-{};
+using And = Bool< IsSame< Bools< true, T1::value, T2::value, (Ts::value)... >
+                        , Bools< T1::value, T2::value, (Ts::value)..., true > >::value >;
 //*************************************************************************************************
 
 } // namespace blaze
