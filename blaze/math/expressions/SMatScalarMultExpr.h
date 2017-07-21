@@ -902,7 +902,7 @@ inline decltype(auto) operator*( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ElementType_<MT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
    return SMatScalarMultExpr<MT,ScalarType,SO>( ~mat, scalar );
 }
 //*************************************************************************************************
@@ -937,7 +937,7 @@ inline decltype(auto) operator*( ST scalar, const SparseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, ElementType_<MT> >;
+   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<MT> >;
    return SMatScalarMultExpr<MT,ScalarType,SO>( ~mat, scalar );
 }
 //*************************************************************************************************
