@@ -40,6 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_OPENMP_PARALLEL_MODE
+#  include <omp.h>
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE
+#  include <thread>
+#elif BLAZE_BOOST_THREADS_PARALLEL_MODE
+#  include <boost/thread/thread.hpp>
+#endif
+
 #include <iostream>
 #include <new>
 #include <sstream>
