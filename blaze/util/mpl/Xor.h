@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time logical xor evaluation.
 // \ingroup mpl
 //
-// The Xor class template performs at compile time a logical xor evaluation of the two given
+// The Xor alias declaration performs at compile time a logical xor evaluation of the two given
 // compile time conditions:
 
    \code
@@ -71,9 +71,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-struct Xor
-   : public Bool< ( T1::value ^ T2::value ) >
-{};
+using Xor = Bool< ( T1::value ^ T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
