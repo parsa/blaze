@@ -76,9 +76,12 @@ namespace blaze {
    blaze::Any< IsCharacter, int, double >          // Is derived from FalseType
    \endcode
 */
-template< template< typename > class TypeTrait, typename... Ts >
+template< template< typename > class TypeTrait  // Type trait to be evaluated on all operands
+        , typename T1                           // Type of the first mandatory operand
+        , typename T2                           // Type of the second mandatory operand
+        , typename... Ts >                      // Types of the optional operands
 struct Any
-   : public BoolConstant< Or< TypeTrait<Ts>... >::value >
+   : public BoolConstant< Or< TypeTrait<T1>, TypeTrait<T2>, TypeTrait<Ts>... >::value >
 {};
 //*************************************************************************************************
 
