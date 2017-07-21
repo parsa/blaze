@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time type negation.
 // \ingroup mpl
 //
-// The Not class template negates the given compile time condition. In case the given condition
+// The Not alias declaration negates the given compile time condition. In case the given condition
 // would evaluate to \a true, the nested member enumeration is set to \a false and vice versa:
 
    \code
@@ -67,9 +67,7 @@ namespace blaze {
    \endcode
 */
 template< typename C >  // Condition to be negated
-struct Not
-   : public Bool< !C::value >
-{};
+using Not = Bool< !C::value >;
 //*************************************************************************************************
 
 } // namespace blaze
