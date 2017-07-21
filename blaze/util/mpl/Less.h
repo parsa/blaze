@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time type comparison.
 // \ingroup mpl
 //
-// The Less class template compares the two given types using the less-than operator ('<'). In
+// The Less alias declaration compares the two given types using the less-than operator ('<'). In
 // case \a T1::value is less than \a T2::value, the nested \a value member is set to 1. Otherwise
 // it is set to 0.
 
@@ -71,13 +71,7 @@ namespace blaze {
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-struct Less
-#if (defined _MSC_VER)
-   : public Bool< ( T2::value > T1::value ) >
-#else
-   : public Bool< ( T1::value < T2::value ) >
-#endif
-{};
+using Less = Bool< ( T1::value < T2::value ) >;
 //*************************************************************************************************
 
 } // namespace blaze
