@@ -164,91 +164,91 @@ class Proxy
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator==( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator<( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator<( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator>( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
@@ -281,7 +281,7 @@ inline decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 // \param rhs The right-hand side object of other type.
 // \return The result of the addition.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() + rhs;
@@ -297,7 +297,7 @@ inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the addition.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs + (~rhs).get();
@@ -329,7 +329,7 @@ inline decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 // \param rhs The right-hand side object of other type.
 // \return The result of the subtraction.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() - rhs;
@@ -345,7 +345,7 @@ inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the subtraction.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs - (~rhs).get();
@@ -377,7 +377,7 @@ inline decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 // \param rhs The right-hand side object of other type.
 // \return The result of the multiplication.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() * rhs;
@@ -393,7 +393,7 @@ inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the multiplication.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs * (~rhs).get();
@@ -425,7 +425,7 @@ inline decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 // \param rhs The right-hand side object of other type.
 // \return The result of the division.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return (~lhs).get() / rhs;
@@ -441,7 +441,7 @@ inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the division.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return lhs / (~rhs).get();
@@ -473,7 +473,7 @@ inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are equal, \a false if they are not.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() == rhs );
@@ -489,7 +489,7 @@ inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the other object and the referenced value are equal, \a false if they are not.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator==( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs == (~rhs).get() );
@@ -521,7 +521,7 @@ inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are not equal, \a false if they are.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() != rhs );
@@ -537,7 +537,7 @@ inline decltype(auto) operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the other object and the referenced value are not equal, \a false if they are.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs != (~rhs).get() );
@@ -569,7 +569,7 @@ inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline bool operator<( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() < rhs );
@@ -585,7 +585,7 @@ inline bool operator<( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the left-hand side other object is smaller, \a false if not.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline bool operator<( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs < rhs.get() );
@@ -617,7 +617,7 @@ inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() > rhs );
@@ -633,7 +633,7 @@ inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the left-hand side other object is greater, \a false if not.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline bool operator>( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs > (~rhs).get() );
@@ -665,7 +665,7 @@ inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() <= rhs );
@@ -681,7 +681,7 @@ inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the left-hand side other object is smaller or equal, \a false if not.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs <= (~rhs).get() );
@@ -713,7 +713,7 @@ inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() >= rhs );
@@ -729,7 +729,7 @@ inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the left-hand side other object is greater or equal, \a false if not.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return ( lhs >= (~rhs).get() );
@@ -845,19 +845,19 @@ inline decltype(auto) atanh( const Proxy<PT,RT>& proxy );
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< typename PT, typename RT, typename T, typename >
+template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< typename T, typename PT, typename RT, typename >
+template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
 inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
@@ -1458,7 +1458,7 @@ inline decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs 
 // \param rhs The right-hand side object of other type.
 // \return The result of the minimum operation.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    using blaze::min;
@@ -1476,7 +1476,7 @@ inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the minimum operation.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    using blaze::min;
@@ -1512,7 +1512,7 @@ inline decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs 
 // \param rhs The right-hand side object of other type.
 // \return The result of the maximum operation.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_< IsProxy<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    using blaze::max;
@@ -1530,7 +1530,7 @@ inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return The result of the maximum operation.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_< IsProxy<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    using blaze::max;
