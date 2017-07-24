@@ -81,10 +81,10 @@ struct HasSIMDMultHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>
    enum : bool { value = ( bool( BLAZE_SSE2_MODE     ) && sizeof(T1) == 2UL ) ||
                          ( bool( BLAZE_SSE4_MODE     ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
                          ( bool( BLAZE_AVX2_MODE     ) && sizeof(T1) >= 2UL && sizeof(T1) <= 4UL ) ||
+                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) == 4UL ) ||
                          ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) == 2UL ) ||
                          ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) == 4UL ) ||
-                         ( bool( BLAZE_AVX512DQ_MODE ) && sizeof(T1) == 8UL ) ||
-                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) == 4UL ) };
+                         ( bool( BLAZE_AVX512DQ_MODE ) && sizeof(T1) == 8UL ) };
 };
 
 template< typename T >
@@ -108,8 +108,8 @@ struct HasSIMDMultHelper< float, float >
 {
    enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 
 template<>
@@ -130,8 +130,8 @@ struct HasSIMDMultHelper< double, double >
 {
    enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 
 template<>

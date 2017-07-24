@@ -72,9 +72,10 @@ struct HasSIMDRoundHelper
 template< typename T >
 struct HasSIMDRoundHelper< T, EnableIf_< IsFloat<T> > >
 {
-   enum : bool { value = bool( BLAZE_SSE4_MODE ) ||
-                         bool( BLAZE_MIC_MODE  ) ||
-                         bool( BLAZE_AVX_MODE  ) };
+   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
+                         bool( BLAZE_AVX_MODE     ) ||
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 
 template< typename T >

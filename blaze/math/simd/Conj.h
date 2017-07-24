@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi16<T>& a ) noexcept
 // \param a The vector of 16-bit integral complex values.
 // \return The complex conjugate values.
 //
-// This operation is only available for SSE2 and AVX2.
+// This operation is only available for SSE2, AVX2, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint16 conj( const SIMDcint16& a ) noexcept
 #if BLAZE_AVX512BW_MODE
@@ -149,7 +149,7 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi32<T>& a ) noexcept
 // \param a The vector of 32-bit integral complex values.
 // \return The complex conjugate values.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint32 conj( const SIMDcint32& a ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -200,16 +200,20 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi64<T>& a ) noexcept
 //
 // \param a The vector of 64-bit integral values.
 // \return The complex conjugate values.
+//
+// This operation is only available for AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint64 conj( const SIMDcint64& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_mask_sub_epi64( a.value, 0XAA, _mm512_setzero_epi32(), a.value ); 
+   return _mm512_mask_sub_epi64( a.value, 0XAA, _mm512_setzero_epi32(), a.value );
 }
 #else
 = delete;
 #endif
 //*************************************************************************************************
+
+
 
 
 //=================================================================================================

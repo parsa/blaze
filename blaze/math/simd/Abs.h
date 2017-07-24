@@ -132,7 +132,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 abs( const SIMDint16& a ) noexcept
 // \param a The vector of 32-bit unsigned integral values.
 // \return The absolute values.
 //
-// This operation is only available for SSSE3, AVX2, and AVX-512.
+// This operation is only available for SSSE3, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint32 abs( const SIMDint32& a ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -168,7 +168,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32 abs( const SIMDint32& a ) noexcept
 // \param a The vector of 64-bit unsigned integral values.
 // \return The absolute values.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint64 abs( const SIMDint64& a ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -196,7 +196,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint64 abs( const SIMDint64& a ) noexcept
 // \param a The vector of single precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat abs( const SIMDf32<T>& a ) noexcept
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat abs( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble abs( const SIMDf64<T>& a ) noexcept

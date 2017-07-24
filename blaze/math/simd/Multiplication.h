@@ -253,7 +253,7 @@ BLAZE_ALWAYS_INLINE const T
 {
    __m512i a_ii = _mm512_shufflelo_epi16( (~a).value, 0b11'11'01'01 );
    a_ii = _mm512_shufflehi_epi16( a_ii, 0b11'11'01'01 );
-   
+
    __m512i b_ri = _mm512_shufflelo_epi16( (~b).value, 0b10'11'00'01 );
    b_ri = _mm512_shufflehi_epi16( b_ri, 0b10'11'00'01 );
 
@@ -320,7 +320,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
@@ -351,7 +351,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the multiplication.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -383,7 +383,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 // \param b The right-hand side scalars.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint32
    operator*( const SIMDcint32& a, const SIMDint32& b ) noexcept
@@ -413,7 +413,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 // \param b The right-hand side scalars.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcuint32
    operator*( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
@@ -443,7 +443,7 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
 // \param b The right-hand side complex values to be scaled.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -475,7 +475,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 // \param b The right-hand side complex values to be scaled.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -687,7 +687,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint64
 // \param b The right-hand side complex values to be scaled.
 // \return The result of the scaling operation.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -830,7 +830,7 @@ BLAZE_ALWAYS_INLINE const SIMDf32MultExpr<T1,T2>
 // \param b The right-hand side scalars.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator*( const SIMDcfloat& a, const SIMDfloat& b ) noexcept
@@ -860,7 +860,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 // \param b The right-hand side complex values to be scaled.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator*( const SIMDfloat& a, const SIMDcfloat& b ) noexcept
@@ -1025,7 +1025,7 @@ BLAZE_ALWAYS_INLINE const SIMDf64MultExpr<T1,T2>
 // \param b The right-hand side scalars.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE2, AVX, and AVX-512.
+// This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator*( const SIMDcdouble& a, const SIMDdouble& b ) noexcept
@@ -1055,7 +1055,7 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble
 // \param b The right-hand side complex values to be scaled.
 // \return The result of the scaling operation.
 //
-// This operation is only available for SSE2, AVX, and AVX-512.
+// This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator*( const SIMDdouble& a, const SIMDcdouble& b ) noexcept

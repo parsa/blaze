@@ -94,7 +94,7 @@ struct SIMDf32FmaddExpr
    // \return The resulting packed 32-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
-#if BLAZE_FMA_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_FMA_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
    {
       return _mm512_fmadd_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
@@ -158,7 +158,7 @@ struct SIMDf32FmsubExpr
    // \return The resulting packed 32-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDfloat eval() const noexcept
-#if BLAZE_FMA_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_FMA_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
    {
       return _mm512_fmsub_ps( a_.eval().value, b_.eval().value, c_.eval().value );
    }
@@ -808,7 +808,7 @@ struct SIMDf64FmaddExpr
    // \return The resulting packed 64-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
-#if BLAZE_FMA_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_FMA_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
    {
       return _mm512_fmadd_pd( a_.eval().value, b_.eval().value, c_.eval().value );
    }
@@ -872,7 +872,7 @@ struct SIMDf64FmsubExpr
    // \return The resulting packed 64-bit floating point value.
    */
    BLAZE_ALWAYS_INLINE const SIMDdouble eval() const noexcept
-#if BLAZE_FMA_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_FMA_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
    {
       return _mm512_fmsub_pd( a_.eval().value, b_.eval().value, c_.eval().value );
    }

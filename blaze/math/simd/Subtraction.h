@@ -265,7 +265,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
@@ -296,7 +296,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -328,7 +328,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
@@ -367,7 +367,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
@@ -398,7 +398,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -430,7 +430,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX2, and AVX-512.
+// This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE const T
@@ -469,7 +469,7 @@ BLAZE_ALWAYS_INLINE const T
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -501,7 +501,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator-( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
@@ -539,7 +539,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX, and AVX-512.
+// This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -571,7 +571,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 // \param b The right-hand side SIMD operand.
 // \return The result of the subtraction.
 //
-// This operation is only available for SSE2, AVX, and AVX-512.
+// This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator-( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept

@@ -105,6 +105,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE
@@ -170,6 +171,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
    loadu( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_loadu_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE

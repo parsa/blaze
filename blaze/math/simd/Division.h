@@ -98,6 +98,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint8
 
 
 
+
 //=================================================================================================
 //
 //  16-BIT INTEGRAL SIMD TYPES
@@ -164,11 +165,11 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint32
    operator/( const SIMDint32& a, const SIMDint32& b ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi32( a.value, b.value );
 }
@@ -186,11 +187,11 @@ BLAZE_ALWAYS_INLINE const SIMDint32
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint32
    operator/( const SIMDcint32& a, const SIMDint32& b ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi32( a.value, b.value );
 }
@@ -216,11 +217,11 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint64
    operator/( const SIMDint64& a, const SIMDint64& b ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi64( a.value, b.value );
 }
@@ -238,11 +239,11 @@ BLAZE_ALWAYS_INLINE const SIMDint64
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for MIC and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint64
    operator/( const SIMDcint64& a, const SIMDint64& b ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi64( (~a).value, (~b).value );
 }
@@ -268,7 +269,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint64
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -300,7 +301,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat
    operator/( const SIMDcfloat& a, const SIMDfloat& b ) noexcept
@@ -338,7 +339,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -370,7 +371,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble
    operator/( const SIMDcdouble& a, const SIMDdouble& b ) noexcept

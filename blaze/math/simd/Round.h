@@ -60,7 +60,7 @@ namespace blaze {
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available for SSE4.1, AVX, AVX-512 and MIC.
+// This operation is only available for SSE4.1, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat round( const SIMDf32<T>& a ) noexcept
@@ -70,7 +70,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat round( const SIMDf32<T>& a ) noexcept
 }
 #elif BLAZE_MIC_MODE
 {
-   return _mm512_round_ps( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ), _MM_EXPADJ_NONE ); 
+   return _mm512_round_ps( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ), _MM_EXPADJ_NONE );
 }
 #elif BLAZE_AVX_MODE
 {
@@ -101,7 +101,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat round( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available for SSE4.1, AVX and AVX-512.
+// This operation is only available for SSE4.1, AVX, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble round( const SIMDf64<T>& a ) noexcept

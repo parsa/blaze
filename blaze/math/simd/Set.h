@@ -101,7 +101,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
-   __m512i dst = _mm512_maskz_set1_epi8( 0XAAAAAAAA, value.imag() );
+   __m512i dst( _mm512_maskz_set1_epi8( 0XAAAAAAAA, value.imag() ) );
    dst = _mm512_maskz_set1_epi8( 0x55555555, value.real() );
    return dst;
 #elif BLAZE_AVX2_MODE
@@ -172,11 +172,9 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
-   __m512i dst = _mm512_maskz_set1_epi16( 0XAAAA, value.imag() );
+   __m512i dst( _mm512_maskz_set1_epi16( 0XAAAA, value.imag() ) );
    dst = _mm512_maskz_set1_epi16( 0x5555, value.real() );
    return dst;
-#elif BLAZE_AVX512BW_MODE
-   return _mm512_set1_epi8( value );
 #elif BLAZE_AVX2_MODE
    return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
@@ -239,7 +237,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
-   __m512i dst = _mm512_maskz_set1_epi32( 0xAA, value.imag() );
+   __m512i dst( _mm512_maskz_set1_epi32( 0xAA, value.imag() ) );
    dst = _mm512_maskz_set1_epi32( 0x55, value.real() );
    return dst;
 #elif BLAZE_MIC_MODE
@@ -306,7 +304,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
-   __m512i dst = _mm512_maskz_set1_epi64( 0xA, value.imag() );
+   __m512i dst( _mm512_maskz_set1_epi64( 0xA, value.imag() ) );
    dst = _mm512_maskz_set1_epi32( 0x5, value.real() );
    return dst;
 #elif BLAZE_MIC_MODE

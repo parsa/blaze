@@ -193,7 +193,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 max( const SIMDuint16& a, const SIMDuint16&
 // \param b The right-hand side SIMD operand.
 // \return The resulting vector.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint32 max( const SIMDint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -222,7 +222,7 @@ BLAZE_ALWAYS_INLINE const SIMDint32 max( const SIMDint32& a, const SIMDint32& b 
 // \param b The right-hand side SIMD operand.
 // \return The resulting vector.
 //
-// This operation is only available for SSE4, AVX2, and AVX-512.
+// This operation is only available for SSE4, AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDuint32 max( const SIMDuint32& a, const SIMDuint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -259,7 +259,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32 max( const SIMDuint32& a, const SIMDuint32&
 // \param b The right-hand side SIMD operand.
 // \return The resulting vector.
 //
-// This operation is only available for SSE, AVX, and AVX-512.
+// This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
@@ -299,7 +299,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
 // \param b The right-hand side SIMD operand.
 // \return The resulting vector.
 //
-// This operation is only available for SSE2, AVX, and AVX-512.
+// This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand

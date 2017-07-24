@@ -80,16 +80,16 @@ struct HasSIMDDivHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>, 
                                                , Bool< sizeof(T1) == sizeof(T2) > > > >
 {
    enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) ||
-                           bool( BLAZE_AVX512BW_MODE ) };
+                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) };
 };
 
 template< typename T >
 struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
 {
    enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ||
-                           bool( BLAZE_AVX512BW_MODE ) };
+                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -100,10 +100,10 @@ struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral
 template<>
 struct HasSIMDDivHelper< float, float >
 {
-   enum : bool { value = bool( BLAZE_SSE_MODE    ) ||
+   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -116,8 +116,8 @@ struct HasSIMDDivHelper< double, double >
 {
    enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************

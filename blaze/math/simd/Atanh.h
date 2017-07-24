@@ -60,11 +60,11 @@ namespace blaze {
 // \param a The vector of single precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, and AVX-512.
+// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat atanh( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_atanh_ps( (~a).eval().value );
 }
@@ -97,11 +97,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat atanh( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values \f$[-1..1]\f$.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, and AVX-512.
+// This operation is only available via the SVML for SSE, AVX, and MIC, AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble atanh( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && (BLAZE_AVX512F_MODE || BLAZE_MIC_MODE)
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_atanh_pd( (~a).eval().value );
 }

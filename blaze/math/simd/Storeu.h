@@ -105,6 +105,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
    storeu( complex<T1>* address, const SIMDci8<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
+
 #if BLAZE_AVX512BW_MODE
    _mm512_storeu_si512( address, (~value).value );
 #elif BLAZE_AVX2_MODE
@@ -172,6 +173,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
    storeu( complex<T1>* address, const SIMDci16<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
+
 #if BLAZE_AVX512BW_MODE
    _mm512_storeu_si512( address, (~value).value );
 #elif BLAZE_AVX2_MODE

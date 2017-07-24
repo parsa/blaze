@@ -80,6 +80,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE
@@ -111,6 +112,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE
@@ -149,6 +151,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE
@@ -180,6 +183,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
 #if BLAZE_AVX512BW_MODE
    return _mm512_load_si512( reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_AVX2_MODE

@@ -109,8 +109,8 @@ struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4
 {
    enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
                          bool( BLAZE_AVX2_MODE    ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -123,8 +123,8 @@ struct HasSIMDMinHelper< float, float >
 {
    enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -137,8 +137,8 @@ struct HasSIMDMinHelper< double, double >
 {
    enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
                          bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) ||
-                         bool( BLAZE_MIC_MODE     ) };
+                         bool( BLAZE_MIC_MODE     ) ||
+                         bool( BLAZE_AVX512F_MODE ) };
 };
 /*! \endcond */
 //*************************************************************************************************

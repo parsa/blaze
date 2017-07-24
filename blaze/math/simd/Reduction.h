@@ -97,21 +97,21 @@ BLAZE_ALWAYS_INLINE const complex<int8_t> sum( const SIMDcint8& a ) noexcept
 BLAZE_ALWAYS_INLINE int16_t sum( const SIMDint16& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
-   const __m256i low( _mm512_castsi512_si256( a.value ) );
+   const __m256i low ( _mm512_castsi512_si256( a.value ) );
    const __m256i high( _mm512_extracti64x4_epi64( a.value, 1 ) );
-   const __m256i hadd_low_high( _mm256_hadd_epi16( low, high ) );
-   const __m256i b( _mm256_hadd_epi16( hadd_low_high, hadd_low_high ) );
-   const __m256i c( _mm256_hadd_epi16( b, b ) );
-   const __m256i d( _mm256_hadd_epi16( c, c ) );
-   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d, 1 )
-                                  , _mm256_castsi256_si128( d ) );
-   return _mm_extract_epi16( e, 0 );
+   const __m256i b   ( _mm256_hadd_epi16( low, high ) );
+   const __m256i c   ( _mm256_hadd_epi16( b, b ) );
+   const __m256i d   ( _mm256_hadd_epi16( c, c ) );
+   const __m256i e   ( _mm256_hadd_epi16( d, d ) );
+   const __m128i f   ( _mm_add_epi16( _mm256_extracti128_si256( e, 1 )
+                                    , _mm256_castsi256_si128( e ) ) );
+   return _mm_extract_epi16( f, 0 );
 #elif BLAZE_AVX2_MODE
    const __m256i b( _mm256_hadd_epi16( a.value, a.value ) );
    const __m256i c( _mm256_hadd_epi16( b, b ) );
    const __m256i d( _mm256_hadd_epi16( c, c ) );
-   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d, 1 )
-                                  , _mm256_castsi256_si128( d ) );
+   const __m128i e( _mm_add_epi16( _mm256_extracti128_si256( d, 1 )
+                                 , _mm256_castsi256_si128( d ) ) );
    return _mm_extract_epi16( e, 0 );
 #elif BLAZE_SSSE3_MODE
    const __m128i b( _mm_hadd_epi16( a.value, a.value ) );
@@ -167,23 +167,22 @@ BLAZE_ALWAYS_INLINE const complex<int16_t> sum( const SIMDcint16& a ) noexcept
 */
 BLAZE_ALWAYS_INLINE int32_t sum( const SIMDint32& a ) noexcept
 {
-#if BLAZE_MIC_MODE
-   return _mm512_reduce_add_epi32( a.value );
-#elif BLAZE_AVX512F_MODE
-   const __m256i low( _mm512_castsi512_si256( a.value ) );
+#if BLAZE_AVX512F_MODE
+   const __m256i low ( _mm512_castsi512_si256( a.value ) );
    const __m256i high( _mm512_extracti64x4_epi64( a.value, 1 ) );
-   const __m256i hadd_low_high( _mm256_hadd_epi32( low, high ) );
-   const __m256i b( _mm256_hadd_epi32( hadd_low_high, hadd_low_high ) );
-   
-   const __m256i c( _mm256_hadd_epi32( b, b ) );
-   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c, 1 )
-                                  , _mm256_castsi256_si128( c ) );
-   return _mm_extract_epi32( d, 0 );
+   const __m256i b   ( _mm256_hadd_epi32( low, high ) );
+   const __m256i c   ( _mm256_hadd_epi32( b, b ) );
+   const __m256i d   ( _mm256_hadd_epi32( c, c ) );
+   const __m128i e   ( _mm_add_epi32( _mm256_extracti128_si256( d, 1 )
+                                    , _mm256_castsi256_si128( d ) ) );
+   return _mm_extract_epi32( e, 0 );
+#elif BLAZE_MIC_MODE
+   return _mm512_reduce_add_epi32( a.value );
 #elif BLAZE_AVX2_MODE
    const __m256i b( _mm256_hadd_epi32( a.value, a.value ) );
    const __m256i c( _mm256_hadd_epi32( b, b ) );
-   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c, 1 )
-                                  , _mm256_castsi256_si128( c ) );
+   const __m128i d( _mm_add_epi32( _mm256_extracti128_si256( c, 1 )
+                                 , _mm256_castsi256_si128( c ) ) );
    return _mm_extract_epi32( d, 0 );
 #elif BLAZE_SSSE3_MODE
    const __m128i b( _mm_hadd_epi32( a.value, a.value ) );
@@ -289,22 +288,22 @@ BLAZE_ALWAYS_INLINE const complex<int64_t> sum( const SIMDcint64& a ) noexcept
 */
 BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   __m512 b( _mm512_shuffle_f32x4( a.value, a.value, 0b11'10'11'10 ) );
+   const __m512 c( _mm512_add_ps( b, a.value ) );
+   const __m512 d( _mm512_shuffle_f32x4( c, c, 0b01'01'01'01 ) );
+   const __m512 e( _mm512_add_ps( d, c ) );
+   const __m512 f( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( e ), 0b01'00'11'10 ) ) );
+   const __m512 g( _mm512_add_ps( e, f ) );
+   const __m512 h( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( g ), 0b10'11'00'01 ) ) );
+   b = _mm512_add_ps( g, h );
+   return _mm_cvtss_f32( _mm512_castps512_ps128( b ) );
+#elif BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
-#elif BLAZE_AVX512F_MODE
-   __m512 zmm0 = _mm512_shuffle_f32x4( a.value, a.value, 0b11'10'11'10 );
-   const __m512 zmm3 = _mm512_add_ps( zmm0, a.value );
-   const __m512 zmm2 = _mm512_shuffle_f32x4( zmm3, zmm3, 0b01'01'01'01 );
-   const __m512 zmm4 = _mm512_add_ps( zmm2, zmm3 );
-   const __m512 zmm5 = _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( zmm4 ), 0b01'00'11'10 ) );
-   const __m512 zmm6 = _mm512_add_ps( zmm4, zmm5 );
-   const __m512 zmm7 = _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( zmm6 ), 0b10'11'00'01 ) );
-   zmm0 = _mm512_add_ps( zmm6, zmm7 );
-   return _mm_cvtss_f32( _mm512_castps512_ps128( zmm0 ) );
 #elif BLAZE_AVX_MODE
    const __m256 b( _mm256_hadd_ps( a.value, a.value ) );
    const __m256 c( _mm256_hadd_ps( b, b ) );
-   const __m128 d = _mm_add_ps( _mm256_extractf128_ps( c, 1 ), _mm256_castps256_ps128( c ) );
+   const __m128 d( _mm_add_ps( _mm256_extractf128_ps( c, 1 ), _mm256_castps256_ps128( c ) ) );
    return _mm_cvtss_f32( d );
 #elif BLAZE_SSE3_MODE
    const __m128 b( _mm_hadd_ps( a.value, a.value ) );
@@ -358,19 +357,19 @@ BLAZE_ALWAYS_INLINE const complex<float> sum( const SIMDcfloat& a ) noexcept
 */
 BLAZE_ALWAYS_INLINE double sum( const SIMDdouble& a ) noexcept
 {
-#if BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE
+   __m512d b( _mm512_shuffle_f64x2( a.value, a.value, 0b11'10'11'10 ) );
+   const __m512d c( _mm512_add_pd( a.value, b ) );
+   const __m512d d( _mm512_permutex_pd( c, 0b01'00'11'10 ) );
+   const __m512d e( _mm512_add_pd( c , d ) );
+   const __m512d f( _mm512_permutex_pd( e, 0b10'11'00'01 ) );
+   b = _mm512_add_pd( e, f );
+   return _mm_cvtsd_f64( _mm512_castpd512_pd128( b ) );
+#elif BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );
-#elif BLAZE_AVX512F_MODE
-   __m512d zmm0 = _mm512_shuffle_f64x2( a.value, a.value, 0b11'10'11'10 );
-   const __m512d zmm2 = _mm512_add_pd( a.value, zmm0 );
-   const __m512d zmm3 = _mm512_permutex_pd( zmm2, 0b01'00'11'10 );
-   const __m512d zmm4 = _mm512_add_pd( zmm2 , zmm3 );
-   const __m512d zmm5 = _mm512_permutex_pd( zmm4, 0b10'11'00'01 );
-   zmm0 = _mm512_add_pd( zmm4, zmm5 );
-   return _mm_cvtsd_f64( _mm512_castpd512_pd128( zmm0 ) );
 #elif BLAZE_AVX_MODE
    const __m256d b( _mm256_hadd_pd( a.value, a.value ) );
-   const __m128d c = _mm_add_pd( _mm256_extractf128_pd( b, 1 ), _mm256_castpd256_pd128( b ) );
+   const __m128d c( _mm_add_pd( _mm256_extractf128_pd( b, 1 ), _mm256_castpd256_pd128( b ) ) );
    return _mm_cvtsd_f64( c );
 #elif BLAZE_SSE3_MODE
    const __m128d b( _mm_hadd_pd( a.value, a.value ) );
