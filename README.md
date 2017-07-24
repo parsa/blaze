@@ -158,4 +158,4 @@ Fabien Péan -- CMake support
 
 Denis Demidov -- Export CMake package configuration
 
-Jannik Schürg -- Cache size detection for macOS in CMake
+Jannik Schürg -- AVX-512 support and cache size detection for macOS in CMake
