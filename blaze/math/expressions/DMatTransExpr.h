@@ -78,7 +78,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {

@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
