@@ -59,6 +59,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -2534,6 +2535,25 @@ struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>,
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< UniLowerMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLHERMTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclHermTrait< UniLowerMatrix<MT,SO,DF> >
 {
    using Type = IdentityMatrix< ElementType_<MT>, SO >;
 };
