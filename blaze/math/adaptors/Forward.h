@@ -36,24 +36,18 @@
 #define _BLAZE_MATH_ADAPTORS_FORWARD_H_
 
 
-namespace blaze {
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
 
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename, bool, bool > class DiagonalMatrix;
-template< typename, bool, bool > class LowerMatrix;
-template< typename, bool, bool > class HermitianMatrix;
-template< typename, bool, bool > class StrictlyLowerMatrix;
-template< typename, bool, bool > class StrictlyUpperMatrix;
-template< typename, bool, bool, bool > class SymmetricMatrix;
-template< typename, bool, bool > class UniLowerMatrix;
-template< typename, bool, bool > class UniUpperMatrix;
-template< typename, bool, bool > class UpperMatrix;
-
-} // namespace blaze
+#include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/uniuppermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 
 #endif
