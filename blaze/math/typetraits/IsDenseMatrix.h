@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -54,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsDenseMatrix type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDenseMatrixHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT, bool SO >
+   static TrueType test( const DenseMatrix<MT,SO>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for dense matrix types.
@@ -76,8 +101,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsDenseMatrix
-   : public BoolConstant< Or< IsBaseOf<DenseMatrix<RemoveCV_<T>,false>,T>
-                            , IsBaseOf<DenseMatrix<RemoveCV_<T>,true>,T> >::value >
+   : public IsDenseMatrixHelper<T>::Type
 {};
 //*************************************************************************************************
 

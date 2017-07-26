@@ -40,9 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Matrix.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/math/StorageOrder.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -53,6 +55,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsRowMajorMatrix type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsRowMajorMatrixHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT >
+   static TrueType test( const Matrix<MT,rowMajor>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for row-major matrix types.
@@ -81,7 +108,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsRowMajorMatrix
-   : public BoolConstant< IsBaseOf<Matrix<RemoveCV_<T>,false>,T>::value >
+   : public IsRowMajorMatrixHelper<T>::Type
 {};
 //*************************************************************************************************
 

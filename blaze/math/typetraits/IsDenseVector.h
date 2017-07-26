@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -54,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsDenseVector type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDenseVectorHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename VT, bool TF >
+   static TrueType test( const DenseVector<VT,TF>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for dense vector types.
@@ -76,8 +101,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsDenseVector
-   : public BoolConstant< Or< IsBaseOf<DenseVector<RemoveCV_<T>,false>,T>
-                            , IsBaseOf<DenseVector<RemoveCV_<T>,true>,T> >::value >
+   : public IsDenseVectorHelper<T>::Type
 {};
 //*************************************************************************************************
 
