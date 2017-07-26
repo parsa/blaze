@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/Dense.h>
 #include <blaze/math/adaptors/unilowermatrix/Sparse.h>
@@ -61,6 +59,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2518,6 +2517,25 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct BinaryMapTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2>, Max >
 {
    using Type = LowerMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSYMTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclSymTrait< UniLowerMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

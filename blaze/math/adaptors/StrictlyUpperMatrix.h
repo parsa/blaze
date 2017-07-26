@@ -40,18 +40,16 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/Dense.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/Sparse.h>
-#include <blaze/math/adaptors/uniuppermatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2122,6 +2120,25 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Max >
 {
    using Type = StrictlyUpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSYMTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclSymTrait< StrictlyUpperMatrix<MT,SO,DF> >
+{
+   using Type = DiagonalMatrix<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************

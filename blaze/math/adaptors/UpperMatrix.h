@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/Dense.h>
 #include <blaze/math/adaptors/uppermatrix/Sparse.h>
@@ -61,6 +60,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2021,6 +2021,25 @@ template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, Max >
 {
    using Type = UpperMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSYMTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclSymTrait< UpperMatrix<MT,SO,DF> >
+{
+   using Type = DiagonalMatrix<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************
