@@ -48,7 +48,6 @@
 #include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/Forward.h>
