@@ -60,6 +60,7 @@
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1719,6 +1720,25 @@ struct DeclHermTrait< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct DeclLowTrait< HermitianMatrix<MT,SO,DF> >
+{
+   using Type = HermitianMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUppTrait< HermitianMatrix<MT,SO,DF> >
 {
    using Type = HermitianMatrix<MT,SO,DF>;
 };
