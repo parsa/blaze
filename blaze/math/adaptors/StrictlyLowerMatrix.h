@@ -50,6 +50,7 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
+#include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -2014,6 +2015,25 @@ template< typename MT, bool SO, bool DF >
 struct DeclHermTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
    using Type = HermitianMatrix<MT>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclLowTrait< StrictlyLowerMatrix<MT,SO,DF> >
+{
+   using Type = StrictlyLowerMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
