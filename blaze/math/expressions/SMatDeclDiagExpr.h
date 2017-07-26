@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/Forward.h>
+#include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -98,6 +99,10 @@ class SMatDeclDiagExpr
    , public Declaration<MT>
 {
  private:
+   //**Type definitions****************************************************************************
+   using RT = ResultType_<MT>;  //!< Result type of the sparse matrix expression.
+   //**********************************************************************************************
+
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the diagonal declaration expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
@@ -149,12 +154,12 @@ class SMatDeclDiagExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatDeclDiagExpr<MT,SO>;               //!< Type of this SMatDeclDiagExpr instance.
-   using ResultType    = DiagonalMatrix< ResultType_<MT> >;     //!< Result type for expression template evaluations.
-   using OppositeType  = DiagonalMatrix< OppositeType_<MT> >;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = DiagonalMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;                      //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;                       //!< Return type for expression template evaluations.
+   using This          = SMatDeclDiagExpr<MT,SO>;     //!< Type of this SMatDeclDiagExpr instance.
+   using ResultType    = DeclDiagTrait_<RT>;          //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclDiagExpr& >;
