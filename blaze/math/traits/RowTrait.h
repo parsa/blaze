@@ -78,6 +78,16 @@ namespace blaze {
 //    <li>blaze::DynamicMatrix</li>
 //    <li>blaze::CustomMatrix</li>
 //    <li>blaze::CompressedMatrix</li>
+//    <li>blaze::IdentityMatrix</li>
+//    <li>blaze::SymmetricMatrix</li>
+//    <li>blaze::HermitianMatrix</li>
+//    <li>blaze::LowerMatrix</li>
+//    <li>blaze::UniLowerMatrix</li>
+//    <li>blaze::StrictlyLowerMatrix</li>
+//    <li>blaze::UpperMatrix</li>
+//    <li>blaze::UniUpperMatrix</li>
+//    <li>blaze::StrictlyUpperMatrix</li>
+//    <li>blaze::DiagonalMatrix</li>
 //    <li>blaze::Submatrix</li>
 // </ul>
 //
