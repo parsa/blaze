@@ -46,12 +46,14 @@
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclLowExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/Forward.h>
+#include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -101,6 +103,10 @@ class SMatDeclLowExpr
    , public Declaration<MT>
 {
  private:
+   //**Type definitions****************************************************************************
+   using RT = ResultType_<MT>;  //!< Result type of the sparse matrix expression.
+   //**********************************************************************************************
+
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the lower declaration expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
@@ -152,12 +158,12 @@ class SMatDeclLowExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This = SMatDeclLowExpr<MT,SO>;                      //!< Type of this SMatDeclLowExpr instance.
-   using ResultType = LowerMatrix< ResultType_<MT> >;        //!< Result type for expression template evaluations.
-   using OppositeType = LowerMatrix< OppositeType_<MT> >;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = LowerMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
-   using ElementType = ElementType_<MT>;                     //!< Resulting element type.
-   using ReturnType = ReturnType_<MT>;                       //!< Return type for expression template evaluations.
+   using This          = SMatDeclLowExpr<MT,SO>;      //!< Type of this SMatDeclLowExpr instance.
+   using ResultType    = DeclLowTrait<RT>;            //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const SMatDeclLowExpr& >;
@@ -878,6 +884,7 @@ class SMatDeclLowExpr
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
