@@ -51,6 +51,7 @@
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DeclDiagExprTrait.h>
 #include <blaze/math/traits/DeclHermExprTrait.h>
+#include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowExprTrait.h>
 #include <blaze/math/traits/DeclSymExprTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
