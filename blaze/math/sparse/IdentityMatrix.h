@@ -56,6 +56,7 @@
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2500,6 +2501,25 @@ struct DeclHermTrait< IdentityMatrix<T,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
 struct DeclLowTrait< IdentityMatrix<T,SO> >
+{
+   using Type = IdentityMatrix<T,SO>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO >
+struct DeclUppTrait< IdentityMatrix<T,SO> >
 {
    using Type = IdentityMatrix<T,SO>;
 };
