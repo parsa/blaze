@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
@@ -54,6 +55,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/sparse/Forward.h>
+#include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -105,6 +107,10 @@ class DMatDeclSymExpr
    , public Declaration<MT>
 {
  private:
+   //**Type definitions****************************************************************************
+   using RT = ResultType_<MT>;  //!< Result type of the dense matrix expression.
+   //**********************************************************************************************
+
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the symmetry declaration expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
@@ -156,12 +162,12 @@ class DMatDeclSymExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDeclSymExpr<MT,SO>;                 //!< Type of this DMatDeclSymExpr instance.
-   using ResultType    = SymmetricMatrix< ResultType_<MT> >;     //!< Result type for expression template evaluations.
-   using OppositeType  = SymmetricMatrix< OppositeType_<MT> >;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = SymmetricMatrix< TransposeType_<MT> >;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;                       //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;                        //!< Return type for expression template evaluations.
+   using This          = DMatDeclSymExpr<MT,SO>;      //!< Type of this DMatDeclSymExpr instance.
+   using ResultType    = DeclSymTrait_<RT>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclSymExpr& >;
@@ -905,6 +911,7 @@ class DMatDeclSymExpr
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
