@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/simd/SIMDPack.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/IsBaseOf.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/RemoveCV.h>
 
 
@@ -54,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsSIMDPack type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSIMDPackHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename U >
+   static TrueType test( const SIMDPack<U>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for SIMD data types.
@@ -111,8 +136,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsSIMDPack
-   : public BoolConstant< Or< IsBaseOf<SIMDPack< RemoveCV_<T> >,T>
-                            , IsBaseOf<SIMDPack< RemoveCV_<T> >,T> >::value >
+   : public IsSIMDPackHelper<T>::Type
 {};
 //*************************************************************************************************
 
