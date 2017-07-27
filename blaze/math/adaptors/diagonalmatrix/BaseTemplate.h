@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 
 
 namespace blaze {
@@ -554,9 +554,9 @@ namespace blaze {
    C = A * B;  // Results in a diagonal matrix; no runtime overhead
    \endcode
 */
-template< typename MT                               // Type of the adapted matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix<MT>::value >      // Density flag
+template< typename MT                           // Type of the adapted matrix
+        , bool SO = StorageOrder<MT>::value     // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix<MT>::value >  // Density flag
 class DiagonalMatrix
 {};
 //*************************************************************************************************
