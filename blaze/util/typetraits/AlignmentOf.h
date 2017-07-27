@@ -69,15 +69,19 @@ struct AlignmentOfHelper
 
  public:
    //**********************************************************************************************
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 64UL ):( defaultAlignment );
+   enum : size_t {
+#if BLAZE_AVX512BW_MODE
+      value = ( IsVectorizable<T>::value )?( 64UL ):( defaultAlignment )
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+      value = ( IsVectorizable<T>::value )?( sizeof(T) >= 4UL ? 64UL : 32UL ):( defaultAlignment )
 #elif BLAZE_AVX2_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 32UL ):( defaultAlignment );
+      value = ( IsVectorizable<T>::value )?( 32UL ):( defaultAlignment )
 #elif BLAZE_SSE2_MODE
-   static constexpr size_t value = ( IsVectorizable<T>::value )?( 16UL ):( defaultAlignment );
+      value = ( IsVectorizable<T>::value )?( 16UL ):( defaultAlignment )
 #else
-   static constexpr size_t value = defaultAlignment;
+      value = defaultAlignment
 #endif
+   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -94,15 +98,17 @@ struct AlignmentOfHelper<float>
 {
  public:
    //**********************************************************************************************
+   enum : size_t {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   static constexpr size_t value = 64UL;
+      value = 64UL
 #elif BLAZE_AVX_MODE
-   static constexpr size_t value = 32UL;
+      value = 32UL
 #elif BLAZE_SSE_MODE
-   static constexpr size_t value = 16UL;
+      value = 16UL
 #else
-   static constexpr size_t value = std::alignment_of<float>::value;
+      value = std::alignment_of<float>::value
 #endif
+   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -119,15 +125,17 @@ struct AlignmentOfHelper<double>
 {
  public:
    //**********************************************************************************************
+   enum : size_t {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   static constexpr size_t value = 64UL;
+      value = 64UL
 #elif BLAZE_AVX_MODE
-   static constexpr size_t value = 32UL;
-#elif BLAZE_SSE_MODE
-   static constexpr size_t value = 16UL;
+      value = 32UL
+#elif BLAZE_SSE2_MODE
+      value = 16UL
 #else
-   static constexpr size_t value = std::alignment_of<double>::value;
+      value = std::alignment_of<double>::value
 #endif
+   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -144,15 +152,17 @@ struct AlignmentOfHelper< complex<float> >
 {
  public:
    //**********************************************************************************************
+   enum : size_t {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   static constexpr size_t value = 64UL;
+      value = 64UL
 #elif BLAZE_AVX_MODE
-   static constexpr size_t value = 32UL;
+      value = 32UL
 #elif BLAZE_SSE_MODE
-   static constexpr size_t value = 16UL;
+      value = 16UL
 #else
-   static constexpr size_t value = std::alignment_of< complex<float> >::value;
+      value = std::alignment_of< complex<float> >::value
 #endif
+   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -169,15 +179,17 @@ struct AlignmentOfHelper< complex<double> >
 {
  public:
    //**********************************************************************************************
+   enum : size_t {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   static constexpr size_t value = 64UL;
+      value = 64UL
 #elif BLAZE_AVX_MODE
-   static constexpr size_t value = 32UL;
-#elif BLAZE_SSE_MODE
-   static constexpr size_t value = 16UL;
+      value = 32UL
+#elif BLAZE_SSE2_MODE
+      value = 16UL
 #else
-   static constexpr size_t value = std::alignment_of< complex<double> >::value;
+      value = std::alignment_of< complex<double> >::value
 #endif
+   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -204,7 +216,8 @@ struct AlignmentOfHelper< complex<double> >
    \endcode
 */
 template< typename T >
-struct AlignmentOf : IntegralConstant<size_t,AlignmentOfHelper<T>::value>
+struct AlignmentOf
+   : public IntegralConstant<size_t,AlignmentOfHelper<T>::value>
 {};
 //*************************************************************************************************
 
@@ -215,7 +228,8 @@ struct AlignmentOf : IntegralConstant<size_t,AlignmentOfHelper<T>::value>
 // \ingroup type_traits
 */
 template< typename T >
-struct AlignmentOf< const T > : IntegralConstant<size_t,AlignmentOfHelper<T>::value>
+struct AlignmentOf< const T >
+   : public IntegralConstant<size_t,AlignmentOfHelper<T>::value>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -227,7 +241,8 @@ struct AlignmentOf< const T > : IntegralConstant<size_t,AlignmentOfHelper<T>::va
 // \ingroup type_traits
 */
 template< typename T >
-struct AlignmentOf< volatile T > : IntegralConstant<size_t,AlignmentOfHelper<T>::value>
+struct AlignmentOf< volatile T >
+   : public IntegralConstant<size_t,AlignmentOfHelper<T>::value>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -239,7 +254,8 @@ struct AlignmentOf< volatile T > : IntegralConstant<size_t,AlignmentOfHelper<T>:
 // \ingroup type_traits
 */
 template< typename T >
-struct AlignmentOf< const volatile T > : IntegralConstant<size_t,AlignmentOfHelper<T>::value>
+struct AlignmentOf< const volatile T >
+   : public IntegralConstant<size_t,AlignmentOfHelper<T>::value>
 {};
 /*! \endcond */
 //*************************************************************************************************
