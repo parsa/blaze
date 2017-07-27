@@ -522,7 +522,7 @@ inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \return \a true if the referenced value and the other object are not equal, \a false if they are.
 */
 template< typename PT, typename RT, typename T, typename >
-inline decltype(auto) operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
+inline bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return ( (~lhs).get() != rhs );
 }
