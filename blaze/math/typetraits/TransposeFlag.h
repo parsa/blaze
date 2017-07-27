@@ -40,11 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/TransposeFlag.h>
-#include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsVector.h>
-#include <blaze/util/EnableIf.h>
+#include <utility>
+#include <blaze/math/expressions/Vector.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -54,6 +53,29 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the TransposeFlag type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct TransposeFlagHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename VT, bool TF >
+   static BoolConstant<TF> test( const Vector<VT,TF>& );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Evaluation of the transpose flag of a given matrix type.
@@ -73,9 +95,9 @@ namespace blaze {
    blaze::TransposeFlag<int>::value           // Compilation error!
    \endcode
 */
-template< typename T, typename = EnableIf_< IsVector<T> > >
+template< typename T >
 struct TransposeFlag
-   : public BoolConstant< ( IsRowVector<T>::value ? rowVector : columnVector ) >
+   : public TransposeFlagHelper<T>::Type
 {};
 //*************************************************************************************************
 
