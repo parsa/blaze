@@ -234,10 +234,11 @@
 /*!\brief Compilation switch for the AVX512F mode.
 // \ingroup system
 //
-// This compilation switch enables/disables the AVX512F mode. In case the AVX512F mode is enabled
-// (i.e. in case AVX512F functionality is available) the Blaze library attempts to vectorize
-// the linear algebra operations by AVX512F intrinsics. In case the AVX512F mode is disabled,
-// the Blaze library chooses default, non-vectorized functionality for the operations.
+// This compilation switch enables/disables the AVX512F mode. In case the AVX512F mode is
+// enabled (i.e. in case AVX512F functionality is available) the Blaze library attempts to
+// vectorize the linear algebra operations by AVX512F intrinsics. In case the AVX512F mode
+// is disabled, the Blaze library chooses default, non-vectorized functionality for the
+// operations.
 */
 #if BLAZE_USE_VECTORIZATION && defined(__AVX512F__)
 #  define BLAZE_AVX512F_MODE 1
@@ -251,10 +252,11 @@
 /*!\brief Compilation switch for the AVX512BW mode.
 // \ingroup system
 //
-// This compilation switch enables/disables the AVX512BW mode. In case the AVX512BW mode is enabled
-// (i.e. in case AVX512BW functionality is available) the Blaze library attempts to vectorize
-// the linear algebra operations by AVX512BW intrinsics. In case the AVX512BW mode is disabled,
-// the Blaze library chooses default, non-vectorized functionality for the operations.
+// This compilation switch enables/disables the AVX512BW mode. In case the AVX512BW mode is
+// enabled (i.e. in case AVX512BW functionality is available) the Blaze library attempts to
+// vectorize the linear algebra operations by AVX512BW intrinsics. In case the AVX512BW mode
+// is disabled, the Blaze library chooses default, non-vectorized functionality for the
+// operations.
 */
 #if BLAZE_USE_VECTORIZATION && defined(__AVX512BW__)
 #  define BLAZE_AVX512BW_MODE 1
@@ -268,10 +270,11 @@
 /*!\brief Compilation switch for the AVX512DQ mode.
 // \ingroup system
 //
-// This compilation switch enables/disables the AVX512DQ mode. In case the AVX512DQ mode is enabled
-// (i.e. in case AVX512DQ functionality is available) the Blaze library attempts to vectorize
-// the linear algebra operations by AVX512DQ intrinsics. In case the AVX512DQ mode is disabled,
-// the Blaze library chooses default, non-vectorized functionality for the operations.
+// This compilation switch enables/disables the AVX512DQ mode. In case the AVX512DQ mode is
+// enabled (i.e. in case AVX512DQ functionality is available) the Blaze library attempts to
+// vectorize the linear algebra operations by AVX512DQ intrinsics. In case the AVX512DQ mode
+// is disabled, the Blaze library chooses default, non-vectorized functionality for the
+// operations.
 */
 #if BLAZE_USE_VECTORIZATION && defined(__AVX512DQ__)
 #  define BLAZE_AVX512DQ_MODE 1
@@ -296,6 +299,7 @@
 #  define BLAZE_MIC_MODE 0
 #endif
 //*************************************************************************************************
+
 
 
 
@@ -359,15 +363,15 @@
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( !BLAZE_SSE2_MODE      || BLAZE_SSE_MODE      );
-BLAZE_STATIC_ASSERT( !BLAZE_SSE3_MODE      || BLAZE_SSE2_MODE     );
-BLAZE_STATIC_ASSERT( !BLAZE_SSSE3_MODE     || BLAZE_SSE3_MODE     );
-BLAZE_STATIC_ASSERT( !BLAZE_SSE4_MODE      || BLAZE_SSSE3_MODE    );
-BLAZE_STATIC_ASSERT( !BLAZE_AVX_MODE       || BLAZE_SSE4_MODE     );
-BLAZE_STATIC_ASSERT( !BLAZE_AVX2_MODE      || BLAZE_AVX_MODE      );
-BLAZE_STATIC_ASSERT( !BLAZE_AVX512F_MODE   || BLAZE_AVX2_MODE     );
-BLAZE_STATIC_ASSERT( !BLAZE_AVX512BW_MODE  || BLAZE_AVX512F_MODE  );
-BLAZE_STATIC_ASSERT( !BLAZE_AVX512DQ_MODE  || BLAZE_AVX512F_MODE  );
+BLAZE_STATIC_ASSERT( !BLAZE_SSE2_MODE     || BLAZE_SSE_MODE     );
+BLAZE_STATIC_ASSERT( !BLAZE_SSE3_MODE     || BLAZE_SSE2_MODE    );
+BLAZE_STATIC_ASSERT( !BLAZE_SSSE3_MODE    || BLAZE_SSE3_MODE    );
+BLAZE_STATIC_ASSERT( !BLAZE_SSE4_MODE     || BLAZE_SSSE3_MODE   );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX_MODE      || BLAZE_SSE4_MODE    );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX2_MODE     || BLAZE_AVX_MODE     );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX512F_MODE  || BLAZE_AVX2_MODE    );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX512BW_MODE || BLAZE_AVX512F_MODE );
+BLAZE_STATIC_ASSERT( !BLAZE_AVX512DQ_MODE || BLAZE_AVX512F_MODE );
 
 }
 /*! \endcond */
