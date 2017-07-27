@@ -40,11 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/StorageOrder.h>
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/util/EnableIf.h>
+#include <utility>
+#include <blaze/math/expressions/Matrix.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -54,6 +53,29 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the StorageOrder type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct StorageOrderHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT, bool SO >
+   static BoolConstant<SO> test( const Matrix<MT,SO>& );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Evaluation of the storage order of a given matrix type.
@@ -73,9 +95,9 @@ namespace blaze {
    blaze::StorageOrder<int>::value                // Compilation error!
    \endcode
 */
-template< typename T, typename = EnableIf_< IsMatrix<T> > >
+template< typename T >
 struct StorageOrder
-   : public BoolConstant< ( IsRowMajorMatrix<T>::value ? rowMajor : columnMajor ) >
+   : public StorageOrderHelper<T>::Type
 {};
 //*************************************************************************************************
 
