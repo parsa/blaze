@@ -56,6 +56,10 @@ noop: $(BIN)
 
 
 # Build rules
+Char: Char.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexChar: ComplexChar.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ComplexFloat: ComplexFloat.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ComplexDouble: ComplexDouble.o
@@ -65,6 +69,10 @@ ComplexInt: ComplexInt.o
 ComplexLong: ComplexLong.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ComplexShort: ComplexShort.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexSignedChar: ComplexSignedChar.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexUnsignedChar: ComplexUnsignedChar.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ComplexUnsignedInt: ComplexUnsignedInt.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -81,6 +89,10 @@ Int: Int.o
 Long: Long.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Short: Short.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SignedChar: SignedChar.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UnsignedChar: UnsignedChar.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UnsignedInt: UnsignedInt.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)

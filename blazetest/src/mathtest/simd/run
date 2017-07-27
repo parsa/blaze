@@ -37,6 +37,9 @@ PATH_SIMD=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SIMD tests..."
 
+EXE=$PATH_SIMD/Char;                 if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/SignedChar;           if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/UnsignedChar;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/Short;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/UnsignedShort;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/Int;                  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
@@ -45,6 +48,9 @@ EXE=$PATH_SIMD/Long;                 if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; 
 EXE=$PATH_SIMD/UnsignedLong;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/Float;                if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/Double;               if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexChar;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexSignedChar;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SIMD/ComplexUnsignedChar;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/ComplexShort;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/ComplexUnsignedShort; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SIMD/ComplexInt;           if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
