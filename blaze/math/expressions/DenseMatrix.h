@@ -41,7 +41,13 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/algorithms/Min.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -93,7 +99,7 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
 
 //*************************************************************************************************
 /*!\brief Returns the spacing between the beginning of two rows/columns.
-// \ingroup matrix
+// \ingroup dense_matrix
 //
 // \param dm The given matrix.
 // \return The spacing between the beginning of two rows/columns.
@@ -104,6 +110,102 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
 {
    return (~dm).spacing();
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for row-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given row-major dense
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,false>& dm )
+{
+   const size_t m( (~dm).rows()    );
+   const size_t n( (~dm).columns() );
+
+   for( size_t i=1UL; i<m; ++i ) {
+      const size_t jend( min( i, n ) );
+      for( size_t j=0UL; j<jend; ++j ) {
+         reset( (~dm)(i,j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for column-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given column-major dense
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,true>& dm )
+{
+   const size_t m   ( (~dm).rows()    );
+   const size_t n   ( (~dm).columns() );
+   const size_t jend( min( m, n ) );
+
+   for( size_t j=0UL; j<jend; ++j ) {
+      for( size_t i=j+1UL; i<m; ++i ) {
+         reset( (~dm)(i,j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for lower dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given lower dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline EnableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,SO>& dm )
+{
+   UNUSED_PARAMETER( dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Resetting the lower part of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline void resetLower( DenseMatrix<MT,SO>& dm )
+{
+   resetLower_backend( ~dm );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

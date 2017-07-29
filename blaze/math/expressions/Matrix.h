@@ -552,10 +552,6 @@ BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool
 //*************************************************************************************************
 
 
-
-
-
-
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Backend implementation of the \c shrinkToFit() function for non-shrinkable matrices.

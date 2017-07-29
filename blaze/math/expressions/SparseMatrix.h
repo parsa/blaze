@@ -41,6 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/util/algorithms/Min.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -70,6 +75,104 @@ template< typename MT  // Type of the sparse matrix
 struct SparseMatrix
    : public Matrix<MT,SO>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for row-major sparse matrices.
+// \ingroup sparse_matrix
+//
+// \param matrix The given sparse matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given row-major sparse
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsUpper<MT> > resetLower_backend( SparseMatrix<MT,false>& dm )
+{
+   const size_t m( (~dm).rows() );
+
+   for( size_t i=1UL; i<m; ++i ) {
+      (~dm).erase( i, (~dm).begin( i ), (~dm).lowerBound( i, i ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for column-major sparse matrices.
+// \ingroup sparse_matrix
+//
+// \param matrix The given sparse matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given column-major sparse
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsUpper<MT> > resetLower_backend( SparseMatrix<MT,true>& dm )
+{
+   const size_t m   ( (~dm).rows()    );
+   const size_t n   ( (~dm).columns() );
+   const size_t jend( min( m, n ) );
+
+   for( size_t j=0UL; j<jend; ++j ) {
+      (~dm).erase( j, (~dm).lowerBound( j+1UL, j ), (~dm).end( j ) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for lower sparse matrices.
+// \ingroup sparse_matrix
+//
+// \param matrix The given sparse matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given lower sparse matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline EnableIf_< IsUpper<MT> > resetLower_backend( SparseMatrix<MT,SO>& dm )
+{
+   UNUSED_PARAMETER( dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Resetting the lower part of the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param matrix The given sparse matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given sparse matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline void resetLower( SparseMatrix<MT,SO>& dm )
+{
+   resetLower_backend( ~dm );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
