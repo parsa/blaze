@@ -42,6 +42,7 @@
 
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/algorithms/Min.h>
@@ -204,6 +205,102 @@ template< typename MT  // Type of the matrix
 inline void resetLower( DenseMatrix<MT,SO>& dm )
 {
    resetLower_backend( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetUpper() function for row-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the upper part (excluding the diagonal) of the given row-major dense
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,false>& dm )
+{
+   const size_t m   ( (~dm).rows()    );
+   const size_t n   ( (~dm).columns() );
+   const size_t iend( min( m, n ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
+      for( size_t j=i+1UL; j<n; ++j ) {
+         reset( (~dm)(i,j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetUpper() function for column-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the upper part (excluding the diagonal) of the given column-major dense
+// matrix.
+*/
+template< typename MT >  // Type of the matrix
+inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm )
+{
+   const size_t m( (~dm).rows()    );
+   const size_t n( (~dm).columns() );
+
+   for( size_t j=1UL; j<n; ++j ) {
+      const size_t iend( min( j, m ) );
+      for( size_t i=0UL; i<iend; ++i ) {
+         reset( (~dm)(i,j) );
+      }
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetUpper() function for upper dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the upper part (excluding the diagonal) of the given upper dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline EnableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,SO>& dm )
+{
+   UNUSED_PARAMETER( dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Resetting the upper part of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the upper part (excluding the diagonal) of the given dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline void resetUpper( DenseMatrix<MT,SO>& dm )
+{
+   resetUpper_backend( ~dm );
 }
 /*! \endcond */
 //*************************************************************************************************
