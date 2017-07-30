@@ -5842,11 +5842,7 @@ void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::TrueType )
 
       MT1 lhs( lhs_ );
 
-      for( size_t i=0UL; i<lhs.rows(); ++i ) {
-         for( size_t j=i+1UL; j<lhs.columns(); ++j ) {
-            blaze::reset( lhs(i,j) );
-         }
-      }
+      blaze::resetUpper( lhs );
 
       OMT1 olhs  ( lhs );
       RT1  reflhs( lhs );
@@ -5858,11 +5854,7 @@ void OperationTest<MT1,MT2>::testDeclLowOperation( blaze::TrueType )
 
       MT2 rhs( rhs_ );
 
-      for( size_t i=0UL; i<rhs.rows(); ++i ) {
-         for( size_t j=i+1UL; j<rhs.columns(); ++j ) {
-            blaze::reset( rhs(i,j) );
-         }
-      }
+      blaze::resetUpper( rhs );
 
       OMT2 orhs  ( rhs );
       RT2  refrhs( rhs );
@@ -6430,11 +6422,7 @@ void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::TrueType )
 
       MT1 lhs( lhs_ );
 
-      for( size_t j=0UL; j<lhs.columns(); ++j ) {
-         for( size_t i=j+1UL; i<lhs.rows(); ++i ) {
-            blaze::reset( lhs(i,j) );
-         }
-      }
+      blaze::resetLower( lhs );
 
       OMT1 olhs  ( lhs );
       RT1  reflhs( lhs );
@@ -6446,11 +6434,7 @@ void OperationTest<MT1,MT2>::testDeclUppOperation( blaze::TrueType )
 
       MT2 rhs( rhs_ );
 
-      for( size_t j=0UL; j<rhs.columns(); ++j ) {
-         for( size_t i=j+1UL; i<rhs.rows(); ++i ) {
-            blaze::reset( rhs(i,j) );
-         }
-      }
+      blaze::resetLower( rhs );
 
       OMT2 orhs  ( rhs );
       RT2  refrhs( rhs );
@@ -7018,15 +7002,8 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
 
       MT1 lhs( lhs_ );
 
-      for( size_t i=0UL; i<lhs.rows(); ++i ) {
-         const size_t jend( blaze::min( i, lhs.columns() ) );
-         for( size_t j=0UL; j<jend; ++j ) {
-            blaze::reset( lhs(i,j) );
-         }
-         for( size_t j=i+1UL; j<lhs.columns(); ++j ) {
-            blaze::reset( lhs(i,j) );
-         }
-      }
+      blaze::resetLower( lhs );
+      blaze::resetUpper( lhs );
 
       OMT1 olhs  ( lhs );
       RT1  reflhs( lhs );
@@ -7038,15 +7015,8 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
 
       MT2 rhs( rhs_ );
 
-      for( size_t i=0UL; i<rhs.rows(); ++i ) {
-         const size_t jend( blaze::min( i, rhs.columns() ) );
-         for( size_t j=0UL; j<jend; ++j ) {
-            blaze::reset( rhs(i,j) );
-         }
-         for( size_t j=i+1UL; j<rhs.columns(); ++j ) {
-            blaze::reset( rhs(i,j) );
-         }
-      }
+      blaze::resetLower( rhs );
+      blaze::resetUpper( rhs );
 
       OMT2 orhs  ( rhs );
       RT2  refrhs( rhs );
