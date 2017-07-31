@@ -509,7 +509,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   return SVecSVecCrossExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   using ReturnType = const SVecSVecCrossExpr<VT1,VT2,TF>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

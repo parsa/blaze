@@ -730,7 +730,8 @@ inline decltype(auto) eval( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecEvalExpr<VT,TF>( ~dv );
+   using ReturnType = const DVecEvalExpr<VT,TF>;
+   return ReturnType( ~dv );
 }
 //*************************************************************************************************
 

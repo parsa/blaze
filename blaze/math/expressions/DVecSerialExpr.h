@@ -752,7 +752,8 @@ inline decltype(auto) serial( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecSerialExpr<VT,TF>( ~dv );
+   using ReturnType = const DVecSerialExpr<VT,TF>;
+   return ReturnType( ~dv );
 }
 //*************************************************************************************************
 

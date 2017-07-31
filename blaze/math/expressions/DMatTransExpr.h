@@ -791,7 +791,8 @@ inline decltype(auto) trans( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatTransExpr<MT,!SO>( ~dm );
+   using ReturnType = const DMatTransExpr<MT,!SO>;
+   return ReturnType( ~dm );
 }
 //*************************************************************************************************
 

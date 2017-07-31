@@ -756,7 +756,8 @@ inline decltype(auto) trans( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatTransExpr<MT,!SO>( ~sm );
+   using ReturnType = const SMatTransExpr<MT,!SO>;
+   return ReturnType( ~sm );
 }
 //*************************************************************************************************
 

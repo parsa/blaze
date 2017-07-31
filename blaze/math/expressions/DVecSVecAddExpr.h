@@ -702,7 +702,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecSVecAddExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   using ReturnType = const DVecSVecAddExpr<VT1,VT2,TF>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -745,7 +746,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecSVecAddExpr<VT2,VT1,TF>( ~rhs, ~lhs );
+   using ReturnType = const DVecSVecAddExpr<VT2,VT1,TF>;
+   return ReturnType( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 

@@ -1944,7 +1944,8 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecDVecOuterExpr<VT1,VT2>( ~lhs, ~rhs );
+   using ReturnType = const DVecDVecOuterExpr<VT1,VT2>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

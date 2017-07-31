@@ -827,7 +827,8 @@ inline decltype(auto) serial( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatSerialExpr<MT,SO>( ~sm );
+   using ReturnType = const SMatSerialExpr<MT,SO>;
+   return ReturnType( ~sm );
 }
 //*************************************************************************************************
 

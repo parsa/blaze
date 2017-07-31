@@ -703,7 +703,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecSVecSubExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   using ReturnType = const DVecSVecSubExpr<VT1,VT2,TF>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

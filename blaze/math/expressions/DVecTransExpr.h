@@ -735,7 +735,8 @@ inline decltype(auto) trans( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecTransExpr<VT,!TF>( ~dv );
+   using ReturnType = const DVecTransExpr<VT,!TF>;
+   return ReturnType( ~dv );
 }
 //*************************************************************************************************
 

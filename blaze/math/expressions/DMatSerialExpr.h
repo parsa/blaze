@@ -820,7 +820,8 @@ inline decltype(auto) serial( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatSerialExpr<MT,SO>( ~dm );
+   using ReturnType = const DMatSerialExpr<MT,SO>;
+   return ReturnType( ~dm );
 }
 //*************************************************************************************************
 

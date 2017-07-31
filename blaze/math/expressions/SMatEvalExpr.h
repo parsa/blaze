@@ -807,7 +807,8 @@ inline decltype(auto) eval( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatEvalExpr<MT,SO>( ~sm );
+   using ReturnType = const SMatEvalExpr<MT,SO>;
+   return ReturnType( ~sm );
 }
 //*************************************************************************************************
 

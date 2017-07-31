@@ -798,7 +798,8 @@ inline decltype(auto) eval( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatEvalExpr<MT,SO>( ~dm );
+   using ReturnType = const DMatEvalExpr<MT,SO>;
+   return ReturnType( ~dm );
 }
 //*************************************************************************************************
 

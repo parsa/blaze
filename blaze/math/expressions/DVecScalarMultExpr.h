@@ -1037,7 +1037,8 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = UnderlyingBuiltin_<VT>;
-   return DVecScalarMultExpr<VT,ScalarType,TF>( ~dv, ScalarType(-1) );
+   using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
+   return ReturnType( ~dv, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -1081,7 +1082,8 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
-   return DVecScalarMultExpr<VT,ScalarType,TF>( ~vec, scalar );
+   using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
+   return ReturnType( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1117,7 +1119,8 @@ inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<VT> >;
-   return DVecScalarMultExpr<VT,ScalarType,TF>( ~vec, scalar );
+   using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
+   return ReturnType( ~vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1150,8 +1153,7 @@ inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const DVecScalarMultExpr<VT,ElementType_<VT>,TF>
-   normalize( const DenseVector<VT,TF>& vec )
+inline decltype(auto) normalize( const DenseVector<VT,TF>& vec )
 {
    using ElementType = ElementType_<VT>;
 
@@ -1160,7 +1162,8 @@ inline const DVecScalarMultExpr<VT,ElementType_<VT>,TF>
    const ElementType len ( length( ~vec ) );
    const ElementType ilen( ( len != ElementType(0) )?( ElementType(1) / len ):( 0 ) );
 
-   return DVecScalarMultExpr<VT,ElementType,TF>( ~vec, ilen );
+   using ReturnType = const DVecScalarMultExpr<VT,ElementType,TF>;
+   return ReturnType( ~vec, ilen );
 }
 //*************************************************************************************************
 
@@ -1192,7 +1195,8 @@ inline decltype(auto) operator-( const DVecScalarMultExpr<VT,ST,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecScalarMultExpr<VT,ST,TF>( dv.leftOperand(), -dv.rightOperand() );
+   using ReturnType = const DVecScalarMultExpr<VT,ST,TF>;
+   return ReturnType( dv.leftOperand(), -dv.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************

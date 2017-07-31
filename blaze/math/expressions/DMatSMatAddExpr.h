@@ -703,7 +703,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatAddExpr<MT1,MT2,SO>( ~lhs, ~rhs );
+   using ReturnType = const DMatSMatAddExpr<MT1,MT2,SO>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -746,7 +747,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatSMatAddExpr<MT2,MT1,SO>( ~rhs, ~lhs );
+   using ReturnType = const DMatSMatAddExpr<MT2,MT1,SO>;
+   return ReturnType( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 

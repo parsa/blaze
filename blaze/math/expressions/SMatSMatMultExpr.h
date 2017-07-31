@@ -1218,7 +1218,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return SMatSMatMultExpr<MT1,MT2>( ~lhs, ~rhs );
+   using ReturnType = const SMatSMatMultExpr<MT1,MT2>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

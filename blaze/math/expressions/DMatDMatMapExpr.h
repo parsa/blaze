@@ -1137,7 +1137,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatDMatMapExpr<MT1,MT2,OP,SO>( ~lhs, ~rhs, op );
+   using ReturnType = const DMatDMatMapExpr<MT1,MT2,OP,SO>;
+   return ReturnType( ~lhs, ~rhs, op );
 }
 //*************************************************************************************************
 

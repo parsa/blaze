@@ -1080,7 +1080,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecDVecDivExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   using ReturnType = const DVecDVecDivExpr<VT1,VT2,TF>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

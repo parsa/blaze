@@ -650,7 +650,8 @@ inline decltype(auto) serial( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecSerialExpr<VT,TF>( ~sv );
+   using ReturnType = const SVecSerialExpr<VT,TF>;
+   return ReturnType( ~sv );
 }
 //*************************************************************************************************
 

@@ -630,7 +630,8 @@ inline decltype(auto) eval( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecEvalExpr<VT,TF>( ~sv );
+   using ReturnType = const SVecEvalExpr<VT,TF>;
+   return ReturnType( ~sv );
 }
 //*************************************************************************************************
 

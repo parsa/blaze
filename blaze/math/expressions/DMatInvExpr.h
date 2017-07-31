@@ -431,7 +431,8 @@ inline decltype(auto) inv( const DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   return DMatInvExpr<MT,SO>( ~dm );
+   using ReturnType = const DMatInvExpr<MT,SO>;
+   return ReturnType( ~dm );
 }
 //*************************************************************************************************
 

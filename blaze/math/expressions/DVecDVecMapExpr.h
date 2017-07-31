@@ -1104,7 +1104,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return DVecDVecMapExpr<VT1,VT2,OP,TF>( ~lhs, ~rhs, op );
+   using ReturnType = const DVecDVecMapExpr<VT1,VT2,OP,TF>;
+   return ReturnType( ~lhs, ~rhs, op );
 }
 //*************************************************************************************************
 
@@ -1135,7 +1136,8 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecDVecMapExpr<VT1,VT2,Min,TF>( ~lhs, ~rhs, Min() );
+   using ReturnType = const DVecDVecMapExpr<VT1,VT2,Min,TF>;
+   return ReturnType( ~lhs, ~rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1166,7 +1168,8 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DVecDVecMapExpr<VT1,VT2,Max,TF>( ~lhs, ~rhs, Max() );
+   using ReturnType = const DVecDVecMapExpr<VT1,VT2,Max,TF>;
+   return ReturnType( ~lhs, ~rhs, Max() );
 }
 //*************************************************************************************************
 

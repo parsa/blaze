@@ -844,7 +844,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
-   return SMatDVecMultExpr<MT,VT>( ~mat, ~vec );
+   using ReturnType = const SMatDVecMultExpr<MT,VT>;
+   return ReturnType( ~mat, ~vec );
 }
 //*************************************************************************************************
 
