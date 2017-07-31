@@ -57,6 +57,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -910,7 +911,7 @@ inline bool tryDivAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>
 /*!\brief Removal of all restrictions on the data access to the given column.
 // \ingroup column
 //
-// \param column The column to be derestricted.
+// \param c The column to be derestricted.
 // \return Column without access restrictions.
 //
 // This function removes all restrictions on the data access to the given column. It returns a
@@ -924,10 +925,9 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline DerestrictTrait_< Column<MT,SO,DF,SF> > derestrict( Column<MT,SO,DF,SF>& column )
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
 {
-   using ReturnType = DerestrictTrait_< Column<MT,SO,DF,SF> >;
-   return ReturnType( derestrict( column.matrix_ ), column.col_ );
+   return column( derestrict( c.matrix_ ), c.col_ );
 }
 /*! \endcond */
 //*************************************************************************************************

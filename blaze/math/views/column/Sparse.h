@@ -304,7 +304,7 @@ class Column<MT,true,false,SF>
    friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
+   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2507,7 +2507,7 @@ class Column<MT,false,false,false>
    friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
+   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4156,7 +4156,7 @@ class Column<MT,false,false,true>
    friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Column<MT2,SO2,DF2,SF2> > derestrict( Column<MT2,SO2,DF2,SF2>& column );
+   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

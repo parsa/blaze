@@ -2066,10 +2066,9 @@ template< typename MT  // Type of the matrix
         , bool AF      // Alignment flag
         , bool SO      // Storage order
         , bool DF >    // Density flag
-inline DerestrictTrait_< Submatrix<MT,AF,SO,DF> > derestrict( Submatrix<MT,AF,SO,DF>& dm )
+inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
-   using ReturnType = DerestrictTrait_< Submatrix<MT,AF,SO,DF> >;
-   return ReturnType( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
+   return submatrix( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
 }
 /*! \endcond */
 //*************************************************************************************************

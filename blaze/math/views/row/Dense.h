@@ -397,7 +397,7 @@ class Row<MT,true,true,SF>
    friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
+   friend decltype(auto) derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2689,7 +2689,7 @@ class Row<MT,false,true,false>
    friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
+   friend decltype(auto) derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4326,7 +4326,7 @@ class Row<MT,false,true,true>
    friend bool tryDivAssign( const Row<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend DerestrictTrait_< Row<MT2,SO2,DF2,SF2> > derestrict( Row<MT2,SO2,DF2,SF2>& row );
+   friend decltype(auto) derestrict( Row<MT2,SO2,DF2,SF2>& row );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

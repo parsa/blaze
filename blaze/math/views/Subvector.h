@@ -60,6 +60,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1246,10 +1247,9 @@ template< typename VT  // Type of the vector
         , bool AF      // Alignment flag
         , bool TF      // Transpose flag
         , bool DF >    // Density flag
-inline DerestrictTrait_< Subvector<VT,AF,TF,DF> > derestrict( Subvector<VT,AF,TF,DF>& sv )
+inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>& sv )
 {
-   using ReturnType = DerestrictTrait_< Subvector<VT,AF,TF,DF> >;
-   return ReturnType( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
+   return subvector( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
 }
 /*! \endcond */
 //*************************************************************************************************

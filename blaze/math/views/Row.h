@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -906,7 +907,7 @@ inline bool tryDivAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
 /*!\brief Removal of all restrictions on the data access to the given row.
 // \ingroup row
 //
-// \param row The row to be derestricted.
+// \param r The row to be derestricted.
 // \return Row without access restrictions.
 //
 // This function removes all restrictions on the data access to the given row. It returns a row
@@ -920,10 +921,9 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline DerestrictTrait_< Row<MT,SO,DF,SF> > derestrict( Row<MT,SO,DF,SF>& row )
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 {
-   using ReturnType = DerestrictTrait_< Row<MT,SO,DF,SF> >;
-   return ReturnType( derestrict( row.matrix_ ), row.row_ );
+   return row( derestrict( r.matrix_ ), r.row_ );
 }
 /*! \endcond */
 //*************************************************************************************************

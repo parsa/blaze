@@ -633,7 +633,7 @@ class Submatrix<MT,AF,false,false>
                                size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
+   friend decltype(auto) derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3203,7 +3203,7 @@ class Submatrix<MT,AF,true,false>
                               size_t row, size_t column );
 
    template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend DerestrictTrait_< Submatrix<MT2,AF2,SO2,DF2> > derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
+   friend decltype(auto) derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

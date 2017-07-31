@@ -576,7 +576,7 @@ class Subvector<VT,AF,TF,false>
    friend bool tryMultAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
    template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend DerestrictTrait_< Subvector<VT2,AF2,TF2,DF2> > derestrict( Subvector<VT2,AF2,TF2,DF2>& sv );
+   friend decltype(auto) derestrict( Subvector<VT2,AF2,TF2,DF2>& sv );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
