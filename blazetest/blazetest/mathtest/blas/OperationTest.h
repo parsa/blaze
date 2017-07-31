@@ -126,7 +126,7 @@ class OperationTest
 template< typename Type >
 void OperationTest::testDotu()
 {
-#if BLAZETEST_MATHTEST_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZETEST_MATHTEST_BLAS_MODE
 
    test_ = "Dot product";
 
@@ -170,7 +170,7 @@ void OperationTest::testDotu()
 template< typename Type >
 void OperationTest::testDotc()
 {
-#if BLAZETEST_MATHTEST_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZETEST_MATHTEST_BLAS_MODE
 
    test_ = "Dot product";
 
@@ -214,7 +214,7 @@ void OperationTest::testDotc()
 template< typename Type >
 void OperationTest::testAxpy()
 {
-#if BLAZETEST_MATHTEST_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZETEST_MATHTEST_BLAS_MODE
 
    test_ = "Axpy product";
 
@@ -263,7 +263,7 @@ void OperationTest::testAxpy()
 template< typename Type >
 void OperationTest::testTrsm()
 {
-#if BLAZETEST_MATHTEST_BLAS_MODE
+#if BLAZE_BLAS_MODE && BLAZETEST_MATHTEST_BLAS_MODE
 
    //=====================================================================================
    // Row-major matrix tests
