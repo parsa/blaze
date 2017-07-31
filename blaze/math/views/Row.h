@@ -56,7 +56,6 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -943,25 +942,6 @@ template< typename MT, bool SO, bool DF, bool SF >
 struct IsRestricted< Row<MT,SO,DF,SF> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct DerestrictTrait< Row<MT,SO,DF,SF> >
-{
-   using Type = Row< RemoveReference_< DerestrictTrait_<MT> > >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

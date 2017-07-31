@@ -64,7 +64,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2088,25 +2087,6 @@ template< typename MT, bool AF, bool SO, bool DF >
 struct IsRestricted< Submatrix<MT,AF,SO,DF> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF >
-struct DerestrictTrait< Submatrix<MT,AF,SO,DF> >
-{
-   using Type = Submatrix< RemoveReference_< DerestrictTrait_<MT> >, AF >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

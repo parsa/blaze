@@ -61,7 +61,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
@@ -790,7 +789,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Row& rhs )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -835,7 +834,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator=( const Vector<VT,tr
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -888,7 +887,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator+=( const Vector<VT,t
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -939,7 +938,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator-=( const Vector<VT,t
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -989,7 +988,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const DenseVector
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -1039,7 +1038,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator*=( const SparseVecto
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -1082,7 +1081,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator/=( const DenseVector
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -1139,7 +1138,7 @@ inline Row<MT,true,true,SF>& Row<MT,true,true,SF>::operator%=( const Vector<VT,t
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, right );
 
@@ -3071,7 +3070,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Row&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -3116,7 +3115,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator=( const Vect
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType tmp( right );
@@ -3168,7 +3167,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator+=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -3218,7 +3217,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator-=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -3267,7 +3266,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const Den
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -3316,7 +3315,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator*=( const Spa
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -3358,7 +3357,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator/=( const Den
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -3414,7 +3413,7 @@ inline Row<MT,false,true,false>& Row<MT,false,true,false>::operator%=( const Vec
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, right );
 
@@ -4704,7 +4703,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Row& r
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, rhs );
 
@@ -4748,7 +4747,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator=( const Vector
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -4800,7 +4799,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator+=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -4850,7 +4849,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator-=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -4899,7 +4898,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -4948,7 +4947,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator*=( const Spars
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, right );
 
@@ -4990,7 +4989,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator/=( const Dense
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<VT> tmp( right );
@@ -5046,7 +5045,7 @@ inline Row<MT,false,true,true>& Row<MT,false,true,true>::operator%=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, right );
 

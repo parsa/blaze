@@ -60,7 +60,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -1201,7 +1200,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -1251,7 +1250,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1303,7 +1302,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1353,7 +1352,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1404,7 +1403,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1454,7 +1453,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1498,7 +1497,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1556,7 +1555,7 @@ inline Subvector<VT,unaligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -1582,7 +1581,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true> >&
    Subvector<VT,unaligned,TF,true>::operator*=( Other rhs )
 {
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1609,7 +1608,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -3339,7 +3338,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( ~rhs );
@@ -3389,7 +3388,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -3441,7 +3440,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -3491,7 +3490,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -3542,7 +3541,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -3592,7 +3591,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -3636,7 +3635,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -3694,7 +3693,7 @@ inline Subvector<VT,aligned,TF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -3720,7 +3719,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true> >&
    Subvector<VT,aligned,TF,true>::operator*=( Other rhs )
 {
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -3747,7 +3746,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;

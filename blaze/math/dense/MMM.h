@@ -61,7 +61,6 @@
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -1170,7 +1169,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -1696,7 +1695,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2240,7 +2239,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2758,7 +2757,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   DerestrictTrait_<MT1> c( derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );

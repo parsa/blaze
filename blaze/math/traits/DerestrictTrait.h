@@ -45,11 +45,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/AddReference.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -65,28 +61,35 @@ namespace blaze {
 // \ingroup math_traits
 //
 // Via this type trait it is possible to evaluate the resulting return type of the derestrict
-// function. Given the vector or matrix type \a T, the nested type \a Type corresponds to the
-// resulting return type. In case \a T is neither a dense or sparse vector or matrix type,
+// function. Given the non-const vector or matrix type \a T, the nested type \a Type corresponds
+// to the resulting return type. In case \a T is neither a dense or sparse vector or matrix type,
 // the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename T >  // Type of the vector or matrix
 struct DerestrictTrait
 {
  private:
-   //**********************************************************************************************
+   //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If< Or< IsVector<T>, IsMatrix<T> >
-                 , AddReference_<T>
-                 , INVALID_TYPE >;
+   struct Failure { using Type = INVALID_TYPE; };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**struct Result*******************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Result {
+      static T& create() noexcept;
+      using Type = decltype( derestrict( create() ) );
+   };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , DerestrictTrait< Decay_<T> >
-                            , Tmp >::Type;
+   using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
+                            , Result
+                            , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

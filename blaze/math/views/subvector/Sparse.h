@@ -58,7 +58,6 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -908,7 +907,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -963,7 +962,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1023,7 +1022,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1076,7 +1075,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1130,7 +1129,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1185,7 +1184,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1239,7 +1238,7 @@ inline Subvector<VT,AF,TF,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );

@@ -60,7 +60,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1269,25 +1268,6 @@ template< typename VT, bool AF, bool TF, bool DF >
 struct IsRestricted< Subvector<VT,AF,TF,DF> >
    : public BoolConstant< IsRestricted<VT>::value >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, bool TF, bool DF >
-struct DerestrictTrait< Subvector<VT,AF,TF,DF> >
-{
-   using Type = Subvector< RemoveReference_< DerestrictTrait_<VT> >, AF, TF, DF >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -54,7 +54,6 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1113,25 +1112,6 @@ template< typename MT, bool SO, bool DF >
 struct RemoveAdaptor< StrictlyLowerMatrix<MT,SO,DF> >
 {
    using Type = MT;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct DerestrictTrait< StrictlyLowerMatrix<MT,SO,DF> >
-{
-   using Type = MT&;
 };
 /*! \endcond */
 //*************************************************************************************************

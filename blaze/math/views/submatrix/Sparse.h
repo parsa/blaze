@@ -65,7 +65,6 @@
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -1017,7 +1016,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1074,7 +1073,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -1135,7 +1134,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1189,7 +1188,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1243,7 +1242,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -1298,7 +1297,7 @@ inline Submatrix<MT,AF,false,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -2271,7 +2270,7 @@ inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
@@ -2314,7 +2313,7 @@ inline Submatrix<MT,AF,false,false>& Submatrix<MT,AF,false,false>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    reset();
    assign( left, tmp );
@@ -3557,7 +3556,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3614,7 +3613,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -3675,7 +3674,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -3729,7 +3728,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -3783,7 +3782,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -3838,7 +3837,7 @@ inline Submatrix<MT,AF,true,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    assign( left, tmp );
@@ -4782,7 +4781,7 @@ inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::transpose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    reset();
    assign( left, tmp );
@@ -4825,7 +4824,7 @@ inline Submatrix<MT,AF,true,false>& Submatrix<MT,AF,true,false>::ctranspose()
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans(*this) );
    reset();
    assign( left, tmp );

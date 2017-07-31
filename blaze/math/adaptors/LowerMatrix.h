@@ -64,7 +64,6 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -361,7 +360,7 @@ inline void lu( const LowerMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
 
    const size_t n( (~A).rows() );
 
-   DerestrictTrait_<MT3> U2( derestrict( ~U ) );
+   decltype(auto) U2( derestrict( ~U ) );
 
    (~L) = A;
 
@@ -1158,25 +1157,6 @@ template< typename MT, bool SO, bool DF >
 struct RemoveAdaptor< LowerMatrix<MT,SO,DF> >
 {
    using Type = MT;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DERESTRICTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct DerestrictTrait< LowerMatrix<MT,SO,DF> >
-{
-   using Type = MT&;
 };
 /*! \endcond */
 //*************************************************************************************************

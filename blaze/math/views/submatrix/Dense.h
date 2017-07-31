@@ -63,7 +63,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -1379,7 +1378,7 @@ inline Submatrix<MT,unaligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1435,7 +1434,7 @@ inline Submatrix<MT,unaligned,false,true>&
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -1490,7 +1489,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -1548,7 +1547,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1597,7 +1596,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -1655,7 +1654,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1703,7 +1702,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -1766,7 +1765,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1817,7 +1816,7 @@ inline Submatrix<MT,unaligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1847,7 +1846,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1878,7 +1877,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -2196,7 +2195,7 @@ inline Submatrix<MT,unaligned,false,true>& Submatrix<MT,unaligned,false,true>::t
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -2235,7 +2234,7 @@ inline Submatrix<MT,unaligned,false,true>& Submatrix<MT,unaligned,false,true>::c
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -4711,7 +4710,7 @@ inline Submatrix<MT,unaligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4767,7 +4766,7 @@ inline Submatrix<MT,unaligned,true,true>&
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -4822,7 +4821,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -4880,7 +4879,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4929,7 +4928,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -4987,7 +4986,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -5035,7 +5034,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -5098,7 +5097,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -5149,7 +5148,7 @@ inline Submatrix<MT,unaligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -5179,7 +5178,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -5210,7 +5209,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -5513,7 +5512,7 @@ inline Submatrix<MT,unaligned,true,true>& Submatrix<MT,unaligned,true,true>::tra
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -5552,7 +5551,7 @@ inline Submatrix<MT,unaligned,true,true>& Submatrix<MT,unaligned,true,true>::ctr
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -7639,7 +7638,7 @@ inline Submatrix<MT,aligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -7695,7 +7694,7 @@ inline Submatrix<MT,aligned,false,true>&
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -7750,7 +7749,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -7808,7 +7807,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7857,7 +7856,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -7915,7 +7914,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7963,7 +7962,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -8026,7 +8025,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -8077,7 +8076,7 @@ inline Submatrix<MT,aligned,false,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -8107,7 +8106,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -8138,7 +8137,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -8458,7 +8457,7 @@ inline Submatrix<MT,aligned,false,true>& Submatrix<MT,aligned,false,true>::trans
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -8497,7 +8496,7 @@ inline Submatrix<MT,aligned,false,true>& Submatrix<MT,aligned,false,true>::ctran
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 
@@ -10558,7 +10557,7 @@ inline Submatrix<MT,aligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -10613,7 +10612,7 @@ inline Submatrix<MT,aligned,true,true>&
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
@@ -10668,7 +10667,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -10726,7 +10725,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -10775,7 +10774,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -10833,7 +10832,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -10881,7 +10880,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
@@ -10944,7 +10943,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       reset();
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -10995,7 +10994,7 @@ inline Submatrix<MT,aligned,true,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -11025,7 +11024,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true> >&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -11056,7 +11055,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true> >&
 
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -11359,7 +11358,7 @@ inline Submatrix<MT,aligned,true,true>& Submatrix<MT,aligned,true,true>::transpo
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
    smpAssign( left, tmp );
 
@@ -11398,7 +11397,7 @@ inline Submatrix<MT,aligned,true,true>& Submatrix<MT,aligned,true,true>::ctransp
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
-   DerestrictTrait_<This> left( derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
    smpAssign( left, tmp );
 

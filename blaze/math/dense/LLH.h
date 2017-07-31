@@ -50,7 +50,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/potrf.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 
@@ -146,7 +145,7 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
-   DerestrictTrait_<MT2> l( derestrict( ~L ) );
+   decltype(auto) l( derestrict( ~L ) );
 
    resize( ~L, n, n, false );
    reset( l );

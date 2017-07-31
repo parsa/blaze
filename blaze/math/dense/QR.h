@@ -54,7 +54,6 @@
 #include <blaze/math/lapack/geqrf.h>
 #include <blaze/math/lapack/orgqr.h>
 #include <blaze/math/lapack/ungqr.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/views/Submatrix.h>
@@ -207,7 +206,7 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    }
 
    const std::unique_ptr<ET1[]> tau( new ET1[mindim] );
-   DerestrictTrait_<MT3> r( derestrict( ~R ) );
+   decltype(auto) r( derestrict( ~R ) );
 
    if( m < n )
    {

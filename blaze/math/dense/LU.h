@@ -54,7 +54,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
-#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/NumericCast.h>
@@ -251,8 +250,8 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
       BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
    }
 
-   DerestrictTrait_<MT2> l( derestrict( ~L ) );
-   DerestrictTrait_<MT3> u( derestrict( ~U ) );
+   decltype(auto) l( derestrict( ~L ) );
+   decltype(auto) u( derestrict( ~U ) );
 
    if( m < n )
    {
