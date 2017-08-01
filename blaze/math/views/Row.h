@@ -717,8 +717,8 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
 {
-   return ( row.row_ <= row.matrix_.rows() &&
-            isIntact( row.matrix_ ) );
+   return ( row.row() <= row.operand().rows() &&
+            isIntact( row.operand() ) );
 }
 //*************************************************************************************************
 
@@ -741,7 +741,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline bool isSame( const Row<MT,SO,DF,SF>& a, const Row<MT,SO,DF,SF>& b ) noexcept
 {
-   return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
+   return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
 }
 //*************************************************************************************************
 
@@ -771,7 +771,7 @@ inline bool tryAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, 
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -802,7 +802,7 @@ inline bool tryAddAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -833,7 +833,7 @@ inline bool trySubAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -864,7 +864,7 @@ inline bool tryMultAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& r
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+   return tryMultAssign( lhs.operand(), ~rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -895,7 +895,7 @@ inline bool tryDivAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryDivAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+   return tryDivAssign( lhs.operand(), ~rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -922,7 +922,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 {
-   return row( derestrict( r.matrix_ ), r.row_ );
+   return row( derestrict( r.operand() ), r.row() );
 }
 /*! \endcond */
 //*************************************************************************************************
